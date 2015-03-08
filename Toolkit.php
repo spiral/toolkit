@@ -30,7 +30,7 @@ class Toolkit extends Module
         //Registering view namespace
         $installer->registerConfig(ViewConfig::make(array(
             'baseDirectory' => $definition->getLocation()
-        ))->addNamespace('spiral', 'views'));
+        ))->addNamespace('toolkit', 'views'));
 
         return $installer;
     }
