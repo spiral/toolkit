@@ -1,0 +1,1 @@
+<a href="mailto:${value}${email}" node:attributes>${value}${email}</a>
