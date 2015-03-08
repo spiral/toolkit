@@ -32,6 +32,9 @@ class Toolkit extends Module
             'baseDirectory' => $definition->getLocation()
         ))->addNamespace('toolkit', 'views'));
 
+        //All files from public directory should be mounted to root
+        $installer->registerDirectory("/", "public");
+
         return $installer;
     }
 }
