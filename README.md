@@ -1,1 +1,1 @@
-Spiral toolkit includes set of virtual tags, frontent library and resource manager.
+Spiral toolkit includes set of virtual tags, frontend library and resource manager.

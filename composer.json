@@ -1,0 +1,19 @@
+{
+  "name": "spiral/toolkit",
+  "description": "Spiral toolkit includes set of virtual tags, frontend library and resource manager.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Titov / Wolfy-J",
+      "email": "wolfy.jd@gmail.com"
+    }
+  ],
+  "require": {
+    "spiral/framework": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spiral\\Toolkit\\": ""
+    }
+  }
+}
