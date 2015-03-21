@@ -1,4 +1,4 @@
-<%
+<?php #php-compile
 $length = (int)'${length|20}';
 
 $longFish = '';
@@ -22,4 +22,4 @@ else
     }
     echo mb_substr($longFish, 0, $length);
 }
-%>
+?>
