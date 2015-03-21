@@ -30,7 +30,7 @@ class Toolkit extends Module
         //Registering view namespace
         $installer->registerConfig(ViewConfig::make(array(
             'baseDirectory' => $definition->getLocation()
-        ))->addNamespace('toolkit', 'views'));
+        ))->addNamespace('spiral', 'views'));
 
         //All files from public directory should be mounted to root
         $installer->registerDirectory("/", "public");
