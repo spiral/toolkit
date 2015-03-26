@@ -1,4 +1,4 @@
-<?php #php-compile
+<?php #compile
 $length = (int)'${length|20}';
 
 $longFish = '';
