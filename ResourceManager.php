@@ -11,7 +11,7 @@ namespace Spiral\Toolkit;
 use Spiral\Components\View\LayeredCompiler;
 use Spiral\Components\View\ProcessorInterface;
 
-class ResourceProcessor implements ProcessorInterface
+class ResourceManager implements ProcessorInterface
 {
     /**
      * New processors instance with options specified in view config.
