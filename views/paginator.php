@@ -1,5 +1,8 @@
 <block:paginator>
     <?php
+
+    //TODO: REWRITE
+
     //TODO: Fetch variable
     $_paginator_ = ${variable | $paginator};
 
