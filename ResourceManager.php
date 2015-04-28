@@ -14,6 +14,13 @@ use Spiral\Components\View\ProcessorInterface;
 class ResourceManager implements ProcessorInterface
 {
     /**
+     * Processor options.
+     *
+     * @var array
+     */
+    protected $options = array();
+
+    /**
      * New processors instance with options specified in view config.
      *
      * @param LayeredCompiler $compiler Compiler instance.
@@ -21,6 +28,7 @@ class ResourceManager implements ProcessorInterface
      */
     public function __construct(LayeredCompiler $compiler, array $options)
     {
+        $this->options = $options + $this->options;
     }
 
     /**
