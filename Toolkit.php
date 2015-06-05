@@ -11,7 +11,7 @@ namespace Spiral\Toolkit;
 use Spiral\Components\Modules\Definition;
 use Spiral\Components\Modules\Installer;
 use Spiral\Components\Modules\Module;
-use Spiral\Components\View\ViewConfig;
+use Spiral\Components\View\ConfigWriter\ViewConfig;
 
 class Toolkit extends Module
 {
@@ -27,10 +27,18 @@ class Toolkit extends Module
     {
         $installer = parent::getInstaller($definition);
 
-        //Registering view namespace
-        $installer->registerConfig(ViewConfig::make(array(
+        /**
+         * Toolkit needs one view namespace and custom view processor.
+         */
+        $viewConfig = ViewConfig::make(array(
             'baseDirectory' => $definition->getLocation()
-        ))->addNamespace('spiral', 'views'));
+        ));
+
+        $viewConfig->registerNamespace('spiral', 'views');
+        $viewConfig->registerProcessor('resourceManager', 'Spiral\Toolkit\ResourceManager');
+
+        //Registering view namespace
+        $installer->registerConfig($viewConfig);
 
         //All files from public directory should be mounted to root
         $installer->registerDirectory("/", "public");

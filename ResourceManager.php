@@ -10,6 +10,7 @@ namespace Spiral\Toolkit;
 
 use Spiral\Components\View\LayeredCompiler;
 use Spiral\Components\View\ProcessorInterface;
+use Spiral\Components\View\ViewManager;
 
 class ResourceManager implements ProcessorInterface
 {
@@ -23,10 +24,11 @@ class ResourceManager implements ProcessorInterface
     /**
      * New processors instance with options specified in view config.
      *
+     * @param ViewManager     $viewManager
      * @param LayeredCompiler $compiler Compiler instance.
      * @param array           $options
      */
-    public function __construct(LayeredCompiler $compiler, array $options)
+    public function __construct(ViewManager $viewManager, LayeredCompiler $compiler, array $options)
     {
         $this->options = $options + $this->options;
     }
