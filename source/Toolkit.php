@@ -41,7 +41,7 @@ class Toolkit extends Module
         $installer->registerConfig($viewConfig);
 
         //All files from public directory should be mounted to root
-        $installer->registerDirectory("/", "public");
+        $installer->registerDirectory("/", "../public");
 
         return $installer;
     }
