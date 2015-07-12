@@ -10,8 +10,8 @@ namespace Spiral\Toolkit;
 
 use Spiral\Components\Files\FileManager;
 use Spiral\Components\Http\HttpDispatcher;
-use Spiral\Components\View\LayeredCompiler;
-use Spiral\Components\View\ProcessorInterface;
+use Spiral\Components\View\Compiler\Compiler;
+use Spiral\Components\View\Compiler\ProcessorInterface;
 use Spiral\Components\View\ViewManager;
 use Spiral\Core\Component;
 
@@ -53,42 +53,31 @@ class ResourceManager extends Component implements ProcessorInterface
      *
      * @var array
      */
-    protected $options = array(
-        'placeholders'  => array(
+    protected $options = [
+        'placeholders'  => [
             'styles'  => "<!--[STYLES]-->",
             'scripts' => "<!--[SCRIPTS]-->"
-        ),
+        ],
         'timeSignature' => true
-    );
+    ];
 
     /**
      * Registered resources (scripts, styles and inline code blocks).
      *
      * @var array
      */
-    protected static $resources = array();
+    protected static $resources = [];
 
     /**
      * New processors instance with options specified in view config.
      *
-     * @param ViewManager     $viewManager
-     * @param LayeredCompiler $compiler Compiler instance.
-     * @param array           $options
-     * @param FileManager     $file
-     * @param HttpDispatcher  $http
+     * @param ViewManager $viewManager
+     * @param Compiler    $compiler SpiralCompiler instance.
+     * @param array       $options
      */
-    public function __construct(
-        ViewManager $viewManager,
-        LayeredCompiler $compiler,
-        array $options,
-        FileManager $file = null,
-        HttpDispatcher $http = null
-    )
+    public function __construct(ViewManager $viewManager, Compiler $compiler, array $options)
     {
         $this->viewManager = $viewManager;
-        $this->file = $file;
-        $this->http = $http;
-
         $this->options = $options + $this->options;
     }
 
@@ -147,9 +136,9 @@ class ResourceManager extends Component implements ProcessorInterface
      */
     protected function compileStyles()
     {
-        return $this->viewManager->render('spiral:import/render/styles', array(
+        return $this->viewManager->render('spiral:import/render/styles', [
             'resourceManager' => $this
-        ));
+        ]);
     }
 
     /**
@@ -162,10 +151,10 @@ class ResourceManager extends Component implements ProcessorInterface
     {
         if (!isset(self::$resources[$container]))
         {
-            return array();
+            return [];
         }
 
-        $result = array();
+        $result = [];
 
         foreach (self::$resources[$container] as $resource)
         {
@@ -187,32 +176,36 @@ class ResourceManager extends Component implements ProcessorInterface
      */
     protected function compileScripts()
     {
-        return $this->viewManager->render('spiral:import/render/scripts', array(
+        return $this->viewManager->render('spiral:import/render/scripts', [
             'resourceManager' => $this
-        ));
+        ]);
     }
 
     /**
      * Performs view code pre-processing. LayeredCompiler will provide view source into processors,
      * processors can perform any source manipulations using this code expect final rendering.
      *
-     * @param string $source    View source (code).
-     * @param string $namespace View namespace.
-     * @param string $view      View name.
-     * @param string $input     Input filename (usually real view file).
-     * @param string $output    Output filename (usually view cache, target file may not exists).
+     * @param string $source View source (code).
      * @return string
      */
-    public function processSource($source, $namespace, $view, $input = '', $output = '')
+    public function process($source)
     {
         if (strpos($source, $this->options['placeholders']['styles']))
         {
-            $source = str_replace($this->options['placeholders']['styles'], $this->compileStyles(), $source);
+            $source = str_replace(
+                $this->options['placeholders']['styles'],
+                $this->compileStyles(),
+                $source
+            );
         }
 
         if (strpos($source, $this->options['placeholders']['scripts']))
         {
-            $source = str_replace($this->options['placeholders']['scripts'], $this->compileScripts(), $source);
+            $source = str_replace(
+                $this->options['placeholders']['scripts'],
+                $this->compileScripts(),
+                $source
+            );
         }
 
         return $source;
