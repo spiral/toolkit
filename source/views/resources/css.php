@@ -1,1 +1,1 @@
-<extends:import.style/>
+<extends:resources.style/>

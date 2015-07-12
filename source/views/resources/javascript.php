@@ -1,1 +1,1 @@
-<extends:import.script/>
+<extends:resources.script/>
