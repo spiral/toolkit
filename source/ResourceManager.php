@@ -136,7 +136,7 @@ class ResourceManager extends Component implements ProcessorInterface
      */
     protected function compileStyles()
     {
-        return $this->viewManager->render('spiral:import/render/styles', [
+        return $this->viewManager->render('spiral:resources/render/styles', [
             'resourceManager' => $this
         ]);
     }
@@ -176,7 +176,7 @@ class ResourceManager extends Component implements ProcessorInterface
      */
     protected function compileScripts()
     {
-        return $this->viewManager->render('spiral:import/render/scripts', [
+        return $this->viewManager->render('spiral:resources/render/scripts', [
             'resourceManager' => $this
         ]);
     }
