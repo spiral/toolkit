@@ -78,6 +78,11 @@ class ResourceManager extends Component implements ProcessorInterface
     public function __construct(ViewManager $viewManager, Compiler $compiler, array $options)
     {
         $this->viewManager = $viewManager;
+
+        //Required components
+        $this->file = FileManager::getInstance($viewManager->getContainer());
+        $this->http = HttpDispatcher::getInstance($viewManager->getContainer());
+
         $this->options = $options + $this->options;
     }
 
