@@ -1,5 +1,4 @@
 <asset:script href="/resources/scripts/bundle.js"/>
-<asset:style href="/resources/styles/lock.css"/>
 
 <?php #compiled
 static $globalID;
