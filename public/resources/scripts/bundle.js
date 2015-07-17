@@ -2,13 +2,13 @@
     "use strict";
 
 //Add console shim for old IE
-    require ("./lib/shim/console");
+    require("./lib/shim/console");
 
 
-    var InstancesController = require ("./lib/core/InstancesController");
-    var DomMutations = require ("./lib/core/DomMutations");
-    var Ajax  = require ("./lib/todo/Ajax.js");
-    var Form  = require ("./lib/instances/form/Form.js");
+    var InstancesController = require("./lib/core/InstancesController");
+    var DomMutations = require("./lib/core/DomMutations");
+    var Ajax = require("./lib/todo/Ajax.js");
+    var Form = require("./lib/instances/form/Form.js");
 
 
     var spiralFrontend = window.spiralFrontend = {};//export to
@@ -18,7 +18,12 @@
 
     spiralFrontend.domMutation = new DomMutations(spiralFrontend.instancesController);
 
-    spiralFrontend.ajax = new Ajax();//create global ajax
+//create global ajax
+    spiralFrontend.ajax = new Ajax(window.csrfToken ? {
+        headers: {
+            "X-CSRF-Token": window.csrfToken
+        }
+    } : null);
 
     spiralFrontend.instancesController.addInstanceType("form", "js-spiral-form", Form);
 
@@ -1460,12 +1465,18 @@
     /**
      * This is an Ajax transport.
      * Supports  XDomainRequest for old IE
+     * @param {Object} [options]
+     * @param {Object} [options.headers] Headers to add to the instance
      * @fires onBeforeSend event that will be performed before request is send. Event called with one parameter "options", that contains all variables for Ajax
      * @constructor
      */
-    var Ajax = function () {
+    var Ajax = function (options) {
         this.currentRequests = 0;
         this.events = new Events(["onBeforeSend"]);
+
+        if (options && options.headers) {
+            this.headers = tools.extend(this.headers, options.headers);
+        }
     };
 
     /**
@@ -1473,13 +1484,9 @@
      * Please note that on XDomainRequest  we can't send any headers.
      * @type Object
      */
-    Ajax.prototype.headers = {//TODO fix it. Now it's undefined. It's a bug
+    Ajax.prototype.headers = {
         'X-Requested-With': 'XMLHttpRequest'
     };
-
-    if (window.csrfToken) {
-        Ajax.prototype.headers['X-CSRF-Token'] = window.csrfToken;
-    }
 
     /**
      * Send ajax request to server
@@ -1495,7 +1502,7 @@
     Ajax.prototype.send = function (options) {
         var that = this;
 
-        //TODO why we check here if === null then reassign to null again?
+        //TODO why we check here if data === null then reassign to null again?
         if (options.data === null || options.data === void 0 || options.data === 'undefined') {
             options.data = null;
         }
