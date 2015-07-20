@@ -1,13 +1,13 @@
-<extends:element/>
+<extends:base-element/>
 
-<block:element-assets>
+<block:assets>
     <asset:script href="resources/scripts/bundle.js"/>
-</block:element-assets>
+</block:assets>
 
-<block:element-body>
+<block:body>
     <form action="${action}" method="${method|post}" enctype="multipart/form-data"
           accept-charset="UTF-8" node:attributes
           class="<?= (${ajax | true} ? 'js-spiral-form' : '') . ('${class}' ? ' ${class}' : '') #compiled ?>">
         ${context}
     </form>
-</block:element-body>
+</block:body>
