@@ -5,3 +5,5 @@ Default set of toolkit imports and aliases.
 
 //Asset imports (make sure ResourceManager is enabled).
 <use path="self:resources" namespace="asset"/>
+
+<use path="self:form" namespace="form"/>
