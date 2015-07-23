@@ -30,9 +30,9 @@ class Toolkit extends Module
         /**
          * Toolkit needs one view namespace and custom view processor.
          */
-        $viewConfig = ViewConfig::make(array(
+        $viewConfig = ViewConfig::make([
             'baseDirectory' => $definition->getLocation()
-        ));
+        ]);
 
         $viewConfig->registerNamespace('spiral', 'views');
         $viewConfig->registerProcessor('resourceManager', 'Spiral\Toolkit\ResourceManager');

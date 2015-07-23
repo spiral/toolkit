@@ -1,42 +1,34 @@
-<extends:base-element/>
+<extends:element input-id="<?= $inputID #compiled  ?>"/>
 
 <block:body>
     <div class="form-group">
         <?php #compiled
         static $globalID;
-        $inputID = "input-" . ( ++ $globalID );
+        $inputID = "input-" . (++$globalID);
 
-        if ( ${noID | false} ) {
+        $noID = fetchVariable('${no-id}');
+        if ($noID === 'false' || !empty($disableIDs))
+        {
             $inputID = '';
         }
 
-        ob_start();
-        ?>${label}<?php #compiled
-        if ( ob_get_clean() ) {
+        //Receiving label content as evaluator variable
+        $label = fetchVariable('${label}');
+        if (!empty($label))
+        {
             ?>
-            <label class="control-label"
-                   for="<?php #compiled
-                   echo $inputID
-                   ?>">
-                <?php #compiled
-                echo ${required | false} ? '<strong title="${requiredMessage|[[This field is required.]]}">' : '' ?>
-                ${label}
-                <?php #compiled
-                echo ${required | false} ? '</strong>' : ''
-                ?>
-            </label>
+            <block:input-label>
+                <label class="control-label" for="${input-id}">
+                    ${label}
+                </label>
+            </block:input-label>
             <?php #compiled
         }
         ?>
-        <div
-            class="controls">
-            <block:beforeInput/>
-            <input type="${type|text}"
-
-                   id="<?= $inputID #compiled ?>"
-                   name="${name}" value="${value}"
-                   class="form-control ${class}" node:attributes/>
-            <block:afterInput/>
+        <div class="controls">
+            <block:input-body>
+                <input id="${input-id}" type="${type|text}" name="${name}" value="${value}" class="form-control ${class}"/>
+            </block:input-body>
         </div>
     </div>
 </block:body>
