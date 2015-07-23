@@ -1,4 +1,4 @@
-<extends:element input-id="<?= $inputID #compiled  ?>"/>
+<extends:element input-id="<?= $inputID #compiled ?>"/>
 
 <block:body>
     <div class="form-group">
@@ -27,7 +27,7 @@
         ?>
         <div class="controls">
             <block:input-body>
-                <input id="${input-id}" type="${type|text}" name="${name}" value="${value}" class="form-control ${class}"/>
+                <input id="${input-id}" type="${type|text}" name="${name}" value="${value}${context}" class="form-control ${class}" node:attributes/>
             </block:input-body>
         </div>
     </div>
