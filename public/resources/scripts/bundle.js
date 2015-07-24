@@ -49,7 +49,8 @@
             Form: {
                 self: Form,
                 FormMessages: {
-                    bootstrap: require("./lib/instances/form/FormMessages/bootstrap.js")
+                    spiral: require("./lib/instances/form/FormMessages/spiral.js")
+                    //bootstrap: require("./lib/instances/form/FormMessages/bootstrap.js")
                     //materialLite: require("./FormMessages/materialLite.js")
                 }
             }
@@ -70,7 +71,7 @@
 
 
 
-},{"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/instances/form/Form.js":9,"./lib/instances/form/FormMessages/bootstrap.js":10,"./lib/shim/console":11,"./lib/todo/Ajax.js":12}],2:[function(require,module,exports){
+},{"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/instances/form/Form.js":9,"./lib/instances/form/FormMessages/spiral.js":10,"./lib/shim/console":11,"./lib/todo/Ajax.js":12}],2:[function(require,module,exports){
     "use strict";
     var tools = require("../helpers/tools");
     /**
@@ -1060,7 +1061,7 @@
          *
          */
         "data-messagesType": {
-            "value": "bootstrap",
+            "value": "spiral",
             "key": "messagesType"
         },
         /**
@@ -1249,8 +1250,8 @@
      */
     function closeMessage() {
         this.removeEventListener("click", closeMessage);
-        var message = this.parentNode.parentNode;
-        message.parentNode.removeChild(message);
+        var alert = this.parentNode;
+        alert.parentNode.removeChild(alert);
     }
 
     /**
@@ -1262,32 +1263,32 @@
      * @param {String} message
      */
     function showMessage(formOptions, message, type) {
-        var placeholder, alert, close, parent;
-
-        placeholder = document.createElement("div");
-        placeholder.className = "form-group form-message";
+        var alert, msg, close, parent;
 
         alert = document.createElement("div");
-        alert.className = "alert alert-" + type;
-        alert.innerHTML = message;
+        alert.className = "alert form-msg " + type;
+
+        msg = document.createElement("div");
+        msg.className = "msg";
+        msg.innerHTML = message;
 
         close = document.createElement("button");
-        close.className = "close";
+        close.className = "btn-close";
         close.setAttribute("type", "button");
         close.textContent = "×";
 
         alert.appendChild(close);
-        placeholder.appendChild(alert);
+        alert.appendChild(msg);
 
         if (formOptions.messagePosition === "bottom") {
             parent = formOptions.context;
-            parent.appendChild(placeholder);
+            parent.appendChild(alert);
         } else if (formOptions.messagePosition === "top") {
             parent = formOptions.context;
-            parent.insertBefore(placeholder, parent.firstChild);
+            parent.insertBefore(alert, parent.firstChild);
         } else {
             parent = document.querySelector(formOptions.messagePosition);
-            parent.appendChild(placeholder)
+            parent.appendChild(alert)
         }
 
         close.addEventListener("click", closeMessage);
@@ -1302,7 +1303,7 @@
      * @param {String} [type]
      */
     function showMessages(formOptions, messages, type) {
-        var selector, msgType, msgText, nodes, i, l;
+        var selector, msgType, msgText, nodes, i, l, group, msgEl;
         type = type || "success";
         for (var name in messages) {
             if (!messages.hasOwnProperty(name)) continue;
@@ -1324,22 +1325,21 @@
             }
 
             for (i = 0, l = nodes.length; i < l; i++) {
-                var group = tools.closest(nodes[i], ".form-group");
-                if (group) {
-                    group.classList.add("has-" + (msgType === "danger" ? "error" : msgType));
-                }
+                group = tools.closest(nodes[i], ".item-form");
+                if (!group) continue;
+                group.classList.add(msgType);
 
-                var msg = document.createElement("div");
-                msg.className = "alert alert-" + msgType;
-                msg.innerHTML = msgText;
+                msgEl = document.createElement("span");
+                msgEl.className = "msg";
+                msgEl.innerHTML = msgText;
 
                 if (formOptions.messagesPosition === "bottom") {
-                    group.appendChild(msg);
+                    group.appendChild(msgEl);
                 } else if (formOptions.messagesPosition === "top") {
-                    group.insertBefore(msg, group.firstChild);
+                    group.insertBefore(msgEl, group.firstChild);
                 } else {
                     var parent = group.querySelector(formOptions.messagesPosition);
-                    parent.appendChild(msg)
+                    parent.appendChild(msgEl)
                 }
             }
         }
@@ -1361,27 +1361,41 @@
          */
         show: function (formOptions, answer) {
             if (!answer) return;
+            var isMsg = false;
             //if (formOptions.context.getElementsByClassName("alert").length > 0) {
             //    this.clear(formOptions);//todo we really need to clear here? form clears onSubmit
             //}
 
             if (answer.message) {
                 showMessage(formOptions, answer.message.text || answer.message, answer.message.type || "success");
+                isMsg = true;
             }
             if (answer.error) {
-                showMessage(formOptions, answer.error, "danger");
+                showMessage(formOptions, answer.error, "error");
+                isMsg = true;
             }
             if (answer.warning) {
                 showMessage(formOptions, answer.warning, "warning");
+                isMsg = true;
             }
             if (answer.messages) {
                 showMessages(formOptions, answer.messages, "success");
+                isMsg = true;
             }
             if (answer.errors) {
-                showMessages(formOptions, answer.errors, "danger");
+                showMessages(formOptions, answer.errors, "error");
+                isMsg = true;
             }
             if (answer.warnings) {
                 showMessages(formOptions, answer.warnings, "warning");
+                isMsg = true;
+            }
+            if (!isMsg) {
+                var error = answer.status ? answer.status + " " : "";
+                error += answer.statusText ? answer.statusText : "";
+                error += answer.data && !answer.statusText ? answer.data : "";
+                error += error.length === 0 ? answer : "";
+                showMessage(formOptions, error, "error");
             }
         },
         /**
@@ -1391,25 +1405,22 @@
          * @param {Node} formOptions.context
          */
         clear: function (formOptions) {
-            var message;
+            var msg, i, l, item;
             if (formOptions.messagePosition === "bottom" || formOptions.messagePosition === "top") {
-                message = formOptions.context.getElementsByClassName("form-message")[0];
+                msg = formOptions.context.getElementsByClassName("form-msg")[0];
             } else {
-                message = document.querySelector(formOptions.messagePosition + ">.form-group .form-message");
+                msg = document.querySelector(formOptions.messagePosition + ">.form-msg");
             }
-            if (message) {
-                message.getElementsByClassName("close")[0].removeEventListener("click", closeMessage);
-                message.parentNode.removeChild(message);
-            }
-
-            var alerts = formOptions.context.querySelectorAll(".form-group .alert");//Remove all messages
-            for (var i = 0, l = alerts.length; i < l; i++) {
-                alerts[i].parentNode.removeChild(alerts[i]);
+            if (msg) {
+                msg.getElementsByClassName("btn-close")[0].removeEventListener("click", closeMessage);
+                msg.parentNode.removeChild(msg);
             }
 
-            var groups = formOptions.context.getElementsByClassName("form-group");//Cleaning classes
-            for (i = 0, l = groups.length; i < l; i++) {
-                groups[i].classList.remove("has-error", "has-warning", "has-success");
+            var alerts = formOptions.context.querySelectorAll(".item-form>.msg");//Remove all messages
+            for (i = 0, l = alerts.length; i < l; i++) {
+                item = alerts[i].parentNode;
+                item.removeChild(alerts[i]);
+                item.classList.remove("error", "success", "warning", "info");
             }
         }
     };

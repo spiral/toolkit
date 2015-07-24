@@ -1,34 +1,21 @@
-<extends:element input-id="<?= $inputID #compiled ?>"/>
+<extends:element/>
 
 <block:body>
-    <div class="form-group">
-        <?php #compiled
-        static $globalID;
-        $inputID = "input-" . (++$globalID);
-
-        $noID = fetchVariable('${no-id}');
-        if ($noID === 'false' || !empty($disableIDs))
-        {
-            $inputID = '';
-        }
-
-        //Receiving label content as evaluator variable
-        $label = fetchVariable('${label}');
-        if (!empty($label))
-        {
-            ?>
-            <block:input-label>
-                <label class="control-label" for="${input-id}">
-                    ${label}
-                </label>
-            </block:input-label>
-            <?php #compiled
-        }
-        ?>
-        <div class="controls">
-            <block:input-body>
-                <input id="${input-id}" type="${type|text}" name="${name}" value="${value}${context}" class="form-control ${class}" node:attributes/>
-            </block:input-body>
-        </div>
-    </div>
+<label class="item-form ${wrapper-class}">
+    <?php #compiled
+    //Receiving label content as evaluator variable
+    $label = fetchVariable('${label}');
+    if (!empty($label))
+    {
+    ?>
+    <block:input-label>
+        <span class="item-label">${label}</span>
+    </block:input-label>
+    <?php #compiled
+    }
+    ?>
+    <block:input-body>
+        <input type="${type|text}" name="${name}" value="${value}${context}" node:attributes/>
+    </block:input-body>
+</label>
 </block:body>
