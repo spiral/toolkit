@@ -412,7 +412,8 @@ table {
   }
 }
 
-.btn-close {
+
+.btn-icon, .btn-close {//todo get rid of .btn-close (in alerts)
   display: block;
   color: @spiral-black;
   background: transparent;
@@ -476,7 +477,7 @@ table {
 
 .item-form {
   display: block;
-  padding-bottom: 15px;
+  margin-bottom: 15px;
   input {
     .size(100%, 30px);
     .placeholder(@spiral-grey);
@@ -489,6 +490,9 @@ table {
     &:focus {
       border-color: @spiral-blue;
       outline: none;
+    }
+    &:disabled,&:read-only {
+      background: @spiral-light-grey;
     }
   }
   textarea {
@@ -586,5 +590,76 @@ table {
     right: 0;
     line-height: 18px;
     width: 18px;
+  }
+}
+
+
+.item-group {
+  position: relative;
+}
+.item-autocomplete {
+  &.item-state-search .btn-icon:before {
+    //content: '\1f50d';
+    //content: '\26B2';
+    content: '⚲';
+    transform: rotateZ(-45deg);
+    display: inline-block;
+  }
+   &.item-state-add .btn-icon:before {
+    //content: '\2b';
+    //content: '⊕';
+     content: '+';
+  }
+  &.item-state-remove .btn-icon:before {
+    content: '×';
+    //content: '\232b';
+    //content: '⊗';
+  }
+  &.item-state-select .btn-icon{
+    &:hover {
+      opacity: 0.2;
+      cursor: default;
+    }
+    &:before {
+      //content: '\23ce';
+      content: '⇙';
+    }
+  }
+  &.item-state-loading .btn-icon:before {
+    content: '\21BB';
+  }
+  .btn-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 30px;
+    font-size: 24px;
+    line-height: 100%;
+    &:before {
+      line-height: 100%;
+      vertical-align: text-top;
+      height: 100%;
+    }
+  }
+  .autocomplete-hints {
+    background: @spiral-white;
+    border: 1px solid @spiral-grey;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-top: -1px;
+    max-width: 100%;
+    width: 100%;
+    >.autocomplete-hint {
+      padding: 3px 10px;
+      cursor: pointer;
+      &:hover {
+        background: @spiral-light-grey;
+      }
+    }
+    strong {
+      color: @spiral-blue;
+      font-weight: normal;
+    }
   }
 }

@@ -362,6 +362,7 @@ table td.left-align {
   box-shadow: 0 4px #0560a2;
   text-shadow: 0 1px #0560a2;
 }
+.btn-icon,
 .btn-close {
   display: block;
   color: #000000;
@@ -372,6 +373,7 @@ table td.left-align {
   opacity: 0.2;
   cursor: pointer;
 }
+.btn-icon:hover,
 .btn-close:hover {
   opacity: 1;
 }
@@ -414,7 +416,7 @@ table td.left-align {
 }
 .item-form {
   display: block;
-  padding-bottom: 15px;
+  margin-bottom: 15px;
 }
 .item-form input {
   width: 100%;
@@ -436,6 +438,10 @@ table td.left-align {
 .item-form input:focus {
   border-color: #33a3fe;
   outline: none;
+}
+.item-form input:disabled,
+.item-form input:read-only {
+  background: #e5e5e5;
 }
 .item-form textarea {
   width: 100%;
@@ -539,4 +545,62 @@ table td.left-align {
   right: 0;
   line-height: 18px;
   width: 18px;
+}
+.item-group {
+  position: relative;
+}
+.item-autocomplete.item-state-search .btn-icon:before {
+  content: '⚲';
+  transform: rotateZ(-45deg);
+  display: inline-block;
+}
+.item-autocomplete.item-state-add .btn-icon:before {
+  content: '+';
+}
+.item-autocomplete.item-state-remove .btn-icon:before {
+  content: '×';
+}
+.item-autocomplete.item-state-select .btn-icon:hover {
+  opacity: 0.2;
+  cursor: default;
+}
+.item-autocomplete.item-state-select .btn-icon:before {
+  content: '⇙';
+}
+.item-autocomplete.item-state-loading .btn-icon:before {
+  content: '\21BB';
+}
+.item-autocomplete .btn-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 30px;
+  font-size: 24px;
+  line-height: 100%;
+}
+.item-autocomplete .btn-icon:before {
+  line-height: 100%;
+  vertical-align: text-top;
+  height: 100%;
+}
+.item-autocomplete .autocomplete-hints {
+  background: #ffffff;
+  border: 1px solid #b9b9b9;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  margin-top: -1px;
+  max-width: 100%;
+  width: 100%;
+}
+.item-autocomplete .autocomplete-hints > .autocomplete-hint {
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.item-autocomplete .autocomplete-hints > .autocomplete-hint:hover {
+  background: #e5e5e5;
+}
+.item-autocomplete .autocomplete-hints strong {
+  color: #33a3fe;
+  font-weight: normal;
 }

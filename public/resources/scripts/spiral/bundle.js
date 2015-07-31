@@ -5,13 +5,15 @@
     require("./lib/shim/console");
 
 
+    var spiralFrontend = window.spiralFrontend = {
+        tools: require("./lib/helpers/tools")
+    };//export to
+
+    var BaseDOMConstructor = require("./lib/core/BaseDOMConstructor");
     var InstancesController = require("./lib/core/InstancesController");
     var DomMutations = require("./lib/core/DomMutations");
     var Ajax = require("./lib/todo/Ajax.js");
     var Form = require("./lib/instances/form/Form.js");
-
-    var spiralFrontend = window.spiralFrontend = {};//export to
-
 
 //spiralFrontend.globalOverwrites = {
 //    instances: {//type
@@ -32,6 +34,8 @@
 
 
 //document.addEventListener("js-spiral-owewrite",function(){})
+
+    spiralFrontend.BaseDOMConstructor = BaseDOMConstructor;
 
     spiralFrontend.instancesController = new InstancesController(spiralFrontend);
 
@@ -61,6 +65,8 @@
     spiralFrontend.instancesController.addInstanceType("form", "js-spiral-form", Form);
 
     window.sf = spiralFrontend;//just shortcut
+    window.spiral = spiralFrontend;//just shortcut
+    window.coil = spiralFrontend;//just shortcut
 
 
 
@@ -71,7 +77,7 @@
 
 
 
-},{"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/instances/form/Form.js":9,"./lib/instances/form/FormMessages/spiral.js":10,"./lib/shim/console":11,"./lib/todo/Ajax.js":12}],2:[function(require,module,exports){
+},{"./lib/core/BaseDOMConstructor":2,"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/helpers/tools":8,"./lib/instances/form/Form.js":9,"./lib/instances/form/FormMessages/spiral.js":10,"./lib/shim/console":11,"./lib/todo/Ajax.js":12}],2:[function(require,module,exports){
     "use strict";
     var tools = require("../helpers/tools");
     /**
@@ -203,9 +209,9 @@
         for (index in this.attributesToGrab) {// loop over attributesToGrab
             if (this.attributesToGrab.hasOwnProperty(index)) {//if this is own option
                 key = (this.attributesToGrab[index].key) ? this.attributesToGrab[index].key : index; //detect key to object
-                if (node.attributes.hasOwnProperty(index)) {// if form have this attribute
+                if (node.attributes.hasOwnProperty(index)) {// if node have this attribute
                     val = node.attributes[index].value
-                } else {// if form have NO this attribute
+                } else {// if node have NO this attribute
                     val = null;
                 }
                 if (this.attributesToGrab[index].processor) {//if processor is available
@@ -1520,6 +1526,7 @@
             if ((typeof window !== 'undefined') && window.XDomainRequest && (window.XMLHttpRequest && new XMLHttpRequest().responseType === undefined) && (url.indexOf("http") === 0)) {//old IE CORS
                 //TODO maybe we should use XDomainRequest only for cross domain requests? But  Spiral for now works great with XDomainRequest (based on IEJSON)
                 xhr = new XDomainRequest();
+                //http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx
                 oldIE = true;
                 //http://social.msdn.microsoft.com/Forums/ie/en-US/30ef3add-767c-4436-b8a9-f1ca19b4812e/ie9-rtm-xdomainrequest-issued-requests-may-abort-if-all-event-handlers-not-specified?forum=iewebdevelopment
                 xhr.onprogress = function (e) {
@@ -1572,9 +1579,9 @@
                 if (!oldIE) {
                     if (options.data.toString().indexOf("FormData") !== -1) {//if form data
                         dataToSend = options.data;
-                    } else {//TODO fix - not working right now
+                    } else {
                         dataToSend = new LikeFormData(options.data);
-                        options["content-type"] = dataToSend.getContentTypeHeader();
+                        options.headers["content-type"] = dataToSend.getContentTypeHeader();
                     }
                     that._setHeaders(xhr, options.headers);
 
