@@ -1613,6 +1613,7 @@
                 xhr.send(dataToSend.toString());
             }
 
+            return xhr;
         })
     };
 
