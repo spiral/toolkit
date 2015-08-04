@@ -403,7 +403,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
             }
         } else {
             if (q.trim() != "") {
-                if (this.currentRequest != null) this.currentRequest.abort();
+                if (this.currentRequest != null) this.currentRequest[1].abort();
                 //console.log(spiral.ajax);
                 var data = {};
                 data[that.options.query] = q;
@@ -411,8 +411,10 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
                 this.currentRequest = spiral.ajax.send({
                     //url: that.options.URL + "?" + that.options.query + "=" + q,
                     url: that.options.URL,
-                    data: that.options.query
-                }).then(
+                    data: that.options.query,
+                    isReturnXHRToo:true
+                });
+                this.currentRequest[0].then(
                     function (answer) {
                         console.log(answer.suggestions);
                         if (that.value && !that.filled) that.processResponse(answer.suggestions);
@@ -420,10 +422,10 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
                     function (error) {
 
                     });
-                if (this.currentRequest) {
-                    console.log(this.currentRequest);
-                    console.log(this.currentRequest.xhr);
-                }
+                //if (this.currentRequest) {
+                //    console.log(this.currentRequest);
+                //    console.log(this.currentRequest.xhr);
+                //}
                 this.changeAddon("loading");
                 //this.changeAddon("glyphicon gif-loading", true);
             } else {

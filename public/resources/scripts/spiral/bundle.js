@@ -1497,7 +1497,8 @@
      * @param {String} [options.method]
      * @param {Object} [options.headers] headers to add to the request
      * @param {Function} [options.onProgress] callback function on progress. Two callback options: current bytes sent,totalBytes
-     * @returns {window.Promise}
+     * @param {Function} [options.isReturnXHRToo===false] should method return array instead of Promise. Some times is needed to control ajax (abort, etc). If tree then  [window.Promise,XMLHttpRequest ] will be returned
+     * @returns {window.Promise|[window.Promise,XMLHttpRequest]}
      */
     Ajax.prototype.send = function (options) {
         var that = this;
@@ -1511,8 +1512,8 @@
         }
 
         options.headers = options.headers ? tools.extend(this.headers, options.headers) : this.headers;
-
-        return new Promise(function (resolve, reject) {    // Return a new promise.
+        var xhr;
+        var ajaxPromise =  new Promise(function (resolve, reject) {    // Return a new promise.
             if (!options.url) {
                 console.error("You should provide url");
                 reject("You should provide url");
@@ -1522,7 +1523,7 @@
 
 
             var oldIE = false;
-            var xhr;
+
             if ((typeof window !== 'undefined') && window.XDomainRequest && (window.XMLHttpRequest && new XMLHttpRequest().responseType === undefined) && (url.indexOf("http") === 0)) {//old IE CORS
                 //TODO maybe we should use XDomainRequest only for cross domain requests? But  Spiral for now works great with XDomainRequest (based on IEJSON)
                 xhr = new XDomainRequest();
@@ -1614,7 +1615,12 @@
             }
 
             return xhr;
-        })
+        });
+
+        if (options.isReturnXHRToo){//return xhr too
+            return [ajaxPromise,xhr]
+        }
+        return ajaxPromise;
     };
 
 
