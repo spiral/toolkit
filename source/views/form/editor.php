@@ -1,7 +1,6 @@
 <extends:form.input/>
 
 <block:assets>
-    <asset:script href="/resources/scripts/spiral/bundle.js"/>
     <asset:script href="/resources/vendor/tinymce/tinymce.min.js"/>
     <script>
         //todo rewrite to asset:inline script when it will work
