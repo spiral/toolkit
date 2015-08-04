@@ -60,6 +60,8 @@
   margin-top: -1px;
   max-width: 100%;
   width: 100%;
+  max-height: 200px;
+  overflow-y: scroll;
 }
 .item-autocomplete .autocomplete-hints > .autocomplete-hint {
   padding: 3px 10px;
