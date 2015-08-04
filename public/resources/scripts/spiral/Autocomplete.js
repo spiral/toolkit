@@ -54,7 +54,6 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         this.els.hidden.name = this.els.input.dataset.name;
         this.els.addon.className = "btn-icon";
         this.els.addon.setAttribute("type", "button");
-        //this.els.addon.textContent = "+";
         this.els.group.appendChild(this.els.addon);
 
         if (this.options.URL[this.options.URL.length - 1] === "/") {
@@ -65,10 +64,9 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         this.key = this.els.input.dataset.key;
 
         if (this.key && this.value) {
-            this.readOnly();
-            this.changeAddon("remove");
+            this.setState("filled");
         } else {
-            this.changeAddon("search");
+            this.setState("search");
         }
 
         if (this.options.availableTags && !this.options.URL) {
@@ -175,11 +173,11 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         this.els.input.addEventListener("focus", listen);
 
         this.els.addon.addEventListener("click", function () {
-            switch (that.addonState) {
+            switch (that.state) {
                 case "search":
                     that.onValueChange();
                     break;
-                case "remove":
+                case "filled":
                     that.clear();
                     break;
                 case "add":
@@ -219,7 +217,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     };
 
     /**
-     * Hides autocomplete suggestions. Changes bootsrap addon.
+     * Hides hints. Changes state.
      */
     Autocomplete.prototype.hide = function () {
         if (!this.els.hints) return;
@@ -227,37 +225,22 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         this.els.hints = null;
         this.visible = false;
         this.selectedIndex = -1;
-        if (this.value != "" && this.value != this.els.input.value) {
-            if (this.options.allowNew) {
-                this.changeAddon("add");
-            } else {
-                this.changeAddon("search");
-            }
+        if (this.value !== "" && this.value !== this.els.input.value) {
+            this.setState(this.options.allowNew ? "add" : "search");
         }
-    };
-
-    /**
-     * Sets input into readonly state.
-     */
-    Autocomplete.prototype.readOnly = function () {
-        this.hide();
-        this.els.input.readOnly = true;
-        //this.els.group.classList.add("readonly");
     };
 
     /**
      * Clears input, suggestions, variables.
      */
     Autocomplete.prototype.clear = function () {
-        this.els.input.readOnly = false;
         this.value = "";
         this.els.input.value = "";
         this.els.hidden.value = "";
         this.suggestions = {};
         this.filled = false;
         this.hide();
-        this.changeAddon("search");
-        this.els.group.classList.remove("readonly");
+        this.setState("search");
     };
 
     /**
@@ -270,35 +253,19 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     };
 
     /**
-     * Changes bootsrap addon.</br>
-     * this.els.addon.firstChild.className = "glyphicon glyphicon-" + type;</br>
-     * or</br>
-     * this.els.addon.firstChild.className = type;
-     * @param {String} type Bootstrap class for glyphicons
-     * @param {Boolean} [custom] Allow custom class instead "glyphicon glyphicon-" + type
-     * @example
-     * this.changeAddon("remove");
-     * @example
-     * this.changeAddon("glyphicon gif-loading", true);
+     * Changes item-state- class on wrapper.
+     * @param {String} state
      */
-    Autocomplete.prototype.changeAddon = function (type, custom) {
-        //&#x1f50d; U+1F50D LEFT-POINTING MAGNIFYING GLASS
-        //&#8635; (↻), i.e. U+21BB CLOCKWISE OPEN CIRCLE ARROW
-        //close = document.createElement("button");
-        //close.className = "btn-close";
-        //close.setAttribute("type", "button");
-        //close.textContent = "×";
-        //alert.appendChild(close);
-        console.log(this.addonState, type);
-        if (this.addonState != type) {
-            //if (custom) {
-            //    this.els.addon.firstChild.className = type;
-            //} else {
-            //    this.els.addon.firstChild.className = "glyphicon glyphicon-" + type;
-            //}
-            this.els.wrapper.classList.remove("item-state-" + this.addonState);
-            this.els.wrapper.classList.add("item-state-" + type);
-            this.addonState = type;
+    Autocomplete.prototype.setState = function (state) {
+        if (this.state === state) return;
+        this.els.wrapper.classList.remove("item-state-" + this.state);
+        this.els.wrapper.classList.add("item-state-" + state);
+        this.state = state;
+        if (state === "filled") {
+            this.hide();
+            this.els.input.readOnly = true;
+        } else {
+            this.els.input.readOnly = false;
         }
     };
 
@@ -309,17 +276,12 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      */
     Autocomplete.prototype.addTag = function (key, value) {
         if (this.options.allowNew || key !== true) {
-            if (this.options.allowNew) {
-                this.els.hidden.value = value;
-            } else {
-                this.els.hidden.value = key;
-            }
+            this.els.hidden.value = this.options.allowNew ? value : key;
             this.value = value;
-            this.readOnly();
             this.els.input.value = this.value;
             this.suggestions = {};
             this.filled = true;
-            this.changeAddon("remove");
+            this.setState("filled");
         }
     };
 
@@ -343,7 +305,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
             this.findBestHint();
             if (this.options.deferRequestBy > 0) {
                 if (this.options.allowNew)
-                    this.changeAddon("add");
+                    this.setState("add");
                 // Defer lookup in case when value changes very quickly:
                 this.onChangeTimeout = setTimeout(function () {
                     that.onValueChange();
@@ -373,7 +335,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         } else {
             clearTimeout(this.onChangeTimeout);
             this.selectedIndex = -1;
-            (this.value.length < this.options.minChars) ? this.hide() : this.getSuggestions(this.value);
+            this.value.length < this.options.minChars ? this.hide() : this.getSuggestions(this.value);
         }
     };
 
@@ -385,7 +347,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         var that = this;
 
         if (this.options.disable) {
-            this.changeAddon("add");
+            this.setState("add");
             return;
         }
 
@@ -393,41 +355,33 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
             if (q.trim() != "") {
                 var suggestions = {};
                 for (var key in this.options.availableTags) {
-                    if (this.options.availableTags[key].toLowerCase().indexOf(q.toLowerCase()) != -1) {
+                    if (this.options.availableTags.hasOwnProperty(key) &&
+                        this.options.availableTags[key].toLowerCase().indexOf(q.toLowerCase()) != -1) {
                         suggestions[key] = this.options.availableTags[key];
                     }
                 }
-                that.processResponse(suggestions);
+                that.suggest(suggestions);
             } else {
-                that.processResponse(this.options.availableTags);
+                that.suggest(this.options.availableTags);
             }
         } else {
             if (q.trim() != "") {
-                if (this.currentRequest != null) this.currentRequest[1].abort();
-                //console.log(spiral.ajax);
+                if (this.ajax != null) this.ajax[1].abort();
                 var data = {};
                 data[that.options.query] = q;
-                //this.currentRequest = new spiral.ajax;
-                this.currentRequest = spiral.ajax.send({
-                    //url: that.options.URL + "?" + that.options.query + "=" + q,
+                this.ajax = spiral.ajax.send({
                     url: that.options.URL,
                     data: that.options.query,
                     isReturnXHRToo:true
                 });
-                this.currentRequest[0].then(
+                this.ajax[0].then(
                     function (answer) {
-                        console.log(answer.suggestions);
-                        if (that.value && !that.filled) that.processResponse(answer.suggestions);
+                        if (that.value && !that.filled) that.suggest(answer.suggestions);
                     },
                     function (error) {
 
                     });
-                //if (this.currentRequest) {
-                //    console.log(this.currentRequest);
-                //    console.log(this.currentRequest.xhr);
-                //}
-                this.changeAddon("loading");
-                //this.changeAddon("glyphicon gif-loading", true);
+                this.setState("loading");
             } else {
                 this.hide();
             }
@@ -435,19 +389,10 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     };
 
     /**
-     * Sets suggestions and call suggest function.
-     * @param {Array|Object} hints Hints from response.
-     */
-    Autocomplete.prototype.processResponse = function (hints) {
-        this.suggestions = hints;
-        this.suggest();
-    };
-
-    /**
      * Prepare suggestions or alert.
      * @returns {string}
      */
-    Autocomplete.prototype.prepareSuggestions = function () {
+    Autocomplete.prototype.prepareSuggestions = function () {//todo create nodes (not innerHtml)
         var that = this,
             value = this.value,//that.getQuery(that.value),
             html = '';
@@ -472,30 +417,27 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     };
 
     /**
-     * Shows dropdown with suggestions.
+     * Shows dropdown with the hints.
      */
-    Autocomplete.prototype.suggest = function () {
+    Autocomplete.prototype.suggest = function (hints) {
         var that = this;
+        this.hide();
+        this.suggestions = hints;
         this.els.hints = document.createElement('div');
         this.els.hints.className = 'autocomplete-hints';
         this.els.hints.style.position = 'absolute';
         this.els.hints.innerHTML = this.prepareSuggestions();
-        //this.els.wrapper.appendChild(this.els.hints);
         this.els.group.insertBefore(this.els.hints, this.els.input.nextSibling);
         this.visible = true;
 
-        this.els.hints.addEventListener("click", function (e) {
+        this.els.hints.addEventListener("click", function (e) {//todo implement with removeEventListener
             var div = (e.target.nodeName === "DIV") ? e.target : e.target.parentNode;
             if (div.getAttribute("data-key")) {
                 that.select(div.getAttribute("data-key"));
             }
         });
 
-        if (this.options.allowNew) {
-            this.changeAddon("add");
-        } else {
-            this.changeAddon("select");
-        }
+        this.setState(this.options.allowNew ? "add" : "select");
     };
 
     /**
@@ -504,7 +446,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      * @returns {String} Escaped string.
      */
     Autocomplete.prototype.escapeRegExChars = function (value) {
-        return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        return value.replace(/[\-\[\]\/\{}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
 
     /**
@@ -559,7 +501,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     Autocomplete.prototype.onKeyPress = function (e) {
         var that = this;
 
-// If suggestions are hidden and user presses arrow down, display suggestions:
+        // If suggestions are hidden and user presses arrow down -> display suggestions
         if (!this.disabled && !this.visible && e.which === this.keys.DOWN && this.value) {
             this.onValueChange();
             return;
@@ -599,7 +541,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
                 return;
         }
 
-// Cancel event if function did not return:
+        // Cancel event if function did not return:
         e.stopImmediatePropagation();
         e.preventDefault();
     };

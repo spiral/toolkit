@@ -4,21 +4,15 @@
 }
 .item-autocomplete {
   &.item-state-search .btn-icon:before {
-    //content: '\1f50d';
-    //content: '\26B2';
     content: '⚲';
     transform: rotateZ(-45deg);
     display: inline-block;
   }
   &.item-state-add .btn-icon:before {
-    //content: '\2b';
-    //content: '⊕';
     content: '+';
   }
-  &.item-state-remove .btn-icon:before {
+  &.item-state-filled .btn-icon:before {
     content: '×';
-    //content: '\232b';
-    //content: '⊗';
   }
   &.item-state-select .btn-icon{
     &:hover {
@@ -26,7 +20,6 @@
       cursor: default;
     }
     &:before {
-      //content: '\23ce';
       content: '⇙';
     }
   }

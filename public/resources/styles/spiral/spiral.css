@@ -25,7 +25,7 @@
 .item-autocomplete.item-state-add .btn-icon:before {
   content: '+';
 }
-.item-autocomplete.item-state-remove .btn-icon:before {
+.item-autocomplete.item-state-filled .btn-icon:before {
   content: '×';
 }
 .item-autocomplete.item-state-select .btn-icon:hover {
