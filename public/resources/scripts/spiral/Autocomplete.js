@@ -563,6 +563,13 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
         }
 
         this.adjustScroll(this.selectedIndex - 1);
+
+        var itemOffset = this.els.hints.children[this.selectedIndex].offsetTop;
+        var itemHeight = this.els.hints.children[this.selectedIndex].offsetHeight;
+
+        if (itemOffset < this.els.hints.scrollTop) {
+            this.els.hints.scrollTop -= itemHeight;
+        }
     };
 
     /**
@@ -571,6 +578,13 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
     Autocomplete.prototype.moveDown = function () {
         if (this.selectedIndex === (this.els.hints.children.length - 1)) return;
         this.adjustScroll(this.selectedIndex + 1);
+
+        var itemOffset = this.els.hints.children[this.selectedIndex].offsetTop;
+        var itemHeight = this.els.hints.children[this.selectedIndex].offsetHeight;
+
+        if (itemOffset > this.els.hints.scrollTop + this.els.hints.offsetHeight-itemHeight) {
+            this.els.hints.scrollTop += itemHeight;
+        }
     };
 
     /**
