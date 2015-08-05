@@ -562,14 +562,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
             return;
         }
 
-        this.adjustScroll(this.selectedIndex - 1);
-
-        var itemOffset = this.els.hints.children[this.selectedIndex].offsetTop;
-        var itemHeight = this.els.hints.children[this.selectedIndex].offsetHeight;
-
-        if (itemOffset < this.els.hints.scrollTop) {
-            this.els.hints.scrollTop -= itemHeight;
-        }
+        this.adjustScroll(this.selectedIndex - 1, 'up');
     };
 
     /**
@@ -577,14 +570,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      */
     Autocomplete.prototype.moveDown = function () {
         if (this.selectedIndex === (this.els.hints.children.length - 1)) return;
-        this.adjustScroll(this.selectedIndex + 1);
-
-        var itemOffset = this.els.hints.children[this.selectedIndex].offsetTop;
-        var itemHeight = this.els.hints.children[this.selectedIndex].offsetHeight;
-
-        if (itemOffset > this.els.hints.scrollTop + this.els.hints.offsetHeight-itemHeight) {
-            this.els.hints.scrollTop += itemHeight;
-        }
+        this.adjustScroll(this.selectedIndex + 1, 'down');
     };
 
     /**
@@ -592,8 +578,23 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      * Not implemented now. Just transit.
      * @param {Number} index Index of current suggestion.
      */
-    Autocomplete.prototype.adjustScroll = function (index) {
+    Autocomplete.prototype.adjustScroll = function (index, direction) {
         this.highlight(index);
+
+        var itemSelected =  this.els.hints.children[this.selectedIndex];
+        var itemOffset = itemSelected.offsetTop;
+        var itemHeight = itemSelected.offsetHeight;
+
+        if (direction === 'up') {
+            if (itemOffset < this.els.hints.scrollTop) {
+                this.els.hints.scrollTop -= itemHeight;
+            }
+        }
+        else if (direction === 'down') {
+            if (itemOffset > this.els.hints.scrollTop + this.els.hints.offsetHeight-itemHeight) {
+                this.els.hints.scrollTop += itemHeight;
+            }
+        }
     };
 
     /**
