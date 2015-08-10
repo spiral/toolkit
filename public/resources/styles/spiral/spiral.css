@@ -311,13 +311,14 @@ table td.left-align {
 .form-group.has-error .form-control::-webkit-input-placeholder {
   color: #fc6c6c;
 }
-.spiral-checkbox {
+.item-form-checkbox {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 }
-.spiral-checkbox:before {
+.item-form-checkbox:before {
   width: 15px;
   height: 15px;
   border: 1px solid #b9b9b9;
@@ -326,38 +327,41 @@ table td.left-align {
   top: 0;
   content: "";
 }
-.spiral-checkbox span {
+.item-form-checkbox span {
   display: block;
   line-height: 20px;
 }
-.spiral-checkbox span:before {
-  color: #33a3fe;
-  content: "";
-  text-shadow: -1px -1px 0 #ffffff, 1px 1px 0 #ffffff;
-  font-size: 12px;
-  font-size: 17px;
+.item-form-checkbox span:before {
+  width: 11px;
+  height: 11px;
+  background: #33a3fe;
   position: absolute;
-  left: 4px;
-  top: -3px;
+  left: 3px;
+  top: 3px;
+  content: "";
+  transition: all 0.2s ease-out 0s;
+  opacity: 0;
 }
-.spiral-checkbox [type=checkbox] {
+.item-form-checkbox [type=checkbox] {
   position: absolute;
   opacity: 0;
   z-index: -3;
 }
-.spiral-checkbox [type=checkbox]:checked + span:before {
-  content: "\e808";
+.item-form-checkbox [type=checkbox]:checked + span:before {
+  transition: all 0.2s ease-out 0s;
+  opacity: 1;
 }
-.spiral-checkbox:hover {
+.item-form-checkbox:hover {
   color: #33a3fe;
 }
-.spiral-radio {
+.item-form-radio {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 }
-.spiral-radio:before {
+.item-form-radio:before {
   width: 15px;
   height: 15px;
   border: 1px solid #b9b9b9;
@@ -367,11 +371,11 @@ table td.left-align {
   top: 0;
   content: "";
 }
-.spiral-radio span {
+.item-form-radio span {
   display: block;
   line-height: 20px;
 }
-.spiral-radio span:before {
+.item-form-radio span:before {
   width: 11px;
   height: 11px;
   transition: all 0.2s ease-out 0s;
@@ -379,20 +383,20 @@ table td.left-align {
   opacity: 0;
   content: "";
   position: absolute;
-  left: 2px;
-  top: 2px;
+  left: 3px;
+  top: 3px;
   border-radius: 50%;
 }
-.spiral-radio [type=radio] {
+.item-form-radio [type=radio] {
   position: absolute;
   opacity: 0;
   z-index: -3;
 }
-.spiral-radio [type=radio]:checked + span:before {
+.item-form-radio [type=radio]:checked + span:before {
   transition: all 0.2s ease-out 0s;
   opacity: 1;
 }
-.spiral-radio:hover {
+.item-form-radio:hover {
   color: #33a3fe;
 }
 .btn {

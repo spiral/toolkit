@@ -274,11 +274,12 @@ table {
   }
 }
 
-.spiral-checkbox {
+.item-form-checkbox {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 
   &:before {
     .size (15px, 15px);
@@ -295,15 +296,16 @@ table {
     line-height: 20px;
 
     &:before{
-      color: @spiral-blue;
-      //font-family: @font-icons;
-      content: "";
-      text-shadow: -1px -1px 0 #ffffff, 1px 1px 0 #ffffff;
-      font-size: 12px;
-      font-size: 17px;
+      .size (11px, 11px);
+
+      background: @spiral-blue;
       position: absolute;
-      left: 4px;
-      top: -3px;
+      left: 3px;
+      top: 3px;
+      content: "";
+      transition: all .2s ease-out 0s;
+      opacity: 0;
+
     }
   }
 
@@ -315,7 +317,9 @@ table {
     &:checked + span {
 
       &:before {
-        content: "\e808";
+        transition: all .2s ease-out 0s;
+        opacity: 1;
+
       }
     }
   }
@@ -325,11 +329,12 @@ table {
   }
 }
 
-.spiral-radio {
+.item-form-radio {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 
   &:before {
     .size (15px, 15px);
@@ -351,12 +356,11 @@ table {
 
       transition: all .2s ease-out 0s;
       background: @spiral-blue;
-      //font-family: @font-icons;
       opacity: 0;
       content: "";
       position: absolute;
-      left: 2px;
-      top: 2px;
+      left: 3px;
+      top: 3px;
       border-radius: 50%;
     }
   }
