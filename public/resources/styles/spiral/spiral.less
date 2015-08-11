@@ -597,3 +597,71 @@ table {
     width: 18px;
   }
 }
+
+.item-form-switch {
+  position: relative;
+  width: 78px;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select: none;
+}
+
+.switch-checkbox {
+  display: none;
+}
+
+.item-label-switch {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid @spiral-white;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px @spiral-grey
+}
+.switch-inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
+}
+.switch-inner:before, .switch-inner:after {
+  display: block;
+  float: left;
+  width: 50%;
+  height: 20px;
+  padding: 0;
+  line-height: 20px;
+  font-size: 14px;
+  color: @spiral-white;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.switch-inner:before {
+  content: "ON";
+  padding-left: 14px;
+  background-color: @spiral-blue;
+  color: #fff;
+}
+.switch-inner:after {
+  content: "OFF";
+  padding-right: 10px;
+  background-color: @spiral-light-grey;
+  color: #999999;
+  text-align: right;
+}
+.switch-switch {
+  display: block;
+  width: 26px;
+  background: @spiral-white;
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 50px;
+  transition: all 0.3s ease-in 0s;
+}
+.switch-checkbox:checked +  .switch-inner {
+  margin-left: 0;
+}
+.switch-checkbox:checked +  .switch-inner +  .switch-switch {
+  right: 0px;
+  background-color: #fff;
+}
