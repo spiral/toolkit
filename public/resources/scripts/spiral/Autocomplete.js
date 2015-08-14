@@ -562,7 +562,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
             return;
         }
 
-        this.adjustScroll(this.selectedIndex - 1, 'up');
+        this.adjustScroll(this.selectedIndex - 1);
     };
 
     /**
@@ -570,7 +570,7 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      */
     Autocomplete.prototype.moveDown = function () {
         if (this.selectedIndex === (this.els.hints.children.length - 1)) return;
-        this.adjustScroll(this.selectedIndex + 1, 'down');
+        this.adjustScroll(this.selectedIndex + 1);
     };
 
     /**
@@ -578,22 +578,18 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      * Not implemented now. Just transit.
      * @param {Number} index Index of current suggestion.
      */
-    Autocomplete.prototype.adjustScroll = function (index, direction) {
+    Autocomplete.prototype.adjustScroll = function (index) {
         this.highlight(index);
 
-        var itemSelected =  this.els.hints.children[this.selectedIndex];
-        var itemOffset = itemSelected.offsetTop;
-        var itemHeight = itemSelected.offsetHeight;
+        var item = this.els.hints.children[this.selectedIndex],
+            hintsHeight = this.els.hints.clientHeight,
+            hintTop = item.offsetTop,
+            hintHeight = item.offsetHeight;
 
-        if (direction === 'up') {
-            if (itemOffset < this.els.hints.scrollTop) {
-                this.els.hints.scrollTop -= itemHeight;
-            }
-        }
-        else if (direction === 'down') {
-            if (itemOffset > this.els.hints.scrollTop + this.els.hints.offsetHeight-itemHeight) {
-                this.els.hints.scrollTop += itemHeight;
-            }
+        if (hintTop < this.els.hints.scrollTop) {
+            this.els.hints.scrollTop = hintTop;
+        } else if (hintTop > this.els.hints.scrollTop + hintsHeight - hintHeight) {
+            this.els.hints.scrollTop = hintTop - hintsHeight + hintHeight;
         }
     };
 
