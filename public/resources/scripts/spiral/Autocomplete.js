@@ -580,6 +580,17 @@ if (!window.spiral) window.spiral = spiralFrontend;//todo temporary
      */
     Autocomplete.prototype.adjustScroll = function (index) {
         this.highlight(index);
+
+        var item = this.els.hints.children[this.selectedIndex],
+            hintsHeight = this.els.hints.clientHeight,
+            hintTop = item.offsetTop,
+            hintHeight = item.offsetHeight;
+
+        if (hintTop < this.els.hints.scrollTop) {
+            this.els.hints.scrollTop = hintTop;
+        } else if (hintTop > this.els.hints.scrollTop + hintsHeight - hintHeight) {
+            this.els.hints.scrollTop = hintTop - hintsHeight + hintHeight;
+        }
     };
 
     /**
