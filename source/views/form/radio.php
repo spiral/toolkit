@@ -1,7 +1,7 @@
 <extends:element/>
 
 <block:body>
-    <label class="item-form-radio ${wrapper-class}">
+    <label class="item-form item-form-radio ${wrapper-class}">
         <block:input-body>
             <input type="radio" name="${name}" node:attributes="exclude:context"/>
         </block:input-body>

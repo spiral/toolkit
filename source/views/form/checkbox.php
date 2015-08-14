@@ -1,7 +1,7 @@
 <extends:element/>
 
 <block:body>
-    <label class="item-form-checkbox ${wrapper-class}">
+    <label class="item-form item-form-checkbox ${wrapper-class}">
         <block:input-body>
             <input type="checkbox" name="${name}" node:attributes="exclude:context"/>
         </block:input-body>
