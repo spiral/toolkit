@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 @import 'autocomplete';
+@import 'lock';
 
 * {
   -webkit-box-sizing: border-box;
@@ -220,6 +221,10 @@ table {
   }
 }
 
+.js-spiral-form {
+  position: relative;//need for lockers
+}
+
 .form-group {
   padding-bottom: 15px;
 
@@ -408,6 +413,7 @@ table {
     transition: all .2s ease-out 0s;
     background: @spiral-blue;
     box-shadow: 0 2px 0 @spiral-dark-blue;
+    margin-bottom: 5px;//this need to compensate shadow that goes outside locker. discuss with @Nataliya
 
     &:hover {
       transition: all .2s ease-out 0s;

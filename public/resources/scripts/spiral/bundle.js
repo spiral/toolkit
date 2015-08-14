@@ -6,7 +6,7 @@
 
 
     var spiralFrontend = window.spiralFrontend = {
-        tools: require("./lib/helpers/tools")
+        tools: require("./lib/helpers/tools")//todo use domTools
     };//export to
 
     var BaseDOMConstructor = require("./lib/core/BaseDOMConstructor");
@@ -28,8 +28,7 @@
 //
 //    }
 //}
-//
-//var e = new Event("js-spiral-owerwrite");
+//var e = new Event("js-spiral-overwrite");
 //document.dispatchEvent(e);
 
 
@@ -61,12 +60,14 @@
         }
     };
 
+    spiralFrontend.lock = require("./lib/core/lock");
 
     spiralFrontend.instancesController.addInstanceType("form", "js-spiral-form", Form);
 
-    window.sf = spiralFrontend;//just shortcut
-    window.spiral = spiralFrontend;//just shortcut
-    window.coil = spiralFrontend;//just shortcut
+//shortcuts
+    window.sf = spiralFrontend;
+    window.spiral = spiralFrontend;
+    window.coil = spiralFrontend;
 
 
 
@@ -77,7 +78,7 @@
 
 
 
-},{"./lib/core/BaseDOMConstructor":2,"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/helpers/tools":8,"./lib/instances/form/Form.js":9,"./lib/instances/form/FormMessages/spiral.js":10,"./lib/shim/console":11,"./lib/todo/Ajax.js":12}],2:[function(require,module,exports){
+},{"./lib/core/BaseDOMConstructor":2,"./lib/core/DomMutations":3,"./lib/core/InstancesController":5,"./lib/core/lock":7,"./lib/helpers/tools":9,"./lib/instances/form/Form.js":10,"./lib/instances/form/FormMessages/spiral.js":11,"./lib/shim/console":12,"./lib/todo/Ajax.js":13}],2:[function(require,module,exports){
     "use strict";
     var tools = require("../helpers/tools");
     /**
@@ -246,7 +247,7 @@
 
     module.exports = BaseDOMConstructor;
 
-},{"../helpers/tools":8}],3:[function(require,module,exports){
+},{"../helpers/tools":9}],3:[function(require,module,exports){
     "use strict";
     /**
      * Dom mutation. Listening to the DOM and add or remove instances based on classes.
@@ -806,6 +807,81 @@
 },{}],7:[function(require,module,exports){
     "use strict";
     /**
+     * Spiral lock for forms
+     * @constructor lock
+     */
+    var lock = {
+        /**
+         * Add lock
+         * @param {String} [type] type of lock @see spiral.lock.types
+         * @param {Object} context context to add lock
+         * @returns {Function|*}
+         */
+        add: function (type, context) {
+            if (!this.types.hasOwnProperty(type)) return false;
+            var node = document.createElement("div");
+            node.className = "spiral-lock " + this.types[type].class;
+            node.innerHTML = this.types[type].html;
+            context.appendChild(node);
+            context.classList.add("locked");
+            return this.types[type].progress;
+        },
+        /**
+         * Remove lock
+         * @param {String} type type of lock
+         * @param {Object} context
+         */
+        remove: function (type, context) {
+            if (!this.types.hasOwnProperty(type)) return false;
+            context.classList.remove("locked");
+            var spiralLock = context.querySelector(".spiral-lock");
+            if (spiralLock) context.removeChild(spiralLock);
+            return true;
+        },
+        /**
+         * Object with lock types.
+         * @enum {Object}
+         */
+        types: {
+            /**
+             * default lock type. <b>className:</b>spiral-lock-default
+             * @type {Object}
+             */
+            "default": {
+                /**
+                 * class name
+                 * @inner
+                 * @type String
+                 */
+                class: "spiral-lock-default",
+                /**
+                 * HTML
+                 * @inner
+                 * @type String
+                 */
+                html: ''
+                /**
+                 * Optional is to pass a function that will process progress. Below is example for bootstrap
+                 * @param current
+                 * @param total
+                 * progress: function (current, total) {
+             *   var progress = this.context.getElementsByClassName("progress-bar")[0],
+             *       sr = progress.getElementsByClassName("sr-only")[0],
+             *       percent = ''+100 * (current / total);
+             *   progress.setAttribute("aria-valuenow", percent);
+             *   progress.style.width = percent + "%";
+             *   sr.innerHTML = percent + "%  Complete";
+             * }
+                 */
+
+            }
+        }
+    };
+
+    module.exports = lock;
+},{}],8:[function(require,module,exports){
+    "use strict";
+    /**
      * Helper to manipulate DOM Events. It's a simple wrapper around "addEventListener" but it's store all functions and allow us to remove it all.
      * It's very helpful for die() method of instances
      * @TODO add to many nodes
@@ -889,7 +965,7 @@
     };
 
     module.exports = DOMEvents;
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
     "use strict";
 
     /**
@@ -972,7 +1048,7 @@
     };
 
     module.exports = tools;
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
     "use strict";
 
     var BaseDOMConstructor = require("../../core/BaseDOMConstructor");
@@ -1158,15 +1234,24 @@
             e.stopPropagation();
         }
     };
+
+    /**
+     * Locker. Add or remove.
+     * @param {Boolean} [remove]
+     */
+    Form.prototype.lock = function (remove) {
+        if (!this.options.lockType || this.options.lockType === 'none' || !this.spiral.lock.types.hasOwnProperty(this.options.lockType)) return;
+        this.spiral.lock[remove ? 'remove' : 'add'](this.options.lockType, this.options.context);
+
+    };
+
     /**
      * Send form to server
      * @param sendOptions
      */
     Form.prototype.send = function (sendOptions) {
         var that = this;
-        if (sendOptions.lockType !== 'none') {    //add lock
-            //sendOptions.lockProgress = spiral.lock.addLock(sendOptions.lockType, sendOptions.context);
-        }
+        this.lock();
         if (sendOptions.beforeSubmitCallback) {
             var fn = eval(sendOptions.beforeSubmitCallback);
             if (typeof(fn) === "function") {
@@ -1183,6 +1268,7 @@
                 that.events.trigger("onError", sendOptions);
                 return error;
             }).then(function(answer){
+                that.lock(true);
                 if (that.options.messagesType && that.spiral.Core.instances.Form.FormMessages.hasOwnProperty(that.options.messagesType)){
                     that.spiral.Core.instances.Form.FormMessages[that.options.messagesType].show(that.options, answer);
                 }
@@ -1225,6 +1311,7 @@
             }
         ]);
     };
+
     /**
      * Clear all variables and die
      */
@@ -1246,7 +1333,7 @@
 
     module.exports = Form;
 
-},{"../../core/BaseDOMConstructor":2,"../../core/Events":4,"../../helpers/DOMEvents":7,"../../helpers/tools":8}],10:[function(require,module,exports){
+},{"../../core/BaseDOMConstructor":2,"../../core/Events":4,"../../helpers/DOMEvents":8,"../../helpers/tools":9}],11:[function(require,module,exports){
     "use strict";
 
     var tools = require("../../../helpers/tools");
@@ -1309,6 +1396,7 @@
      * @param {String} [type]
      */
     function showMessages(formOptions, messages, type) {
+        //todo for radio buttons - show message only for checked
         var selector, msgType, msgText, nodes, i, l, group, msgEl;
         type = type || "success";
         for (var name in messages) {
@@ -1430,7 +1518,7 @@
             }
         }
     };
-},{"../../../helpers/tools":8}],11:[function(require,module,exports){
+},{"../../../helpers/tools":9}],12:[function(require,module,exports){
     /**
      * Avoid `console` errors in browsers that lack a console.
      */
@@ -1456,7 +1544,7 @@
         }
     }());
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
     "use strict";
 
     var tools = require("../helpers/tools");
@@ -1477,6 +1565,8 @@
         if (options && options.headers) {
             this.headers = tools.extend(this.headers, options.headers);
         }
+
+
     };
 
     /**
@@ -1694,5 +1784,5 @@
 
     module.exports = Ajax;
 
-},{"../core/Events":4,"../core/LikeFormData":6,"../helpers/tools":8}]},{},[1])
+},{"../core/Events":4,"../core/LikeFormData":6,"../helpers/tools":9}]},{},[1])
 //# sourceMappingURL=bundle.js.map
