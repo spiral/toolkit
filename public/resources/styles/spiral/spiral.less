@@ -221,8 +221,8 @@ table {
   }
 }
 
-form {
-  position: relative;
+.js-spiral-form {
+  position: relative;//need for lockers
 }
 
 .form-group {
@@ -279,11 +279,12 @@ form {
   }
 }
 
-.spiral-checkbox {
+.item-form-checkbox {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 
   &:before {
     .size (15px, 15px);
@@ -300,15 +301,16 @@ form {
     line-height: 20px;
 
     &:before{
-      color: @spiral-blue;
-      //font-family: @font-icons;
-      content: "";
-      text-shadow: -1px -1px 0 #ffffff, 1px 1px 0 #ffffff;
-      font-size: 12px;
-      font-size: 17px;
+      .size (11px, 11px);
+
+      background: @spiral-blue;
       position: absolute;
-      left: 4px;
-      top: -3px;
+      left: 3px;
+      top: 3px;
+      content: "";
+      transition: all .2s ease-out 0s;
+      opacity: 0;
+
     }
   }
 
@@ -320,7 +322,9 @@ form {
     &:checked + span {
 
       &:before {
-        content: "\e808";
+        transition: all .2s ease-out 0s;
+        opacity: 1;
+
       }
     }
   }
@@ -330,11 +334,12 @@ form {
   }
 }
 
-.spiral-radio {
+.item-form-radio {
   position: relative;
   padding: 0 0 0 20px;
   cursor: pointer;
   margin-bottom: 5px;
+  display: block;
 
   &:before {
     .size (15px, 15px);
@@ -356,12 +361,11 @@ form {
 
       transition: all .2s ease-out 0s;
       background: @spiral-blue;
-      //font-family: @font-icons;
       opacity: 0;
       content: "";
       position: absolute;
-      left: 2px;
-      top: 2px;
+      left: 3px;
+      top: 3px;
       border-radius: 50%;
     }
   }
@@ -409,6 +413,7 @@ form {
     transition: all .2s ease-out 0s;
     background: @spiral-blue;
     box-shadow: 0 2px 0 @spiral-dark-blue;
+    margin-bottom: 5px;//this need to compensate shadow that goes outside locker. discuss with @Nataliya
 
     &:hover {
       transition: all .2s ease-out 0s;
@@ -597,4 +602,72 @@ form {
     line-height: 18px;
     width: 18px;
   }
+}
+
+.item-form-switch {
+  position: relative;
+  width: 78px;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select: none;
+}
+
+.switch-checkbox {
+  display: none;
+}
+
+.item-label-switch {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid @spiral-white;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px @spiral-grey
+}
+.switch-inner {
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
+}
+.switch-inner:before, .switch-inner:after {
+  display: block;
+  float: left;
+  width: 50%;
+  height: 20px;
+  padding: 0;
+  line-height: 20px;
+  font-size: 14px;
+  color: @spiral-white;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.switch-inner:before {
+  content: "ON";
+  padding-left: 14px;
+  background-color: @spiral-blue;
+  color: #fff;
+}
+.switch-inner:after {
+  content: "OFF";
+  padding-right: 10px;
+  background-color: @spiral-light-grey;
+  color: #999999;
+  text-align: right;
+}
+.switch-switch {
+  display: block;
+  width: 26px;
+  background: @spiral-white;
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 50px;
+  transition: all 0.3s ease-in 0s;
+}
+.switch-checkbox:checked +  .switch-inner {
+  margin-left: 0;
+}
+.switch-checkbox:checked +  .switch-inner +  .switch-switch {
+  right: 0px;
+  background-color: #fff;
 }
