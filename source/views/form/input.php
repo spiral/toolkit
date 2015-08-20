@@ -5,7 +5,7 @@
         <?php #compiled
         //Receiving label content as evaluator variable
         $label = fetchVariable('${label}');
-        if (!empty($label)) {
+        if ($label != "''") {
             ?>
             <block:input-label>
                 <span class="item-label">${label}</span>

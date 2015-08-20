@@ -20,7 +20,7 @@ b, strong {
   font-weight: 600;
 }
 
-h1, h2, h3, h4, h5,h6 {
+h1, h2, h3, h4, h5, h6 {
   color: @spiral-text-grey;
   font-weight: 600;
 }
@@ -159,7 +159,7 @@ ol {
       padding-left: 20px;
 
       &:before {
-        .size(15px,15px);
+        .size(15px, 15px);
         .font-size(11);
 
         border-radius: 50%;
@@ -180,7 +180,7 @@ table {
 
   thead {
     td {
-      background:@spiral-light-grey;
+      background: @spiral-light-grey;
       border: 1px solid @spiral-white;
       padding: 5px 10px;
       font-weight: bold;
@@ -196,14 +196,13 @@ table {
 
   tfoot {
     td {
-      background:@spiral-light-grey;
+      background: @spiral-light-grey;
       border: 1px solid @spiral-white;
       padding: 5px 10px;
       text-align: center;
       font-weight: bold;
     }
   }
-
 
   td {
     &.right-align {
@@ -221,7 +220,7 @@ table {
 }
 
 .js-spiral-form {
-  position: relative;//need for lockers
+  position: relative; //need for lockers
 }
 
 .form-group {
@@ -299,7 +298,7 @@ table {
     display: block;
     line-height: 20px;
 
-    &:before{
+    &:before {
       .size (11px, 11px);
 
       background: @spiral-blue;
@@ -355,8 +354,8 @@ table {
     display: block;
     line-height: 20px;
 
-    &:before{
-      .size(11px,11px);
+    &:before {
+      .size(11px, 11px);
 
       transition: all .2s ease-out 0s;
       background: @spiral-blue;
@@ -412,7 +411,7 @@ table {
     transition: all .2s ease-out 0s;
     background: @spiral-blue;
     box-shadow: 0 2px 0 @spiral-dark-blue;
-    margin-bottom: 5px;//this need to compensate shadow that goes outside locker. discuss with @Nataliya
+    margin-bottom: 5px; //this need to compensate shadow that goes outside locker. discuss with @Nataliya
 
     &:hover {
       transition: all .2s ease-out 0s;
@@ -422,8 +421,8 @@ table {
   }
 }
 
-
-.btn-icon, .btn-close {//todo get rid of .btn-close (in alerts)
+.btn-icon, .btn-close {
+  //todo get rid of .btn-close (in alerts)
   display: block;
   color: @spiral-black;
   background: transparent;
@@ -469,17 +468,17 @@ table {
       }
     }
 
-   .close {
-     color: @spiral-white;
-     position: absolute;
-     top: 5px;
-     right: 5px;
-     display: block;
-     border: none;
-     background: none;
-     cursor: pointer;
-     font-weight: bold;
-   }
+    .close {
+      color: @spiral-white;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: block;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
   }
 }
 
@@ -501,7 +500,7 @@ table {
       border-color: @spiral-blue;
       outline: none;
     }
-    &:disabled,&:read-only {
+    &:disabled, &:read-only {
       background: @spiral-light-grey;
     }
   }
@@ -545,6 +544,7 @@ table {
     border-color: @spiral-red;
   }
 }
+
 .success {
   color: @spiral-green;
   .item-label {
@@ -554,6 +554,7 @@ table {
     border-color: @spiral-green;
   }
 }
+
 .warning {
   color: @spiral-yellow;
   .item-label {
@@ -563,6 +564,7 @@ table {
     border-color: @spiral-yellow;
   }
 }
+
 .info {
   color: @spiral-blue;
   .item-label {
@@ -594,7 +596,7 @@ table {
   &.info {
     background: @spiral-blue;
   }
-  >.btn-close {
+  > .btn-close {
     position: absolute;
     top: 0;
     right: 0;
@@ -606,8 +608,8 @@ table {
 .item-form-switch {
   position: relative;
   width: 78px;
-  -webkit-user-select:none;
-  -moz-user-select:none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
   -ms-user-select: none;
 }
 
@@ -623,12 +625,14 @@ table {
   border-radius: 2px;
   box-shadow: 0 0 0 1px @spiral-grey
 }
+
 .switch-inner {
   display: block;
   width: 200%;
   margin-left: -100%;
   transition: margin 0.3s ease-in 0s;
 }
+
 .switch-inner:before, .switch-inner:after {
   display: block;
   float: left;
@@ -641,12 +645,14 @@ table {
   font-weight: bold;
   box-sizing: border-box;
 }
+
 .switch-inner:before {
   content: "ON";
   padding-left: 14px;
   background-color: @spiral-blue;
   color: #fff;
 }
+
 .switch-inner:after {
   content: "OFF";
   padding-right: 10px;
@@ -654,19 +660,23 @@ table {
   color: #999999;
   text-align: right;
 }
+
 .switch-switch {
   display: block;
   width: 26px;
   background: @spiral-white;
   position: absolute;
-  top: 0; bottom: 0;
+  top: 0;
+  bottom: 0;
   right: 50px;
   transition: all 0.3s ease-in 0s;
 }
-.switch-checkbox:checked +  .switch-inner {
+
+.switch-checkbox:checked + .switch-inner {
   margin-left: 0;
 }
-.switch-checkbox:checked +  .switch-inner +  .switch-switch {
+
+.switch-checkbox:checked + .switch-inner + .switch-switch {
   right: 0px;
   background-color: #fff;
 }

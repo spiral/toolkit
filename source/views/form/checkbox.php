@@ -1,16 +1,15 @@
 <extends:element/>
 
 <block:body>
+    <input type="hidden" name="${name}" value="${default}"/>
     <label class="item-form item-form-checkbox ${wrapper-class}">
         <block:input-body>
             <input type="checkbox" name="${name}" node:attributes="exclude:context"/>
         </block:input-body>
-
         <?php #compiled
         //Receiving label content as evaluator variable
         $label = fetchVariable('${label}');
-        if (!empty($label))
-        {
+        if ($label != "''") {
             ?>
             <block:input-label>
                 <span class="item-label">${label}</span>
@@ -18,6 +17,5 @@
             <?php #compiled
         }
         ?>
-
     </label>
 </block:body>
