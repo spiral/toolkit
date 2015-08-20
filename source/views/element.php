@@ -1,3 +1,3 @@
-<use bundle="self:bundle"/>
-<block:assets/>
-<block:body/>
+<node:use bundle="self:bundle"/>
+<yeild:assets/>
+<yeild:body/>
