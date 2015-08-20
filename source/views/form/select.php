@@ -30,7 +30,6 @@
             }
 
             foreach ($__values__ as $__name__ => $__value__) {
-
                 if ($__value__ == $__selected__) {
                     ?><option value="<?= $__value__ ?>" selected><?= $__name__ ?></option><?php
                 }else{
