@@ -5,7 +5,7 @@ ob_start();
 $__markdown__ = ob_get_clean();
 
 //Fixing indents
-$__markdown__ = \Spiral\Helpers\StringHelper::normalizeIndents($__markdown__);
+$__markdown__ = \Spiral\Support\StringHelper::normalizeIndents($__markdown__);
 
 //Rendering
 echo (new Parsedown())->text($__markdown__)

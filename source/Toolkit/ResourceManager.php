@@ -77,7 +77,7 @@ class ResourceManager extends Component implements ProcessorInterface, Saturable
      * @param FilesInterface $files
      * @param HttpDispatcher $http
      */
-    public function saturate(FilesInterface $files, HttpDispatcher $http)
+    public function init(FilesInterface $files, HttpDispatcher $http)
     {
         $this->files = $files;
         $this->http = $http;
@@ -92,16 +92,19 @@ class ResourceManager extends Component implements ProcessorInterface, Saturable
             $source = str_replace(
                 $this->options['placeholders']['styles'], $this->compileStyles(), $source
             );
+
+            //Flushing resources
+            self::$resources['styles'] = [];
         }
 
         if (strpos($source, $this->options['placeholders']['scripts'])) {
             $source = str_replace(
                 $this->options['placeholders']['scripts'], $this->compileScripts(), $source
             );
-        }
 
-        //Flushing resources
-        self::$resources = [];
+            //Flushing resources
+            self::$resources['scripts'] = [];
+        }
 
         return $source;
     }
@@ -176,7 +179,6 @@ class ResourceManager extends Component implements ProcessorInterface, Saturable
             'resourceManager' => $this
         ]);
     }
-
 
     /**
      * Register new resource to be added. Make sure you have only one rendering block at page.

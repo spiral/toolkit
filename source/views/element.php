@@ -1,3 +1,4 @@
-<node:use bundle="self:bundle"/>
-<yeild:assets/>
-<yeild:body/>
+<templater:use bundle="self:bundle"/>
+
+<yield:resources/>
+<yield:body/>
