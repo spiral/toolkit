@@ -1,9 +1,9 @@
 <extends:element/>
 
 <block:body>
-    <input type="hidden" name="${name}" value="${default}"/>
     <label class="item-form item-form-checkbox ${wrapper-class}">
         <block:input-body>
+            <input type="hidden" name="${name}" value="${default}"/>
             <input type="checkbox" name="${name}" node:attributes="exclude:context"/>
         </block:input-body>
         <?php #compiled
