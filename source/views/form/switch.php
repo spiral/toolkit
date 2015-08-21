@@ -8,5 +8,6 @@
             <span class="switch-inner"></span>
             <span class="switch-switch"></span>
         </label>
+        <span class="switch-label">${context}</span>
     </div>
 </block:body>
