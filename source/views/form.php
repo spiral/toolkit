@@ -1,7 +1,7 @@
 <extends:element/>
 
 <block:resources>
-    <resource:script href="resources/scripts/spiral/bundle.js"/>
+    <resource:script href="resources/scripts/spiral/sf.js"/>
 </block:resources>
 
 <!--
@@ -18,5 +18,5 @@ We can't set blur on form itself, because it will blur lockers(loaders) too.
 
 <!--We are mofing form class at bottom so it can accept user defined ajax value.-->
 <block:form-class>
-    ${class} <?= (${ajax|true} ? 'js-spiral-form' : '') #compiled ?>
+    ${class} <?= (${ajax|true} ? 'js-sf-form' : '') #compiled ?>
 </block:form-class>

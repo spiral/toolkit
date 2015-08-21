@@ -448,46 +448,9 @@ table {
   }
 }
 
-.messages-placeholder {
-  display: none;
-
-  &.visible {
-    display: block;
-
-    .alert {
-      border-radius: 2px;
-      background: @spiral-red;
-      padding: 15px 15px 10px 30px;
-      color: @spiral-white;
-      position: relative;
-      margin-top: 10px;
-      min-height: 50px;
-
-      &:before {
-        content: "\e80b";
-        //font-family: @font-icons;
-        font-size: 30px;
-        position: absolute;
-        left: 10px;
-        top: 20px;
-      }
-    }
-
-    .btn-close {
-      color: @spiral-white;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: block;
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
+form {
+  position: relative;
 }
-
-//new styles
 
 .item-form {
   display: block;
