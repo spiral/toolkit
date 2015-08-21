@@ -6,3 +6,6 @@
 
 <!--Form inputs.-->
 <use path="self:form/*" namespace="form"/>
+
+<!--Form inputs.-->
+<use path="self:pagination*" namespace="pagination"/>
