@@ -658,3 +658,49 @@ table td.left-align {
   right: 0px;
   background-color: #fff;
 }
+.pagination {
+  *zoom: 1;
+  margin: 0;
+  padding: 0;
+}
+.pagination:before,
+.pagination:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.pagination:after {
+  clear: both;
+}
+.pagination li {
+  display: block;
+  float: left;
+  border: 1px solid #e5e5e5;
+  border-left: 0;
+  padding: 0;
+  margin: 0;
+}
+.pagination li:first-child {
+  border-left: 1px solid #e5e5e5;
+  border-radius: 2px 0 0 2px;
+}
+.pagination li:last-child {
+  border-radius: 0 2px 2px 0;
+}
+.pagination li a {
+  display: block;
+  min-width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #464646;
+  padding: 0 8px;
+}
+.pagination li a:hover {
+  text-decoration: none;
+  color: #33a3fe;
+}
+.pagination li.active a {
+  pointer-events: none;
+  background: #efefef;
+}

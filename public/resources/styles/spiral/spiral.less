@@ -706,3 +706,49 @@ table {
   right: 0px;
   background-color: #fff;
 }
+
+.pagination {
+  .clearfix();
+
+  margin: 0;
+  padding: 0;
+
+
+  li {
+    display: block;
+    float: left;
+    border: 1px solid @spiral-light-grey;
+    border-left: 0;
+    padding: 0;
+    margin: 0;
+
+    &:first-child {
+      border-left: 1px solid @spiral-light-grey;
+      border-radius: 2px 0 0 2px;
+    }
+
+    &:last-child {
+      border-radius: 0 2px 2px 0;
+    }
+
+    a {
+      display: block;
+      min-width:30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      color: @spiral-text-grey;
+      padding: 0 8px;
+
+      &:hover {
+        text-decoration: none;
+        color: @spiral-blue;
+      }
+    }
+
+    &.active a{
+      pointer-events: none;
+      background: #efefef;
+    }
+  }
+}
