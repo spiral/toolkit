@@ -8,8 +8,14 @@
   box-sizing: border-box;
 }
 
+
+html {
+  font-size: 100%;
+}
+
 body {
   font-family: sans-serif;
+  -webkit-font-smoothing: antialiased!important;
 }
 
 i, em {
@@ -255,8 +261,8 @@ table {
   }
 
   label {
-    .font-size(12);
-    .line-height(14);
+    .font-size(14);
+    .line-height(16);
 
     color: @spiral-dark-grey;
     display: block;
@@ -389,10 +395,10 @@ table {
 
 .btn {
   display: inline-block;
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   color: @spiral-white;
-  padding: 0 25px;
+  padding: 0 20px;
   font-family: @font-primary;
   font-size: 15px;
   border-radius: 2px;
@@ -410,13 +416,11 @@ table {
   &.btn-default {
     transition: all .2s ease-out 0s;
     background: @spiral-blue;
-    box-shadow: 0 2px 0 @spiral-dark-blue;
     margin-bottom: 5px; //this need to compensate shadow that goes outside locker. discuss with @Nataliya
 
     &:hover {
       transition: all .2s ease-out 0s;
-      box-shadow: 0 4px @spiral-dark-blue;
-      text-shadow: 0 1px @spiral-dark-blue;
+      background: @spiral-dark-blue;
     }
   }
 }
@@ -439,7 +443,8 @@ table {
 .alert {
   &.alert-danger {
     color: @spiral-red;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: lighter;
   }
 }
 
@@ -450,7 +455,7 @@ table {
     display: block;
 
     .alert {
-      border-radius: 3px;
+      border-radius: 2px;
       background: @spiral-red;
       padding: 15px 15px 10px 30px;
       color: @spiral-white;
@@ -468,11 +473,11 @@ table {
       }
     }
 
-    .close {
+    .btn-close {
       color: @spiral-white;
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 10px;
+      right: 10px;
       display: block;
       border: none;
       background: none;
@@ -487,6 +492,7 @@ table {
 .item-form {
   display: block;
   margin-bottom: 15px;
+
   input {
     .size(100%, 30px);
     .placeholder(@spiral-grey);
@@ -526,8 +532,8 @@ table {
 }
 
 .item-label {
-  .font-size(12);
-  .line-height(14);
+  .font-size(14);
+  .line-height(16);
 
   color: @spiral-dark-grey;
   display: block;
@@ -576,14 +582,14 @@ table {
 }
 
 .alert {
-  font-size: 14px;
-  border-radius: 3px;
+  font-size: 12px;
+  border-radius: 2px;
   background: @spiral-dark-grey;
-  padding: 15px;
+  padding: 5px 10px;
   color: @spiral-white;
   position: relative;
   margin-top: 10px;
-  //min-height: 50px;
+
   &.error {
     background: @spiral-red;
   }
@@ -598,16 +604,26 @@ table {
   }
   > .btn-close {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 2px;
+
+    right: 2px;
     line-height: 18px;
     width: 18px;
+    color: @spiral-white;
+    opacity: .5;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
 .item-form-switch {
   position: relative;
-  width: 78px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -618,12 +634,22 @@ table {
 }
 
 .item-label-switch {
-  display: block;
+  display: inline-block;
   overflow: hidden;
+  position: relative;
   cursor: pointer;
   border: 2px solid @spiral-white;
   border-radius: 2px;
   box-shadow: 0 0 0 1px @spiral-grey
+}
+
+.switch-label {
+  display: inline-block;
+  margin: 0 5px;
+  font-size: 14px;
+  color: #666666;
+  position: relative;
+  top: -8px;
 }
 
 .switch-inner {
