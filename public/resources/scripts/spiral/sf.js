@@ -933,6 +933,7 @@ module.exports = InstancesController;
  * This plugin adds ability to perform actions from the server.
  * "action":"reload"
  * "action":{"redirect":"/account"}
+ * "action":{"redirect":"/account","delay":3000}
  * "action":{"name":"redirect","url":"/account","delay":3000}
  */
 (function (sfAjax) {
@@ -946,6 +947,13 @@ module.exports = InstancesController;
                 var keys = Object.keys(response.action);
                 if (keys.length === 1) {//"action":{"redirect":"/account"}
                     sfAjax.actions.trigger(keys[0], response.action[keys[0]], options);
+                } else if (keys.length === 2 && response.action.delay) {//"action":{"redirect":"/account","delay":3000}
+                    setTimeout(function () {
+                        var action = keys.filter(function (value) {
+                            return value !== 'delay';
+                        })[0];
+                        sfAjax.actions.trigger(action, response.action[action], options);
+                    }, +response.action.delay);
                 } else if (keys.length > 1) {//"action":{"name":"redirect","url":"/account","delay":3000}
                     setTimeout(function () {
                         sfAjax.actions.trigger(response.action.name, response.action, options);
@@ -1652,7 +1660,7 @@ module.exports = tools;
      */
     Form.prototype.die = function () {
         this.DOMEvents.removeAll();
-        //todo remove it's addons and plugins
+        //todo don't we need to remove it's addons and plugins?
     };
 
     /**
