@@ -31,7 +31,7 @@ class ToolkitModule extends Module
         /**
          * @var ViewConfig $viewConfig
          */
-        $viewConfig = $container->get(ViewConfig::class, [
+        $viewConfig = $container->construct(ViewConfig::class, [
             'baseDirectory' => $definition->getLocation()
         ]);
 
