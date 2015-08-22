@@ -42,12 +42,13 @@ if (!window.hasOwnProperty("sf")){//bind only if  window.sf is empty to avoid co
     window.sf = sf;
 }
 
+require("./lib/core/ajax/actions.js"); //plugin to perform actions from the server
 require("./lib/vendor/formToObject"); //formToObject  for form
 require("./lib/instances/form/Form.js"); //add form
 require("./lib/instances/form/addons/formMessages/spiral"); //add form addon
 
 require("./lib/instances/lock/Lock.js"); //add lock
-},{"./lib/core/Ajax":2,"./lib/core/BaseDOMConstructor":3,"./lib/core/DomMutations":4,"./lib/core/Events":5,"./lib/core/InstancesController":6,"./lib/helpers/DOMEvents":7,"./lib/helpers/LikeFormData":8,"./lib/helpers/domTools":9,"./lib/helpers/tools":10,"./lib/instances/form/Form.js":11,"./lib/instances/form/addons/formMessages/spiral":12,"./lib/instances/lock/Lock.js":13,"./lib/shim/console":14,"./lib/vendor/formToObject":15}],2:[function(require,module,exports){
+},{"./lib/core/Ajax":2,"./lib/core/BaseDOMConstructor":3,"./lib/core/DomMutations":4,"./lib/core/Events":5,"./lib/core/InstancesController":6,"./lib/core/ajax/actions.js":7,"./lib/helpers/DOMEvents":8,"./lib/helpers/LikeFormData":9,"./lib/helpers/domTools":10,"./lib/helpers/tools":11,"./lib/instances/form/Form.js":12,"./lib/instances/form/addons/formMessages/spiral":13,"./lib/instances/lock/Lock.js":14,"./lib/shim/console":15,"./lib/vendor/formToObject":16}],2:[function(require,module,exports){
 "use strict";
 
 var tools = require("../helpers/tools");
@@ -58,22 +59,20 @@ var LikeFormData = require("../helpers/LikeFormData");
  * Supports  XDomainRequest for old IE
  * @param {Object} [options]
  * @param {Object} [options.headers] Headers to add to the instance
- * @fires onBeforeSend event that will be performed before request is send. Event called with one parameter "options", that contains all variables for Ajax
+ * @fires beforeSend event that will be performed before request is send. Event called with one parameter "options", that contains all variables for Ajax
  * @constructor
  */
 var Ajax = function (options) {
     this.currentRequests = 0;
-    this.events = new Events(["onBeforeSend"]);
+    this.events = new Events(["beforeSend", 'load']);
 
     if (options && options.headers) {
         this.headers = tools.extend(this.headers, options.headers);
     }
-
-
 };
 
 /**
- * Default headers. You can overwrite it. Look at the event onBeforeSend
+ * Default headers. You can overwrite it. Look at the event beforeSend
  * Please note that on XDomainRequest  we can't send any headers.
  * @type Object
  */
@@ -112,8 +111,6 @@ Ajax.prototype.send = function (options) {
             reject("You should provide url");
         }
         that.currentRequests++;
-        //console.log("requests", that.currentRequests);
-
 
         var oldIE = false;
 
@@ -160,13 +157,15 @@ Ajax.prototype.send = function (options) {
             } else {
                 reject(ans);//reject with the status text
             }
+            options.response = ans;
+            that.events.trigger("load", options);//for example - used to handle actions
         };
         xhr.onerror = function () {// Handle network errors
             that.currentRequests--;
             reject(Error("Network Error"), xhr);
         };
 
-        that.events.trigger("onBeforeSend", options);//you can modify "options" object inside event (like adding you headers,data,etc)
+        that.events.trigger("beforeSend", options);//you can modify "options" object inside event (like adding you headers,data,etc)
 
         var dataToSend;
         if (options.data !== null) {//if data to send is not empty
@@ -287,7 +286,7 @@ Ajax.prototype._parseJSON = function (xhr) {
 
 module.exports = Ajax;
 
-},{"../core/Events":5,"../helpers/LikeFormData":8,"../helpers/tools":10}],3:[function(require,module,exports){
+},{"../core/Events":5,"../helpers/LikeFormData":9,"../helpers/tools":11}],3:[function(require,module,exports){
 "use strict";
 var tools = require("../helpers/tools");
 /**
@@ -471,7 +470,7 @@ BaseDOMConstructor.prototype.getAddon = function(addonType, addonName){
 
 module.exports = BaseDOMConstructor;
 
-},{"../helpers/tools":10}],4:[function(require,module,exports){
+},{"../helpers/tools":11}],4:[function(require,module,exports){
 "use strict";
 /**
  * Dom mutation. Listening to the DOM and add or remove instances based on classes.
@@ -929,6 +928,60 @@ module.exports = InstancesController;
 
 },{}],7:[function(require,module,exports){
 "use strict";
+
+/**
+ * This plugin adds ability to perform actions from the server.
+ * "action":"reload"
+ * "action":{"redirect":"/account"}
+ * "action":{"name":"redirect","url":"/account","delay":3000}
+ */
+(function (sfAjax) {
+
+    sfAjax.events.on('load', function (options) {
+        var response = options.response;
+        if (response.hasOwnProperty('action')) {
+            if (typeof response.action === 'string') {//"action":"reload"
+                sfAjax.actions.trigger(response.action);
+            } else if (typeof response.action === 'object') {
+                var keys = Object.keys(response.action);
+                if (keys.length === 1) {//"action":{"redirect":"/account"}
+                    sfAjax.actions.trigger(keys[0], response.action[keys[0]], options);
+                } else if (keys.length > 1) {//"action":{"name":"redirect","url":"/account","delay":3000}
+                    setTimeout(function () {
+                        sfAjax.actions.trigger(response.action.name, response.action, options);
+                    }, +response.action.delay || 0);
+                } else {
+                    console.error("Action from server. Object doesn't have keys. ", response.action);
+                }
+            } else {
+                console.error("Action from server. Something wrong. ", response.action);
+            }
+        }
+    });
+
+    sfAjax.actions = new sf.modules.core.Events();
+
+    sfAjax.actions.on("redirect", function (action) {
+        var url = Object.prototype.toString.call(action) === "[object String]" ? action : action.url;
+        //http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
+        window.location[/^(?:[a-z]+:)?\/\//i.test(url) ? 'href' : 'pathname'] = url;
+    });
+
+    sfAjax.actions.on('reload', function () {
+        location.reload();
+    });
+
+    sfAjax.actions.on('refresh', function () {
+        sfAjax.actions.trigger('reload');
+    });
+
+    sfAjax.actions.on('close', function () {
+        window.close();
+    });
+
+})(sf.ajax);
+},{}],8:[function(require,module,exports){
+"use strict";
 /**
  * Helper to manipulate DOM Events. It's a simple wrapper around "addEventListener" but it's store all functions and allow us to remove it all.
  * It's very helpful for die() method of instances
@@ -1013,7 +1066,7 @@ DOMEvents.prototype.removeAll = function(){
 };
 
 module.exports = DOMEvents;
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1193,7 +1246,7 @@ LikeFormData.prototype.getContentTypeHeader = function () {
 
 
 module.exports = LikeFormData;
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
  This is a collection of useful DOM tools.
  */
@@ -1248,7 +1301,7 @@ module.exports = {
         return false;
     }
 };
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1310,7 +1363,7 @@ var tools = {
 };
 
 module.exports = tools;
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 (function(sf){
@@ -1599,6 +1652,7 @@ module.exports = tools;
      */
     Form.prototype.die = function () {
         this.DOMEvents.removeAll();
+        //todo remove it's addons and plugins
     };
 
     /**
@@ -1610,7 +1664,7 @@ module.exports = tools;
 
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 
@@ -1804,7 +1858,7 @@ module.exports = tools;
     sf.instancesController.registerAddon(spiralMessages,"form","formMessages","spiral");
 
 })(spiralFrontend);
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 (function(sf) {
@@ -1918,7 +1972,7 @@ module.exports = tools;
 
 })(spiralFrontend);
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * Avoid `console` errors in browsers that lack a console.
  */
@@ -1944,7 +1998,7 @@ module.exports = tools;
     }
 }());
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*! github.com/serbanghita/formToObject.js 1.0.1  (c) 2013 Serban Ghita <serbanghita@gmail.com> @licence MIT */
 
 (function(){
