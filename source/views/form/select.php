@@ -29,11 +29,11 @@
                 );
             }
 
-            foreach ($__values__ as $__name__ => $__value__) {
+            foreach ($__values__ as $__value__ => $__label__) {
                 if ($__value__ == $__selected__) {
-                    ?><option value="<?= $__value__ ?>" selected><?= $__name__ ?></option><?php
+                    ?><option value="<?= $__value__ ?>" selected><?= $__label__ ?></option><?php
                 }else{
-                    ?><option value="<?= $__value__ ?>"><?= $__name__ ?></option><?php
+                    ?><option value="<?= $__value__ ?>"><?= $__label__ ?></option><?php
                 }
             }
             ?>
