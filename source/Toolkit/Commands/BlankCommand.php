@@ -44,7 +44,7 @@ class BlankCommand extends Command
         /**
          * @var BlankViewGenerator $generator
          */
-        $generator = $this->container->get(BlankViewGenerator::class, [
+        $generator = $this->container->construct(BlankViewGenerator::class, [
             'namespace' => $this->option('namespace'),
             'name'      => $this->argument('name'),
             'extension' => $this->option('extension'),
