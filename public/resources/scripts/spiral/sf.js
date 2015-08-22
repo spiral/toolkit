@@ -42,13 +42,14 @@ if (!window.hasOwnProperty("sf")){//bind only if  window.sf is empty to avoid co
     window.sf = sf;
 }
 
+require("./lib/helpers/tools/iterateInputs.js"); //plugin is used in formMessages addon to iterate form inputs
 require("./lib/core/ajax/actions.js"); //plugin to perform actions from the server
 require("./lib/vendor/formToObject"); //formToObject  for form
 require("./lib/instances/form/Form.js"); //add form
 require("./lib/instances/form/addons/formMessages/spiral"); //add form addon
 
 require("./lib/instances/lock/Lock.js"); //add lock
-},{"./lib/core/Ajax":2,"./lib/core/BaseDOMConstructor":3,"./lib/core/DomMutations":4,"./lib/core/Events":5,"./lib/core/InstancesController":6,"./lib/core/ajax/actions.js":7,"./lib/helpers/DOMEvents":8,"./lib/helpers/LikeFormData":9,"./lib/helpers/domTools":10,"./lib/helpers/tools":11,"./lib/instances/form/Form.js":12,"./lib/instances/form/addons/formMessages/spiral":13,"./lib/instances/lock/Lock.js":14,"./lib/shim/console":15,"./lib/vendor/formToObject":16}],2:[function(require,module,exports){
+},{"./lib/core/Ajax":2,"./lib/core/BaseDOMConstructor":3,"./lib/core/DomMutations":4,"./lib/core/Events":5,"./lib/core/InstancesController":6,"./lib/core/ajax/actions.js":7,"./lib/helpers/DOMEvents":8,"./lib/helpers/LikeFormData":9,"./lib/helpers/domTools":10,"./lib/helpers/tools":11,"./lib/helpers/tools/iterateInputs.js":12,"./lib/instances/form/Form.js":13,"./lib/instances/form/addons/formMessages/spiral":14,"./lib/instances/lock/Lock.js":15,"./lib/shim/console":16,"./lib/vendor/formToObject":17}],2:[function(require,module,exports){
 "use strict";
 
 var tools = require("../helpers/tools");
@@ -1373,6 +1374,84 @@ var tools = {
 module.exports = tools;
 },{}],12:[function(require,module,exports){
 "use strict";
+//todo comment all of this
+//todo ask @Systerr the reason of variable 'prefix'
+(function (sf) {
+    var notFound = [];
+
+    /**
+     *
+     * @param {HTMLElement} context
+     * @param {Object} names
+     * @param {Function} callback
+     * @param {String} [prefix]
+     */
+    function findNodes(context, names, callback, prefix) {
+        for (var name in names) {
+            if (!names.hasOwnProperty(name)) {
+                continue;
+            }
+
+            var partOfSelector = (prefix) ? prefix + "[" + name + "]" : name,
+                type = Object.prototype.toString.call(names[name]),
+                selector = "[name='" + partOfSelector + "']";
+            switch (type) {
+                case '[object Object]':
+                    findNodes(context, names[name], callback, partOfSelector);//call recursive
+                    break;
+                case '[object Array]':
+                    names[name].forEach(function (el) {
+                        "use strict";
+                        //TODO refactor this should call recursive
+                        var sel = "[name='" + partOfSelector + "[]']" + "[value='" + el + "']";
+                        var nodes = context.querySelectorAll(sel);
+                        if (nodes.length === 0) {
+                            console.warn(sel, " in Array not found");
+                            notFound.push(sel);
+                        }
+                        for (var i = 0, max = nodes.length; i < max; i++) {
+                            callback(nodes[i], true);
+                        }
+                    });
+                    break;
+                case '[object String]':
+                case '[object Number]':
+                    var nodes = context.querySelectorAll(selector);
+                    if (nodes.length === 0) {
+                        console.warn(selector, " not found");
+                        var obj = {};
+                        obj[partOfSelector] = names[name];
+                        notFound.push(obj);
+                    }
+                    for (var i = 0, max = nodes.length; i < max; i++) {
+                        callback(nodes[i], names[name]);
+                    }
+                    break;
+
+                default :
+                    console.error("unknown type -", type, " and message", names[name]);
+            }
+        }
+    }
+
+    /**
+     * @param {HTMLElement} context
+     * @param {Object} names
+     * @param {Function} callback
+     * @param {String} [prefix]
+     */
+    sf.modules.helpers.tools.iterateInputs = function (context, names, callback, prefix) {
+        notFound = [];
+        findNodes(context, names, callback, prefix);
+        if (notFound.length !== 0) {
+            console.log("Some element not found in form", notFound);
+        }
+        return notFound;
+    };
+
+})(sf);
+},{}],13:[function(require,module,exports){
+"use strict";
 
 (function(sf){
 
@@ -1545,9 +1624,8 @@ module.exports = tools;
             e.stopPropagation();
             return;
         }
-        if (this.options.messagesType && this.getAddon('formMessages',this.options.messagesType)){
-            this.getAddon('formMessages',this.options.messagesType).clear(this.options);
-        }
+
+        this.processMessages(true);
 
         this.options.data = this.getFormData();
 
@@ -1579,12 +1657,28 @@ module.exports = tools;
         }
         if (remove){
             if (!this.spiral.instancesController.removeInstance("lock",this.node)){
-                console.warn("You try to remove 'lock' instance, but it not available or not started");
+                console.warn("You try to remove 'lock' instance, but it is not available or not started");
             }
         } else {
             if (!this.spiral.instancesController.addInstance("lock",this.node,{type:this.options.lockType})){
-                console.warn("You try to add 'lock' instance, but it not available or already started");
+                console.warn("You try to add 'lock' instance, but it is not available or already started");
             }
+        }
+    };
+
+    /**
+     * Shows or clears messages (errors).
+     * @param {Object|Boolean} [answer]
+     */
+    Form.prototype.processMessages = function (answer) {
+        if (!this.options.messagesType || !this.getAddon('formMessages', this.options.messagesType)) {
+            return;
+        }
+
+        if (Object.prototype.toString.call(answer) === "[object Object]") {
+            this.getAddon('formMessages', this.options.messagesType).show(this.options, answer);
+        } else {
+            this.getAddon('formMessages', this.options.messagesType).clear(this.options);
         }
     };
 
@@ -1612,9 +1706,7 @@ module.exports = tools;
                 return error;
             }).then(function(answer){
                 that.lock(true);
-                if (that.options.messagesType && that.getAddon('formMessages',that.options.messagesType)){
-                    that.getAddon('formMessages',that.options.messagesType).show(that.options, answer);
-                }
+                that.processMessages(answer);
                 that.events.trigger("onAlways", sendOptions);
             });
     };
@@ -1672,11 +1764,11 @@ module.exports = tools;
 
 
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 
-(function(sf){
+(function (sf) {
     /**
      * Closes form's main message.
      */
@@ -1735,53 +1827,32 @@ module.exports = tools;
      * @param {String} [type]
      */
     function showMessages(formOptions, messages, type) {
-        //todo for radio buttons - show message only for checked
-        var selector, msgType, msgText, nodes, i, l, group, msgEl;
-        type = type || "success";
-        for (var name in messages) {
-            if (!messages.hasOwnProperty(name)) continue;
+        var notFound = sf.modules.helpers.tools.iterateInputs(formOptions.context, messages, function (el, msg) {
+            var group = sf.modules.helpers.domTools.closest(el, ".item-form");
+            if (!group) return;
+            group.classList.add(type);
 
-            if (typeof messages[name] === "string") {
-                msgType = type;
-                msgText = messages[name];
+            var msgEl = document.createElement("span");
+            msgEl.className = "msg";
+            msgEl.innerHTML = msg;
+
+            if (formOptions.messagesPosition === "bottom") {
+                group.appendChild(msgEl);
+            } else if (formOptions.messagesPosition === "top") {
+                group.insertBefore(msgEl, group.firstChild);
             } else {
-                msgType = messages[name].type;
-                msgText = messages[name].text;
+                var parent = group.querySelector(formOptions.messagesPosition);
+                parent.appendChild(msgEl)
             }
+        });
 
-            selector = "[name='" + name + "']";
-            nodes = formOptions.context.querySelectorAll(selector);
-            l = nodes.length;
-
-            if (l === 0) {
-                nodes = formOptions.context.querySelectorAll("[data-message='" + name + "']");
-            }
-
-            for (i = 0, l = nodes.length; i < l; i++) {
-                group = sf.modules.helpers.domTools.closest(nodes[i], ".item-form");
-                if (!group) continue;
-                group.classList.add(msgType);
-
-                msgEl = document.createElement("span");
-                msgEl.className = "msg";
-                msgEl.innerHTML = msgText;
-
-                if (formOptions.messagesPosition === "bottom") {
-                    group.appendChild(msgEl);
-                } else if (formOptions.messagesPosition === "top") {
-                    group.insertBefore(msgEl, group.firstChild);
-                } else {
-                    var parent = group.querySelector(formOptions.messagesPosition);
-                    parent.appendChild(msgEl)
-                }
-            }
-        }
+        //todo data-sf-message for notFound
     }
 
 
-    var spiralMessages  = {
+    var spiralMessages = {
         /**
-         * Adds form's main message, input's messages, bootstrap classes has-... to form-groups.
+         * Adds form's main message, input's messages, bootstrap-like classes has-... to form-groups.
          * @param {Object} formOptions
          * @param {Object} answer
          * @param {Object|String} [answer.message]
@@ -1863,10 +1934,10 @@ module.exports = tools;
     /**
      * Register addon
      */
-    sf.instancesController.registerAddon(spiralMessages,"form","formMessages","spiral");
+    sf.instancesController.registerAddon(spiralMessages, "form", "formMessages", "spiral");
 
 })(spiralFrontend);
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 (function(sf) {
@@ -1980,7 +2051,7 @@ module.exports = tools;
 
 })(spiralFrontend);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Avoid `console` errors in browsers that lack a console.
  */
@@ -2006,7 +2077,7 @@ module.exports = tools;
     }
 }());
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /*! github.com/serbanghita/formToObject.js 1.0.1  (c) 2013 Serban Ghita <serbanghita@gmail.com> @licence MIT */
 
 (function(){
