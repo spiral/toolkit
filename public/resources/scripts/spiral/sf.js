@@ -1695,7 +1695,11 @@ module.exports = tools;
                 fn.call(sendOptions);
             }
         }
-        //this.spiral.ajax.send(tools.extend(sendOptions)).then(
+
+        sendOptions.headers = {//todo Probably we need to move this into defaults.
+            Accept: "application/json"
+        };
+
         this.spiral.ajax.send(sendOptions).then(
             function(answer){
                 that.events.trigger("onSuccess", sendOptions);
