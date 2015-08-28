@@ -22,7 +22,7 @@ class BlankCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected $name = 'toolkit:blank';
+    protected $name = 'views:blank';
 
     /**
      * {@inheritdoc}
