@@ -25,13 +25,17 @@ if ($__paginator__ instanceof \Spiral\Pagination\PaginableInterface) {
 }
 
 //Ok, now let's paginate
-if (!empty($__paginator__) && $__paginator__->isRequired()) {
+if (
+    !empty($__paginator__)
+    && $__paginator__ instanceof \Spiral\Pagination\Paginator
+    && $__paginator__->isRequired()
+) {
     ?>
     <div class="paginator">
         <ul class="pagination ${class}" node:attributes>
             <?php
             if (!empty($pageNumber = $__paginator__->previousPage())) {
-                $pageURL = $__paginator__->createURL($pageNumber);
+                $pageURL = $__paginator__->createUri($pageNumber);
                 echo "<li class=\"prev\"><a href=\"{$pageURL}\">[[Prev]]</a></li>";
             }
 
@@ -50,7 +54,7 @@ if (!empty($__paginator__) && $__paginator__->isRequired()) {
             }
 
             for ($number = $firstPage; $number <= $lastPage; $number++) {
-                $pageURL = $__paginator__->createURL($number);
+                $pageURL = $__paginator__->createUri($number);
 
                 if ($number == $currentPage) {
                     echo "<li class=\"active\"><a href=\"{$pageURL}\">{$number}</a></li>";
@@ -64,7 +68,7 @@ if (!empty($__paginator__) && $__paginator__->isRequired()) {
             }
 
             if (!empty($pageNumber = $__paginator__->nextPage())) {
-                $pageURL = $__paginator__->createURL($pageNumber);
+                $pageURL = $__paginator__->createUri($pageNumber);
                 echo "<li class=\"next\"><a href=\"{$pageURL}\">[[Next]]</a></li>";
             }
 
