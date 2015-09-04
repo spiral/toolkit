@@ -14,7 +14,7 @@
         }
         ?>
         <block:input-body>
-            <input type="${type|text}" name="${name}" value="${value}${context}" node:attributes/>
+            <input type="${type|text}" name="${name}" value="${value}${context}" class="item-input" node:attributes/>
         </block:input-body>
     </label>
 </block:body>
