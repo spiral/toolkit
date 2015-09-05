@@ -30,6 +30,9 @@ if (
     && $__paginator__ instanceof \Spiral\Pagination\Paginator
     && $__paginator__->isRequired()
 ) {
+    /**
+     * @var \Spiral\Pagination\Paginator $__paginator__
+     */
     ?>
     <div class="paginator">
         <ul class="pagination ${class}" node:attributes>
@@ -40,7 +43,7 @@ if (
             }
 
             //Resolving page limit to be shown
-            $currentPage = $__paginator__->currentPage();
+            $currentPage = $__paginator__->getPage();
 
             //First page to be shown
             $firstPage = max($currentPage - $__pageLimit__, 1);
