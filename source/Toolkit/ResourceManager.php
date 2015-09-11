@@ -9,14 +9,13 @@
 namespace Spiral\Toolkit;
 
 use Spiral\Core\Component;
-use Spiral\Core\Container\SaturableInterface;
 use Spiral\Files\FilesInterface;
 use Spiral\Http\HttpDispatcher;
 use Spiral\Views\Compiler;
 use Spiral\Views\ProcessorInterface;
 use Spiral\Views\ViewManager;
 
-class ResourceManager extends Component implements ProcessorInterface, SaturableInterface
+class ResourceManager extends Component implements ProcessorInterface
 {
     /**
      * Context will be imported.
@@ -67,20 +66,19 @@ class ResourceManager extends Component implements ProcessorInterface, Saturable
     /**
      * {@inheritdoc}
      */
-    public function __construct(ViewManager $views, Compiler $compiler, array $options)
-    {
+    public function __construct(
+        ViewManager $views,
+        Compiler $compiler,
+        array $options,
+        FilesInterface $files = null,
+        HttpDispatcher $http = null
+    ) {
         $this->views = $views;
         $this->options = $options + $this->options;
-    }
 
-    /**
-     * @param FilesInterface $files
-     * @param HttpDispatcher $http
-     */
-    public function init(FilesInterface $files, HttpDispatcher $http)
-    {
-        $this->files = $files;
-        $this->http = $http;
+        //We can use global container as fallback if no default values were provided
+        $this->files = self::saturate($files, FilesInterface::class);
+        $this->http = self::saturate($http, HttpDispatcher::class);
     }
 
     /**
