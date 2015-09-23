@@ -9,6 +9,7 @@
 namespace Spiral\Toolkit;
 
 use Spiral\Core\Component;
+use Spiral\Core\Traits\SaturateTrait;
 use Spiral\Files\FilesInterface;
 use Spiral\Http\HttpDispatcher;
 use Spiral\Views\Compiler;
@@ -17,6 +18,11 @@ use Spiral\Views\ViewManager;
 
 class ResourceManager extends Component implements ProcessorInterface
 {
+    /**
+     * Optional constructor arguments.
+     */
+    use SaturateTrait;
+
     /**
      * Context will be imported.
      */
@@ -77,8 +83,8 @@ class ResourceManager extends Component implements ProcessorInterface
         $this->options = $options + $this->options;
 
         //We can use global container as fallback if no default values were provided
-        $this->files = self::saturate($files, FilesInterface::class);
-        $this->http = self::saturate($http, HttpDispatcher::class);
+        $this->files = $this->saturate($files, FilesInterface::class);
+        $this->http = $this->saturate($http, HttpDispatcher::class);
     }
 
     /**
