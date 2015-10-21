@@ -2,7 +2,7 @@
 /**
  * @var \Spiral\Cache\StoreInterface $__cacheStore__
  */
-$__cacheStore__ = $this->container->get(\Spiral\Cache\StoreInterface::class);
+$__cacheStore__ = $this->container->get(\Spiral\Cache\CacheInterface::class)->store();
 
 $__cacheKey__ = !empty('${key}') ? '${key}' : md5(__FILE__ . '.' . __LINE__);
 
