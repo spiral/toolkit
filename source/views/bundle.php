@@ -6,3 +6,6 @@
 
 <!--Form inputs.-->
 <use path="self:form/*" namespace="form"/>
+
+<!--Grid cells.-->
+<use path="self:grid/*" namespace="grid"/>

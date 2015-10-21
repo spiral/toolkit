@@ -34,7 +34,8 @@ class ResourceManager extends Component implements ProcessorInterface
     const TYPE_INLINE = 'inline';
 
     /**
-     * Registered resources (scripts, styles and inline code blocks).
+     * Registered resources (scripts, styles and inline code blocks). Property is static due
+     * processor is recreated for every view file. Must find an alternative in the future.
      *
      * @var array
      */
