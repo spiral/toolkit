@@ -12,8 +12,8 @@ if ($__cacheStore__->has($__cacheKey__)) {
     ob_start();
     ?>${context}<?php
     $__cacheStore__->set(
+        $__cacheKey__,
         $__cached__ = ob_get_clean(),
-        $__cached__,
         (int)'${lifetime|60}'
     );
 }
