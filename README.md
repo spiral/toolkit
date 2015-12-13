@@ -16,3 +16,7 @@ Elements included
     * boolean cell
     * bytes (size) cell
 * caching element
+* asset importing elements
+    * css file
+    * js file
+    * inline js
