@@ -33,9 +33,9 @@
             <tbody>
             <?php #compile
             echo '<?php foreach ($__source__ as $${as|item}) { ?>';
-            echo '<tr>';
+            echo "<tr>\n";
             echo join("\n", $__gridColumns__);
-            echo '</tr>';
+            echo "</tr>\n";
             echo '<?php } ?>';
             ?>
             </tbody>

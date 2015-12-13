@@ -59,7 +59,7 @@ if (
 
             if (!empty($pageNumber = $__paginator__->nextPage())) {
                 $__uri__ = $__paginator__->uri($pageNumber);
-                echo "<li class=\"next\"><a href=\"{$__uri__}\">[[Next]}</a></li>";
+                echo "<li class=\"next\"><a href=\"{$__uri__}\">[[Next]]</a></li>";
             }
             ?>
         </ul>
