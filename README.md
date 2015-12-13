@@ -40,7 +40,7 @@ Grids:
     <!-- Size of property "content" in bytes, this is prepared cell type (see bool, bytes and number) -->
     <grid.cell.bytes title="Content Size" value="<?= strlen($sample->content) ?>"/>
 
-    <!-- Most of elements can be used using multiple aliases (grid: vs grid.) -->
+    <!-- Most of elements can be used by multiple aliases (grid: vs grid.) -->
     <grid:cell.number title="Sample value" value="<?= $sample->child->value ?>"/>
 
     <!-- Some cells can be defined using tag context -->
