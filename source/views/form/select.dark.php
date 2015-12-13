@@ -5,7 +5,7 @@
         <select name="${name}" class="item-select ${class}" node:attributes>
             <?php #compile
             //Receiving placeholder content as evaluator variable
-            $this->evaluateVariable('placeholder', '${placeholder}${default}');
+            $this->evaluatorVariable('placeholder', '${placeholder}${default}');
             if (!empty($placeholder) && $placeholder != "''") {
                 ?>
                 <option value="">${placeholder}${default}</option>
@@ -30,9 +30,9 @@
 
             foreach ($__values__ as $__value__ => $__label__) {
                 if ($__value__ == $__selected__) {
-                    echo "<option value=\"{ $__value__}\" selected>{$__label__}</option>";
+                    echo "<option value=\"{$__value__}\" selected>{$__label__}</option>";
                 } else {
-                    echo "<option value=\"{ $__value__}\">{$__label__}</option>";
+                    echo "<option value=\"{$__value__}\">{$__label__}</option>";
                 }
             }
             ?>
