@@ -40,14 +40,12 @@ Grids:
     <!-- Size of property "content" in bytes, this is prepared cell type (see bool, bytes and number) -->
     <grid.cell.bytes title="Content Size" value="<?= strlen($sample->content) ?>"/>
 
-    <!-- Most of elements can be used using multiple aliases (grid: vs grid.) -->
+    <!-- Most of elements can be used by multiple aliases (grid: vs grid.) -->
     <grid:cell.number title="Sample value" value="<?= $sample->child->value ?>"/>
 
     <!-- Some cells can be defined using tag context -->
     <grid:cell>
-        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">
-            [[Edit element]]
-        </a>
+        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">Edit element</a>
     </grid:cell>
 </spiral:grid>
 ```
@@ -67,9 +65,9 @@ Forms:
     <form.input label="Value" name="value" value="<?= $entity->child->value ?>"/>
 
     <?php if ($entity->isLoaded()): ?>
-        <input type="submit" class="btn btn-default" value="[[Update Element]]"/>
+        <input type="submit" class="btn btn-default" value="Update Element"/>
     <?php else: ?>
-        <input type="submit" class="btn btn-default" value="[[Create Element]]"/>
+        <input type="submit" class="btn btn-default" value="Create Element"/>
     <?php endif; ?>
 </spiral:form>
 ```
