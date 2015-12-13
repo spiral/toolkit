@@ -236,6 +236,7 @@ table thead td {
   background: #e5e5e5;
   border: 1px solid #ffffff;
   padding: 5px 10px;
+  text-align: left;
   font-weight: bold;
 }
 table tbody td {

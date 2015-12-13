@@ -20,7 +20,7 @@
 
     ?>
     <block:table>
-        <table class="table ${class}">
+        <table class="table ${class}" node:attributes>
             <thead>
             <tr>
                 <?php #compile

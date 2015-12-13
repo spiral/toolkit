@@ -148,7 +148,7 @@ class AssetManager extends Component implements ProcessorInterface
             }
 
             $path = $this->resolveUri($style['path']);
-            $result .= "<link rel=\"stylesheet\" href=\"{$path}\" {$media}/>";
+            $result .= "<link rel=\"stylesheet\" href=\"{$path}\" {$media}/>\n";
         }
 
         return $result;
@@ -169,7 +169,7 @@ class AssetManager extends Component implements ProcessorInterface
                 $result .= $script['context'];
             } else {
                 $path = $this->resolveUri($script['path']);
-                $result .= "<script type=\"text/javascript\" src=\"{$path}\"></script>";
+                $result .= "<script type=\"text/javascript\" src=\"{$path}\"></script>\n";
             }
         }
 

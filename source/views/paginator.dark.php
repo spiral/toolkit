@@ -1,4 +1,6 @@
 <?php #compile
+//todo: show first and last pages
+
 //Let's create php variable to represent paginator
 $this->runtimeVariable('__paginator__', '${paginator}${source}${list}');
 
