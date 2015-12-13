@@ -1,7 +1,7 @@
 Spiral toolkit includes set of virtual tags, frontend library and resource manager.
 
 Elements included
-=================
+-----------------
 * ajax forms
     * simple input
     * selectbox
