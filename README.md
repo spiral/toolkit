@@ -45,7 +45,7 @@ Grids:
 
     <!-- Some cells can be defined using tag context -->
     <grid:cell>
-        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">[[Edit element]]</a>
+        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">Edit element</a>
     </grid:cell>
 </spiral:grid>
 ```
@@ -65,9 +65,9 @@ Forms:
     <form.input label="Value" name="value" value="<?= $entity->child->value ?>"/>
 
     <?php if ($entity->isLoaded()): ?>
-        <input type="submit" class="btn btn-default" value="[[Update Element]]"/>
+        <input type="submit" class="btn btn-default" value="Update Element"/>
     <?php else: ?>
-        <input type="submit" class="btn btn-default" value="[[Create Element]]"/>
+        <input type="submit" class="btn btn-default" value="Create Element"/>
     <?php endif; ?>
 </spiral:form>
 ```
