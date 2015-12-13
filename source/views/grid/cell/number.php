@@ -1,4 +1,4 @@
-<extends:self:grid.cell/>
+<extends:spiral:grid.cell/>
 
 <block:cell.body>
     <?= number_format($__cellBody__) ?>

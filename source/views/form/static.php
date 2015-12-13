@@ -1,4 +1,4 @@
-<extends:form.input/>
+<extends:spiral:form.input/>
 
 <block:input-body>
     <span class="item-static ${class}" node:attributes>${value}${context}</span>

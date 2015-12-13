@@ -1,4 +1,4 @@
-<extends:element/>
+<extends:spiral:element/>
 
 <block:resources>
     <resource:script href="resources/scripts/spiral/sf.js"/>

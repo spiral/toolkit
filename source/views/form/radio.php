@@ -1,4 +1,4 @@
-<extends:element/>
+<extends:spiral:element/>
 
 <block:body>
     <label class="item-form item-form-radio ${wrapper-class}">
@@ -8,8 +8,8 @@
 
         <?php #compiled
         //Receiving label content as evaluator variable
-        $label = fetchVariable('${label}');
-        if ($label != "''") {
+        $this->evaluatorVariable('label', '${label}');
+        if (!empty($label) && $label != "''") {
             ?>
             <block:input-label>
                 <span class="item-label">${label}</span>

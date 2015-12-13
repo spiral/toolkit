@@ -1,0 +1,1 @@
+<extends:spiral:assets.script/>

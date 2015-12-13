@@ -9,8 +9,7 @@
     }
   ],
   "require": {
-    "spiral/framework": "*",
-    "erusev/parsedown": "*"
+    "spiral/framework": "*"
   },
   "autoload": {
     "psr-4": {

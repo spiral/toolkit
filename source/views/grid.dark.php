@@ -1,11 +1,11 @@
-<extends:self:element/>
+<extends:spiral:element/>
 
 <block:body>
     <?php #compile
     /**
      * Our source.
      */
-    createVariable('__source__', '${source}');
+    $this->runtimeVariable('__source__', '${source}${list}${value}');
 
     /**
      * First of all we have to collect every defined cell element to built list of table headers
@@ -16,9 +16,7 @@
     $__gridColumns__ = [];
 
     //Collecting headers and columns
-    ob_start();
-    ?>${context}<?php #compile
-    $columns = ob_get_clean();
+    ob_start(); ?>${context}<?php ob_get_clean(); #compile
 
     ?>
     <block:table>

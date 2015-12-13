@@ -1,5 +1,5 @@
 <?php #compile
-$__gridHeaders__[] = fetchVariable('${label}${title}${head}');
+$this->evaluatorVariable('__gridHeaders__[]', '${label}${title}${head}');
 ob_start();
 ?>
     <td node:attributes>

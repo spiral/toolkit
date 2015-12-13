@@ -1,4 +1,4 @@
-<extends:element/>
+<extends:spiral:element/>
 
 <block:body>
     <label class="item-form item-form-checkbox ${wrapper-class}">
