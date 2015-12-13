@@ -45,9 +45,7 @@ Grids:
 
     <!-- Some cells can be defined using tag context -->
     <grid:cell>
-        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">
-            [[Edit element]]
-        </a>
+        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">[[Edit element]]</a>
     </grid:cell>
 </spiral:grid>
 ```
