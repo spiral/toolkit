@@ -2,6 +2,8 @@
 
 <block:body>
     <?php #compile
+    //todo: need placeholder when no rows found
+
     /**
      * Our source.
      */
