@@ -34,6 +34,7 @@
             </thead>
             <tbody>
             <?php #compile
+            //todo: add support for tr attributes
             echo '<?php foreach ($__source__ as $${as|item}) { ?>';
             echo "<tr>\n";
             echo join("\n", $__gridColumns__);

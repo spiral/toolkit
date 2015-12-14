@@ -12,7 +12,7 @@
         if (!empty($label) && $label != "''") {
             ?>
             <block:input-label>
-                <span class="item-label">${label}</span>
+                <span class="${label-class} item-label" node:attributes="prefix:label">${label}</span>
             </block:input-label>
             <?php #compiled
         }
