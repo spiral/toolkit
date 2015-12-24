@@ -3,7 +3,8 @@ Spiral toolkit includes set of virtual tags, frontend library and resource manag
 Elements included
 -----------------
 * ajax forms
-    * simple input
+    * input
+    * static
     * selectbox
     * switch
     * textarea
@@ -15,8 +16,8 @@ Elements included
     * numeric cell
     * boolean cell
     * bytes (size) cell
-* caching element
-* asset importing elements
+* cache wrapper
+* asset importing
     * css file
     * js file
     * inline js
@@ -45,7 +46,7 @@ Grids:
 
     <!-- Some cells can be defined using tag context -->
     <grid:cell>
-        <a href="<?= spiral('router')->uri('sample::edit', ['id' => $sample->id]) ?>">Edit element</a>
+        <a href="<?= uri('sample::edit', ['id' => $sample->id]) ?>">Edit element</a>
     </grid:cell>
 </spiral:grid>
 ```
