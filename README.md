@@ -65,10 +65,6 @@ Forms:
     <form.textarea label="Content" name="content" value="<?= e($entity->content) ?>"/>
     <form.input label="Value" name="value" value="<?= $entity->child->value ?>"/>
 
-    <?php if ($entity->isLoaded()): ?>
-        <input type="submit" class="btn btn-default" value="Update Element"/>
-    <?php else: ?>
-        <input type="submit" class="btn btn-default" value="Create Element"/>
-    <?php endif; ?>
+    <input type="submit" class="btn btn-default" value=" <?= $entity->isLoaded() ? 'Update' : 'Create' ?>"/>
 </spiral:form>
 ```
