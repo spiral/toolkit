@@ -1,12 +1,10 @@
 <extends:spiral:element/>
 
-<block:resources>
-    <resource:script href="resources/scripts/spiral/sf.js"/>
-</block:resources>
-
 <!--
-.form-content was added for blur effects
+NOTE: .form-content was added for blur effects
 We can't set blur on form itself, because it will blur lockers(loaders) too.
+
+NOTE: this ajax form requires sf.js
 -->
 <block:body>
     <form action="${action}" method="${method|post}" enctype="multipart/form-data"

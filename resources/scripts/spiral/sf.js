@@ -1,56 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
-//https://github.com/spiral/sf.js
-
-//Add console shim for old IE
-require("./lib/shim/console");
-
-var sf = {//Describe all modules to use it in plugins too.
-    modules: {
-        core: {
-            Ajax: require("./lib/core/Ajax"),
-            BaseDOMConstructor: require("./lib/core/BaseDOMConstructor"),
-            DomMutations:require("./lib/core/DomMutations"),
-            Events: require("./lib/core/Events"),
-            InstancesController: require("./lib/core/InstancesController")
-        },
-        helpers: {
-            DOMEvents:require("./lib/helpers/DOMEvents"),
-            domTools:require("./lib/helpers/domTools"),
-            LikeFormData: require("./lib/helpers/LikeFormData"),
-            tools: require("./lib/helpers/tools")
-        }
-    }
-};
-
-sf.instancesController = new sf.modules.core.InstancesController(sf);
-sf.domMutation = new sf.modules.core.DomMutations(sf.instancesController);
-
-//create global ajax
-sf.ajax = new sf.modules.core.Ajax(window.csrfToken ? {//TODO move to spiral bindings
-    headers: {
-        "X-CSRF-Token": window.csrfToken
-    }
-} : null);
-
-window.spiral = sf; //TODO remove?
-
-
-window.spiralFrontend = sf;
-
-if (!window.hasOwnProperty("sf")){//bind only if  window.sf is empty to avoid conflicts with other libs
-    window.sf = sf;
-}
-
-require("./lib/helpers/tools/iterateInputs.js"); //plugin is used in formMessages addon to iterate form inputs
-require("./lib/core/ajax/actions.js"); //plugin to perform actions from the server
-require("./lib/vendor/formToObject"); //formToObject  for form
-require("./lib/instances/form/Form.js"); //add form
-require("./lib/instances/form/addons/formMessages/spiral"); //add form addon
-
-require("./lib/instances/lock/Lock.js"); //add lock
-},{"./lib/core/Ajax":2,"./lib/core/BaseDOMConstructor":3,"./lib/core/DomMutations":4,"./lib/core/Events":5,"./lib/core/InstancesController":6,"./lib/core/ajax/actions.js":7,"./lib/helpers/DOMEvents":8,"./lib/helpers/LikeFormData":9,"./lib/helpers/domTools":10,"./lib/helpers/tools":11,"./lib/helpers/tools/iterateInputs.js":12,"./lib/instances/form/Form.js":13,"./lib/instances/form/addons/formMessages/spiral":14,"./lib/instances/lock/Lock.js":15,"./lib/shim/console":16,"./lib/vendor/formToObject":17}],2:[function(require,module,exports){
-"use strict";
 
 var tools = require("../helpers/tools");
 var Events = require("../core/Events");
@@ -83,7 +32,8 @@ Ajax.prototype.headers = {
 
 /**
  * Send ajax request to server
- * @since 3.0.0
+ * Will return promise or array with promise and XMLHttpRequest : {window.Promise|[window.Promise,XMLHttpRequest]}
+ * @since 0.4.0
  * @param {Object} options object with options
  * @param {String} options.url url to send data
  * @param {Object|String} [options.data] data to send
@@ -91,7 +41,7 @@ Ajax.prototype.headers = {
  * @param {Object} [options.headers] headers to add to the request
  * @param {Function} [options.onProgress] callback function on progress. Two callback options: current bytes sent,totalBytes
  * @param {Function} [options.isReturnXHRToo===false] should method return array instead of Promise. Some times is needed to control ajax (abort, etc). If tree then  [window.Promise,XMLHttpRequest ] will be returned
- * @returns {window.Promise|[window.Promise,XMLHttpRequest]}
+ * @returns {Promise|Array}
  */
 Ajax.prototype.send = function (options) {
     var that = this;
@@ -287,9 +237,9 @@ Ajax.prototype._parseJSON = function (xhr) {
 
 module.exports = Ajax;
 
-},{"../core/Events":5,"../helpers/LikeFormData":9,"../helpers/tools":11}],3:[function(require,module,exports){
+},{"../core/Events":4,"../helpers/LikeFormData":8,"../helpers/tools":10}],2:[function(require,module,exports){
 "use strict";
-var tools = require("../helpers/tools");
+//var tools = require("../helpers/tools");
 /**
  * This a base constructor (class) for any DOM based instance.
  * This constructor just grab all node attributes and generates options. All processed options stored at this.options
@@ -312,14 +262,15 @@ var BaseDOMConstructor = function () {
  * @param {Object} node  DomNode of form
  * @param {Object} [options] all options to override default
  */
-BaseDOMConstructor.prototype.init = function (spiral,node,options) {
+BaseDOMConstructor.prototype.init = function (spiral, node, options) {
     //TODO data-spiral-JSON
-    this.options = tools.extend(this.getProcessedAttributes(node), this.getProcessedOptions(node));
-    if (options) {//if we pass options extend all options by passed options
-        this.options = tools.extend(this.options, options);
-    }
     this.spiral = spiral;
     this.node = node;
+    this.options = Object.assign(this.grabOptions(node), options);
+    //this.options = tools.extend(this.getProcessedAttributes(node), this.getProcessedOptions(node));
+    //if (options) {//if we pass options extend all options by passed options
+    //    this.options = tools.extend(this.options, options);
+    //}
 };
 
 
@@ -327,6 +278,7 @@ BaseDOMConstructor.prototype.init = function (spiral,node,options) {
  * This is a attributes to grab from node. All child should have own list of attributesToGrab.
  * All options are optional. But recommended to provide value or processor to avoid error when dom node have no this attribute
  * @type {Object}
+ * @deprecated
  * @property {Object} propertyKey - object of one attribute name
  * @property {String} propertyKey.value - default value (if attribute not provided this value will be returned
  * @property {String} propertyKey.key - key to return. If not provided will be use attribute of node ("propertyKey" in this case)
@@ -371,6 +323,7 @@ BaseDOMConstructor.prototype.attributesToGrab = {};
  * You should provide processor or value.
  * Key difference between attributesToGrab that optionsToProcess can generate some values (like init time, this reference, etc)
  * and this option is not depending on dom.
+ * @deprecated
  * @type {Object}
  * @property {Object} propertyKey - object of property
  * @property {String} propertyKey.value - default value to return
@@ -414,11 +367,132 @@ BaseDOMConstructor.prototype.attributesToGrab = {};
 BaseDOMConstructor.prototype.optionsToProcess = {};
 
 /**
+ * This is a options to generate.
+ * You should provide processor or value.
+ * @type {Object}
+ * @property {Object} propertyKey - object of property
+ * @property {String} propertyKey.value - default value to return
+ * @property {String} [propertyKey.domAttr] - dom attribute to grab data
+ * @property {Function} [propertyKey.processor] -  processor to process data before return
+ * @property {Object}  ... - Another object of one property
+ * @type {{}}
+ *  @example
+ * "someAttribute": {// key
+ *      value: true, //default Value
+ *      domAttr: "data-some-attribute", // attribute from node to grab
+ *      processor: function (node,val) { //processor to process values before return
+ *          //some calculations
+ *      return someValue;
+ *      }
+ *  },
+ *  "anotherAttribute":{...},
+ *  "..."
+ *
+ *  @example
+ *  //return node as value
+ *  "context": {
+ *      "processor": function (node,val) { //processor
+ *          return node;
+ *      }
+ *  },
+ *  "Another-key":{...},
+ *  "..."
+ * @example
+ * //Grab attribute "data-attribute" as "MyAttribute" if attribute not provided return "DefaultValue"
+ * // Dom node <div data-attribute="someValue"></div>
+ * "MyAttribute": {
+ *      value: "DefaultValue",
+ *      domAttr: "data-attribute"
+ *  }
+ *  //after processing we should have
+ *  {"MyAttribute":"someValue"}
+ *
+ *  @example
+ * //Grab attribute "data-attribute" as "MyAttribute" and return some value instead
+ * //Dom node  <div data-attribute="someValue"></div>
+ * "MyAttribute": {
+ *      domAttr: "data-attribute",
+ *      processor: function (node,val) {
+ *          return val+"SomeCalculation";
+ *      }
+ *  }
+ *  //after processing we should have
+ *  {"MyAttribute":"someValueSomeCalculation"}
+ *
+ * @example
+ * //return function as value
+ * processAnswer: {
+ *      "value": function (options) {
+ *         return "someVal";
+ *      }
+ *  //after processing we should have
+ *  {"processAnswer":function (options) {
+ *         return "someVal";
+ *      }
+ *   }
+ *
+ * @example
+ * //return init time as value
+ * initTime: {
+ *      "processor": function (option) {
+ *         return new Date().getTime;
+ *      }
+ *  //after processing we should have
+ *  {"initTime":1429808977404}
+ * @example
+ * //return other value instead of real one
+ * processAnswer: {
+ *      "processor": function (option) {
+ *         return "someVal";
+ *      }
+ *  //after processing we should have
+ *  {"processAnswer":"someVal"}
+ */
+BaseDOMConstructor.prototype.optionsToGrab = {};
+
+/**
+ * Grab all options that described in optionsToGrab
+ * @param {Object} node domNode
+ * @return {Object}
+ */
+BaseDOMConstructor.prototype.grabOptions = function (node) {
+    var options = {};
+    var currentOptionValue;
+    var currentOption;
+    for (var option in this.optionsToGrab) {
+        currentOptionValue = null;
+        if (this.optionsToGrab.hasOwnProperty(option)) {//if this is own option
+            currentOption = this.optionsToGrab[option];
+            if (currentOption.hasOwnProperty("value")) {//we have default option. Let's grab it for first
+                currentOptionValue = currentOption.value;
+            }
+
+            if (currentOption.hasOwnProperty("domAttr") && node.attributes.hasOwnProperty(currentOption.domAttr)) {//we can grab the attribute of node
+                currentOptionValue = node.attributes[currentOption.domAttr].value;
+            }
+
+            if (currentOption.hasOwnProperty("processor")) {//we have processor. Let's execute it
+                currentOptionValue = currentOption.processor.call(this, node, currentOptionValue, currentOption);
+            }
+
+            if (currentOptionValue !== null) {
+                options[option] = currentOptionValue;
+            }
+
+        }
+    }
+    return options;
+};
+
+/**
  * Iterate over this.attributesToGrab and get processed attributes from node
  * @param {Object} node dom node to grab attributes
  * @returns {Object}
+ * @deprecated
  */
 BaseDOMConstructor.prototype.getProcessedAttributes = function (node) {
+    console.warn("getProcessedAttributes method is deprecated. It will be removed in 0.5 version");
+    debugger;
     var options = {},
         index,
         key,
@@ -445,8 +519,11 @@ BaseDOMConstructor.prototype.getProcessedAttributes = function (node) {
  * Iterate over this.optionsToProcess and get processed options
  * Process options and return results
  * @param {Object} node dom node
+ * @deprecated
  */
 BaseDOMConstructor.prototype.getProcessedOptions = function (node) {
+    console.warn("getProcessedOptions method is deprecated. It will be removed in 0.5 version");
+    debugger;
     var options = {},
         index;
     for (index in this.optionsToProcess) {// loop over this.optionsToProcess
@@ -460,18 +537,20 @@ BaseDOMConstructor.prototype.getProcessedOptions = function (node) {
     }
     return options;
 };
+
+
 /**
  * Get addon for instance
  * @param {String} addonType type of addon (message,fill,etc)
  * @param {String} addonName name of addon
  */
-BaseDOMConstructor.prototype.getAddon = function(addonType, addonName){
+BaseDOMConstructor.prototype.getAddon = function (addonType, addonName) {
     return this.spiral.instancesController.getInstanceAddon(this.name, addonType, addonName);
 };
 
 module.exports = BaseDOMConstructor;
 
-},{"../helpers/tools":11}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 /**
  * Dom mutation. Listening to the DOM and add or remove instances based on classes.
@@ -609,7 +688,7 @@ module.exports = DomMutations;
 
 
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 /**
@@ -704,7 +783,7 @@ Events.prototype.trigger = function (event, options) {
 Events.prototype.performAction = Events.prototype.trigger;
 
 module.exports = Events;
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 /**
@@ -912,22 +991,15 @@ InstancesController.prototype.getInstanceNameByCssClass = function(cssClass){
 
 /**
  * Get constructor by name or class name
- * @returns
  */
 InstancesController.prototype.getInstanceConstructors = function (name){
 
    //TODO
 };
 
-
-
-
 module.exports = InstancesController;
 
-
-
-
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 /**
@@ -989,7 +1061,7 @@ module.exports = InstancesController;
     });
 
 })(sf.ajax);
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 /**
  * Helper to manipulate DOM Events. It's a simple wrapper around "addEventListener" but it's store all functions and allow us to remove it all.
@@ -1075,7 +1147,7 @@ DOMEvents.prototype.removeAll = function(){
 };
 
 module.exports = DOMEvents;
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1255,7 +1327,7 @@ LikeFormData.prototype.getContentTypeHeader = function () {
 
 
 module.exports = LikeFormData;
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  This is a collection of useful DOM tools.
  */
@@ -1310,7 +1382,7 @@ module.exports = {
         return false;
     }
 };
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 /**
@@ -1372,7 +1444,7 @@ var tools = {
 };
 
 module.exports = tools;
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 //todo comment all of this
 //todo ask @Systerr the reason of variable 'prefix'
@@ -1450,17 +1522,70 @@ module.exports = tools;
     };
 
 })(sf);
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
+"use strict";
+//https://github.com/spiral/sf.js
+
+//Add console shim for old IE
+require("./shim/console");
+require("./shim/Object.assign");
+
+var sf = {//Describe all modules to use it in plugins too.
+    modules: {
+        core: {
+            Ajax: require("./core/Ajax"),
+            BaseDOMConstructor: require("./core/BaseDOMConstructor"),
+            DomMutations:require("./core/DomMutations"),
+            Events: require("./core/Events"),
+            InstancesController: require("./core/InstancesController")
+        },
+        helpers: {
+            DOMEvents:require("./helpers/DOMEvents"),
+            domTools:require("./helpers/domTools"),
+            LikeFormData: require("./helpers/LikeFormData"),
+            tools: require("./helpers/tools")
+        }
+    }
+};
+
+sf.instancesController = new sf.modules.core.InstancesController(sf);
+sf.domMutation = new sf.modules.core.DomMutations(sf.instancesController);
+
+//create global ajax
+sf.ajax = new sf.modules.core.Ajax(window.csrfToken ? {//TODO move to spiral bindings
+    headers: {
+        "X-CSRF-Token": window.csrfToken
+    }
+} : null);
+
+window.spiral = sf; //TODO remove?
+
+
+window.spiralFrontend = sf;
+
+if (!window.hasOwnProperty("sf")){//bind only if  window.sf is empty to avoid conflicts with other libs
+    window.sf = sf;
+}
+
+require("./helpers/tools/iterateInputs.js"); //plugin is used in formMessages module to iterate form inputs
+require("./core/ajax/actions.js"); //plugin to perform actions from the server
+require("./vendor/formToObject"); //formToObject  for form
+require("./instances/form/Form.js"); //add form
+require("./instances/form/formMessages"); //add form Messages handler
+
+require("./instances/lock/Lock.js"); //add lock
+},{"./core/Ajax":1,"./core/BaseDOMConstructor":2,"./core/DomMutations":3,"./core/Events":4,"./core/InstancesController":5,"./core/ajax/actions.js":6,"./helpers/DOMEvents":7,"./helpers/LikeFormData":8,"./helpers/domTools":9,"./helpers/tools":10,"./helpers/tools/iterateInputs.js":11,"./instances/form/Form.js":13,"./instances/form/formMessages":14,"./instances/lock/Lock.js":15,"./shim/Object.assign":16,"./shim/console":17,"./vendor/formToObject":18}],13:[function(require,module,exports){
 "use strict";
 
 (function(sf){
+    var formMessages = require("./formMessages");
 
     /**
      * Spiral Forms
      * @param {Object} spiral
      * @param {Object} node  DomNode of form
      * @param {Object} [options] all options to override default
-     * @constructor
+     * @constructor Form
      * @extends BaseDOMConstructor
      */
     var Form = function (spiral, node, options) {
@@ -1487,8 +1612,19 @@ module.exports = tools;
      * @private
      */
     Form.prototype._construct = function(spiral, node, options){
+
+        var messagesOptions = {
+                groupSelector: '.item-form',
+                groupTemplate: '<span class="msg">${message}<button class="btn-close">×</button></span>',
+                groupCloseSelector: '.btn-close',
+                formMessageTemplate: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><div class="msg">${message}</div></div>',
+                formMessageCloseSelector: '.btn-close'
+            };
+
         this.init(spiral, node, options);//call parent
 
+        //add default messagesOptions overwrited with grabbed ones from data-messagesOptions
+        this.options.messagesOptions = spiral.modules.helpers.tools.extend(messagesOptions, this.options.messagesOptions || {});
         if (this.options.fillFrom) {//id required to fill form
             this.fillFieldsFrom();
         }
@@ -1512,16 +1648,150 @@ module.exports = tools;
          * Link to form
          */
         "context": {
-            "processor": function (form) { //processor
-                return form;
+            "processor": function (node,val) { //processor
+                return node;
             }
         },
         /**
          * Link to 'this'
          */
         self: {
-            "processor": function (form) {
+            "processor": function (node,val) {
                 return this;
+            }
+        }
+    };
+    /**
+     * @override
+     * @inheritDoc
+     * @enum {Object}
+     * @deprecated
+     */
+    Form.prototype.optionsToGrab = {
+        /**
+         * Link to form
+         */
+        "context": {
+            "processor": function (node,val) { //processor
+                return node;
+            }
+        },
+        /**
+         * Link to 'this'
+         */
+        self: {
+            "processor": function (node,val) {
+                return this;
+            }
+        },
+        /**
+         * URL to send form (if ajax form) <b>Default: "/"</b>
+         */
+        "url": {
+            "domAttr": "action",
+            "value": "/"
+        },
+        /**
+         * Method to send to send form (if ajax form) <b>Default: "POST"</b>
+         */
+        "method": {
+            "domAttr": "method",
+            "value": "POST"
+        },
+        /**
+         * Lock type when form sending <b>Default: "default"</b> @see spiral.lock
+         */
+        "lockType": {
+            "value": "default",
+            "domAttr": "data-lockType"
+        },
+        /**
+         *
+         */
+        "messagesType": {
+            "value": "spiral",
+            "domAttr": "data-messagesType"
+        },
+        /**
+         * Pass custom template for form messages
+         * (groupSelector, groupTemplate, groupCloseSelector, formMessageTemplate, formMessageCloseSelector)
+         */
+        "messagesOptions": {
+            "processor": function (node,val) {
+                return JSON.parse(val);
+            },
+            "domAttr": "data-messagesOptions"
+        },
+        /**
+         * Position for the message. bottom || top || selector <b>Default: "bottom"</b>
+         */
+        "messagePosition": {
+            "value": "bottom",
+            "domAttr": "data-messagePosition"
+        },
+        /**
+         * Position of the inputs messages. bottom || top || selector <b>Default: "bottom"</b>
+         */
+        "messagesPosition": {
+            "value": "bottom",
+            "domAttr": "data-messagesPosition"
+        },
+        /**
+         * Use ajax to submit form <b>Default: true</b>
+         */
+        "useAjax": {// attribute of form
+            "value": true, //default value
+            "domAttr": "data-useAjax",
+            "processor": function (node,val) { // processor to process data before return
+                if (typeof val === "boolean"){
+                    return val;
+                }
+                val = (val !== void 0 && val !== null) ? val.toLowerCase() : '';
+                if (val === 'false') {
+                    val = false;
+                } else if (val === 'true') {
+                    val = true;
+                }
+                return val;
+            }
+        },
+        /**
+         * Callback after form submitting <b>Default: false</b>
+         * <br/>
+         * <b> Example </b>
+         * function(options){
+     *  //options contains all options after send
+     * }
+         */
+        "ajaxCallback": {// attribute of form
+            "value": false, //default value
+            "domAttr": "data-callback"
+        },
+        "beforeSubmitCallback": {// attribute of form
+            "value": false, //default value
+            "domAttr": "data-before-submit"
+        },
+        "afterSubmitCallback": {// attribute of form
+            "value": false, //default value
+            "domAttr": "data-after-submit"
+        },
+        "headers": {// attribute of form
+            "value": {"Accept": "application/json"}, //default value
+            "domAttr": "data-headers",
+            "processor": function (node,val, self) {
+                if (val === void 0 || val == null) return this.value;
+                try {
+                    val = JSON.parse(val);
+                }catch (e){
+                    console.error(e);
+                }
+                return Object.assign(self.value, val);
+
+                //if (!val[Object.keys(self.value)[0]]) {
+                //    return Object.assign(val, self.value)
+                //} else {
+                //    return val;
+                //}
             }
         }
     };
@@ -1558,6 +1828,16 @@ module.exports = tools;
         "data-messagesType": {
             "value": "spiral",
             "key": "messagesType"
+        },
+        /**
+         * Pass custom template for form messages
+         * (groupSelector, groupTemplate, groupCloseSelector, formMessageTemplate, formMessageCloseSelector)
+         */
+        "data-messagesOptions": {
+            "key": "messagesOptions",
+            "processor": function (val) {
+                return JSON.parse(val);
+            }
         },
         /**
          * Position for the message. bottom || top || selector <b>Default: "bottom"</b>
@@ -1610,6 +1890,19 @@ module.exports = tools;
         "data-after-submit": {// attribute of form
             "value": false, //default value
             "key": "afterSubmitCallback" // key to return
+        },
+        "data-headers": {// attribute of form
+            "value": {"Accept": "application/json"}, //default value
+            "key": "headers", // key to return
+            "processor": function (val, node, self) {
+                if (val === void 0 || val == null) return this.value;
+                val = JSON.parse(val);
+                if (!val[Object.keys(this.value)[0]]) {
+                    return self.spiral.modules.helpers.tools.extend(val, this.value)
+                } else {
+                    return val;
+                }
+            }
         }
     };
 
@@ -1634,7 +1927,7 @@ module.exports = tools;
         if (!window.FormData && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
             this.options.useAjax = false;
         }
-
+        this.events.trigger("onBeforeSend", this.options);
         //spiral.events.performAction("beforeSubmit", this.options);
         //this.events.performAction("beforeSubmit", this.options);
 
@@ -1671,14 +1964,13 @@ module.exports = tools;
      * @param {Object|Boolean} [answer]
      */
     Form.prototype.processMessages = function (answer) {
-        if (!this.options.messagesType || !this.getAddon('formMessages', this.options.messagesType)) {
+        if (!this.options.messagesType) {
             return;
         }
-
         if (Object.prototype.toString.call(answer) === "[object Object]") {
-            this.getAddon('formMessages', this.options.messagesType).show(this.options, answer);
+            formMessages.show(this.options, answer);
         } else {
-            this.getAddon('formMessages', this.options.messagesType).clear(this.options);
+            formMessages.clear(this.options);
         }
     };
 
@@ -1695,11 +1987,6 @@ module.exports = tools;
                 fn.call(sendOptions);
             }
         }
-
-        sendOptions.headers = {//todo Probably we need to move this into defaults.
-            Accept: "application/json"
-        };
-
         this.spiral.ajax.send(sendOptions).then(
             function(answer){
                 that.events.trigger("onSuccess", sendOptions);
@@ -1732,7 +2019,7 @@ module.exports = tools;
      * @param {Object} opt options
      */
     Form.prototype.setOptions = function (opt) {
-        this.options = this.spiral.modules.tools.extend(this.options, opt);
+        this.options = this.spiral.modules.helpers.tools.extend(this.options, opt);
     };
 
     /**
@@ -1765,10 +2052,7 @@ module.exports = tools;
     sf.instancesController.registerInstanceType(Form,"js-sf-form");
 
 })(spiralFrontend);
-
-
-
-},{}],14:[function(require,module,exports){
+},{"./formMessages":14}],14:[function(require,module,exports){
 "use strict";
 
 
@@ -1783,6 +2067,11 @@ module.exports = tools;
     }
 
     /**
+     * Selector for group-messages
+     */
+    var _selector = '';
+
+    /**
      * Shows individual message for the form.
      * @param {Object} formOptions
      * @param {String} formOptions.messagePosition
@@ -1791,35 +2080,31 @@ module.exports = tools;
      * @param {String} message
      */
     function showMessage(formOptions, message, type) {
-        var alert, msg, close, parent;
+        var msg, parent,
+            variables = {message: message, type: type},
+            tpl = formOptions.messagesOptions.formMessageTemplate,
+            parser = new DOMParser();
 
-        alert = document.createElement("div");
-        alert.className = "alert form-msg " + type;
+        for (var item in variables) {
+            if (variables.hasOwnProperty(item)) {
+                tpl = tpl.replace('${' + item + '}', variables[item]);
+            }
+        }
 
-        msg = document.createElement("div");
-        msg.className = "msg";
-        msg.innerHTML = message;
-
-        close = document.createElement("button");
-        close.className = "btn-close";
-        close.setAttribute("type", "button");
-        close.textContent = "×";
-
-        alert.appendChild(close);
-        alert.appendChild(msg);
+        msg = parser.parseFromString(tpl, "text/html").firstChild.lastChild.firstChild;
 
         if (formOptions.messagePosition === "bottom") {
             parent = formOptions.context;
-            parent.appendChild(alert);
+            parent.appendChild(msg);
         } else if (formOptions.messagePosition === "top") {
             parent = formOptions.context;
-            parent.insertBefore(alert, parent.firstChild);
+            parent.insertBefore(msg, parent.firstChild);
         } else {
             parent = document.querySelector(formOptions.messagePosition);
-            parent.appendChild(alert)
+            parent.appendChild(msg)
         }
-
-        close.addEventListener("click", closeMessage);
+        var closeBtn = msg.querySelector(formOptions.messagesOptions.formMessageCloseSelector);
+        if (closeBtn) closeBtn.addEventListener("click", closeMessage);
     }
 
     /**
@@ -1831,14 +2116,25 @@ module.exports = tools;
      * @param {String} [type]
      */
     function showMessages(formOptions, messages, type) {
-        var notFound = sf.modules.helpers.tools.iterateInputs(formOptions.context, messages, function (el, msg) {
-            var group = sf.modules.helpers.domTools.closest(el, ".item-form");
+        var parser = new DOMParser(),
+            notFound = sf.modules.helpers.tools.iterateInputs(formOptions.context, messages, function (el, message) {
+            var group = sf.modules.helpers.domTools.closest(el, formOptions.messagesOptions.groupSelector),
+                variables = {message: message}, msgEl, tpl = formOptions.messagesOptions.groupTemplate;
             if (!group) return;
             group.classList.add(type);
 
-            var msgEl = document.createElement("span");
-            msgEl.className = "msg";
-            msgEl.innerHTML = msg;
+            for (var item in variables) {
+                if (variables.hasOwnProperty(item)) {
+                    tpl = tpl.replace('${' + item + '}', variables[item]);
+                }
+            }
+
+            msgEl = parser.parseFromString(tpl, "text/html").firstChild.lastChild.firstChild;
+
+            if (!_selector) {
+                msgEl.className ? _selector = msgEl.className : _selector = 'sf-group-message';
+            }
+            msgEl.classList.add(_selector);
 
             if (formOptions.messagesPosition === "bottom") {
                 group.appendChild(msgEl);
@@ -1848,15 +2144,18 @@ module.exports = tools;
                 var parent = group.querySelector(formOptions.messagesPosition);
                 parent.appendChild(msgEl)
             }
+                var closeBtn = msgEl.querySelector(formOptions.messagesOptions.groupCloseSelector);
+                if (closeBtn) closeBtn.addEventListener("click", closeMessage);
         });
 
         //todo data-sf-message for notFound
     }
 
 
-    var spiralMessages = {
+    module.exports = {
         /**
          * Adds form's main message, input's messages, bootstrap-like classes has-... to form-groups.
+         * @constructor spiralMessages
          * @param {Object} formOptions
          * @param {Object} answer
          * @param {Object|String} [answer.message]
@@ -1924,21 +2223,17 @@ module.exports = tools;
                 msg.getElementsByClassName("btn-close")[0].removeEventListener("click", closeMessage);
                 msg.parentNode.removeChild(msg);
             }
-
-            var alerts = formOptions.context.querySelectorAll(".item-form>.msg");//Remove all messages
-            for (i = 0, l = alerts.length; i < l; i++) {
-                item = alerts[i].parentNode;
-                item.removeChild(alerts[i]);
-                item.classList.remove("error", "success", "warning", "info");
+            if (_selector) { //if form wasn't sent at least 1 time => still doesn't have messages' selectors
+                var alerts = formOptions.context.querySelectorAll(formOptions.messagesOptions.groupSelector + ' .' + _selector);//Remove all messages
+                for (i = 0, l = alerts.length; i < l; i++) {
+                    item = alerts[i].parentNode;
+                    item.removeChild(alerts[i]);
+                    item.classList.remove("error", "success", "warning", "info");
+                }
             }
         }
     };
 
-
-    /**
-     * Register addon
-     */
-    sf.instancesController.registerAddon(spiralMessages, "form", "formMessages", "spiral");
 
 })(spiralFrontend);
 },{}],15:[function(require,module,exports){
@@ -1947,7 +2242,7 @@ module.exports = tools;
 (function(sf) {
     /**
      * Spiral lock for forms
-     * @constructor lock
+     * @constructor Lock
      */
 
     var Lock = function(spiral, node, options){
@@ -2057,6 +2352,34 @@ module.exports = tools;
 
 },{}],16:[function(require,module,exports){
 /**
+ * Object.assign polyfill
+ * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ */
+if (typeof Object.assign != 'function') {
+    (function () {
+        Object.assign = function (target) {
+            'use strict';
+            if (target === undefined || target === null) {
+                throw new TypeError('Cannot convert undefined or null to object');
+            }
+
+            var output = Object(target);
+            for (var index = 1; index < arguments.length; index++) {
+                var source = arguments[index];
+                if (source !== undefined && source !== null) {
+                    for (var nextKey in source) {
+                        if (source.hasOwnProperty(nextKey)) {
+                            output[nextKey] = source[nextKey];
+                        }
+                    }
+                }
+            }
+            return output;
+        };
+    })();
+}
+},{}],17:[function(require,module,exports){
+/**
  * Avoid `console` errors in browsers that lack a console.
  */
 (function () {
@@ -2081,7 +2404,7 @@ module.exports = tools;
     }
 }());
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*! github.com/serbanghita/formToObject.js 1.0.1  (c) 2013 Serban Ghita <serbanghita@gmail.com> @licence MIT */
 
 (function(){
@@ -2252,5 +2575,7 @@ module.exports = tools;
 
 })();
 
-},{}]},{},[1])
+},{}]},{},[12])
+
+
 //# sourceMappingURL=sf.js.map
