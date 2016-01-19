@@ -86,6 +86,7 @@ class AssetManager extends Component implements ProcessorInterface
             //Let's remove asset definition from source
             $source = str_replace($asset['definition'], '', $source);
 
+            unset($asset['definition']);
             if ($asset['type'] == self::ASSET_STYLE) {
                 if (!in_array($asset, $styles)) {
                     $styles[] = $asset;
