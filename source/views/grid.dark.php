@@ -33,14 +33,22 @@
             </tr>
             </thead>
             <tbody>
+            <?php $__has__rows__ = false; ?>
             <?php #compile
             //todo: add support for tr attributes
             echo '<?php foreach ($__source__ as $${as|item}) { ?>';
             echo "<tr>\n";
             echo join("\n", $__gridColumns__);
             echo "</tr>\n";
-            echo '<?php } ?>';
+            echo '<?php $__has__rows__ = true;} ?>';
             ?>
+            <?php if (!$__has__rows__) { ?>
+                <tr>
+                    <td class="${empty-class}" colspan="<?= count($__gridHeaders__) #compile ?>">
+                        ${empty|No results to be displayed}
+                    </td>
+                </tr>
+            <?php } ?>
             </tbody>
         </table>
     </block:table>
