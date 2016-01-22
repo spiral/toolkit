@@ -758,3 +758,63 @@ form {
     }
   }
 }
+
+.file-field.input-field {
+  position: relative;
+  height: 30px;
+  margin-bottom: 20px;
+
+  .btn {
+    background: #015fa3;
+    float: left;
+    margin-right: 20px;
+    height: 35px;
+    line-height: 35px;
+    width: 114px;
+
+    span {
+      float: left;
+      padding-left: 40px;
+      position: relative;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 2px;
+
+       &:before {
+         content: "";
+         background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…EuMzAxLTAuOUwyMCwxM0MyMC4xLDEyLjUsMTkuOCwxMS44LDE5LjMsMTEuNXoiLz48L3N2Zz4=);
+         display: block;
+         width: 20px;
+         height: 17px;
+         background-size: cover;
+         position: absolute;
+         left: 0px;
+         top: 8px;
+       }
+    }
+
+    input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 40px;
+      opacity: 0;
+      z-index: 200;
+    }
+  }
+  .file-path-wrapper {
+    float: left;
+    width: ~"calc(100% - 135px)";
+    background: transparent;
+
+    .file-path {
+      width: 100%;
+      background: transparent;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      height: 35px;
+      padding: 0 10px;
+    }
+  }
+}
