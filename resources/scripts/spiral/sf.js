@@ -1332,7 +1332,6 @@ function findNodes(context, names, callback, prefix) {
                     var sel = "[name='" + partOfSelector + "[]']" + "[value='" + el + "']";
                     var nodes = context.querySelectorAll(sel);
                     if (nodes.length === 0) {
-                        console.warn(sel, " in Array not found");
                         notFound.push(sel);
                     }
                     for (var i = 0, max = nodes.length; i < max; i++) {
@@ -1344,7 +1343,6 @@ function findNodes(context, names, callback, prefix) {
             case '[object Number]':
                 var nodes = context.querySelectorAll(selector);
                 if (nodes.length === 0) {
-                    console.warn(selector, " not found");
                     var obj = {};
                     obj[partOfSelector] = names[name];
                     notFound.push(obj);
@@ -1488,8 +1486,8 @@ if (typeof exports === "object" && exports) {
         /**
          * Link to form
          */
-        "context": {
-            "processor": function (node, val) { //processor
+        context: {
+            processor: function (node, val) { //processor
                 return node;
             }
         },
@@ -1497,45 +1495,45 @@ if (typeof exports === "object" && exports) {
          * Link to 'this'
          */
         self: {
-            "processor": function (node, val) {
+            processor: function (node, val) {
                 return this;
             }
         },
         /**
          * URL to send form (if ajax form) <b>Default: "/"</b>
          */
-        "url": {
-            "domAttr": "action",
-            "value": "/"
+        url: {
+            domAttr: "action",
+            value: "/"
         },
         /**
          * Method to send to send form (if ajax form) <b>Default: "POST"</b>
          */
-        "method": {
-            "domAttr": "method",
-            "value": "POST"
+        method: {
+            domAttr: "method",
+            value: "POST"
         },
         /**
          * Lock type when form sending <b>Default: "default"</b> @see sf.lock
          */
-        "lockType": {
-            "value": "default",
-            "domAttr": "data-lockType"
+        lockType: {
+            value: "default",
+            domAttr: "data-lockType"
         },
         /**
          *
          */
         "messagesType": {
-            "value": "spiral",
-            "domAttr": "data-messagesType"
+            value: "spiral",
+            domAttr: "data-messagesType"
         },
         /**
          * Pass custom template for form messages
          */
-        "messages": {
-            "value": "",
-            "domAttr": "data-messages",
-            "processor": function (node, val, self) {
+        messages: {
+            value: "",
+            domAttr: "data-messages",
+            processor: function (node, val, self) {
                 if (!val) return this.value;
                 if (typeof val == "string") {
                     try {
@@ -1550,10 +1548,10 @@ if (typeof exports === "object" && exports) {
         /**
          * Use ajax to submit form <b>Default: true</b>
          */
-        "useAjax": {// attribute of form
-            "value": true, //default value
-            "domAttr": "data-useAjax",
-            "processor": function (node, val) { // processor to process data before return
+        useAjax: {// attribute of form
+            value: true, //default value
+            domAttr: "data-useAjax",
+            processor: function (node, val) { // processor to process data before return
                 if (typeof val === "boolean") {
                     return val;
                 }
@@ -1574,22 +1572,22 @@ if (typeof exports === "object" && exports) {
      *  //options contains all options after send
      * }
          */
-        "ajaxCallback": {// attribute of form
-            "value": false, //default value
-            "domAttr": "data-callback"
+        ajaxCallback: {// attribute of form
+            value: false, //default value
+            domAttr: "data-callback"
         },
-        "beforeSubmitCallback": {// attribute of form
-            "value": false, //default value
-            "domAttr": "data-before-submit"
+        beforeSubmitCallback: {// attribute of form
+            value: false, //default value
+            domAttr: "data-before-submit"
         },
-        "afterSubmitCallback": {// attribute of form
-            "value": false, //default value
-            "domAttr": "data-after-submit"
+        afterSubmitCallback: {// attribute of form
+            value: false, //default value
+            domAttr: "data-after-submit"
         },
-        "headers": {// attribute of form
-            "value": {"Accept": "application/json"}, //default value
-            "domAttr": "data-headers",
-            "processor": function (node, val, self) {
+        headers: {// attribute of form
+            value: {"Accept": "application/json"}, //default value
+            domAttr: "data-headers",
+            processor: function (node, val, self) {
                 if (val === void 0 || val == null) return this.value;
                 if (typeof val == "string") {
                     try {
@@ -1873,8 +1871,15 @@ module.exports = {
         }
         this._messages.push({el: msgEl, close: msgEl.querySelector(this.options.messages.close)});
     },
-    showFieldMessage: function (el, message, type) {
-        var field = domTools.closest(el, this.options.messages.field), msgEl, tpl = this.options.messages.fieldTemplate;
+    /**
+     * @param {HTMLElement} el
+     * @param {String} message
+     * @param {String} type
+     * @param {Boolean} [isContainer]
+     */
+    showFieldMessage: function (el, message, type, isContainer) {
+        var field = isContainer ? el : domTools.closest(el, this.options.messages.field),
+            msgEl, tpl = this.options.messages.fieldTemplate;
         if (!field) return;
         var parser = new DOMParser();
         message = prepareMessageObject(message, type);
@@ -1909,7 +1914,16 @@ module.exports = {
             notFound = iterateInputs(this.node, messages, function (el, message) {
                 that.showFieldMessage(el, message, type)
             });
-        //todo data-name for notFound
+
+        notFound.forEach(function (msgObj) {
+            Object.keys(msgObj).forEach(function(name){
+                var container = that.node.querySelector('[data-message-placeholder="' + name + '"]');
+                if (container) {
+                    //todo check container.dataset.messageVariant? variants are "field" and "form"
+                    that.showFieldMessage(container, msgObj[name], type, true);
+                }
+            });
+        });
     }
 };
 },{"../../helpers/domTools":10,"../../helpers/tools/iterateInputs":12}],16:[function(require,module,exports){
