@@ -70,10 +70,9 @@ Input.prototype.addEventListeners = function () {
         var oldValue = this.getAttribute('data-prefix');
 
         if( that.els.node.value.indexOf(oldValue) !== 0 ){
-            that.els.node.value = oldValue + that.els.node.value;
+            that.els.node.value = oldValue + ' ';
         }
     };
-
     if (this.els.node) {
         this.els.node.addEventListener('keyup', this._inputKeyup);
     }
