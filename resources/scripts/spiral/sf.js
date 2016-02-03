@@ -872,27 +872,78 @@ module.exports = function (sf) {
                 sf.events.trigger(response.action);
             } else if (typeof response.action === 'object') {
                 var keys = Object.keys(response.action);
-                if (keys.length === 1) {//"action":{"redirect":"/account"}
-                    sf.events.trigger(keys[0], response.action[keys[0]], options);
-                } else if (keys.length === 2 && response.action.delay) {//"action":{"redirect":"/account","delay":3000}
-                    setTimeout(function () {
-                        var action = keys.filter(function (value) {
-                            return value !== 'delay';
-                        })[0];
-                        sf.events.trigger(action, response.action[action], options);
-                    }, +response.action.delay);
-                } else if (keys.length > 1) {//"action":{"name":"redirect","url":"/account","delay":3000}
-                    setTimeout(function () {
-                        sf.events.trigger(response.action.name, response.action, options);
-                    }, +response.action.delay || 0);
-                } else {
-                    console.error("Action from server. Object doesn't have keys. ", response.action);
+                if (keys.indexOf('flash') !== -1){
+                    var flash = response.action['flash'],
+                        timestamp = Date.now(),
+                        sfFlashMessage = {};
+                    if (typeof response.action['flash'] === 'object'){
+                        sfFlashMessage = flash;
+                        sfFlashMessage.timestamp = timestamp;
+                    } else {
+                        sfFlashMessage = {
+                            message: flash,
+                            timestamp: timestamp
+                        }
+                    }
+                    sessionStorage.setItem('sfFlashMessage', JSON.stringify(sfFlashMessage));
                 }
+                if (keys.indexOf('redirect') !== -1){
+                    setTimeout(function () {
+                        sf.events.trigger('redirect', response.action['redirect'], options);
+                    }, +response.action.delay|0);
+                } else if (keys.indexOf('name') !== -1) {
+                    setTimeout(function () {
+                        sf.events.trigger(response.action.name, response.action.url);
+                    }, +response.action.delay || 0);
+                }
+                //if (keys.length === 1) {//"action":{"redirect":"/account"}
+                //    sf.events.trigger(keys[0], response.action[keys[0]], options);
+                //} else if (keys.length === 2 && response.action.delay) {//"action":{"redirect":"/account","delay":3000}
+                //    setTimeout(function () {
+                //        var action = keys.filter(function (value) {
+                //            return value !== 'delay';
+                //        })[0];
+                //        sf.events.trigger(action, response.action[action], options);
+                //    }, +response.action.delay);
+                //} else if (keys.length > 1) {//"action":{"name":"redirect","url":"/account","delay":3000}
+                //    setTimeout(function () {
+                //        sf.events.trigger(response.action.name, response.action, options);
+                //    }, +response.action.delay || 0);
+                //} else {
+                //    console.error("Action from server. Object doesn't have keys. ", response.action);
+                //}
             } else {
                 console.error("Action from server. Something wrong. ", response.action);
             }
         }
     });
+    (function (sfFlashMessage) {
+        if (!sfFlashMessage) return;
+        var message  = JSON.parse(sfFlashMessage),
+            timestamp = Date.now(),
+            node,
+            nodeWrapper,
+            flashClass;
+        if (timestamp - message.timestamp > 10000) return;
+        if (message.type === 'debug' || message.type === 'success'){
+            flashClass = 'debug'
+        } else if (message.type === 'info' || !message.type || message.type === 'notice'){
+            flashClass = 'info'
+        } else {
+            flashClass = 'danger'
+        }
+        node = document.createElement('div');
+        nodeWrapper = document.createElement('div');
+        nodeWrapper.classList.add('flash-wrapper');
+        node.classList.add('flash', flashClass);
+        node.innerHTML = message.message;
+        document.body.appendChild(nodeWrapper);
+        nodeWrapper.appendChild(node);
+        setTimeout(function(){nodeWrapper.classList.add('show');}, 1);
+        setTimeout(function(){nodeWrapper.classList.remove('show')}, message.timeout||5000);
+
+        sessionStorage.removeItem('sfFlashMessage');
+    }(sessionStorage.getItem('sfFlashMessage')))
 };
 },{}],7:[function(require,module,exports){
 module.exports = function(events){
@@ -1299,83 +1350,6 @@ var tools = {
 module.exports = tools;
 },{}],12:[function(require,module,exports){
 "use strict";
-//plugin in formMessages to iterate form inputs
-
-//todo comment all of this
-//todo ask @Systerr the reason of variable 'prefix'
-var notFound = [];
-
-/**
- *
- * @param {HTMLElement} context
- * @param {Object} names
- * @param {Function} callback
- * @param {String} [prefix]
- */
-function findNodes(context, names, callback, prefix) {
-    for (var name in names) {
-        if (!names.hasOwnProperty(name)) {
-            continue;
-        }
-
-        var partOfSelector = (prefix) ? prefix + "[" + name + "]" : name,
-            type = Object.prototype.toString.call(names[name]),
-            selector = "[name='" + partOfSelector + "']";
-        switch (type) {
-            case '[object Object]':
-                findNodes(context, names[name], callback, partOfSelector);//call recursive
-                break;
-            case '[object Array]':
-                names[name].forEach(function (el) {
-                    "use strict";
-                    //TODO refactor this should call recursive
-                    var sel = "[name='" + partOfSelector + "[]']" + "[value='" + el + "']";
-                    var nodes = context.querySelectorAll(sel);
-                    if (nodes.length === 0) {
-                        notFound.push(sel);
-                    }
-                    for (var i = 0, max = nodes.length; i < max; i++) {
-                        callback(nodes[i], true);
-                    }
-                });
-                break;
-            case '[object String]':
-            case '[object Number]':
-                var nodes = context.querySelectorAll(selector);
-                if (nodes.length === 0) {
-                    var obj = {};
-                    obj[partOfSelector] = names[name];
-                    notFound.push(obj);
-                }
-                for (var i = 0, max = nodes.length; i < max; i++) {
-                    callback(nodes[i], names[name]);
-                }
-                break;
-
-            default :
-                console.error("unknown type -", type, " and message", names[name]);
-        }
-    }
-}
-
-/**
- * @param {HTMLElement} context
- * @param {Object} names
- * @param {Function} callback
- * @param {String} [prefix]
- */
-var iterateInputs = function (context, names, callback, prefix) {
-    notFound = [];
-    findNodes(context, names, callback, prefix);
-    if (notFound.length !== 0) {
-        console.log("Some element not found in form", notFound);
-    }
-    return notFound;
-};
-
-module.exports = iterateInputs;
-},{}],13:[function(require,module,exports){
-"use strict";
 //https://github.com/spiral/sf.js
 
 //Add console shim for old IE
@@ -1413,520 +1387,12 @@ _sf.ajax = new _sf.core.Ajax(window.csrfToken ? {//TODO move to spiral bindings
 } : null);
 require("./core/ajax/baseActions.js")(_sf);
 
-//Form
-_sf.tools.iterateInputs = require("./helpers/tools/iterateInputs.js");
-_sf.modules.helpers.tools.iterateInputs = _sf.tools.iterateInputs;//todo remove
-require("./vendor/formToObject");
-require("./instances/form/Form.js");
 require("./instances/lock/Lock.js");
 
 if (typeof exports === "object" && exports) {
     module.exports = _sf;
 }
-},{"./core/ajax/baseActions.js":6,"./core/events/baseEvents.js":7,"./helpers/tools/iterateInputs.js":12,"./instances/form/Form.js":14,"./instances/lock/Lock.js":16,"./sf":17,"./shim/Object.assign":18,"./shim/console":19,"./vendor/formToObject":20}],14:[function(require,module,exports){
-"use strict";
-
-(function (sf) {
-    var formMessages = require("./formMessages");
-
-    /**
-     * Spiral Forms
-     * @param {Object} sf
-     * @param {Object} node  DomNode of form
-     * @param {Object} [options] all options to override default
-     * @constructor Form
-     * @extends BaseDOMConstructor
-     */
-    var Form = function (sf, node, options) {
-        this._construct(sf, node, options);
-    };
-
-
-    /**
-     * @lends sf.Form.prototype
-     */
-    Form.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
-
-    /**
-     * Name to register
-     * @type {string}
-     */
-    Form.prototype.name = "form";
-
-    /**
-     * Function that call on new instance is created.
-     * @param {Object} sf
-     * @param {Object} node  DomNode of form
-     * @param {Object} [options] all options to override default
-     * @private
-     */
-    Form.prototype._construct = function (sf, node, options) {
-        this.init(sf, node, options);//call parent
-        this.mixMessagesOptions();
-        //this.options.fillFrom && this.fillFieldsFrom();//id required to fill form
-
-        /**
-         * @extends DOMEvents
-         * @type {DOMEvents}
-         * @inheritDoc
-         * */
-        this.DOMEvents = new this.sf.modules.helpers.DOMEvents();
-        this.addEvents();
-
-        this.events = new this.sf.modules.core.Events(["beforeSend", "success", "error", "always"]);
-    };
-
-    /**
-     * @override
-     * @inheritDoc
-     * @enum {Object}
-     * @deprecated
-     */
-    Form.prototype.optionsToGrab = {
-        /**
-         * Link to form
-         */
-        context: {
-            processor: function (node, val) { //processor
-                return node;
-            }
-        },
-        /**
-         * Link to 'this'
-         */
-        self: {
-            processor: function (node, val) {
-                return this;
-            }
-        },
-        /**
-         * URL to send form (if ajax form) <b>Default: "/"</b>
-         */
-        url: {
-            domAttr: "action",
-            value: "/"
-        },
-        /**
-         * Method to send to send form (if ajax form) <b>Default: "POST"</b>
-         */
-        method: {
-            domAttr: "method",
-            value: "POST"
-        },
-        /**
-         * Lock type when form sending <b>Default: "default"</b> @see sf.lock
-         */
-        lockType: {
-            value: "default",
-            domAttr: "data-lockType"
-        },
-        /**
-         *
-         */
-        "messagesType": {
-            value: "spiral",
-            domAttr: "data-messagesType"
-        },
-        /**
-         * Pass custom template for form messages
-         */
-        messages: {
-            value: "",
-            domAttr: "data-messages",
-            processor: function (node, val, self) {
-                if (!val) return this.value;
-                if (typeof val == "string") {
-                    try {
-                        val = JSON.parse(val);
-                    } catch (e) {
-                        console.error("Form JSON.parse error: ", e);
-                    }
-                }
-                return Object.assign(self.value, val);
-            }
-        },
-        /**
-         * Use ajax to submit form <b>Default: true</b>
-         */
-        useAjax: {// attribute of form
-            value: true, //default value
-            domAttr: "data-useAjax",
-            processor: function (node, val) { // processor to process data before return
-                if (typeof val === "boolean") {
-                    return val;
-                }
-                val = (val !== void 0 && val !== null) ? val.toLowerCase() : '';
-                if (val === 'false') {
-                    val = false;
-                } else if (val === 'true') {
-                    val = true;
-                }
-                return val;
-            }
-        },
-        /**
-         * Callback after form submitting <b>Default: false</b>
-         * <br/>
-         * <b> Example </b>
-         * function(options){
-     *  //options contains all options after send
-     * }
-         */
-        ajaxCallback: {// attribute of form
-            value: false, //default value
-            domAttr: "data-callback"
-        },
-        beforeSubmitCallback: {// attribute of form
-            value: false, //default value
-            domAttr: "data-before-submit"
-        },
-        afterSubmitCallback: {// attribute of form
-            value: false, //default value
-            domAttr: "data-after-submit"
-        },
-        headers: {// attribute of form
-            value: {"Accept": "application/json"}, //default value
-            domAttr: "data-headers",
-            processor: function (node, val, self) {
-                if (val === void 0 || val == null) return this.value;
-                if (typeof val == "string") {
-                    try {
-                        val = JSON.parse(val);
-                    } catch (e) {
-                        console.error("Form JSON.parse error: ", e);
-                    }
-                }
-                return Object.assign(self.value, val);
-            }
-        }
-    };
-
-    Form.prototype.mixMessagesOptions = function () {
-        var global = this.sf.options.instances.form;
-        this.options.messages = Object.assign({},
-            formMessages.defaults,
-            global && global.messages && global.messages[this.options.messagesType],
-            this.options.messages
-        );
-    };
-
-    /**
-     * Call on form submit
-     * @param {Event} e submit event
-     */
-    Form.prototype.onSubmit = function (e) {
-        if (this.sf.instancesController.getInstance('lock', this.node)) {//on lock we should'n do any actions
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-
-        this.removeMessages();
-
-        this.options.data = this.getFormData();
-
-        // We can send files only with FormData
-        // If form contain files and no FormData than disable ajax
-        if (!window.FormData && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
-            this.options.useAjax = false;
-        }
-        this.events.trigger("beforeSend", this.options);
-        //sf.events.performAction("beforeSubmit", this.options);
-        //this.events.performAction("beforeSubmit", this.options);
-
-        if (this.options.useAjax) {
-
-            this.send(this.options);
-
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    };
-
-    /**
-     * Locker. Add or remove.
-     * @param {Boolean} [remove]
-     */
-    Form.prototype.lock = function (remove) {
-        if (!this.options.lockType || this.options.lockType === 'none') {
-            return;
-        }
-        if (remove) {
-            if (!this.sf.instancesController.removeInstance("lock", this.node)) {
-                console.warn("You try to remove 'lock' instance, but it is not available or not started");
-            }
-        } else {
-            if (!this.sf.instancesController.addInstance("lock", this.node, {type: this.options.lockType})) {
-                console.warn("You try to add 'lock' instance, but it is not available or already started");
-            }
-        }
-    };
-
-    //Form messages
-    Form.prototype.showFormMessage = formMessages.showFormMessage;
-    Form.prototype.showFieldMessage = formMessages.showFieldMessage;
-    Form.prototype.showFieldsMessages = formMessages.showFieldsMessages;
-    Form.prototype.showMessages = formMessages.showMessages;
-    Form.prototype.removeMessages = formMessages.removeMessages;
-    Form.prototype.removeMessage = formMessages.removeMessage;
-
-    Form.prototype.processAnswer = function (answer) {
-        this.options.messagesType && this.showMessages(answer);
-    };
-
-    /**
-     * Send form to server
-     * @param sendOptions
-     */
-    Form.prototype.send = function (sendOptions) {
-        var that = this;
-        this.lock();
-        if (sendOptions.beforeSubmitCallback) {
-            var fn = eval(sendOptions.beforeSubmitCallback);
-            if (typeof(fn) === "function") {
-                fn.call(sendOptions);
-            }
-        }
-        this.sf.ajax.send(sendOptions).then(
-            function (answer) {
-                that.events.trigger("success", sendOptions);
-                return answer;
-            },
-            function (error) {
-                that.events.trigger("error", sendOptions);
-                return error;
-            }).then(function (answer) {
-            that.lock(true);
-            that.processAnswer(answer);
-            that.events.trigger("always", sendOptions);
-        });
-    };
-
-    /**
-     * Serialize form
-     */
-    Form.prototype.getFormData = function () {
-        if (!!window.FormData) {
-            return new FormData(this.options.context);
-        } else {
-            console.log("Form `" + this.options.context + "` were processed without FormData.");
-            return new formToObject(this.options.context);
-        }
-    };
-
-    /**
-     * Set options (overwrite current)
-     * @param {Object} opt options
-     */
-    Form.prototype.setOptions = function (opt) {
-        this.options = this.sf.modules.helpers.tools.extend(this.options, opt);
-    };
-
-    /**
-     * Add all events for forms
-     */
-    Form.prototype.addEvents = function () {
-        var that = this;
-        this.DOMEvents.add([
-            {
-                DOMNode: this.options.context,
-                eventType: "submit",
-                eventFunction: function (e) {
-                    that.onSubmit.call(that, e)
-                }
-            }
-        ]);
-    };
-
-    /**
-     * Clear all variables and die
-     */
-    Form.prototype.die = function () {
-        this.DOMEvents.removeAll();
-        //todo don't we need to remove it's addons and plugins?
-    };
-
-    /**
-     * Register form
-     */
-    sf.instancesController.registerInstanceType(Form, "js-sf-form");
-
-})(sf);
-},{"./formMessages":15}],15:[function(require,module,exports){
-"use strict";
-var iterateInputs = require("../../helpers/tools/iterateInputs");
-var domTools = require("../../helpers/domTools");
-
-var defaults = {
-    template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',
-    close: '.btn-close',
-    place: 'bottom',
-    levels: {
-        success: "success", info: "info", warning: "warning", error: "error"
-    },
-    field: '.item-form',
-    fieldTemplate: '<div class="alert form-msg ${type}"><p class="msg">${text}</p></div>',
-    fieldClose: '.btn-close',
-    fieldPlace: 'bottom',
-    fieldPrefix: ''//for bootstrap: class="has-danger"
-};
-
-//often used alias
-defaults.levels.message = defaults.levels.success;
-
-//other aliases
-//PSR-3 severity levels mapping (debug, info, notice, warning, error, critical, alert, emergency)
-//https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
-defaults.levels.debug = defaults.levels.success;
-defaults.levels.info = defaults.levels.notice = defaults.levels.info;
-defaults.levels.danger = defaults.levels.critical = defaults.levels.alert = defaults.levels.emergency = defaults.levels.error;
-
-function prepareMessageObject(message, type) {
-    if (Object.prototype.toString.call(message) !== "[object Object]") {
-        message = {text: message, type: type};
-    }
-    message.text = message.text || message.message || message;
-    message.type = message.type || type;
-    return message;
-}
-
-module.exports = {
-    defaults: defaults,
-    showMessages: function (answer) {
-        if (!answer) return;
-        var isMsg = false, that = this;
-
-        for (var type in this.options.messages.levels) {
-            if (answer[type]) {
-                this.showFormMessage(answer[type], this.options.messages.levels[type]);
-                isMsg = true;
-            }
-        }
-
-        if (answer.messages) {
-            this.showFieldsMessages(answer.messages, "success");
-            isMsg = true;
-        }
-        if (answer.errors) {
-            this.showFieldsMessages(answer.errors, "error");
-            isMsg = true;
-        }
-        if (answer.warnings) {
-            this.showFieldsMessages(answer.warnings, "warning");
-            isMsg = true;
-        }
-
-        if (!isMsg) {
-            var error = answer.status ? answer.status + " " : "";
-            error += answer.statusText ? answer.statusText : "";
-            error += answer.data && !answer.statusText ? answer.data : "";
-            error += error.length === 0 ? answer : "";
-            this.showFormMessage(error, "error");
-        }
-
-        this._messages.forEach(function (m) {
-            if (m.close) {
-                m.closeHandler = that.removeMessage.bind(that, m);
-                m.close.addEventListener("click", m.closeHandler);
-            }
-        });
-    },
-    removeMessage: function (m, e) {
-        m.close && m.close.removeEventListener("click", m.closeHandler);
-        m.el.parentNode.removeChild(m.el);
-        m.field && m.field.classList.remove(this.options.messages.fieldPrefix + m.type);
-        if (e) {
-            e.preventDefault && e.preventDefault();
-            this._messages.splice(this._messages.indexOf(m), 1);
-        }
-    },
-    removeMessages: function () {
-        var that = this;
-        if (this._messages) {
-            this._messages.forEach(function (m) {
-                that.removeMessage(m, false);
-            });
-        }
-        that._messages = [];
-    },
-    showFormMessage: function (message, type) {
-        message = prepareMessageObject(message, type);
-
-        var msgEl, parent, tpl = this.options.messages.template, parser = new DOMParser();
-
-        for (var item in message) {
-            if (!message.hasOwnProperty(item)) return;
-            tpl = tpl.replace('${' + item + '}', message[item]);
-        }
-
-        msgEl = parser.parseFromString(tpl, "text/html").firstChild.lastChild.firstChild;
-
-        if (this.options.messages.place === "bottom") {
-            this.node.appendChild(msgEl);
-        } else if (this.options.messages.place === "top") {
-            this.node.insertBefore(msgEl, this.node.firstChild);
-        } else {
-            parent = document.querySelector(this.options.messages.place);
-            parent.appendChild(msgEl)
-        }
-        this._messages.push({el: msgEl, close: msgEl.querySelector(this.options.messages.close)});
-    },
-    /**
-     * @param {HTMLElement} el
-     * @param {String} message
-     * @param {String} type
-     * @param {Boolean} [isContainer]
-     */
-    showFieldMessage: function (el, message, type, isContainer) {
-        var field = isContainer ? el : domTools.closest(el, this.options.messages.field),
-            msgEl, tpl = this.options.messages.fieldTemplate;
-        if (!field) return;
-        var parser = new DOMParser();
-        message = prepareMessageObject(message, type);
-
-        field.classList.add(this.options.messages.fieldPrefix + type);
-
-        for (var item in message) {
-            if (!message.hasOwnProperty(item)) return;
-            tpl = tpl.replace('${' + item + '}', message[item]);
-        }
-
-        msgEl = parser.parseFromString(tpl, "text/html").firstChild.lastChild.firstChild;
-
-        if (this.options.messages.fieldPlace === "bottom") {
-            field.appendChild(msgEl);
-        } else if (this.options.messages.fieldPlace === "top") {
-            field.insertBefore(msgEl, field.firstChild);
-        } else {
-            field = field.querySelector(this.options.messages.fieldPlace);
-            field.appendChild(msgEl)
-        }
-
-        this._messages.push({
-            el: msgEl,
-            close: msgEl.querySelector(this.options.messages.fieldClose),
-            field: field,
-            type: type
-        });
-    },
-    showFieldsMessages: function (messages, type) {
-        var that = this,
-            notFound = iterateInputs(this.node, messages, function (el, message) {
-                that.showFieldMessage(el, message, type)
-            });
-
-        notFound.forEach(function (msgObj) {
-            Object.keys(msgObj).forEach(function(name){
-                var container = that.node.querySelector('[data-message-placeholder="' + name + '"]');
-                if (container) {
-                    //todo check container.dataset.messageVariant? variants are "field" and "form"
-                    that.showFieldMessage(container, msgObj[name], type, true);
-                }
-            });
-        });
-    }
-};
-},{"../../helpers/domTools":10,"../../helpers/tools/iterateInputs":12}],16:[function(require,module,exports){
+},{"./core/ajax/baseActions.js":6,"./core/events/baseEvents.js":7,"./instances/lock/Lock.js":13,"./sf":14,"./shim/Object.assign":15,"./shim/console":16}],13:[function(require,module,exports){
 "use strict";
 
 (function(sf) {
@@ -2040,7 +1506,7 @@ module.exports = {
 
 })(sf);
 
-},{}],17:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var core = {
     Ajax: require("./core/Ajax"),
     BaseDOMConstructor: require("./core/BaseDOMConstructor"),
@@ -2068,7 +1534,7 @@ var sf = {
 };
 
 module.exports = sf;
-},{"./core/Ajax":1,"./core/BaseDOMConstructor":2,"./core/DomMutations":3,"./core/Events":4,"./core/InstancesController":5,"./helpers/DOMEvents":8,"./helpers/LikeFormData":9,"./helpers/domTools":10,"./helpers/tools":11}],18:[function(require,module,exports){
+},{"./core/Ajax":1,"./core/BaseDOMConstructor":2,"./core/DomMutations":3,"./core/Events":4,"./core/InstancesController":5,"./helpers/DOMEvents":8,"./helpers/LikeFormData":9,"./helpers/domTools":10,"./helpers/tools":11}],15:[function(require,module,exports){
 /**
  * Object.assign polyfill
  * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -2096,7 +1562,7 @@ if (typeof Object.assign != 'function') {
         };
     })();
 }
-},{}],19:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Avoid `console` errors in browsers that lack a console.
  */
@@ -2122,178 +1588,7 @@ if (typeof Object.assign != 'function') {
     }
 }());
 
-},{}],20:[function(require,module,exports){
-/*! github.com/serbanghita/formToObject.js 1.0.1  (c) 2013 Serban Ghita <serbanghita@gmail.com> @licence MIT */
-
-(function(){
-
-    // Constructor.
-	var formToObject = function( formRef ){
-
-		if( !formRef ){ return false; }
-
-		this.formRef       = formRef;
-		this.keyRegex      = /[^\[\]]+/g;
-		this.$form         = null;
-		this.$formElements = [];
-		this.formObj       = {};
-
-		if( !this.setForm() ){ return false; }
-		if( !this.setFormElements() ){ return false; }
-
-		return this.setFormObj();
-
-	};
-
-	// Set the main form object we are working on.
-	formToObject.prototype.setForm = function(){
-
-		switch( typeof this.formRef ){
-
-			case 'string':
-				this.$form = document.getElementById( this.formRef );
-			break;
-
-			case 'object':
-				if( this.isDomNode(this.formRef) ){
-					this.$form = this.formRef;
-				}
-			break;
-
-		}
-
-		return this.$form;
-
-	};
-
-	// Set the elements we need to parse.
-	formToObject.prototype.setFormElements = function(){
-		this.$formElements = this.$form.querySelectorAll('input, textarea, select');
-		return this.$formElements.length;
-	};
-
-	// Check to see if the object is a HTML node.
-	formToObject.prototype.isDomNode = function( node ){
-		return typeof node === "object" && "nodeType" in node && node.nodeType === 1;
-	};
-
-	// Iteration through arrays and objects. Compatible with IE.
-	formToObject.prototype.forEach = function( arr, callback ){
-
-		if([].forEach){
-			return [].forEach.call(arr, callback);
-		}
-
-		var i;
-		for(i in arr){
-			// Object.prototype.hasOwnProperty instead of arr.hasOwnProperty for IE8 compatibility.
-			if( Object.prototype.hasOwnProperty.call(arr,i) ){
-				callback.call(arr, arr[i]);
-			}
-		}
-
-		return;
-
-	}
-
-    // Recursive method that adds keys and values of the corresponding fields.
-	formToObject.prototype.addChild = function( result, domNode, keys, value ){
-
-		// #1 - Single dimensional array.
-		if(keys.length === 1){
-
-			// We're only interested in the radio that is checked.
-			if( domNode.nodeName === 'INPUT' && domNode.type === 'radio' ) {
-				if( domNode.checked ){
-					return result[keys] = value;
-				} else {
-					return;
-				}
-			}
-
-			// Checkboxes are a special case. We have to grab each checked values
-			// and put them into an array.
-			if( domNode.nodeName === 'INPUT' && domNode.type === 'checkbox' ) {
-
-				if( domNode.checked ){
-
-					if( !result[keys] ){
-						result[keys] = [];
-					}
-					return result[keys].push( value );
-
-				} else {
-					return;
-				}
-
-			}
-
-			// Multiple select is a special case.
-			// We have to grab each selected option and put them into an array.
-			if( domNode.nodeName === 'SELECT' && domNode.type === 'select-multiple' ) {
-
-				result[keys] = [];
-				var DOMchilds = domNode.querySelectorAll('option[selected]');
-				if( DOMchilds ){
-					this.forEach(DOMchilds, function(child){
-						result[keys].push( child.value );
-					});
-				}
-				return;
-
-			}
-
-			// Fallback. The default one to one assign.
-			result[keys] = value;
-
-		}
-
-		// #2 - Multi dimensional array.
-		if(keys.length > 1) {
-
-			if(!result[keys[0]]){
-				result[keys[0]] = {};
-			}
-
-			return this.addChild(result[keys[0]], domNode, keys.splice(1, keys.length), value);
-
-		}
-
-		return result;
-
-	};
-
-	formToObject.prototype.setFormObj = function(){
-
-		var test, i = 0;
-
-		for(i = 0; i < this.$formElements.length; i++){
-			// Ignore the element if the 'name' attribute is empty.
-			// Ignore the 'disabled' elements.
-			if( this.$formElements[i].name && !this.$formElements[i].disabled ) {
-				test = this.$formElements[i].name.match( this.keyRegex );
-				this.addChild( this.formObj, this.$formElements[i], test, this.$formElements[i].value );
-			}
-		}
-
-		return this.formObj;
-
-	}
-
-	// AMD/requirejs: Define the module
-	if( typeof define === 'function' && define.amd ) {
-		define(function () {
-			return formToObject;
-		});
-	}
-	// Browser: Expose to window
-	else {
-		window.formToObject = formToObject;
-	}
-
-})();
-
-},{}]},{},[13])
+},{}]},{},[12])
 
 
 //# sourceMappingURL=sf.js.map
