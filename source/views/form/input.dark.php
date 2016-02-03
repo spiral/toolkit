@@ -2,7 +2,7 @@
 
 <block:resources>
     <?php
-        if ((!empty($prefix) && $prefix != "''") || (!empty($mask) && $mask != "''")) {
+        if ((!empty($prefix) && $prefix != "''") || (!empty($pattern) && $pattern != "''")) {
     ?>
         <resource:script href="resources/scripts/spiral/sf.input.js"/>
         <?php
@@ -25,7 +25,7 @@
         ?>
         <block:input-body>
 
-                <input type="${type|text}" name="${name}" value="${value}${context}" data-prefix="${prefix}" data-mask="${mask}" class="item-input <?php(!empty($prefix) && $prefix != "''") || (!empty($mask) && $mask != "''") ? 'sf-js-input' : '' ?>" node:attributes/>
+                <input type="${type|text}" name="${name}" value="${value}${context}" data-prefix="${prefix}" data-pattern="${pattern}" class="item-input <?php(!empty($prefix) && $prefix != "''") || (!empty($pattern) && $pattern != "''") ? 'sf-js-input' : '' ?>" node:attributes/>
         </block:input-body>
     </label>
 </block:body>

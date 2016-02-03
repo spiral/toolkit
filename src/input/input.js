@@ -102,7 +102,7 @@ Input.prototype.addPatternEventListeners = function() {
         }
         return true
     }
-        this.els.node.addEventListener('keypress', this._inputKeyPress);
+    this.els.node.addEventListener('keypress', this._inputKeyPress);
 
     this._inputFocus = function(event) {
         event.preventDefault()
@@ -115,7 +115,6 @@ Input.prototype.addPatternEventListeners = function() {
         }, 0)
     }
     this.els.node.addEventListener('focus', this._inputFocus);
-
 
     this._inputKeyDown = function(event){
         var char = String.fromCharCode(event.keyCode);
@@ -149,7 +148,6 @@ Input.prototype.addPatternEventListeners = function() {
 
         return true
     }
-
     this.els.node.addEventListener('keydown', this._inputKeyDown);
 
     this._inputBlur = function(event) {
@@ -157,7 +155,6 @@ Input.prototype.addPatternEventListeners = function() {
             that.els.node.value = ''
         }
     }
-
     this.els.node.addEventListener('blur', this._inputBlur);
 
 }
@@ -249,14 +246,27 @@ Input.prototype.addPrefixEventListeners = function () {
     }
 };
 
-Input.prototype.removeEventListeners = function () {
+Input.prototype.removePatternEventListeners = function () {
+    if (this.els.node) {
+        this.els.node.addEventListener('keypress', this._inputKeyPress);
+        this.els.node.addEventListener('focus', this._inputFocus);
+        this.els.node.addEventListener('keydown', this._inputKeyDown);
+        this.els.node.addEventListener('blur', this._inputBlur);
+    }
+};
+
+Input.prototype.removePrefixEventListeners = function () {
     if (this.els.node) {
         this.els.node.removeEventListener('keyup', this._inputKeyup);
     }
 };
 
 Input.prototype.die = function () {
-    this.removeEventListeners();
+    if(this.options.pattern) {
+        this.removePatternEventListeners();
+    } else if (this.options.prefix) {
+        this.removePrefixEventListeners();
+    }
     delete this;
 };
 
