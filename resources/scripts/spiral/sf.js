@@ -790,6 +790,15 @@ InstancesController.prototype.getInstance = function (instanceName, node, isRetu
     }
     return ret;
 };
+/**
+ * Get instances. Return array of instances objects
+ * @param {String} instanceName - name of instance
+ * @returns {array|boolean}
+ */
+InstancesController.prototype.getInstances = function (instanceName) {
+    return this._storage.instances[instanceName] || false;
+};
+
 
 /**
  * Register addon for instance
@@ -1387,126 +1396,20 @@ _sf.ajax = new _sf.core.Ajax(window.csrfToken ? {//TODO move to spiral bindings
 } : null);
 require("./core/ajax/baseActions.js")(_sf);
 
-require("./instances/lock/Lock.js");
+//API
+_sf.createModulePrototype = function() { return Object.create(_sf.modules.core.BaseDOMConstructor.prototype)};
+_sf.registerInstanceType = _sf.instancesController.registerInstanceType.bind(_sf.instancesController);
+_sf.addInstance = _sf.instancesController.addInstance.bind(_sf.instancesController);
+_sf.removeInstance = _sf.instancesController.removeInstance.bind(_sf.instancesController);
+_sf.getInstance = _sf.instancesController.getInstance.bind(_sf.instancesController);
+_sf.getInstances = _sf.instancesController.getInstances.bind(_sf.instancesController);
+
+_sf.closest = sf.helpers.domTools.closest;
 
 if (typeof exports === "object" && exports) {
     module.exports = _sf;
 }
-},{"./core/ajax/baseActions.js":6,"./core/events/baseEvents.js":7,"./instances/lock/Lock.js":13,"./sf":14,"./shim/Object.assign":15,"./shim/console":16}],13:[function(require,module,exports){
-"use strict";
-
-(function(sf) {
-    /**
-     * Spiral lock for forms
-     * @constructor Lock
-     */
-
-    var Lock = function(sf, node, options){
-        this._construct(sf, node, options);
-    };
-
-    /**
-     * @lends Lock.prototype
-     */
-    Lock.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
-
-    /**
-     * Name of module
-     * @type {string}
-     */
-    Lock.prototype.name = "lock";
-
-    /**
-     * Function that call on new instance is created.
-     * @param {Object} sf
-     * @param {Object} node  DomNode of form
-     * @param {Object} [options] all options to override default
-     * @private
-     */
-    Lock.prototype._construct = function(sf, node, options){
-        this.init(sf, node, options);//call parent
-        this.add(this.options.type,this.node);
-    };
-    /**
-     * Add lock
-     * @param {String} [type] type of lock @see sf.lock.types
-     * @param {Object} context context to add lock
-     * @returns {Function|*}
-     */
-    Lock.prototype.add =function(type, context){
-        if (!this.types.hasOwnProperty(type)){
-            return false;
-        }
-        var node = document.createElement("div");
-        node.className = this.types[type].className || 'js-sf-lock';
-        node.innerHTML = this.types[type].html;
-        context.appendChild(node);
-        context.classList.add("locked");
-        return this.types[type].progress;
-    };
-    /**
-     * Clear all variables and die
-     */
-    Lock.prototype.die = function () {
-        this.remove();
-    };
-    /**
-     * Remove lock
-     */
-    Lock.prototype.remove = function(){
-        this.node.classList.remove("locked");
-        var sfLock = this.node.querySelector(".js-sf-lock");//todo this.lockNode ?
-        if (sfLock) {
-            this.node.removeChild(sfLock);
-        }
-        return true;
-    };
-    /**
-     * Object with lock types.
-     * @enum {Object}
-     */
-    Lock.prototype.types  = {
-        /**
-         * @type {Object}
-         */
-        spinner: {
-            /**
-             * HTML
-             * @inner
-             * @type String
-             */
-            html: '<div class="sf-spinner"></div>'
-        },
-        progress: {
-            /**
-             * HTML
-             * @inner
-             * @type String
-             */
-            html: '<div class="sf-progress"><div class="progress-line"></div></div>',
-            /**
-             * Function to change styles while AJAX progress
-             * @param current
-             * @param total
-             */
-            progress: function (current, total) {
-                var progress = this.context.getElementsByClassName("progress-line")[0];
-                progress.style.width = 100 * (current / total) + "%";
-            }
-        }
-    };
-
-    //we have to have some default locker, let it be spinner
-    Lock.prototype.types.default = Lock.prototype.types.spinner;
-
-    /**
-     * Register lock
-     */
-    sf.instancesController.registerInstanceType(Lock);
-
-})(sf);
-
-},{}],14:[function(require,module,exports){
+},{"./core/ajax/baseActions.js":6,"./core/events/baseEvents.js":7,"./sf":13,"./shim/Object.assign":14,"./shim/console":15}],13:[function(require,module,exports){
 var core = {
     Ajax: require("./core/Ajax"),
     BaseDOMConstructor: require("./core/BaseDOMConstructor"),
@@ -1534,7 +1437,7 @@ var sf = {
 };
 
 module.exports = sf;
-},{"./core/Ajax":1,"./core/BaseDOMConstructor":2,"./core/DomMutations":3,"./core/Events":4,"./core/InstancesController":5,"./helpers/DOMEvents":8,"./helpers/LikeFormData":9,"./helpers/domTools":10,"./helpers/tools":11}],15:[function(require,module,exports){
+},{"./core/Ajax":1,"./core/BaseDOMConstructor":2,"./core/DomMutations":3,"./core/Events":4,"./core/InstancesController":5,"./helpers/DOMEvents":8,"./helpers/LikeFormData":9,"./helpers/domTools":10,"./helpers/tools":11}],14:[function(require,module,exports){
 /**
  * Object.assign polyfill
  * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -1562,7 +1465,7 @@ if (typeof Object.assign != 'function') {
         };
     })();
 }
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * Avoid `console` errors in browsers that lack a console.
  */
