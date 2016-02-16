@@ -17,7 +17,7 @@ var Ajax = function (options) {
     this.events = new Events(["beforeSend", 'load']);
 
     if (options && options.headers) {
-        this.headers = tools.extend(this.headers, options.headers);
+        this.headers = Object.assign(this.headers, options.headers);
     }
 };
 
