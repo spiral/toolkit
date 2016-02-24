@@ -736,28 +736,15 @@ form {
   margin-right: 20px;
   height: 35px;
   line-height: 35px;
-  width: 114px;
 }
 .file-field.input-field .btn span {
   float: left;
-  padding-left: 40px;
   position: relative;
   font-size: 20px;
   font-weight: bold;
   border-radius: 2px;
 }
-.file-field.input-field .btn span:before {
-  content: "";
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…EuMzAxLTAuOUwyMCwxM0MyMC4xLDEyLjUsMTkuOCwxMS44LDE5LjMsMTEuNXoiLz48L3N2Zz4=);
-  display: block;
-  width: 20px;
-  height: 17px;
-  background-size: cover;
-  position: absolute;
-  left: 0px;
-  top: 8px;
-}
-.file-field.input-field .btn input[type=file] {
+.file-field.input-field input[type=file] {
   position: absolute;
   left: 0;
   top: 0;
@@ -778,4 +765,36 @@ form {
   border-radius: 2px;
   height: 35px;
   padding: 0 10px;
+}
+.flash-wrapper {
+  position: fixed;
+  bottom: 40px;
+  width: 288px;
+  right: 10px;
+  -webkit-transition-duration: 0.7s;
+  transition-duration: 0.7s;
+  z-index: 10000;
+  bottom: -120%;
+}
+.flash-wrapper.show {
+  bottom: 40px;
+}
+.flash-wrapper.flash {
+  color: #fff;
+  position: relative;
+  border-radius: 2px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  -webkit-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  opacity: 1;
+}
+.flash-wrapper.flash.info {
+  background: #212121;
+}
+.flash-wrapper.flash.debug {
+  background: #FF9800;
+}
+.flash-wrapper.flash.danger {
+  background: #DD2C00;
 }

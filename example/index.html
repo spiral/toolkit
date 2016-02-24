@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input</title>
+    <link rel="stylesheet" href="../resources/styles/spiral/spiral.css"/>
+    <script src="../resources/scripts/spiral/sf.min.js"></script>
+    <script src="../resources/scripts/spiral/sf.input.js"></script>
+
+</head>
+<body>
+    <h1>Test Spiral Input</h1>
+
+    <form style="width: 300px;">
+       <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Prefix Test Input:</span>
+                <input type="text" name="prefix" data-prefix="http://" class="item-input sf-js-input">
+            </label>
+        </div>
+
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Pattern Test Input:</span>
+                <input type="text" name="mask" data-pattern="999-999-999" class="item-input sf-js-input">
+            </label>
+        </div>
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Pattern Test Input:</span>
+                <input type="text" name="mask" data-pattern="aaa/bbb/ccc" class="item-input sf-js-input">
+            </label>
+        </div>
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Pattern Test Input:</span>
+                <input type="text" name="mask" data-pattern="01/12/2015 00:00" class="item-input sf-js-input">
+            </label>
+        </div>
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Pattern Test Input:</span>
+                <input type="text" name="mask" data-pattern="***.***" class="item-input sf-js-input">
+            </label>
+        </div>
+
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Empty Test Input:</span>
+                <input type="text" name="empty" class="item-input">
+            </label>
+        </div>
+        <div class="file-field input-field">
+            <input type="file" id="file-1" class="inputfile sf-js-input" data-multiple-text="{count} files selected" multiple data-file="true" />
+            <label for="file-1" class="btn">
+                <span>Choose a file</span>
+            </label>
+        </div>
+    </form>
+
+</body>
+</html>
