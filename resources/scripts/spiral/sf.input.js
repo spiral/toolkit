@@ -127,16 +127,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.els = {
 	        node: node
 	    };
-	
+
 	    if (this.options.prefix) {
 	        this.setPrefix();
 	        this.addPrefixEventListeners();
 	    } else if (this.options.pattern) {
 	        this.setupPattern();
 	        this.addPatternEventListeners();
-	    }
+	    } else if (this.options.file) {
+            this.addFileEventListeners();
+        }
 	};
-	
+
 	/**
 	 * @override
 	 * @inheritDoc
@@ -144,7 +146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	Input.prototype.optionsToGrab = {
 	    /**
-	     *  Mask of input
+	     *  Pattern of input
 	     */
 	    "pattern": {
 	        "domAttr": "data-pattern"
@@ -154,26 +156,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    "prefix": {
 	        "domAttr": "data-prefix"
-	    }
-	
+	    },
+        /**
+         *  File input
+         */
+        "file": {
+            "domAttr": "data-file"
+        }
+
 	};
-	
+
 	/**
 	 * Setup pattern
 	 */
 	Input.prototype.isValidPattern = function () {
 	    return this.els.node.value.match(this.pattern);
 	};
-	
+
 	Input.prototype.addPatternEventListeners = function () {
 	    var that = this;
-	
+
 	    this._inputKeyPress = function (event) {
-	
+
 	        var char = String.fromCharCode(event.keyCode);
 	        var value = that.els.node.value;
 	        var position = that.getCursorPosition();
-	
+
 	        if (char.length > 0) {
 	            event.preventDefault();
 	            var offset = 1;
@@ -184,9 +192,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    break;
 	                }
 	            }
-	
+
 	            var futureValue = value.substring(0, position + offset - 1) + char + value.substring(position + offset, value.length);
-	
+
 	            if (!futureValue.match(that.patternWithEmpty)) {
 	                return false;
 	            } else {
@@ -198,10 +206,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	    };
 	    this.els.node.addEventListener('keypress', this._inputKeyPress);
-	
+
 	    this._inputFocus = function (event) {
 	        event.preventDefault();
-	
+
 	        setTimeout(function () {
 	            if (that.els.node.value == "") {
 	                that.els.node.value = that.patternString.replace(/[^\-\(\)\[\]\:\.\,\$\%\@\ \/]/g, '_');
@@ -210,12 +218,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, 0);
 	    };
 	    this.els.node.addEventListener('focus', this._inputFocus);
-	
+
 	    this._inputKeyDown = function (event) {
 	        var char = String.fromCharCode(event.keyCode);
 	        var value = that.els.node.value;
 	        var position = that.getCursorPosition();
-	
+
 	        if (event.keyCode == 8 || event.keyCode == 46) {
 	            event.preventDefault();
 	            var offset = 0;
@@ -226,9 +234,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    break;
 	                }
 	            }
-	
+
 	            var futureValue = value.substring(0, position + offset - 1) + '_' + value.substring(position + offset, value.length);
-	
+
 	            if (!futureValue.match(that.patternWithEmpty)) {
 	                return false;
 	            } else {
@@ -240,39 +248,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (char.match(/\W/)) {
 	            return false;
 	        }
-	
+
 	        return true;
 	    };
-	
 	    this.els.node.addEventListener('keydown', this._inputKeyDown);
-	
+
 	    this._inputBlur = function (event) {
 	        if (!that.els.node.value.match(that.pattern)) {
 	            that.els.node.value = '';
 	        }
 	    };
-	
 	    this.els.node.addEventListener('blur', this._inputBlur);
 	};
-	
+
 	Input.prototype.getCursorPosition = function () {
 	    var position = 0;
-	
+
 	    if (document.selection) {
 	        this.els.node.focus();
-	
+
 	        var selectRange = document.selection.createRange();
-	
+
 	        selectRange.moveStart("character", -this.els.node.value.length);
-	
+
 	        position = selectRange.text.length;
 	    } else if (this.els.node.selectionStart || this.els.node.selectionStart === "0") {
 	        position = this.els.node.selectionStart;
 	    }
-	
+
 	    return position;
 	};
-	
+
 	Input.prototype.setCursorPosition = function (position) {
 	    if (this.els.node.createTextRange) {
 	        var range = this.els.node.createTextRange();
@@ -287,19 +293,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 	};
-	
+
 	Input.prototype.setupPattern = function () {
 	    this.formatCharacters = this.els.node.getAttribute('data-format-characters') || "-()[]:.,$%@ /";
 	    this.patternString = this.options.pattern;
 	    this.els.node.placeholder = this.patternString;
-	
+
 	    var _initPattern = function () {
 	        var formattedPatternStr = "";
 	        var formattedPatternWithEmptyStr = "";
-	
+
 	        for (var i = 0; i < this.patternString.length; i++) {
 	            var char = this.patternString[i];
-	
+
 	            if (this.formatCharacters.indexOf(char) >= 0) {
 	                formattedPatternStr += char;
 	                formattedPatternWithEmptyStr += char;
@@ -314,24 +320,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	                formattedPatternWithEmptyStr += "([0-9a-zA-Z]|_)";
 	            }
 	        }
-	
+
 	        this.pattern = new RegExp("^" + formattedPatternStr + "$", 'g');
 	        this.patternWithEmpty = new RegExp("^" + formattedPatternWithEmptyStr + "$", 'g');
 	    }.bind(this);
-	
+
 	    _initPattern();
 	};
-	
+
 	/**
 	 * Adds static events listeners.
 	 */
+
+    Input.prototype.addFileEventListeners = function() {
+        var that = this
+        this._inputChange = function(e) {
+            var label = that.els.node.nextElementSibling,
+                labelVal = label.innerHTML;
+
+            var fileName = '';
+
+            if(that.els.node.files && that.els.node.files.length > 1) {
+                fileName = ( that.els.node.getAttribute('data-multiple-text') || '{count} files selected' ).replace('{count}', that.els.node.files.length);
+            } else {
+                fileName = e.target.value.split('\\').pop();
+            }
+
+            if(fileName) {
+                label.querySelector('span').innerHTML = fileName;
+            } else {
+                label.innerHTML = labelVal;
+            }
+        }
+
+        this._inputBlur = function() {
+            that.els.node.classList.add('has-focus');
+        }
+
+        this._inputFocus = function() {
+            that.els.node.classList.remove('has-focus');
+        }
+
+        if(this.els.node){
+            this.els.node.addEventListener('change', this._inputChange);
+            this.els.node.addEventListener('blur', this._inputBlur);
+            this.els.node.addEventListener('foxus', this._inputFocus);
+        }
+
+
+    }
+
 	Input.prototype.addPrefixEventListeners = function () {
 	    var that = this;
-	
+
 	    this._inputKeyup = function () {
-	
+
 	        var oldValue = this.getAttribute('data-prefix');
-	
+
 	        if (that.els.node.value.indexOf(oldValue) !== 0) {
 	            that.els.node.value = oldValue + ' ';
 	        }
@@ -340,15 +385,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.els.node.addEventListener('keyup', this._inputKeyup);
 	    }
 	};
-	
-	Input.prototype.removeEventListeners = function () {
+
+	Input.prototype.removePatternEventListeners = function () {
+	    if (this.els.node) {
+	        this.els.node.removeEventListener('keypress', this._inputKeyPress);
+	        this.els.node.removeEventListener('focus', this._inputFocus);
+	        this.els.node.removeEventListener('keydown', this._inputKeyDown);
+	        this.els.node.removeEventListener('blur', this._inputBlur);
+	    }
+	};
+
+
+    Input.prototype.removeFileEventListeners = function () {
+        if (this.els.node) {
+            this.els.node.removeEventListener('change', this._inputChange);
+            this.els.node.removeEventListener('focus', this._inputFocus);
+            this.els.node.removeEventListener('blur', this._inputBlur);
+        }
+    };
+
+
+	Input.prototype.removePrefixEventListeners = function () {
 	    if (this.els.node) {
 	        this.els.node.removeEventListener('keyup', this._inputKeyup);
 	    }
 	};
-	
+
 	Input.prototype.die = function () {
-	    this.removeEventListeners();
+	    if (this.options.pattern) {
+	        this.removePatternEventListeners();
+	    } else if (this.options.prefix) {
+	        this.removePrefixEventListeners();
+	    } else if (this.options.file) {
+            this.removeFileEventListeners();
+        }
 	    delete this;
 	};
 	
