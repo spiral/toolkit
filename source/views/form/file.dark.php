@@ -1,7 +1,7 @@
 <extends:spiral:element/>
 
 <block:resources>
-    <resource:script href="resources/scripts/spiral/sf.file.js"/>
+    <resource:script href="resources/scripts/spiral/sf.fileinput.js"/>
 </block:resources>
 
 <block:body>
