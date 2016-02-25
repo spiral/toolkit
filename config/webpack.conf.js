@@ -13,7 +13,9 @@ var uglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
 module.exports = {
     entry: {
         "sf.input": './src/input/index.js',  // webpack workaround issue #300
-        "sf.input.min": './src/input/index.js'  // webpack workaround issue #300
+        "sf.input.min": './src/input/index.js',  // webpack workaround issue #300
+        "sf.fileinput": './src/fileinput/index.js',  // webpack workaround issue #300
+        "sf.fileinput.min": './src/fileinput/index.js'  // webpack workaround issue #300
     },
     output: {
         filename: '[name].js',
