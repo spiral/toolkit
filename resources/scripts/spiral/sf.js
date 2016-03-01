@@ -1441,9 +1441,10 @@ BaseDOMConstructor.prototype.grabOptions = function (node) {
  * @param {String} addonType type of addon (message,fill,etc)
  * @param {String} addonName name of addon
  */
-BaseDOMConstructor.prototype.getAddon = function (addonType, addonName) {
-    return this.spiral.instancesController.getInstanceAddon(this.name, addonType, addonName);
-};
+//depricated
+//BaseDOMConstructor.prototype.getAddon = function (addonType, addonName) {
+//    return this.spiral.instancesController.getInstanceAddon(this.name, addonType, addonName);
+//};
 
 module.exports = BaseDOMConstructor;
 
@@ -2001,7 +2002,7 @@ module.exports = function(events){
     events.on("redirect", function (event) {
         var url = Object.prototype.toString.call(event) === "[object String]" ? event : event.url;
         //http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
-        window.location[/^(?:[a-z]+:)?\/\//i.test(url) ? 'href' : 'pathname'] = url;
+        self.location[/^(?:[a-z]+:)?\/\//i.test(url) ? 'href' : 'pathname'] = url;
     });
 
     events.on('reload', function () {
@@ -2013,7 +2014,7 @@ module.exports = function(events){
     });
 
     events.on('close', function () {
-        window.close();
+        self.close();
     });
 };
 },{}],10:[function(require,module,exports){
@@ -2349,7 +2350,7 @@ var tools = {
     resolveKeyPath : function(path, obj, safe) {
         return path.split('.').reduce(function(prev, curr) {
             return !safe ? prev[curr] : (prev ? prev[curr] : void 0)
-        })
+        }, obj||self)
     }
 };
 
