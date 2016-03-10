@@ -390,7 +390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} opt options
 	 */
 	Form.prototype.setOptions = function (opt) {
-	    this.options = this.sf.modules.helpers.tools.extend(this.options, opt);
+	    this.options = (0, _assign2.default)(this.options, opt);
 	};
 	
 	/**
@@ -720,7 +720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            isMsg = true;
 	        }
 	
-	        if (!isMsg) {
+	        if (!isMsg && answer.status > 300) {
 	            var error = answer.status ? answer.status + " " : "";
 	            error += answer.statusText ? answer.statusText : "";
 	            error += answer.data && !answer.statusText ? answer.data : "";
