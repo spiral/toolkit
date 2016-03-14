@@ -27,7 +27,7 @@
             <tr>
                 <?php #compile
                 foreach ($__gridHeaders__ as $header) {
-                    echo "<th><?=$header?></th>";
+                    echo "<?=$header?>";
                 }
                 ?>
             </tr>
