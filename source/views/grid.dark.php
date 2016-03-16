@@ -26,9 +26,7 @@
             <thead>
             <tr>
                 <?php #compile
-                foreach ($__gridHeaders__ as $header) {
-                    echo "<?=$header?>";
-                }
+                echo join("\n", $__gridHeaders__);
                 ?>
             </tr>
             </thead>
