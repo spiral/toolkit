@@ -1,0 +1,22 @@
+{
+  "name": "spiral",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "3ed68ae14e9cde775121954242a412b2",
+      "css": "sort-up",
+      "code": 59392,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "6586267200a42008a9fc0a1bf7ac06c7",
+      "css": "sort-down",
+      "code": 59393,
+      "src": "fontawesome"
+    }
+  ]
+}
