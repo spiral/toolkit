@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'spiral';
-  src: url('../font/spiral.eot?81420695');
-  src: url('../font/spiral.eot?81420695#iefix') format('embedded-opentype'),
-       url('../font/spiral.woff2?81420695') format('woff2'),
-       url('../font/spiral.woff?81420695') format('woff'),
-       url('../font/spiral.ttf?81420695') format('truetype'),
-       url('../font/spiral.svg?81420695#spiral') format('svg');
+  src: url('../font/spiral.eot?89753911');
+  src: url('../font/spiral.eot?89753911#iefix') format('embedded-opentype'),
+       url('../font/spiral.woff2?89753911') format('woff2'),
+       url('../font/spiral.woff?89753911') format('woff'),
+       url('../font/spiral.ttf?89753911') format('truetype'),
+       url('../font/spiral.svg?89753911#spiral') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'spiral';
-    src: url('../font/spiral.svg?81420695#spiral') format('svg');
+    src: url('../font/spiral.svg?89753911#spiral') format('svg');
   }
 }
 */
@@ -57,3 +57,7 @@
  
 .icon-sort-up:before { content: '\e800'; } /* '' */
 .icon-sort-down:before { content: '\e801'; } /* '' */
+.icon-down:before { content: '\e802'; } /* '' */
+.icon-search:before { content: '\e803'; } /* '' */
+.icon-left-open:before { content: '\e804'; } /* '' */
+.icon-right-open:before { content: '\e805'; } /* '' */

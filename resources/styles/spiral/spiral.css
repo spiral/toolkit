@@ -131,6 +131,14 @@
   content: '\e803';
 }
 /* '' */
+.toolkit-icon-left:before {
+  content: '\e804';
+}
+/* '' */
+.toolkit-icon-right:before {
+  content: '\e805';
+}
+/* '' */
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
