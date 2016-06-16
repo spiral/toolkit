@@ -8,6 +8,7 @@
 
     <script src="../resources/scripts/spiral/sf.input.js"></script>
     <script src="../resources/scripts/spiral/sf.fileinput.js"></script>
+    <script src="../resources/scripts/spiral/sf.date.js"></script>
 
 
 </head>
@@ -53,8 +54,16 @@
                 <input type="text" name="empty" class="item-input">
             </label>
         </div>
+
+        <div class="form-content">
+            <label class="item-form">
+                <span class="item-label">Date Input:</span>
+                <input type="text" data-value="1272508903" class="sf-js-date">
+            </label>
+        </div>
+
         <div class="file-field input-field">
-            <input type="file" id="file-1" class="inputfile sf-js-file-input" data-multiple-text="{count} files selected" multiple data-file="true" />
+            <input type="file" id="file-1"  class="inputfile sf-js-file-input"  data-multiple-text="{count} files selected" multiple data-file="true" />
             <label for="file-1" class="btn">
                 <span>Choose a file</span>
             </label>

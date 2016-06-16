@@ -35,6 +35,12 @@
     "gulp-header": "^1.7.1",
     "gulp-uglify": "^1.5.1",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.6.0"
+    "gulp-sourcemaps": "^1.6.0",
+    "css-loader": "^0.23.1",
+    "style-loader": "^0.13.0"
+  },
+  "dependencies": {
+    "moment": "^2.13.0",
+    "pikaday": "^1.4.0"
   }
 }
