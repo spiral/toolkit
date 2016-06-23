@@ -17,7 +17,9 @@ module.exports = {
         "sf.fileinput": './src/fileinput/index.js',  // webpack workaround issue #300
         "sf.fileinput.min": './src/fileinput/index.js',  // webpack workaround issue #300
         "sf.date.min": './src/date/index.js',  // webpack workaround issue #300
-        "sf.date": './src/date/index.js'  // webpack workaround issue #300
+        "sf.date": './src/date/index.js',  // webpack workaround issue #300
+        "sf.datetime.min": './src/datetime/index.js',  // webpack workaround issue #300
+        "sf.datetime": './src/datetime/index.js'  // webpack workaround issue #300
     },
     output: {
         filename: '[name].js',

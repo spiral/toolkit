@@ -60,17 +60,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _sf2 = _interopRequireDefault(_sf);
 	
-	var _date = __webpack_require__(2);
+	var _datetime = __webpack_require__(154);
 	
-	var _date2 = _interopRequireDefault(_date);
+	var _datetime2 = _interopRequireDefault(_datetime);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	__webpack_require__(150); //resolved in webpack's "externals"
 	
 	
-	_sf2.default.instancesController.registerInstanceType(_date2.default, "sf-js-date");
-	module.exports = _date2.default; // ES6 default export will not expose us as global
+	_sf2.default.instancesController.registerInstanceType(_datetime2.default, "sf-js-datetime");
+	module.exports = _datetime2.default; // ES6 default export will not expose us as global
 
 /***/ },
 /* 1 */
@@ -79,140 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 
 /***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = undefined;
-	
-	var _assign = __webpack_require__(3);
-	
-	var _assign2 = _interopRequireDefault(_assign);
-	
-	var _create = __webpack_require__(40);
-	
-	var _create2 = _interopRequireDefault(_create);
-	
-	var _sf = __webpack_require__(1);
-	
-	var _sf2 = _interopRequireDefault(_sf);
-	
-	var _moment = __webpack_require__(46);
-	
-	var _moment2 = _interopRequireDefault(_moment);
-	
-	var _pikaday = __webpack_require__(149);
-	
-	var _pikaday2 = _interopRequireDefault(_pikaday);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	//resolved in webpack's "externals"
-	
-	
-	var Date = function Date(sf, node, options) {
-	    this._construct(sf, node, options);
-	};
-	
-	/**
-	 * @lends sf.Form.prototype
-	 */
-	Date.prototype = (0, _create2.default)(_sf2.default.modules.core.BaseDOMConstructor.prototype);
-	
-	/**
-	 * Name to register
-	 * @type {string}
-	 */
-	Date.prototype.name = "date";
-	
-	Date.prototype._construct = function (sf, node, options) {
-	
-	    this.init(sf, node, options); //call parent
-	
-	    if (options) {
-	        //if we pass options extend all options by passed options
-	        this.options = (0, _assign2.default)(this.options, options);
-	    }
-	
-	    this.options = (0, _assign2.default)(this.options, options, this.options.config);
-	
-	    //elements
-	    this.els = {
-	        node: node
-	    };
-	
-	    this.picker = new _pikaday2.default({ field: this.els.node });
-	
-	    var moment = (0, _moment2.default)(this.els.node.dataset.value, this.options.valueMask);
-	
-	    this.els.node.value = moment.format(this.options.format);
-	};
-	
-	/**
-	 * @override
-	 * @inheritDoc
-	 * @enum {string}
-	 */
-	Date.prototype.optionsToGrab = {
-	    /**
-	     *  Predefined value in any format
-	     */
-	    "value": {
-	        "domAttr": "data-value"
-	    },
-	    /**
-	     *  Mask of predefined value, for example: "X" - Unix timestamp, "x" - Unix ms timestamp, "YYYY" - 4 or 2 digit year
-	     *  http://momentjs.com/docs/  Section: "String+Format"
-	     */
-	    "valueMask": {
-	        "domAttr": "data-value-mask",
-	        "value": "X"
-	    },
-	    /**
-	     *  Format of value in input
-	     *  http://momentjs.com/docs/  Section: "String+Format"
-	     */
-	    "format": {
-	        "domAttr": "data-format",
-	        "value": "YYYY-MM-DD"
-	    },
-	    /**
-	     *  Pass all other custom options of Pikaday via json
-	     */
-	    config: {
-	        value: {},
-	        domAttr: "data-config",
-	        processor: function processor(node, val, self) {
-	            if (!val) return this.value;
-	            if (typeof val == "string") {
-	                try {
-	                    val = JSON.parse(val);
-	                } catch (e) {
-	                    console.error("Config JSON.parse error: ", e);
-	                }
-	            }
-	            return (0, _assign2.default)(self.value, val);
-	        }
-	    }
-	
-	};
-	
-	//Date.prototype.addPatternEventListeners = function() {
-	//    var that = this;
-	//
-	//};
-	
-	Date.prototype.die = function () {
-	    delete this;
-	};
-	
-	exports.default = Date;
-
-/***/ },
+/* 2 */,
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -16041,8 +15908,242 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 
+/***/ },
+/* 154 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = undefined;
+	
+	var _assign = __webpack_require__(3);
+	
+	var _assign2 = _interopRequireDefault(_assign);
+	
+	var _create = __webpack_require__(40);
+	
+	var _create2 = _interopRequireDefault(_create);
+	
+	var _sf = __webpack_require__(1);
+	
+	var _sf2 = _interopRequireDefault(_sf);
+	
+	var _moment = __webpack_require__(46);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	var _pikaday = __webpack_require__(149);
+	
+	var _pikaday2 = _interopRequireDefault(_pikaday);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//resolved in webpack's "externals"
+	
+	
+	var Datetime = function Datetime(sf, node, options) {
+	    this._construct(sf, node, options);
+	};
+	
+	/**
+	 * @lends sf.Form.prototype
+	 */
+	Datetime.prototype = (0, _create2.default)(_sf2.default.modules.core.BaseDOMConstructor.prototype);
+	
+	/**
+	 * Name to register
+	 * @type {string}
+	 */
+	Datetime.prototype.name = "datetime";
+	
+	Datetime.prototype._construct = function (sf, node, options) {
+	
+	    this.init(sf, node, options); //call parent
+	
+	    if (options) {
+	        //if we pass options extend all options by passed options
+	        this.options = (0, _assign2.default)(this.options, options);
+	    }
+	
+	    this.options = (0, _assign2.default)(this.options, options, this.options.config);
+	
+	    //elements
+	    this.els = {
+	        node: node
+	    };
+	
+	    this.picker = new _pikaday2.default({ field: this.els.node });
+	
+	    var moment = (0, _moment2.default)(this.els.node.dataset.value, this.options.valueMask);
+	
+	    this.els.node.value = moment.format(this.options.inputFormat);
+	
+	    this.els.hiddenInput = document.createElement("input");
+	    this.els.hiddenInput.setAttribute("type", "hidden");
+	    this.els.hiddenInput.setAttribute("name", this.els.node.name);
+	    this.els.node.parentNode.appendChild(this.els.hiddenInput);
+	
+	    this.els.node.name = ''; //remove name from date-input since passed data will be in hidden input
+	
+	    this.generateTimePicker();
+	
+	    this.addEventListeners();
+	};
+	
+	/**
+	 * @override
+	 * @inheritDoc
+	 * @enum {string}
+	 */
+	Datetime.prototype.optionsToGrab = {
+	    /**
+	     *  Predefined value in any format
+	     */
+	    value: {
+	        "domAttr": "data-value"
+	    },
+	    /**
+	     *  Mask of predefined value, for example: "X" - Unix timestamp, "x" - Unix ms timestamp, "YYYY" - 4 or 2 digit year
+	     *  http://momentjs.com/docs/  Section: "String+Format"
+	     */
+	    valueMask: {
+	        "domAttr": "data-value-mask",
+	        "value": "X"
+	    },
+	    /**
+	     *  Format of value in input
+	     *  http://momentjs.com/docs/  Section: "String+Format"
+	     */
+	    inputFormat: {
+	        "domAttr": "data-input-format",
+	        "value": "YYYY-MM-DD"
+	    },
+	    /**
+	     *  Format of value to pass into the hidden input
+	     *  http://momentjs.com/docs/  Section: "String+Format"
+	     */
+	    format: {
+	        "domAttr": "data-format",
+	        "value": "X"
+	    },
+	    /**
+	     *  Pass all other custom options of Pikaday via json
+	     */
+	    config: {
+	        value: {},
+	        domAttr: "data-config",
+	        processor: function processor(node, val, self) {
+	            if (!val) return this.value;
+	            if (typeof val == "string") {
+	                try {
+	                    val = JSON.parse(val);
+	                } catch (e) {
+	                    console.error("Config JSON.parse error: ", e);
+	                }
+	            }
+	            return (0, _assign2.default)(self.value, val);
+	        }
+	    },
+	    /**
+	     *  Show time in 24/12 hours format
+	     */
+	    hours24: {
+	        "domAttr": "data-hours-24",
+	        "value": false
+	    },
+	    /**
+	     *  Step in minutes select
+	     */
+	    minuteStep: {
+	        "domAttr": "data-minutes-step",
+	        "value": 1
+	    }
+	
+	};
+	
+	Datetime.prototype.generateTimePicker = function () {
+	    var that = this;
+	
+	    this.els.minuteSelect = document.createElement("select");
+	    this.els.hourSelect = document.createElement("select");
+	
+	    this.els.node.parentNode.appendChild(this.els.hourSelect);
+	    this.els.node.parentNode.appendChild(this.els.minuteSelect);
+	
+	    for (var i = 0; i <= 59; i += that.options.minuteStep) {
+	        var option = document.createElement("option");
+	        option.value = i;
+	        option.text = i;
+	        that.els.minuteSelect.appendChild(option);
+	    }
+	    if (this.options.hours24) {
+	        for (var i = 0; i <= 23; i++) {
+	            var option = document.createElement("option");
+	            option.value = i;
+	            option.text = i;
+	            that.els.hourSelect.appendChild(option);
+	        }
+	    } else {
+	        for (var i = 1; i <= 12; i++) {
+	            var option = document.createElement("option");
+	            option.value = i;
+	            option.text = i;
+	            that.els.hourSelect.appendChild(option);
+	        }
+	        this.els.periodSelect = document.createElement("select");
+	        this.els.node.parentNode.appendChild(this.els.periodSelect);
+	
+	        var am = document.createElement("option");
+	        am.value = "am";
+	        am.text = "am";
+	        that.els.periodSelect.appendChild(am);
+	
+	        var pm = document.createElement("option");
+	        pm.value = "pm";
+	        pm.text = "pm";
+	        that.els.periodSelect.appendChild(pm);
+	    }
+	};
+	
+	Datetime.prototype.onTimeChange = function () {
+	    var time = this.els.node.value + ' ' + this.els.hourSelect.value + ' ' + this.els.minuteSelect.value + (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
+	    var mask = this.options.inputFormat + (this.options.hours24 ? ' HH mm' : ' hh mm aa');
+	    var moment = _moment2.default.utc(time, mask);
+	    console.log(moment);
+	    this.els.hiddenInput.value = moment.utc().format(this.options.format);
+	    console.log(moment.utc().format(this.options.format));
+	};
+	
+	Datetime.prototype.addEventListeners = function () {
+	    var that = this;
+	    console.log(this.els.minuteSelect);
+	
+	    this._timeChange = function (e) {
+	        that.onTimeChange(e);
+	    };
+	
+	    if (this.els.minuteSelect) {
+	        this.els.minuteSelect.addEventListener('change', this._timeChange);
+	    }
+	    if (this.els.hourSelect) {
+	        this.els.hourSelect.addEventListener('change', this._timeChange);
+	    }
+	    if (this.els.periodSelect) {
+	        this.els.periodSelect.addEventListener('change', this._timeChange);
+	    }
+	};
+	
+	Datetime.prototype.die = function () {
+	    delete this;
+	};
+	
+	exports.default = Datetime;
+
 /***/ }
 /******/ ])
 });
 ;
-//# sourceMappingURL=sf.date.js.map
+//# sourceMappingURL=sf.datetime.js.map

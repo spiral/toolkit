@@ -90,10 +90,10 @@ Date.prototype.optionsToGrab  = {
 
 };
 
-Date.prototype.addPatternEventListeners = function() {
-    var that = this;
-
-};
+//Date.prototype.addPatternEventListeners = function() {
+//    var that = this;
+//
+//};
 
 Date.prototype.die = function () {
     delete this;
