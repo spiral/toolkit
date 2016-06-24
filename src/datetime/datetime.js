@@ -39,12 +39,13 @@ Datetime.prototype._construct = function (sf, node, options) {
     var moment = Moment(this.els.node.dataset.value, this.options.valueMask);
 
     this.els.node.value = moment.format(this.options.inputFormat);
+    this.els.node.classList.add('datetime');
 
     this.els.hiddenInput = document.createElement("input");
     this.els.hiddenInput.setAttribute("type", "hidden");
     this.els.hiddenInput.setAttribute("name", this.els.node.name);
     this.els.node.parentNode.appendChild(this.els.hiddenInput);
-
+    if (this.options.dateClass) this.els.node.classList.add(this.options.dateClass);
     this.els.node.name = ''; //remove name from date-input since passed data will be in hidden input
 
     this.generateTimePicker();
@@ -89,6 +90,13 @@ Datetime.prototype.optionsToGrab  = {
         "value": "X"
     },
     /**
+     *  Separator between hours and minutes
+     */
+    timeSeparator: {
+        "domAttr": "data-time-separator",
+        "value": " : "
+    },
+    /**
      *  Pass all other custom options of Pikaday via json
      */
     config: {
@@ -119,17 +127,45 @@ Datetime.prototype.optionsToGrab  = {
     minuteStep: {
         "domAttr": "data-minutes-step",
         "value": 1
+    },
+    dateClass: {
+        "domAttr": "data-date-class",
+        "value": ''
+    },
+    hourClass: {
+        "domAttr": "data-hour-class",
+        "value": ''
+    },
+    minuteClass: {
+        "domAttr": "data-minute-class",
+        "value": ''
+    },
+    periodClass: {
+        "domAttr": "data-period-class",
+        "value": ''
+    },
+    separatorClass: {
+        "domAttr": "data-separator-class",
+        "value": ''
     }
-
 };
 
 Datetime.prototype.generateTimePicker = function() {
     var that = this;
 
     this.els.minuteSelect = document.createElement("select");
+    this.els.minuteSelect.classList.add('datetime');
+    if (this.options.minuteClass) this.els.minuteSelect.classList.add(this.options.minuteClass);
     this.els.hourSelect = document.createElement("select");
+    this.els.hourSelect.classList.add('datetime');
+    if (this.options.separatorClass) this.els.hourSelect.classList.add(this.options.separatorClass);
+
+    this.els.timeSeparator = document.createElement("span");
+    this.els.timeSeparator.innerHTML = this.options.timeSeparator;
+    if (this.options.hourClass) this.els.timeSeparator.classList.add(this.options.hourClass);
 
     this.els.node.parentNode.appendChild(this.els.hourSelect);
+    this.els.node.parentNode.appendChild(this.els.timeSeparator);
     this.els.node.parentNode.appendChild(this.els.minuteSelect);
 
     for (var i = 0; i <= 59; i += that.options.minuteStep) {
@@ -153,6 +189,8 @@ Datetime.prototype.generateTimePicker = function() {
             that.els.hourSelect.appendChild(option);
         }
         this.els.periodSelect = document.createElement("select");
+        this.els.periodSelect.classList.add('datetime');
+        if (that.options.periodClass) this.els.periodSelect.classList.add(that.options.periodClass);
         this.els.node.parentNode.appendChild(this.els.periodSelect);
 
         var am = document.createElement("option");
@@ -172,19 +210,19 @@ Datetime.prototype.onTimeChange = function() {
     var time = this.els.node.value + ' ' + this.els.hourSelect.value +' '+ this.els.minuteSelect.value + (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
     var mask = this.options.inputFormat + (this.options.hours24 ? ' HH mm' : ' hh mm aa');
     var moment = Moment.utc(time, mask);
-    console.log(moment);
     this.els.hiddenInput.value = moment.utc().format(this.options.format);
-    console.log(moment.utc().format(this.options.format));
 };
 
 Datetime.prototype.addEventListeners = function() {
     var that = this;
-    console.log(this.els.minuteSelect);
 
     this._timeChange = function (e) {
         that.onTimeChange(e);
     };
 
+    if (this.els.node) {
+        this.els.node.addEventListener('change', this._timeChange);
+    }
     if (this.els.minuteSelect) {
         this.els.minuteSelect.addEventListener('change', this._timeChange);
     }
