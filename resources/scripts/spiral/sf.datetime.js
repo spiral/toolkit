@@ -15977,7 +15977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this.picker = new _pikaday2.default({ field: this.els.node });
 	
-	    var moment = (0, _moment2.default)(this.els.node.dataset.value, this.options.valueMask);
+	    var moment = (0, _moment2.default)(this.els.node.dataset.value || Math.floor(Date.now() / 1000), this.options.valueMask);
 	
 	    this.els.node.value = moment.format(this.options.inputFormat);
 	    this.els.node.classList.add('datetime');

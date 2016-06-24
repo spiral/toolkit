@@ -538,6 +538,7 @@ form {
 .item-form select.datetime {
   height: 30px;
   display: inline-block;
+  width: auto;
 }
 .item-form textarea {
   width: 100%;

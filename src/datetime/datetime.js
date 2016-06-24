@@ -36,7 +36,7 @@ Datetime.prototype._construct = function (sf, node, options) {
 
     this.picker = new Pikaday({field: this.els.node});
 
-    var moment = Moment(this.els.node.dataset.value, this.options.valueMask);
+    var moment = Moment(this.els.node.dataset.value || Math.floor(Date.now() / 1000), this.options.valueMask);
 
     this.els.node.value = moment.format(this.options.inputFormat);
     this.els.node.classList.add('datetime');
