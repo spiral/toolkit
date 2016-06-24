@@ -456,6 +456,18 @@ form {
     &:disabled, &:read-only {
       background: @spiral-light-grey;
     }
+    &.datetime {
+      .size(50%, 30px);
+      display: inline-block;
+    }
+  }
+
+  select{
+    &.datetime{
+      height: 30px;
+      display: inline-block;
+      width: auto;
+    }
   }
   textarea {
     width: 100%;

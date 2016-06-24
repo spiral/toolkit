@@ -15,7 +15,11 @@ module.exports = {
         "sf.input": './src/input/index.js',  // webpack workaround issue #300
         "sf.input.min": './src/input/index.js',  // webpack workaround issue #300
         "sf.fileinput": './src/fileinput/index.js',  // webpack workaround issue #300
-        "sf.fileinput.min": './src/fileinput/index.js'  // webpack workaround issue #300
+        "sf.fileinput.min": './src/fileinput/index.js',  // webpack workaround issue #300
+        "sf.date.min": './src/date/index.js',  // webpack workaround issue #300
+        "sf.date": './src/date/index.js',  // webpack workaround issue #300
+        "sf.datetime.min": './src/datetime/index.js',  // webpack workaround issue #300
+        "sf.datetime": './src/datetime/index.js'  // webpack workaround issue #300
     },
     output: {
         filename: '[name].js',
@@ -33,7 +37,11 @@ module.exports = {
     },
     module: {
         loaders: [
-            {test: /\.js?$/, loader: 'babel?presets[]=es2015&plugins[]=transform-runtime'}
+            {
+                test: /\.js?$/,
+                loader: 'babel?presets[]=es2015&plugins[]=transform-runtime',
+                exclude: /node_modules/
+            }
         ],
         noParse: []
     },
