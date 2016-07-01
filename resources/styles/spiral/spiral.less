@@ -453,8 +453,25 @@ form {
       border-color: @spiral-blue;
       outline: none;
     }
-    &:disabled, &:read-only {
-      background: @spiral-light-grey;
+
+    &:disabled, &:read-only, &.read-only  {
+      background-color: @spiral-light-grey;
+    }
+    &:-moz-read-only{ //should be separately due to the bug in FF
+      background-color: @spiral-light-grey;
+    }
+
+    &.datetime {
+      .size(50%, 30px);
+      display: inline-block;
+    }
+  }
+
+  select{
+    &.datetime{
+      height: 30px;
+      display: inline-block;
+      width: auto;
     }
   }
   textarea {
