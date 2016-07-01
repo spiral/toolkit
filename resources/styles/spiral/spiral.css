@@ -544,6 +544,16 @@ form {
   display: inline-block;
   width: auto;
 }
+.item-form input.datetime {
+  width: 50%;
+  height: 30px;
+  display: inline-block;
+}
+.item-form select.datetime {
+  height: 30px;
+  display: inline-block;
+  width: auto;
+}
 .item-form textarea {
   width: 100%;
   display: block;
