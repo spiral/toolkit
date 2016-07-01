@@ -453,11 +453,14 @@ form {
       border-color: @spiral-blue;
       outline: none;
     }
-
-    &:disabled, &:read-only, &.read-only  {
+    //should be separately due to the bug in FF & IE
+    &:disabled, &.read-only  {
       background-color: @spiral-light-grey;
     }
-    &:-moz-read-only{ //should be separately due to the bug in FF
+    &:read-only{
+      background-color: @spiral-light-grey;
+    }
+    &:-moz-read-only{
       background-color: @spiral-light-grey;
     }
 
