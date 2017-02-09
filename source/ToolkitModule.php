@@ -25,14 +25,6 @@ class ToolkitModule implements ModuleInterface
         $registrator->configure('views', 'namespaces.spiral', 'spiral/toolkit', [
             "directory('libraries') . 'spiral/toolkit/source/views/',",
         ]);
-
-        /**
-         * And mount of AssetManager.
-         */
-        $registrator->configure('views', 'dark.processors', 'spiral/toolkit', [
-            '//Provides ability to automatically include js and css requested by widgets and tags',
-            'Spiral\Toolkit\AssetManager::class,',
-        ]);
     }
 
     /**
