@@ -1,8 +1,8 @@
 "use strict";
 
-import sf from 'sf';//resolved in webpack's "externals"
-import Moment from 'moment';
-import Pikaday from 'pikaday';
+import sf from "sf"; //resolved in webpack's "externals"
+import Moment from "moment";
+import Pikaday from "pikaday";
 
 var Datetime = function (sf, node, options) {
     this._construct(sf, node, options);
@@ -58,7 +58,7 @@ Datetime.prototype._construct = function (sf, node, options) {
  * @inheritDoc
  * @enum {string}
  */
-Datetime.prototype.optionsToGrab  = {
+Datetime.prototype.optionsToGrab = {
     /**
      *  Predefined value in any format
      */
@@ -150,7 +150,7 @@ Datetime.prototype.optionsToGrab  = {
     }
 };
 
-Datetime.prototype.generateTimePicker = function() {
+Datetime.prototype.generateTimePicker = function () {
     var that = this;
 
     this.els.minuteSelect = document.createElement("select");
@@ -174,15 +174,15 @@ Datetime.prototype.generateTimePicker = function() {
         option.text = i;
         that.els.minuteSelect.appendChild(option);
     }
-    if(this.options.hours24){
-        for (var i = 0; i <= 23; i ++) {
+    if (this.options.hours24) {
+        for (var i = 0; i <= 23; i++) {
             var option = document.createElement("option");
             option.value = i;
             option.text = i;
             that.els.hourSelect.appendChild(option);
         }
-    } else{
-        for (var i = 1; i <= 12; i ++) {
+    } else {
+        for (var i = 1; i <= 12; i++) {
             var option = document.createElement("option");
             option.value = i;
             option.text = i;
@@ -206,14 +206,14 @@ Datetime.prototype.generateTimePicker = function() {
     }
 };
 
-Datetime.prototype.onTimeChange = function() {
-    var time = this.els.node.value + ' ' + this.els.hourSelect.value +' '+ this.els.minuteSelect.value + (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
+Datetime.prototype.onTimeChange = function () {
+    var time = this.els.node.value + ' ' + this.els.hourSelect.value + ' ' + this.els.minuteSelect.value + (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
     var mask = this.options.inputFormat + (this.options.hours24 ? ' HH mm' : ' hh mm aa');
     var moment = Moment.utc(time, mask);
     this.els.hiddenInput.value = moment.utc().format(this.options.format);
 };
 
-Datetime.prototype.addEventListeners = function() {
+Datetime.prototype.addEventListeners = function () {
     var that = this;
 
     this._timeChange = function (e) {
@@ -239,4 +239,4 @@ Datetime.prototype.die = function () {
     delete this;
 };
 
-export { Datetime as default };
+export {Datetime as default};

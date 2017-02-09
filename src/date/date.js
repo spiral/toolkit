@@ -1,8 +1,8 @@
 "use strict";
 
-import sf from 'sf';//resolved in webpack's "externals"
-import Moment from 'moment';
-import Pikaday from 'pikaday';
+import sf from "sf"; //resolved in webpack's "externals"
+import Moment from "moment";
+import Pikaday from "pikaday";
 
 var Date = function (sf, node, options) {
     this._construct(sf, node, options);
@@ -46,7 +46,7 @@ Date.prototype._construct = function (sf, node, options) {
  * @inheritDoc
  * @enum {string}
  */
-Date.prototype.optionsToGrab  = {
+Date.prototype.optionsToGrab = {
     /**
      *  Predefined value in any format
      */
@@ -99,4 +99,4 @@ Date.prototype.die = function () {
     delete this;
 };
 
-export { Date as default };
+export {Date as default};
