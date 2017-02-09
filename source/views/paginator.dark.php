@@ -1,19 +1,10 @@
 <?php #compile
-//todo: show first and last pages
-
 //Let's create php variable to represent paginator
 $this->runtimeVariable('__paginator__', '${paginator}${source}${list}');
 
 //How many pages to show before and after current page
 $this->runtimeVariable('__pageLimit__', '${pageLimit|2}');
 ?><?php
-if (empty($__pageLimit__)) {
-    /*
-     * Default page limit (pages to show before and after current one)
-     */
-    $__pageLimit__ = 2;
-}
-
 if ($__paginator__ instanceof \Spiral\Pagination\PaginatorAwareInterface) {
     $__paginator__ = $__paginator__->isPaginated() ? $__paginator__->paginator() : null;
 }
