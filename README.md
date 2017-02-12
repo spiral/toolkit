@@ -10,17 +10,11 @@ Elements included
     * textarea
     * radios and check boxes
 * paginator element
-* lorem generator
 * simple grid element with paginator
     * simple cell
     * numeric cell
     * boolean cell
     * bytes (size) cell
-* cache wrapper
-* asset importing
-    * css file
-    * js file
-    * inline js
     
 Examples
 --------
@@ -67,4 +61,12 @@ Forms:
 
     <input type="submit" class="btn btn-default" value=" <?= $entity->isLoaded() ? 'Update' : 'Create' ?>"/>
 </spiral:form>
+```
+
+Make sure to import toolkit bundle and styles to your views:
+
+```html
+<dark:use bundle="spiral:bundle"/>
+<toolkit:styles/>
+<toolkit:scripts/>
 ```
