@@ -32,13 +32,22 @@ class ToolkitModule implements ModuleInterface
      */
     public function publish(PublisherInterface $publisher, DirectoriesInterface $directories)
     {
-        /**
-         * Publishing all module visual resources. We are going to overwrite existed files.
-         */
         $publisher->publishDirectory(
-            __DIR__ . '/../resources',                        //Profiler js, css and modules
-            $directories->directory('public') . 'resources',  //Expected directory in webroot
-            PublisherInterface::OVERWRITE                     //We can safely overwrite resources
+            __DIR__ . '/../resources/fonts/',
+            $directories->directory('public') . 'resources/fonts',
+            PublisherInterface::OVERWRITE
+        );
+
+        $publisher->publishDirectory(
+            __DIR__ . '/../resources/scripts/',
+            $directories->directory('public') . 'resources/scripts',
+            PublisherInterface::OVERWRITE
+        );
+
+        $publisher->publishDirectory(
+            __DIR__ . '/../resources/styles/',
+            $directories->directory('public') . 'resources/styles',
+            PublisherInterface::OVERWRITE
         );
     }
 }

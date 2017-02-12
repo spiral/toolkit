@@ -14,3 +14,6 @@
 <!--Grid cells-->
 <dark:use path="spiral:grid/*" prefix="grid."/>
 <dark:use path="spiral:grid/*" prefix="grid:"/>
+
+<!--Assets-->
+<dark:use path="spiral:assets/*" prefix="toolkit:"/>
