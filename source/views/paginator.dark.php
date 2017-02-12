@@ -7,7 +7,7 @@ $this->runtimeVariable('_pageLimit_', '${pageLimit|2}');
 ?><?php
 //This code will be executed on every render request
 if ($_paginator_ instanceof \Spiral\Pagination\PaginatorAwareInterface) {
-    $_paginator_ = $_paginator_->hasPaginator() ? $_paginator_->getPaginator() : null;
+    $_paginator_ = $_paginator_->hasPaginator() ? $_paginator_->getPaginator(false) : null;
 }
 
 if (
