@@ -1,6 +1,6 @@
 "use strict";
 
-import sf from 'sf';//resolved in webpack's "externals"
+import sf from "sf"; //resolved in webpack's "externals"
 
 var Input = function (sf, node, options) {
     this._construct(sf, node, options);
@@ -25,16 +25,15 @@ Input.prototype._construct = function (sf, node, options) {
         this.options = sf.tools.extend(this.options, options);
     }
 
-
     //elements
     this.els = {
         node: node
     };
 
-    if(this.options.prefix){
+    if (this.options.prefix) {
         this.setPrefix();
         this.addPrefixEventListeners()
-    } else if(this.options.pattern) {
+    } else if (this.options.pattern) {
         this.setupPattern();
         this.addPatternEventListeners();
     }
@@ -46,7 +45,7 @@ Input.prototype._construct = function (sf, node, options) {
  * @inheritDoc
  * @enum {string}
  */
-Input.prototype.optionsToGrab  = {
+Input.prototype.optionsToGrab = {
     /**
      *  Pattern of input
      */
@@ -59,21 +58,19 @@ Input.prototype.optionsToGrab  = {
     "prefix": {
         "domAttr": "data-prefix"
     }
-
 };
-
 
 /**
  * Setup pattern
  */
-Input.prototype.isValidPattern = function() {
+Input.prototype.isValidPattern = function () {
     return this.els.node.value.match(this.pattern)
 }
 
-Input.prototype.addPatternEventListeners = function() {
+Input.prototype.addPatternEventListeners = function () {
     var that = this;
 
-    this._inputKeyPress = function(event) {
+    this._inputKeyPress = function (event) {
 
         var char = String.fromCharCode(event.keyCode);
         var value = that.els.node.value
@@ -104,11 +101,11 @@ Input.prototype.addPatternEventListeners = function() {
     }
     this.els.node.addEventListener('keypress', this._inputKeyPress);
 
-    this._inputFocus = function(event) {
+    this._inputFocus = function (event) {
         event.preventDefault()
 
-        setTimeout(function(){
-            if(that.els.node.value == ""){
+        setTimeout(function () {
+            if (that.els.node.value == "") {
                 that.els.node.value = that.patternString.replace(/[^\-\(\)\[\]\:\.\,\$\%\@\ \/]/g, '_')
                 that.setCursorPosition(0)
             }
@@ -116,16 +113,16 @@ Input.prototype.addPatternEventListeners = function() {
     }
     this.els.node.addEventListener('focus', this._inputFocus);
 
-    this._inputKeyDown = function(event){
+    this._inputKeyDown = function (event) {
         var char = String.fromCharCode(event.keyCode);
         var value = that.els.node.value
         var position = that.getCursorPosition()
 
-        if(event.keyCode == 8 || event.keyCode == 46){
+        if (event.keyCode == 8 || event.keyCode == 46) {
             event.preventDefault()
             var offset = 0;
-            for(var i = position -1; i > 0; i--){
-                if(that.formatCharacters.indexOf(value[i]) !== -1){
+            for (var i = position - 1; i > 0; i--) {
+                if (that.formatCharacters.indexOf(value[i]) !== -1) {
                     offset--;
                 } else {
                     break
@@ -134,7 +131,7 @@ Input.prototype.addPatternEventListeners = function() {
 
             var futureValue = value.substring(0, position + offset - 1) + '_' + value.substring(position + offset, value.length)
 
-            if(!futureValue.match(that.patternWithEmpty)){
+            if (!futureValue.match(that.patternWithEmpty)) {
                 return false
             } else {
                 console.log(futureValue)
@@ -142,7 +139,7 @@ Input.prototype.addPatternEventListeners = function() {
                 that.setCursorPosition(position + offset - 1)
                 return false
             }
-        } else if(char.match(/\W/)){
+        } else if (char.match(/\W/)) {
             return false;
         }
 
@@ -150,8 +147,8 @@ Input.prototype.addPatternEventListeners = function() {
     }
     this.els.node.addEventListener('keydown', this._inputKeyDown);
 
-    this._inputBlur = function(event) {
-        if(!that.els.node.value.match(that.pattern)) {
+    this._inputBlur = function (event) {
+        if (!that.els.node.value.match(that.pattern)) {
             that.els.node.value = ''
         }
     }
@@ -159,7 +156,7 @@ Input.prototype.addPatternEventListeners = function() {
 
 }
 
-Input.prototype.getCursorPosition = function() {
+Input.prototype.getCursorPosition = function () {
     var position = 0;
 
     if (document.selection) {
@@ -177,13 +174,13 @@ Input.prototype.getCursorPosition = function() {
     return position;
 };
 
-Input.prototype.setCursorPosition = function(position) {
-    if(this.els.node.createTextRange) {
+Input.prototype.setCursorPosition = function (position) {
+    if (this.els.node.createTextRange) {
         var range = this.els.node.createTextRange();
         range.move('character', position);
         range.select();
     } else {
-        if(this.els.node.selectionStart) {
+        if (this.els.node.selectionStart) {
             this.els.node.focus()
             this.els.node.selectionStart = this.els.node.selectionEnd = position;
         } else {
@@ -192,28 +189,28 @@ Input.prototype.setCursorPosition = function(position) {
     }
 }
 
-Input.prototype.setupPattern = function() {
+Input.prototype.setupPattern = function () {
     this.formatCharacters = this.els.node.getAttribute('data-format-characters') || "-()[]:.,$%@ /"
     this.patternString = this.options.pattern;
     this.els.node.placeholder = this.patternString;
 
-    var _initPattern = function(){
+    var _initPattern = function () {
         var formattedPatternStr = ""
         var formattedPatternWithEmptyStr = ""
 
-        for(var i = 0; i < this.patternString.length; i++){
+        for (var i = 0; i < this.patternString.length; i++) {
             var char = this.patternString[i];
 
-            if(this.formatCharacters.indexOf(char) >= 0){
+            if (this.formatCharacters.indexOf(char) >= 0) {
                 formattedPatternStr += char
                 formattedPatternWithEmptyStr += char
-            } else if(char.match(/[0-9]/)){
+            } else if (char.match(/[0-9]/)) {
                 formattedPatternStr += "[0-9]";
                 formattedPatternWithEmptyStr += "([0-9]|_)"
-            } else if(char.match(/[a-zA-Z]/)) {
+            } else if (char.match(/[a-zA-Z]/)) {
                 formattedPatternStr += "[a-zA-Z]";
                 formattedPatternWithEmptyStr += "([a-zA-Z]|_)"
-            } else if(char === "*"){
+            } else if (char === "*") {
                 formattedPatternStr += "[0-9a-zA-Z]"
                 formattedPatternWithEmptyStr += "([0-9a-zA-Z]|_)"
             }
@@ -233,11 +230,11 @@ Input.prototype.setupPattern = function() {
 Input.prototype.addPrefixEventListeners = function () {
     var that = this;
 
-    this._inputKeyup = function(){
+    this._inputKeyup = function () {
 
         var oldValue = this.getAttribute('data-prefix');
 
-        if( that.els.node.value.indexOf(oldValue) !== 0 ){
+        if (that.els.node.value.indexOf(oldValue) !== 0) {
             that.els.node.value = oldValue + ' ';
         }
     };
@@ -262,7 +259,7 @@ Input.prototype.removePrefixEventListeners = function () {
 };
 
 Input.prototype.die = function () {
-    if(this.options.pattern) {
+    if (this.options.pattern) {
         this.removePatternEventListeners();
     } else if (this.options.prefix) {
         this.removePrefixEventListeners();
@@ -274,4 +271,4 @@ Input.prototype.setPrefix = function () {
     this.els.node.value = this.options.prefix + " " + this.els.node.value;
 }
 
-export { Input as default };
+export {Input as default};

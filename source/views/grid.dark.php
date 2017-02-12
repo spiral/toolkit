@@ -2,12 +2,11 @@
 
 <block:body>
     <?php #compile
-    //todo: need placeholder when no rows found
 
     /**
      * Our source.
      */
-    $this->runtimeVariable('__source__', '${source}${list}${value}');
+    $this->runtimeVariable('__source__', '${source}${list}${value}${from}');
 
     /**
      * First of all we have to collect every defined cell element to built list of table headers
@@ -33,16 +32,13 @@
             <tbody>
             <?php $__has__rows__ = false; ?>
             <?php #compile
-            //todo: add support for tr attributes
             echo '<?php foreach ($__source__ as $${as|item}) { ?>';
-            echo "<tr>\n";
-            echo join("\n", $__gridColumns__);
-            echo "</tr>\n";
+            echo "<tr>\n", join("\n", $__gridColumns__), "</tr>\n";
             echo '<?php $__has__rows__ = true;} ?>';
             ?>
             <?php if (!$__has__rows__) { ?>
                 <tr>
-                    <td class="${empty-class}" colspan="<?= count($__gridHeaders__) #compile ?>">
+                    <td class="${empty-class}" colspan="<?= count($__gridHeaders__) #compile   ?>">
                         ${empty|No results to be displayed}
                     </td>
                 </tr>

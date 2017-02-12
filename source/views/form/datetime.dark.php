@@ -1,7 +1,6 @@
 <extends:spiral:element/>
 
 <block:resources>
-        <resource:script href="resources/scripts/spiral/sf.datetime.js"/>
 </block:resources>
 
 <block:body>

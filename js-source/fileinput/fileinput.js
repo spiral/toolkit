@@ -1,6 +1,6 @@
 "use strict";
 
-import sf from 'sf';//resolved in webpack's "externals"
+import sf from "sf"; //resolved in webpack's "externals"
 
 var FileInput = function (sf, node, options) {
     this._construct(sf, node, options);
@@ -36,13 +36,12 @@ FileInput.prototype._construct = function (sf, node, options) {
     }
 };
 
-
 /**
  * @override
  * @inheritDoc
  * @enum {string}
  */
-FileInput.prototype.optionsToGrab  = {
+FileInput.prototype.optionsToGrab = {
     /**
      *  File input
      */
@@ -54,37 +53,36 @@ FileInput.prototype.optionsToGrab  = {
 /**
  * Adds static events listeners.
  */
-
-FileInput.prototype.addFileEventListeners = function() {
+FileInput.prototype.addFileEventListeners = function () {
     var that = this
-    this._inputChange = function(e) {
+    this._inputChange = function (e) {
         var label = that.els.node.nextElementSibling,
             labelVal = label.innerHTML;
 
         var fileName = '';
 
-        if(that.els.node.files && that.els.node.files.length > 1) {
+        if (that.els.node.files && that.els.node.files.length > 1) {
             fileName = ( that.els.node.getAttribute('data-multiple-text') || '{count} files selected' ).replace('{count}', that.els.node.files.length);
         } else {
             fileName = e.target.value.split('\\').pop();
         }
 
-        if(fileName) {
+        if (fileName) {
             label.querySelector('span').innerHTML = fileName;
         } else {
             label.innerHTML = labelVal;
         }
     }
 
-    this._inputBlur = function() {
+    this._inputBlur = function () {
         that.els.node.classList.add('has-focus');
     }
 
-    this._inputFocus = function() {
+    this._inputFocus = function () {
         that.els.node.classList.remove('has-focus');
     }
 
-    if(this.els.node){
+    if (this.els.node) {
         this.els.node.addEventListener('change', this._inputChange);
         this.els.node.addEventListener('blur', this._inputBlur);
         this.els.node.addEventListener('foxus', this._inputFocus);
@@ -108,4 +106,4 @@ FileInput.prototype.die = function () {
     delete this;
 };
 
-export { FileInput as default };
+export {FileInput as default};

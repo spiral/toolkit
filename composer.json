@@ -1,6 +1,7 @@
 {
   "name": "spiral/toolkit",
-  "description": "Spiral toolkit includes set of virtual tags, frontend library and resource manager.",
+  "type": "library",
+  "description": "Set of virtual tags and frontend library",
   "license": "MIT",
   "authors": [
     {
@@ -9,7 +10,7 @@
     }
   ],
   "require": {
-    "spiral/framework": "*"
+    "spiral/framework": "^0.9"
   },
   "autoload": {
     "psr-4": {
