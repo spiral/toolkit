@@ -1,1 +1,1 @@
-<extends:spiral:assets.script/>
+<script src="<?= \Spiral\Toolkit\AssetHelper::resolve('${src}${href}', '@{basePath}') ?>"></script>

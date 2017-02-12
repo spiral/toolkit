@@ -1,11 +1,12 @@
 <?php
 /**
- * toolkit
+ * Spiral Framework.
  *
- * @author    Wolfy-J
+ * @license   MIT
+ * @author    Anton Titov (Wolfy-J)
  */
 
-namespace Spiral;
+namespace Spiral\Toolkit;
 
 class AssetHelper
 {
