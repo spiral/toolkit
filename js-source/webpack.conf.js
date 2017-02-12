@@ -12,14 +12,14 @@ var uglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
 
 module.exports = {
     entry: {
-        "sf.input": './src/input/index.js',  // webpack workaround issue #300
-        "sf.input.min": './src/input/index.js',  // webpack workaround issue #300
-        "sf.fileinput": './src/fileinput/index.js',  // webpack workaround issue #300
-        "sf.fileinput.min": './src/fileinput/index.js',  // webpack workaround issue #300
-        "sf.date.min": './src/date/index.js',  // webpack workaround issue #300
-        "sf.date": './src/date/index.js',  // webpack workaround issue #300
-        "sf.datetime.min": './src/datetime/index.js',  // webpack workaround issue #300
-        "sf.datetime": './src/datetime/index.js'  // webpack workaround issue #300
+        "sf.input": './js-source/input/index.js',  // webpack workaround issue #300
+        "sf.input.min": './js-source/input/index.js',  // webpack workaround issue #300
+        "sf.fileinput": './js-source/fileinput/index.js',  // webpack workaround issue #300
+        "sf.fileinput.min": './js-source/fileinput/index.js',  // webpack workaround issue #300
+        "sf.date.min": './js-source/date/index.js',  // webpack workaround issue #300
+        "sf.date": './js-source/date/index.js',  // webpack workaround issue #300
+        "sf.datetime.min": './js-source/datetime/index.js',  // webpack workaround issue #300
+        "sf.datetime": './js-source/datetime/index.js'  // webpack workaround issue #300
     },
     output: {
         filename: '[name].js',

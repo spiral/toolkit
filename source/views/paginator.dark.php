@@ -11,7 +11,7 @@ if ($__paginator__ instanceof \Spiral\Pagination\PaginatorAwareInterface) {
 
 if (
     !empty($__paginator__)
-    && $__paginator__ instanceof \Spiral\Pagination\PredictableInterface
+    && $__paginator__ instanceof \Spiral\Pagination\PagedInterface
     && $__paginator__->isRequired()
 ) { ?>
     <div class="paginator">

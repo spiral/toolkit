@@ -9,9 +9,9 @@ $this->runtimeVariable('sorter', '${sorter}');
 $__gridHeaders__[] = ob_get_clean();
 ob_start();
 ?>
-    <td node:attributes>
-        <block:cell.body>${value}${context}</block:cell.body>
-    </td>
+<td node:attributes>
+    <block:cell.body>${value}${context}</block:cell.body>
+</td>
 <?php #compile
 $__gridColumns__[] = ob_get_clean();
 ?>
