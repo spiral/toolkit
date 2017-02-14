@@ -1,1 +1,1 @@
-<link rel="stylesheet" href="<?= \Spiral\Toolkit\AssetHelper::resolve('${src}${href}', '@{basePath}') ?>"/>
+<link rel="stylesheet" href="<?= \Spiral\Toolkit\AssetHelper::resolve('${src}${href}', '@{basePath}') #compile ?>"/>
