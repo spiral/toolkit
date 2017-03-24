@@ -15,7 +15,7 @@
         ?>
         <block:input-body>
             <div class="form-group">
-                <select name="${name}" class="item-select ${class}" node:attributes>
+                <select name="${name}" class="item-select ${custom|browser-default} ${class}" node:attributes>
                     <?php #compile
                     //Receiving placeholder content as evaluator variable
                     $this->evaluatorVariable('placeholder', '${placeholder}${default}');
