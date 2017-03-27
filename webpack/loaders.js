@@ -12,9 +12,10 @@ exports.css = {
   loader: 'style-loader!css-loader?-url&sourceMap'
 };
 
-exports.sass = {
-  test: /\.scss$/,
-  loader: 'style-loader!css-loader?-url&sourceMap!sass-loader?sourceMap'
+exports.less = {
+  test: /\.less$/,
+  exclude: /(node_modules)/,
+  loader: 'style-loader!css-loader?-url&sourceMap!less-loader?sourceMap'
 };
 
 exports.js = {

@@ -1,10 +1,10 @@
 "use strict";
 
-import sf from "sf-core"; //resolved in webpack's "externals"
-import Moment from "moment";
+import sf from "sf-core";
+import moment from "moment";
 import Pikaday from "pikaday";
 
-var Datetime = function (sf, node, options) {
+var Datetime = function(sf, node, options) {
     this._construct(sf, node, options);
 };
 
@@ -19,26 +19,26 @@ Datetime.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype)
  */
 Datetime.prototype.name = "datetime";
 
-Datetime.prototype._construct = function (sf, node, options) {
+Datetime.prototype._construct = function(sf, node, options) {
+    this.init(sf, node, options); // call parent
 
-    this.init(sf, node, options);//call parent
-
-    if (options) {//if we pass options extend all options by passed options
+    if (options) {
+        // if we pass options extend all options by passed options
         this.options = Object.assign(this.options, options);
     }
 
     this.options = Object.assign(this.options, options, this.options.config);
 
-    //elements
+    // Elements
     this.els = {
         node: node
     };
 
     this.picker = new Pikaday({field: this.els.node});
 
-    var moment = Moment(this.els.node.dataset.value || Math.floor(Date.now() / 1000), this.options.valueMask);
+    var momentDate = moment(this.els.node.dataset.value || Math.floor(Date.now() / 1000), this.options.valueMask);
 
-    this.els.node.value = moment.format(this.options.inputFormat);
+    this.els.node.value = momentDate.format(this.options.inputFormat);
     this.els.node.classList.add('datetime');
 
     this.els.hiddenInput = document.createElement("input");
@@ -46,7 +46,7 @@ Datetime.prototype._construct = function (sf, node, options) {
     this.els.hiddenInput.setAttribute("name", this.els.node.name);
     this.els.node.parentNode.appendChild(this.els.hiddenInput);
     if (this.options.dateClass) this.els.node.classList.add(this.options.dateClass);
-    this.els.node.name = ''; //remove name from date-input since passed data will be in hidden input
+    this.els.node.name = ''; // remove name from date-input since passed data will be in hidden input
 
     this.generateTimePicker();
 
@@ -102,7 +102,7 @@ Datetime.prototype.optionsToGrab = {
     config: {
         value: {},
         domAttr: "data-config",
-        processor: function (node, val, self) {
+        processor: function(node, val, self) {
             if (!val) return this.value;
             if (typeof val == "string") {
                 try {
@@ -150,7 +150,7 @@ Datetime.prototype.optionsToGrab = {
     }
 };
 
-Datetime.prototype.generateTimePicker = function () {
+Datetime.prototype.generateTimePicker = function() {
     var that = this;
 
     this.els.minuteSelect = document.createElement("select");
@@ -202,21 +202,23 @@ Datetime.prototype.generateTimePicker = function () {
         pm.value = "pm";
         pm.text = "pm";
         that.els.periodSelect.appendChild(pm);
-
     }
 };
 
-Datetime.prototype.onTimeChange = function () {
-    var time = this.els.node.value + ' ' + this.els.hourSelect.value + ' ' + this.els.minuteSelect.value + (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
+Datetime.prototype.onTimeChange = function() {
+    var time = this.els.node.value + ' ' +
+            this.els.hourSelect.value + ' ' + this.els.minuteSelect.value +
+            (typeof this.els.periodSelect !== "undefined" ? ' ' + this.els.periodSelect.value : '');
+
     var mask = this.options.inputFormat + (this.options.hours24 ? ' HH mm' : ' hh mm aa');
-    var moment = Moment.utc(time, mask);
-    this.els.hiddenInput.value = moment.utc().format(this.options.format);
+    var momentDate = moment.utc(time, mask);
+    this.els.hiddenInput.value = momentDate.utc().format(this.options.format);
 };
 
-Datetime.prototype.addEventListeners = function () {
+Datetime.prototype.addEventListeners = function() {
     var that = this;
 
-    this._timeChange = function (e) {
+    this._timeChange = function(e) {
         that.onTimeChange(e);
     };
 
@@ -232,10 +234,9 @@ Datetime.prototype.addEventListeners = function () {
     if (this.els.periodSelect) {
         this.els.periodSelect.addEventListener('change', this._timeChange);
     }
-
 };
 
-Datetime.prototype.die = function () {
+Datetime.prototype.die = function() {
     delete this;
 };
 

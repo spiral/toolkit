@@ -7,6 +7,7 @@
 // For clearing floats like a boss h5bp.com/q
 .clearfix, .cf {
   *zoom: 1;
+
   &:before,
   &:after {
     display: table;
@@ -15,6 +16,7 @@
     // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
     line-height: 0;
   }
+
   &:after {
     clear: both;
   }
@@ -45,9 +47,11 @@
   &:-moz-placeholder {
     color: @color;
   }
+
   &:-ms-input-placeholder {
     color: @color;
   }
+
   &::-webkit-input-placeholder {
     color: @color;
   }
@@ -311,11 +315,11 @@
   }
   .striped(@color: #555, @angle: 45deg) {
     background-color: @color;
-    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255, 255, 255, .15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .15)), color-stop(.75, rgba(255, 255, 255, .15)), color-stop(.75, transparent), to(transparent));
-    background-image: -webkit-linear-gradient(@angle, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
-    background-image: -moz-linear-gradient(@angle, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
-    background-image: -o-linear-gradient(@angle, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
-    background-image: linear-gradient(@angle, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
+    background-image: -webkit-linear-gradient(@angle, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -moz-linear-gradient(@angle, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(@angle, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(@angle, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   }
 }
 
@@ -324,6 +328,7 @@
 .font-size(@sizeValue) {
   @remValue: (@sizeValue/16);
   @pxValue: (@sizeValue);
+
   font-size: ~"@{pxValue}px";
   font-size: ~"@{remValue}rem";
 }
@@ -333,6 +338,7 @@
 .line-height(@heightValue) {
   @remValue: (@heightValue/16);
   @pxValue: (@heightValue);
+
   line-height: ~"@{pxValue}px";
   line-height: ~"@{remValue}rem";
 }
@@ -346,32 +352,41 @@
 }
 
 .triangle(@direction, @size, @color) {
+
   .triangle(@direction, @size * 2, @size, @color);
 }
 
 .triangle(@direction, @width, @height, @color) when (@direction = up) {
+
   .triangle-base();
+
   border-left: (@width / 2)solid transparent;
   border-right: (@width / 2)solid transparent;
   border-bottom: @height solid @color;
 }
 
 .triangle(@direction, @width, @height, @color) when (@direction = down) {
+
   .triangle-base();
+
   border-left: (@width / 2) solid transparent;
   border-right: (@width / 2) solid transparent;
   border-top: @height solid @color;
 }
 
 .triangle(@direction, @width, @height, @color) when (@direction = left) {
+
   .triangle-base();
+
   border-top: (@width / 2) solid transparent;
   border-bottom: (@width / 2) solid transparent;
   border-right: @height solid @color;
 }
 
 .triangle(@direction, @width, @height, @color) when (@direction = right) {
+
   .triangle-base();
+
   border-top: (@width / 2) solid transparent;
   border-bottom: (@width / 2) solid transparent;
   border-left: @height solid @color;

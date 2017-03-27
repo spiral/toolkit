@@ -251,7 +251,7 @@ table {
     .size(100%, 30px);
 
     border: 1px solid @spiral-grey;
-    border-radius: none;
+    border-radius: 0;
     background: none;
 
     &:focus {
@@ -300,9 +300,8 @@ table {
       left: 3px;
       top: 3px;
       content: "";
-      transition: all .2s ease-out 0s;
+      transition: all 0.2s ease-out 0s;
       opacity: 0;
-
     }
   }
 
@@ -312,11 +311,9 @@ table {
     z-index: -3;
 
     &:checked + span {
-
       &:before {
-        transition: all .2s ease-out 0s;
+        transition: all 0.2s ease-out 0s;
         opacity: 1;
-
       }
     }
   }
@@ -334,6 +331,7 @@ table {
   display: block;
 
   &:before {
+
     .size (15px, 15px);
 
     border: 1px solid @spiral-grey;
@@ -351,7 +349,7 @@ table {
     &:before {
       .size(11px, 11px);
 
-      transition: all .2s ease-out 0s;
+      transition: all 0.2s ease-out 0s;
       background: @spiral-blue;
       opacity: 0;
       content: "";
@@ -368,9 +366,8 @@ table {
     z-index: -3;
 
     &:checked + span {
-
       &:before {
-        transition: all .2s ease-out 0s;
+        transition: all 0.2s ease-out 0s;
         opacity: 1;
       }
     }
@@ -398,16 +395,18 @@ table {
   &:focus {
     outline: none;
   }
+
   &.btn-block {
     width: 100%;
   }
+
   &.btn-default {
-    transition: all .2s ease-out 0s;
+    transition: all 0.2s ease-out 0s;
     background: @spiral-blue;
-    margin-bottom: 5px; //this need to compensate shadow that goes outside locker. discuss with @Nataliya
+    margin-bottom: 5px; // this need to compensate shadow that goes outside locker. discuss with @Nataliya
 
     &:hover {
-      transition: all .2s ease-out 0s;
+      transition: all 0.2s ease-out 0s;
       background: @spiral-dark-blue;
     }
   }
@@ -438,7 +437,9 @@ form {
   margin-bottom: 15px;
 
   input {
+
     .size(100%, 30px);
+
     .placeholder(@spiral-grey);
 
     display: block;
@@ -450,19 +451,23 @@ form {
       border-color: @spiral-blue;
       outline: none;
     }
-    //should be separately due to the bug in FF & IE
+
+    // Should be separately due to the bug in FF & IE
     &:disabled, &.read-only {
       background-color: @spiral-light-grey;
     }
+
     &:read-only {
       background-color: @spiral-light-grey;
     }
+
     &:-moz-read-only {
       background-color: @spiral-light-grey;
     }
 
     &.datetime {
       .size(50%, 30px);
+
       display: inline-block;
     }
   }
@@ -473,8 +478,10 @@ form {
       display: inline-block;
       width: auto;
     }
+
     &.datetime {
       .size(50%, 30px);
+
       display: inline-block;
     }
   }
@@ -486,6 +493,7 @@ form {
       width: auto;
     }
   }
+
   textarea {
     width: 100%;
     .placeholder(@spiral-grey);
@@ -514,9 +522,11 @@ form {
 
 .info {
   color: @spiral-blue;
+
   .item-label {
     color: @spiral-blue;
   }
+
   input, textarea {
     border-color: @spiral-blue;
   }
@@ -543,7 +553,7 @@ form {
 
     &.error {
       color: @spiral-red;
-      background: rgba(255, 0, 0, .1);
+      background: rgba(255, 0, 0, 0.1);
 
       .btn-close {
         color: @spiral-red;
@@ -552,7 +562,7 @@ form {
 
     &.success {
       color: @spiral-green;
-      background: rgba(0, 255, 0, .1);
+      background: rgba(0, 255, 0, 0.1);
 
       .btn-close {
         color: @spiral-green;
@@ -561,7 +571,7 @@ form {
 
     &.warning {
       color: @spiral-yellow;
-      background: rgba(244, 232, 151, .1);
+      background: rgba(244, 232, 151, 0.1);
 
       .btn-close {
         color: @spiral-yellow;
@@ -570,18 +580,16 @@ form {
 
     &.info {
       color: @spiral-blue;
-      background: rgba(0, 0, 255, .1);
+      background: rgba(0, 0, 255, 0.1);
 
       .btn-close {
         color: @spiral-blue;
       }
     }
-
   }
 }
 
 .item-form {
-
   &.error {
     .item-label,
     .item-input,
@@ -623,10 +631,9 @@ form {
   }
 
   .alert {
-
     &.form-msg {
-      border-radius: 0px;
-      padding: 5px 0px;
+      border-radius: 0;
+      padding: 5px 0;
 
       &.error {
         color: @spiral-red;
@@ -647,7 +654,6 @@ form {
         color: @spiral-blue;
         background: transparent;
       }
-
     }
   }
 }
@@ -670,14 +676,14 @@ form {
   cursor: pointer;
   border: 2px solid @spiral-white;
   border-radius: 2px;
-  box-shadow: 0 0 0 1px @spiral-grey
+  box-shadow: 0 0 0 1px @spiral-grey;
 }
 
 .switch-label {
   display: inline-block;
   margin: 0 5px;
   font-size: 14px;
-  color: #666666;
+  color: #666;
   position: relative;
   top: -8px;
 }
@@ -713,7 +719,7 @@ form {
   content: "OFF";
   padding-right: 10px;
   background-color: @spiral-light-grey;
-  color: #999999;
+  color: #999;
   text-align: right;
 }
 
@@ -733,11 +739,12 @@ form {
 }
 
 .switch-checkbox:checked + .switch-inner + .switch-switch {
-  right: 0px;
+  right: 0;
   background-color: #fff;
 }
 
 .pagination {
+
   .clearfix();
 
   margin: 0;
@@ -801,8 +808,8 @@ form {
       font-weight: bold;
       border-radius: 2px;
     }
-
   }
+
   input[type=file] {
     position: absolute;
     left: 0;
@@ -857,11 +864,11 @@ form {
     }
 
     &.debug {
-      background: #FF9800;
+      background: #ff9800;
     }
 
     &.danger {
-      background: #DD2C00;
+      background: #dd2c00;
     }
   }
 }

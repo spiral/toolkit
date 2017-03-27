@@ -8,14 +8,14 @@ const plugins = require('./webpack/plugins');
 module.exports = {
 
   entry: {
-      index: ['./js/index.js']
+      index: ['./js-source/index.js']
   },
 
   output: {
     path: path.join(__dirname, 'resources', 'scripts'),
     filename: 'sf.toolkit.js',
     publicPath: '/',
-    sourceMapFilename: '[name].js.map',
+    sourceMapFilename: 'sf.toolkit.js.map',
     chunkFilename: '[id].chunk.js'
   },
 
@@ -29,7 +29,7 @@ module.exports = {
       '.json',
       '.webpack.js',
       '.web.js',
-      '.scss',
+      '.less',
       '.css'
     ]
   },
@@ -46,7 +46,7 @@ module.exports = {
 
       loaders.js,
       loaders.css,
-      loaders.sass,
+      loaders.less,
       loaders.svg,
       loaders.eot,
       loaders.woff,
@@ -55,5 +55,10 @@ module.exports = {
     ]
   },
   externals: {
+    "sf": {
+      commonjs: "sf-core",
+      commonjs2: "sf-core",
+      root: "sf"
+    }
   }
 };

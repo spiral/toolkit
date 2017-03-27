@@ -1,8 +1,8 @@
 "use strict";
 
-import sf from "sf-core"; //resolved in webpack's "externals"
+import sf from "sf-core";
 
-var FileInput = function (sf, node, options) {
+var FileInput = function(sf, node, options) {
     this._construct(sf, node, options);
 };
 
@@ -17,16 +17,16 @@ FileInput.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype
  */
 FileInput.prototype.name = "fileInput";
 
-FileInput.prototype._construct = function (sf, node, options) {
+FileInput.prototype._construct = function(sf, node, options) {
+    this.init(sf, node, options); // call parent
 
-    this.init(sf, node, options);//call parent
-
-    if (options) {//if we pass options extend all options by passed options
+    if (options) {
+        // if we pass options extend all options by passed options
         this.options = sf.tools.extend(this.options, options);
     }
 
 
-    //elements
+    // Elements
     this.els = {
         node: node
     };
@@ -53,11 +53,11 @@ FileInput.prototype.optionsToGrab = {
 /**
  * Adds static events listeners.
  */
-FileInput.prototype.addFileEventListeners = function () {
-    var that = this
-    this._inputChange = function (e) {
-        var label = that.els.node.nextElementSibling,
-            labelVal = label.innerHTML;
+FileInput.prototype.addFileEventListeners = function() {
+    var that = this;
+    this._inputChange = function(e) {
+        var label = that.els.node.nextElementSibling;
+        var labelVal = label.innerHTML;
 
         var fileName = '';
 
@@ -72,26 +72,24 @@ FileInput.prototype.addFileEventListeners = function () {
         } else {
             label.innerHTML = labelVal;
         }
-    }
+    };
 
-    this._inputBlur = function () {
+    this._inputBlur = function() {
         that.els.node.classList.add('has-focus');
-    }
+    };
 
-    this._inputFocus = function () {
+    this._inputFocus = function() {
         that.els.node.classList.remove('has-focus');
-    }
+    };
 
     if (this.els.node) {
         this.els.node.addEventListener('change', this._inputChange);
         this.els.node.addEventListener('blur', this._inputBlur);
         this.els.node.addEventListener('foxus', this._inputFocus);
     }
+};
 
-
-}
-
-FileInput.prototype.removeFileEventListeners = function () {
+FileInput.prototype.removeFileEventListeners = function() {
     if (this.els.node) {
         this.els.node.removeEventListener('change', this._inputChange);
         this.els.node.removeEventListener('focus', this._inputFocus);
@@ -99,7 +97,7 @@ FileInput.prototype.removeFileEventListeners = function () {
     }
 };
 
-FileInput.prototype.die = function () {
+FileInput.prototype.die = function() {
     if (this.options.file) {
         this.removeFileEventListeners();
     }

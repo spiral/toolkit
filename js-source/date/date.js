@@ -1,44 +1,44 @@
 "use strict";
 
-import sf from "sf-core"; //resolved in webpack's "externals"
-import Moment from "moment";
+import sf from "sf-core";
+import moment from "moment";
 import Pikaday from "pikaday";
 
-var Date = function (sf, node, options) {
+var DateInput = function(sf, node, options) {
     this._construct(sf, node, options);
 };
 
 /**
  * @lends sf.Form.prototype
  */
-Date.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
+DateInput.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
 
 /**
  * Name to register
  * @type {string}
  */
-Date.prototype.name = "date";
+DateInput.prototype.name = "date";
 
-Date.prototype._construct = function (sf, node, options) {
+DateInput.prototype._construct = function(sf, node, options) {
+    this.init(sf, node, options); // call parent
 
-    this.init(sf, node, options);//call parent
-
-    if (options) {//if we pass options extend all options by passed options
+    if (options) {
+        // if we pass options extend all options by passed options
         this.options = Object.assign(this.options, options);
     }
 
     this.options = Object.assign(this.options, options, this.options.config);
 
-    //elements
+    // Elements
     this.els = {
         node: node
     };
 
     this.picker = new Pikaday({field: this.els.node});
 
-    var moment = Moment(this.els.node.dataset.value, this.options.valueMask);
+    var momentDate = moment(this.els.node.dataset.value, this.options.valueMask);
 
-    this.els.node.value = moment.format(this.options.format);
+    this.els.node.value = momentDate.format(this.options.format);
 };
 
 /**
@@ -46,7 +46,7 @@ Date.prototype._construct = function (sf, node, options) {
  * @inheritDoc
  * @enum {string}
  */
-Date.prototype.optionsToGrab = {
+DateInput.prototype.optionsToGrab = {
     /**
      *  Predefined value in any format
      */
@@ -72,10 +72,10 @@ Date.prototype.optionsToGrab = {
     /**
      *  Pass all other custom options of Pikaday via json
      */
-    config: {
+    "config": {
         value: {},
         domAttr: "data-config",
-        processor: function (node, val, self) {
+        processor: function(node, val, self) {
             if (!val) return this.value;
             if (typeof val == "string") {
                 try {
@@ -90,13 +90,9 @@ Date.prototype.optionsToGrab = {
 
 };
 
-//Date.prototype.addPatternEventListeners = function() {
-//    var that = this;
-//
-//};
 
-Date.prototype.die = function () {
+DateInput.prototype.die = function() {
     delete this;
 };
 
-export {Date as default};
+export {DateInput as default};

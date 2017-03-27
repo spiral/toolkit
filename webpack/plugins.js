@@ -23,7 +23,7 @@ const basePlugins = [
 const devPlugins = [
     new StyleLintPlugin({
         configFile: './.stylelintrc.json',
-        files: ['resources/**/*.scss'],
+        files: ['js-source/**/*.less'],
         failOnError: false
     })
 ];
@@ -31,7 +31,7 @@ const devPlugins = [
 const prodPlugins = [
     new StyleLintPlugin({
         configFile: './.stylelintrc.json',
-        files: ['resources/**/*.scss'],
+        files: ['js-source/**/*.less'],
         failOnError: false
     }),
     new webpack.optimize.UglifyJsPlugin({
