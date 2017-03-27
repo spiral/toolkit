@@ -1,5 +1,5 @@
 "use strict";
-import sf from "sf"; //resolved in webpack's "externals"
+import sf from "sf-core"; //resolved in webpack's "externals"
 import FileInput from "./fileinput";
 
 sf.instancesController.registerInstanceType(FileInput, "sf-js-file-input");

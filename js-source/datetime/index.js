@@ -1,5 +1,5 @@
 "use strict";
-import sf from "sf"; //resolved in webpack's "externals"
+import sf from "sf-core";
 import Datetime from "./datetime";
 
 require("style!css?minimize!../../node_modules/pikaday/css/pikaday.css");
