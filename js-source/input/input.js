@@ -2,6 +2,13 @@
 
 import sf from "sf-core";
 
+var sf2 = require('sf-core');
+import * as sf3 from 'sf-core';
+
+console.log(sf, sf2, sf3);
+
+debugger;
+
 var Input = function(sf, node, options) {
     this._construct(sf, node, options);
 };
