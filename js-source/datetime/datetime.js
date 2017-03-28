@@ -11,7 +11,7 @@ var Datetime = function(sf, node, options) {
 /**
  * @lends sf.Form.prototype
  */
-Datetime.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
+Datetime.prototype = Object.create(sf.core.BaseDOMConstructor.prototype);
 
 /**
  * Name to register

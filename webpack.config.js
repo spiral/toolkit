@@ -16,7 +16,10 @@ module.exports = {
     filename: '[name].js',
     publicPath: '/',
     sourceMapFilename: '[name].js.map',
-    chunkFilename: '[id].chunk.js'
+    chunkFilename: '[id].chunk.js',
+    libraryTarget: "umd",
+    library: "sf-toolkit",
+    umdNamedDefine: true
   },
 
   devtool: process.env.NODE_ENV === 'production' ?
@@ -54,10 +57,5 @@ module.exports = {
       loaders.woff2,
       loaders.ttf
     ]
-  },
-  externals: {
-    "sf": {
-      commonjs: "sf-core"
-    }
   }
 };

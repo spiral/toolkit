@@ -11,7 +11,7 @@ var DateInput = function(sf, node, options) {
 /**
  * @lends sf.Form.prototype
  */
-DateInput.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
+DateInput.prototype = Object.create(sf.core.BaseDOMConstructor.prototype);
 
 /**
  * Name to register

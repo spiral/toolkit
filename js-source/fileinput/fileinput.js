@@ -9,7 +9,7 @@ var FileInput = function(sf, node, options) {
 /**
  * @lends sf.Form.prototype
  */
-FileInput.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
+FileInput.prototype = Object.create(sf.core.BaseDOMConstructor.prototype);
 
 /**
  * Name to register

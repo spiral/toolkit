@@ -2,13 +2,6 @@
 
 import sf from "sf-core";
 
-var sf2 = require('sf-core');
-import * as sf3 from 'sf-core';
-
-console.log(sf, sf2, sf3);
-
-debugger;
-
 var Input = function(sf, node, options) {
     this._construct(sf, node, options);
 };
@@ -16,7 +9,7 @@ var Input = function(sf, node, options) {
 /**
  * @lends sf.Form.prototype
  */
-Input.prototype = Object.create(sf.modules.core.BaseDOMConstructor.prototype);
+Input.prototype = Object.create(sf.core.BaseDOMConstructor.prototype);
 
 /**
  * Name to register
