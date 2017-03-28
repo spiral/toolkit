@@ -7,6 +7,12 @@ exports.eslint = {
   exclude: /node_modules/
 };
 
+exports.jsmap = {
+  test: /\.js$/,
+  use: ["source-map-loader"],
+  enforce: "pre"
+};
+
 exports.css = {
   test: /\.css$/,
   loader: 'style-loader!css-loader?-url&sourceMap'
