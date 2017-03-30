@@ -22,6 +22,16 @@ Elements included
     * js file
     * inline js
     
+Toolkit JS and CSS:
+--------
+To enable Toolkit widgets in your views and connect appropriate CSS/JS files use following code:
+
+```html
+<dark:use bundle="spiral:bundle"/>
+<toolkit:styles/>
+<toolkit:scripts/>
+```
+
 Examples
 --------
 
