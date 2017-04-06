@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "spiral/framework": "^0.9"
+    "spiral/framework": "^1.0"
   },
   "autoload": {
     "psr-4": {
