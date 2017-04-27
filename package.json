@@ -5,7 +5,7 @@
   "main": "resources/scripts/sf.toolkit.js",
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "npm run build:prod && build:less",
+    "build": "npm run build:prod && npm run build:less",
     "build:prod": "cross-env NODE_ENV=production webpack -p",
     "build:dev": "cross-env NODE_ENV=development webpack -p",
     "build:less": "lessc ./js-source/styles/spiral/spiral.less ./resources/spiral.css",
