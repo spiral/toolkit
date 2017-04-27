@@ -5,9 +5,11 @@
   "main": "resources/scripts/sf.toolkit.js",
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "npm run build:prod",
+    "build": "npm run build:prod && build:less",
     "build:prod": "cross-env NODE_ENV=production webpack -p",
     "build:dev": "cross-env NODE_ENV=development webpack -p",
+    "build:less": "lessc ./js-source/styles/spiral/spiral.less ./resources/spiral.css",
+    "lessc": "less",
     "clean": "rimraf /resources/scripts/sf.*.js",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/"

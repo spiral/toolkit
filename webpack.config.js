@@ -8,7 +8,8 @@ const plugins = require('./webpack/plugins');
 module.exports = {
 
   entry: {
-      "sf.toolkit": ['./js-source/index.js']
+      "sf.toolkit": ['./js-source/toolkit.full.js'],
+      "sf.toolkit.no-styles": ['./js-source/toolkit.no-styles.js']
   },
 
   output: {
