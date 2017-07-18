@@ -12,7 +12,8 @@
     "lessc": "less",
     "clean": "rimraf /resources/scripts/sf.*.js",
     "prepublish": "npm run build",
-    "clean-after-deploy": "rimraf node_modules/"
+    "clean-after-deploy": "rimraf node_modules/",
+    "update-git-dependencies": "rimraf node_modules/sf* && npm update"
   },
   "repository": {
     "type": "git",
