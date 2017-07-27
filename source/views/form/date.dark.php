@@ -17,7 +17,7 @@
         }
         ?>
         <block:input-body>
-                <input type="text" name="${name}" value="${value}${context}" class="item-input sf-js-date ${class}" node:attributes/>
+                <input type="text" name="${name}" data-value="${value}${context}" class="item-input sf-js-date ${class}" node:attributes/>
         </block:input-body>
     </label>
 </block:body>
