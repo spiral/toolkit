@@ -16,6 +16,16 @@ Elements included
     * boolean cell
     * bytes (size) cell
     
+Toolkit JS and CSS:
+--------
+To enable Toolkit widgets in your views and connect appropriate CSS/JS files use following code:
+
+```html
+<dark:use bundle="spiral:bundle"/>
+<toolkit:styles/>
+<toolkit:scripts/>
+```
+
 Examples
 --------
 
