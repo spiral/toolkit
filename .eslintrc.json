@@ -1,23 +1,9 @@
 {
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
-  },
-  "extends": "google",
-  "rules": {
-    "linebreak-style": 0,
-    "no-invalid-this": 1,
-    "no-var": 0,
-    "space-before-function-paren": 0,
-    "comma-dangle": 0,
-    "max-len": [
-      2,
-      {
-        "code": 160,
-        "tabWidth": 4,
-        "ignoreUrls": true
-      }
-    ],
-    "quotes": 0
+  "extends": [
+    "eslint-config-airbnb-base"
+  ],
+  "env": {
+    "browser": true,
+    "node": true
   }
 }
