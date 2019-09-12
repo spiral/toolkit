@@ -1,31 +1,35 @@
-"use strict";
+/* eslint-disable global-require */
+/* eslint-disable func-names */
+/* eslint-disable max-len */
+/* eslint-disable no-prototype-builtins */
 
 /**
  * Provides a spiral-specific sf bundle
  * TODO: This wrapping looks very fishy, why we need it? Move to toolkit may be?
  */
-var sf = require("./sf");
+const sf = require('./sf');
 
-var sfWrapper = {
-    core: sf.core,
-    helpers: sf.helpers,
-    tools: sf.tools
+const sfWrapper = {
+  core: sf.core,
+  helpers: sf.helpers,
+  tools: sf.tools,
 };
 
 // Add console shim for old IE
-require("./shim/console");
-require("./shim/Object.assign");
+require('./shim/console');
+require('./shim/Object.assign');
 
-if (typeof Promise != 'function') {
-    var Promise = require('es6-promise').Promise;
+if (typeof Promise !== 'function') {
+  // eslint-disable-next-line no-unused-vars
+  const { Promise } = require('es6-promise');
 }
 
-if (!sfWrapper.hasOwnProperty('options')) sfWrapper.options = {instances: {}};
+if (!sfWrapper.hasOwnProperty('options')) sfWrapper.options = { instances: {} };
 if (!sfWrapper.options.hasOwnProperty('instances')) sfWrapper.options.instances = {};
 
 // TODO delete this in future
-if (window && !window.hasOwnProperty("sf")) {// bind only if  window.sf is empty to avoid conflicts with other libs
-    window.sf = sfWrapper;
+if (window && !window.hasOwnProperty('sf')) { // bind only if  window.sf is empty to avoid conflicts with other libs
+  window.sf = sfWrapper;
 }
 
 sfWrapper.instancesController = new sfWrapper.core.InstancesController(sfWrapper);
@@ -33,21 +37,21 @@ sfWrapper.domMutation = new sfWrapper.core.DomMutations(sfWrapper.instancesContr
 
 // Events system
 sfWrapper.events = new sfWrapper.core.Events();
-require("./core/events/baseEvents.js")(sfWrapper.events);
+require('./core/events/baseEvents.js')(sfWrapper.events);
 
 // AJAX
 sfWrapper.ajax = new sfWrapper.core.Ajax(window && window.csrfToken ? {
-    // TODO move to spiral bindings
-    headers: {
-        "X-CSRF-Token": window.csrfToken
-    }
+  // TODO move to spiral bindings
+  headers: {
+    'X-CSRF-Token': window.csrfToken,
+  },
 } : null);
 
-require("./core/ajax/baseActions.js")(sfWrapper);
+require('./core/ajax/baseActions.js')(sfWrapper);
 
 // API
 sfWrapper.createModulePrototype = function () {
-    return Object.create(sfWrapper.core.BaseDOMConstructor.prototype);
+  return Object.create(sfWrapper.core.BaseDOMConstructor.prototype);
 };
 
 sfWrapper.registerInstanceType = sfWrapper.instancesController.registerInstanceType.bind(sfWrapper.instancesController);

@@ -1,28 +1,33 @@
-"use strict";
+/* eslint-disable no-prototype-builtins */ // TODO: ?
+/* eslint-disable no-param-reassign */
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
+/* eslint-disable func-names */
 
 /**
  * Instance controller
  * @param {*} spiral
  * @constructor
  */
-var InstancesController = function (spiral) {
-    this.spiral = spiral;
-    if (!this.constructor) {
-        console.error("Please call InstancesController with new  - 'new InstancesController()' ");
-        return;
-    }
-    this._storage = {
-        instancesConstructors: {
-            cssClasses: {},
-            jsConstructors: {}
-        },
-        addons: {},
-        instances: {}
-    };
+const InstancesController = function (spiral) {
+  this.spiral = spiral;
+  if (!this.constructor) {
+    console.error("Please call InstancesController with new  - 'new InstancesController()' ");
+    return;
+  }
+  this._storage = {
+    instancesConstructors: {
+      cssClasses: {},
+      jsConstructors: {},
+    },
+    addons: {},
+    instances: {},
+  };
 
-    // todo decide if we need this
-    // ["onAddInstance", "onRemoveInstance"]
-    // this.events = new spiral.modules.core.Events();
+  // todo decide if we need this
+  // ["onAddInstance", "onRemoveInstance"]
+  // this.events = new spiral.modules.core.Events();
 };
 
 /**
@@ -33,38 +38,39 @@ var InstancesController = function (spiral) {
  * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
  */
 InstancesController.prototype.registerInstanceType = function (constructorFunction, cssClassName, isSkipInitialization) {
-    var instanceName = constructorFunction.prototype.name;
+  const instanceName = constructorFunction.prototype.name;
 
-    if (!instanceName) {
-        console.error("Instance constructor should have name inside it");
+  if (!instanceName) {
+    console.error('Instance constructor should have name inside it');
+  }
+
+  // eslint-disable-next-line no-prototype-builtins
+  if (this._storage.instancesConstructors.jsConstructors.hasOwnProperty(instanceName)) {
+    console.error("Instance Constructor for type '%s' already added. Skipping", instanceName);
+    return;
+  }
+
+  if (cssClassName) { // add link (cssClassName->instanceName)
+    this._storage.instancesConstructors.cssClasses[cssClassName] = instanceName;
+  }
+
+  this._storage.instancesConstructors.jsConstructors[instanceName] = constructorFunction;
+
+  // if (this._storage.instancesConstructors.hasOwnProperty(className)){
+  //    console.error("Instance Constructor for type %s already added. Skipping",constructorFunction.prototype.name);
+  //    return;
+  // }
+  // this._storage.instancesConstructors[className] = {//init storage fields
+  //    "typeName": constructorFunction.prototype.name,
+  //    "constructor": constructorFunction
+  // };
+  this._storage.instances[instanceName] = [];
+  if (!isSkipInitialization) {
+    const nodes = document.getElementsByClassName(cssClassName);// init add nodes with this class
+    for (let i = 0, max = nodes.length; i < max; i += 1) {
+      this.addInstance(instanceName, nodes[i]);
     }
-
-    if (this._storage.instancesConstructors.jsConstructors.hasOwnProperty(instanceName)) {
-        console.error("Instance Constructor for type '%s' already added. Skipping", instanceName);
-        return;
-    }
-
-    if (cssClassName) {// add link (cssClassName->instanceName)
-        this._storage.instancesConstructors.cssClasses[cssClassName] = instanceName;
-    }
-
-    this._storage.instancesConstructors.jsConstructors[instanceName] = constructorFunction;
-
-    // if (this._storage.instancesConstructors.hasOwnProperty(className)){
-    //    console.error("Instance Constructor for type %s already added. Skipping",constructorFunction.prototype.name);
-    //    return;
-    // }
-    // this._storage.instancesConstructors[className] = {//init storage fields
-    //    "typeName": constructorFunction.prototype.name,
-    //    "constructor": constructorFunction
-    // };
-    this._storage.instances[instanceName] = [];
-    if (!isSkipInitialization) {
-        var nodes = document.getElementsByClassName(cssClassName);// init add nodes with this class
-        for (var i = 0, max = nodes.length; i < max; i++) {
-            this.addInstance(instanceName, nodes[i]);
-        }
-    }
+  }
 };
 
 /**
@@ -76,8 +82,8 @@ InstancesController.prototype.registerInstanceType = function (constructorFuncti
  * @deprecated
  */
 InstancesController.prototype.addInstanceType = function (className, constructorFunction, isSkipInitialization) {
-    console.warn("addInstanceType is deprecated. Please use registerInstanceType instead");
-    return this.registerInstanceType(constructorFunction, isSkipInitialization);
+  console.warn('addInstanceType is deprecated. Please use registerInstanceType instead');
+  return this.registerInstanceType(constructorFunction, isSkipInitialization);
 };
 
 
@@ -89,22 +95,22 @@ InstancesController.prototype.addInstanceType = function (className, constructor
  * @return {boolean}
  */
 InstancesController.prototype.addInstance = function (instanceName, node, options) {
-    var InstanceConstructor = this._storage.instancesConstructors.jsConstructors[instanceName];
-    var isAlreadyAdded = this.getInstance(instanceName, node);
+  const InstanceConstructor = this._storage.instancesConstructors.jsConstructors[instanceName];
+  const isAlreadyAdded = this.getInstance(instanceName, node);
 
-    if (!InstanceConstructor || isAlreadyAdded) {// if not found this type  or already added - return
-        return false;
-    }
+  if (!InstanceConstructor || isAlreadyAdded) { // if not found this type  or already added - return
+    return false;
+  }
 
-    var instance = new InstanceConstructor(this.spiral, node, options);
-    this._storage.instances[instanceName].push({// add new instance of this type
-        "node": node,
-        "instance": instance
-    });
+  const instance = new InstanceConstructor(this.spiral, node, options);
+  this._storage.instances[instanceName].push({ // add new instance of this type
+    node,
+    instance,
+  });
 
-    // this.events.trigger("onAddInstance", instance);
+  // this.events.trigger("onAddInstance", instance);
 
-    return instance;
+  return instance;
 };
 
 /**
@@ -114,18 +120,17 @@ InstancesController.prototype.addInstance = function (instanceName, node, option
  * @return {boolean}
  */
 InstancesController.prototype.removeInstance = function (instanceName, node) {
-    var instanceObj = this.getInstance(instanceName, node, true);
-    var key;
+  const instanceObj = this.getInstance(instanceName, node, true);
 
-    if (!instanceObj) {
-        return false;
-    }
-    instanceObj.instance.die();// avoid memory leak
-    key = this._storage.instances[instanceName].indexOf(instanceObj);
-    if (key !== -1) {// remove key
-        this._storage.instances[instanceName].splice(key, 1);
-    }
-    return true;
+  if (!instanceObj) {
+    return false;
+  }
+  instanceObj.instance.die();// avoid memory leak
+  const key = this._storage.instances[instanceName].indexOf(instanceObj);
+  if (key !== -1) { // remove key
+    this._storage.instances[instanceName].splice(key, 1);
+  }
+  return true;
 };
 
 /**
@@ -136,24 +141,24 @@ InstancesController.prototype.removeInstance = function (instanceName, node) {
  * @return {boolean}
  */
 InstancesController.prototype.getInstance = function (instanceName, node, isReturnObject) {
-    // TODO isReturnObject not needed. Refactor and remove
+  // TODO isReturnObject not needed. Refactor and remove
 
-    var typeArr = this._storage.instances[instanceName];
-    var ret = false;
-    if (!typeArr) {
-        return false;
+  const typeArr = this._storage.instances[instanceName];
+  let ret = false;
+  if (!typeArr) {
+    return false;
+  }
+  node = (node instanceof HTMLElement) ? node : document.getElementById(node);
+  if (!node) {
+    return false;
+  }
+  for (let key = 0, l = typeArr.length; key < l; key += 1) { // iterate storage and try to find instance
+    if (typeArr[key].node === node) {
+      ret = (isReturnObject) ? typeArr[key] : typeArr[key].instance;
+      break;
     }
-    node = (node instanceof HTMLElement) ? node : document.getElementById(node);
-    if (!node) {
-        return false;
-    }
-    for (var key = 0, l = typeArr.length; key < l; key++) {// iterate storage and try to find instance
-        if (typeArr[key].node === node) {
-            ret = (isReturnObject) ? typeArr[key] : typeArr[key].instance;
-            break;
-        }
-    }
-    return ret;
+  }
+  return ret;
 };
 
 /**
@@ -162,7 +167,7 @@ InstancesController.prototype.getInstance = function (instanceName, node, isRetu
  * @return {array|boolean}
  */
 InstancesController.prototype.getInstances = function (instanceName) {
-    return this._storage.instances[instanceName] || false;
+  return this._storage.instances[instanceName] || false;
 };
 
 
@@ -174,17 +179,17 @@ InstancesController.prototype.getInstances = function (instanceName) {
  * @param {String} addonName name of addon (spiral, bootstrap,etc)
  */
 InstancesController.prototype.registerAddon = function (addon, instanceName, addonType, addonName) {
-    if (!this._storage.addons.hasOwnProperty(instanceName)) {
-        this._storage.addons[instanceName] = {};
-    }
-    if (!this._storage.addons[instanceName].hasOwnProperty(addonType)) {
-        this._storage.addons[instanceName][addonType] = {};
-    }
-    if (this._storage.addons[instanceName][addonType].hasOwnProperty(addonName)) {
-        console.error("The %s addon type %s already registered for instance %s! Skipping registration.", addonName, addonType, instanceName);
-        return;
-    }
-    this._storage.addons[instanceName][addonType][addonName] = addon;
+  if (!this._storage.addons.hasOwnProperty(instanceName)) {
+    this._storage.addons[instanceName] = {};
+  }
+  if (!this._storage.addons[instanceName].hasOwnProperty(addonType)) {
+    this._storage.addons[instanceName][addonType] = {};
+  }
+  if (this._storage.addons[instanceName][addonType].hasOwnProperty(addonName)) {
+    console.error('The %s addon type %s already registered for instance %s! Skipping registration.', addonName, addonType, instanceName);
+    return;
+  }
+  this._storage.addons[instanceName][addonType][addonName] = addon;
 };
 
 /**
@@ -195,12 +200,12 @@ InstancesController.prototype.registerAddon = function (addon, instanceName, add
  * @return {*}
  */
 InstancesController.prototype.getInstanceAddon = function (instanceName, addonType, addonName) {
-    if(!this._storage.addons.hasOwnProperty(instanceName)
+  if (!this._storage.addons.hasOwnProperty(instanceName)
         || !this._storage.addons[instanceName].hasOwnProperty(addonType)
         || !this._storage.addons[instanceName][addonType].hasOwnProperty(addonName)) {
-        return false;
-    }
-    return this._storage.addons[instanceName][addonType][addonName];
+    return false;
+  }
+  return this._storage.addons[instanceName][addonType][addonName];
 };
 
 
@@ -209,7 +214,7 @@ InstancesController.prototype.getInstanceAddon = function (instanceName, addonTy
  * @return {Array}
  */
 InstancesController.prototype.getClasses = function () {
-    return Object.keys(this._storage.instancesConstructors.cssClasses);
+  return Object.keys(this._storage.instancesConstructors.cssClasses);
 };
 
 /**
@@ -218,15 +223,15 @@ InstancesController.prototype.getClasses = function () {
  * @return {*}
  */
 InstancesController.prototype.getInstanceNameByCssClass = function (cssClass) {
-    return this._storage.instancesConstructors.cssClasses[cssClass];
+  return this._storage.instancesConstructors.cssClasses[cssClass];
 };
 
 /**
  * Get constructor by name or class name
  * @param {*} name
  */
-InstancesController.prototype.getInstanceConstructors = function (name) {
-    // TODO
+InstancesController.prototype.getInstanceConstructors = function () {
+  // TODO
 };
 
 module.exports = InstancesController;

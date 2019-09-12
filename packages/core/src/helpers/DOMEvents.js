@@ -1,4 +1,9 @@
-"use strict";
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-console */
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
+
 /**
  * Helper to manipulate DOM Events. It's a simple wrapper around "addEventListener" but it's store all functions and allow us to remove it all.
  * It's very helpful for die() method of instances
@@ -6,8 +11,8 @@
  * @TODO new method like addEventListener  DOMEvents.on(node(s),event,callback,useCapture);
  * @constructor
  */
-var DOMEvents = function () {
-    /**
+const DOMEvents = function () {
+  /**
      * Internal storage for events
      * @property {Array.<Object>} DOMEvents - dom events array
      * @property {Object} DOMEvents.DOMNode -   DOM node
@@ -17,7 +22,7 @@ var DOMEvents = function () {
      * @property {Object} ... -   another object
      * @private
      */
-    this._DOMEventsStorage = [];
+  this._DOMEventsStorage = [];
 };
 /**
  * Add event(s) to node(s).
@@ -46,14 +51,14 @@ var DOMEvents = function () {
  *  DOMEventsInstance.add([eventOne,eventTwo]);
  */
 DOMEvents.prototype.add = function (eventArray) {
-    if (Object.prototype.toString.call([]) !== "[object Array]") {
-        eventArray = [eventArray];
-    }
-    eventArray.forEach(function (val) {
-        val.useCapture = !!(val.useCapture);
-        val.DOMNode.addEventListener(val.eventType, val.eventFunction, val.useCapture);
-        this._DOMEventsStorage.push(val);
-    }, this);
+  if (Object.prototype.toString.call([]) !== '[object Array]') {
+    eventArray = [eventArray];
+  }
+  eventArray.forEach(function (val) {
+    val.useCapture = !!(val.useCapture);
+    val.DOMNode.addEventListener(val.eventType, val.eventFunction, val.useCapture);
+    this._DOMEventsStorage.push(val);
+  }, this);
 };
 
 /**
@@ -64,10 +69,10 @@ DOMEvents.prototype.add = function (eventArray) {
  * @param {Function} eventArray.eventFunction -   Function
  * @param {Boolean} [eventArray.useCapture=false] -   useCapture
  */
-DOMEvents.prototype.remove = function (eventArray) {
-    // TODO IMPLEMENT
-    // TODO не уверен что этот метод необходим. если надо часто убирать какието обработчики, то лучше поставить обработчки на родителя
-    console.warn("TODO IMPLEMENT");
+DOMEvents.prototype.remove = function (/* eventArray */) {
+  // TODO IMPLEMENT
+  // TODO не уверен что этот метод необходим. если надо часто убирать какието обработчики, то лучше поставить обработчки на родителя
+  console.warn('TODO IMPLEMENT');
 };
 
 /**
@@ -77,10 +82,10 @@ DOMEvents.prototype.remove = function (eventArray) {
  * DOMEventsInstance.removeAll();
  */
 DOMEvents.prototype.removeAll = function () {
-    this._DOMEventsStorage.forEach(function (val) {
-        val.DOMNode.removeEventListener(val.eventType, val.eventFunction, val.useCapture);
-    });
-    this._DOMEventsStorage = [];
+  this._DOMEventsStorage.forEach((val) => {
+    val.DOMNode.removeEventListener(val.eventType, val.eventFunction, val.useCapture);
+  });
+  this._DOMEventsStorage = [];
 };
 
 module.exports = DOMEvents;

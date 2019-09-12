@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 @import 'variables';
 @import 'mixins';
 @import 'lock';
@@ -474,23 +476,9 @@ form {
 
   select {
     &.datetime {
-      height: 30px;
-      display: inline-block;
-      width: auto;
-    }
-
-    &.datetime {
       .size(50%, 30px);
 
       display: inline-block;
-    }
-  }
-
-  select {
-    &.datetime {
-      height: 30px;
-      display: inline-block;
-      width: auto;
     }
   }
 
@@ -506,6 +494,73 @@ form {
     &:focus {
       border-color: @spiral-blue;
       outline: none;
+    }
+  }
+
+  &.error {
+    .item-label,
+    .item-input,
+    .item-select,
+    textarea {
+      border-color: @spiral-red;
+      color: @spiral-red;
+    }
+  }
+
+  &.success {
+    .item-label,
+    .item-input,
+    .item-select,
+    textarea {
+      border-color: @spiral-green;
+      color: @spiral-green;
+    }
+  }
+
+  &.warning {
+    .item-label,
+    .item-input,
+    .item-select,
+    textarea {
+      border-color: @spiral-yellow;
+      color: @spiral-yellow;
+    }
+  }
+
+  &.info {
+    .item-label,
+    .item-input,
+    .item-select,
+    textarea {
+      border-color: @spiral-blue;
+      color: @spiral-blue;
+    }
+  }
+
+  .alert {
+    &.form-msg {
+      border-radius: 0;
+      padding: 5px 0;
+
+      &.error {
+        color: @spiral-red;
+        background: transparent;
+      }
+
+      &.success {
+        color: @spiral-green;
+        background: transparent;
+      }
+
+      &.warning {
+        color: @spiral-yellow;
+        background: transparent;
+      }
+
+      &.info {
+        color: @spiral-blue;
+        background: transparent;
+      }
     }
   }
 }
@@ -584,75 +639,6 @@ form {
 
       .btn-close {
         color: @spiral-blue;
-      }
-    }
-  }
-}
-
-.item-form {
-  &.error {
-    .item-label,
-    .item-input,
-    .item-select,
-    textarea {
-      border-color: @spiral-red;
-      color: @spiral-red;
-    }
-  }
-
-  &.success {
-    .item-label,
-    .item-input,
-    .item-select,
-    textarea {
-      border-color: @spiral-green;
-      color: @spiral-green;
-    }
-  }
-
-  &.warning {
-    .item-label,
-    .item-input,
-    .item-select,
-    textarea {
-      border-color: @spiral-yellow;
-      color: @spiral-yellow;
-    }
-  }
-
-  &.info {
-    .item-label,
-    .item-input,
-    .item-select,
-    textarea {
-      border-color: @spiral-blue;
-      color: @spiral-blue;
-    }
-  }
-
-  .alert {
-    &.form-msg {
-      border-radius: 0;
-      padding: 5px 0;
-
-      &.error {
-        color: @spiral-red;
-        background: transparent;
-      }
-
-      &.success {
-        color: @spiral-green;
-        background: transparent;
-      }
-
-      &.warning {
-        color: @spiral-yellow;
-        background: transparent;
-      }
-
-      &.info {
-        color: @spiral-blue;
-        background: transparent;
       }
     }
   }

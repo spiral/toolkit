@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+/* stylelint-disable at-rule-no-unknown */
 .clearfix,
 .cf {
   *zoom: 1;
@@ -483,19 +485,9 @@ form {
   display: inline-block;
 }
 .item-form select.datetime {
-  height: 30px;
-  display: inline-block;
-  width: auto;
-}
-.item-form select.datetime {
   width: 50%;
   height: 30px;
   display: inline-block;
-}
-.item-form select.datetime {
-  height: 30px;
-  display: inline-block;
-  width: auto;
 }
 .item-form textarea {
   width: 100%;
@@ -516,6 +508,54 @@ form {
 .item-form textarea:focus {
   border-color: #33a3fe;
   outline: none;
+}
+.item-form.error .item-label,
+.item-form.error .item-input,
+.item-form.error .item-select,
+.item-form.error textarea {
+  border-color: #fc6c6c;
+  color: #fc6c6c;
+}
+.item-form.success .item-label,
+.item-form.success .item-input,
+.item-form.success .item-select,
+.item-form.success textarea {
+  border-color: #2c9f42;
+  color: #2c9f42;
+}
+.item-form.warning .item-label,
+.item-form.warning .item-input,
+.item-form.warning .item-select,
+.item-form.warning textarea {
+  border-color: #ffc800;
+  color: #ffc800;
+}
+.item-form.info .item-label,
+.item-form.info .item-input,
+.item-form.info .item-select,
+.item-form.info textarea {
+  border-color: #33a3fe;
+  color: #33a3fe;
+}
+.item-form .alert.form-msg {
+  border-radius: 0;
+  padding: 5px 0;
+}
+.item-form .alert.form-msg.error {
+  color: #fc6c6c;
+  background: transparent;
+}
+.item-form .alert.form-msg.success {
+  color: #2c9f42;
+  background: transparent;
+}
+.item-form .alert.form-msg.warning {
+  color: #ffc800;
+  background: transparent;
+}
+.item-form .alert.form-msg.info {
+  color: #33a3fe;
+  background: transparent;
 }
 .item-label {
   font-size: 14px;
@@ -581,54 +621,6 @@ form {
 }
 .alert.form-msg.info .btn-close {
   color: #33a3fe;
-}
-.item-form.error .item-label,
-.item-form.error .item-input,
-.item-form.error .item-select,
-.item-form.error textarea {
-  border-color: #fc6c6c;
-  color: #fc6c6c;
-}
-.item-form.success .item-label,
-.item-form.success .item-input,
-.item-form.success .item-select,
-.item-form.success textarea {
-  border-color: #2c9f42;
-  color: #2c9f42;
-}
-.item-form.warning .item-label,
-.item-form.warning .item-input,
-.item-form.warning .item-select,
-.item-form.warning textarea {
-  border-color: #ffc800;
-  color: #ffc800;
-}
-.item-form.info .item-label,
-.item-form.info .item-input,
-.item-form.info .item-select,
-.item-form.info textarea {
-  border-color: #33a3fe;
-  color: #33a3fe;
-}
-.item-form .alert.form-msg {
-  border-radius: 0;
-  padding: 5px 0;
-}
-.item-form .alert.form-msg.error {
-  color: #fc6c6c;
-  background: transparent;
-}
-.item-form .alert.form-msg.success {
-  color: #2c9f42;
-  background: transparent;
-}
-.item-form .alert.form-msg.warning {
-  color: #ffc800;
-  background: transparent;
-}
-.item-form .alert.form-msg.info {
-  color: #33a3fe;
-  background: transparent;
 }
 .item-form-switch {
   position: relative;

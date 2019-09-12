@@ -1,25 +1,27 @@
-"use strict";
-import sf from '@spiral-toolkit/core';
+/* eslint-disable func-names */
+/* eslint-disable no-underscore-dangle */
+
+import core from '@spiral-toolkit/core';
 
 /**
  * Spiral lock for forms
  * @constructor Lock
  */
 
-var Lock = function (sf, node, options) {
-    this._construct(sf, node, options);
+const Lock = function (sf, node, options) {
+  this._construct(sf, node, options);
 };
 
 /**
  * @lends Lock.prototype
  */
-Lock.prototype = sf.createModulePrototype();
+Lock.prototype = core.createModulePrototype();
 
 /**
  * Name of module
  * @type {string}
  */
-Lock.prototype.name = "lock";
+Lock.prototype.name = 'lock';
 
 /**
  * Function that call on new instance is created.
@@ -29,8 +31,8 @@ Lock.prototype.name = "lock";
  * @private
  */
 Lock.prototype._construct = function (sf, node, options) {
-    this.init(sf, node, options);
-    this.add(this.options.type, this.node);
+  this.init(sf, node, options);
+  this.add(this.options.type, this.node);
 };
 
 /**
@@ -40,67 +42,68 @@ Lock.prototype._construct = function (sf, node, options) {
  * @return {Function|*}
  */
 Lock.prototype.add = function (type, context) {
-    if (!this.types.hasOwnProperty(type)) {
-        return false;
-    }
-    var node = document.createElement("div");
-    node.className = this.types[type].className || 'js-sf-lock';
-    node.innerHTML = this.types[type].html;
-    context.appendChild(node);
-    context.classList.add("locked");
-    return this.types[type].progress;
+  // eslint-disable-next-line no-prototype-builtins
+  if (!this.types.hasOwnProperty(type)) {
+    return false;
+  }
+  const node = document.createElement('div');
+  node.className = this.types[type].className || 'js-sf-lock';
+  node.innerHTML = this.types[type].html;
+  context.appendChild(node);
+  context.classList.add('locked');
+  return this.types[type].progress;
 };
 /**
  * Clear all variables and die
  */
 Lock.prototype.die = function () {
-    this.remove();
+  this.remove();
 };
 /**
  * Remove lock
  * @return {boolean}
  */
 Lock.prototype.remove = function () {
-    this.node.classList.remove("locked");
-    var sfLock = this.node.querySelector(".js-sf-lock"); // TODO this.lockNode ?
-    if (sfLock) {
-        this.node.removeChild(sfLock);
-    }
-    return true;
+  this.node.classList.remove('locked');
+  const sfLock = this.node.querySelector('.js-sf-lock'); // TODO this.lockNode ?
+  if (sfLock) {
+    this.node.removeChild(sfLock);
+  }
+  return true;
 };
 /**
  * Object with lock types.
  * @enum {Object}
  */
 Lock.prototype.types = {
-    /**
+  /**
      * @type {Object}
      */
-    spinner: {
-        /**
+  spinner: {
+    /**
          * HTML
          * @inner
          * @type String
          */
-        html: '<div class="sf-spinner"></div>'
-    },
-    progress: {
-        /**
+    html: '<div class="sf-spinner"></div>',
+  },
+  progress: {
+    /**
          * HTML
          * @inner
          * @type String
          */
-        html: '<div class="sf-progress"><div class="progress-line"></div></div>',
-        /**
+    html: '<div class="sf-progress"><div class="progress-line"></div></div>',
+    /**
          * Function to change styles while AJAX progress
          * @param {Number} current
          * @param {Number} total
          */
-        progress: function (current, total) {
-            var progress = this.context.getElementsByClassName("progress-line")[0];
-            progress.style.width = 100 * (current / total) + "%";
-        }
-    }
+    progress(current, total) {
+      const progress = this.context.getElementsByClassName('progress-line')[0];
+      progress.style.width = `${100 * (current / total)}%`;
+    },
+  },
 };
 
 // We have to have some default locker, let it be spinner

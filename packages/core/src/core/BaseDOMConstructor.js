@@ -1,4 +1,6 @@
-"use strict";
+/* eslint-disable no-prototype-builtins */ // TODO: ?
+/* eslint-disable max-len */
+/* eslint-disable func-names */
 
 /**
  * This a base constructor (class) for any DOM based instance.
@@ -14,7 +16,7 @@
  * Note: data-test and data-value should be described in attributesToGrab
  * @constructor
  */
-var BaseDOMConstructor = function () {
+const BaseDOMConstructor = function () {
 };
 /**
  * Init method. Call after construct instance
@@ -23,13 +25,13 @@ var BaseDOMConstructor = function () {
  * @param {Object} [options] all options to override default
  */
 BaseDOMConstructor.prototype.init = function (sf, node, options) {
-    // TODO data-spiral-JSON
-    this.sf = sf;
-    this.node = node;
-    // if (sf.options && sf.options.instances && sf.options.instances[this.name]) {
-    //    options = Object.assign(options || {}, sf.options.instances[this.name]);
-    // }
-    this.options = Object.assign(this.grabOptions(node), options);
+  // TODO data-spiral-JSON
+  this.sf = sf;
+  this.node = node;
+  // if (sf.options && sf.options.instances && sf.options.instances[this.name]) {
+  //    options = Object.assign(options || {}, sf.options.instances[this.name]);
+  // }
+  this.options = Object.assign(this.grabOptions(node), options);
 };
 
 /**
@@ -122,37 +124,38 @@ BaseDOMConstructor.prototype.optionsToGrab = {};
  * @return {Object}
  */
 BaseDOMConstructor.prototype.grabOptions = function (node) {
-    var options = {};
-    var currentOptionValue;
-    var currentOption;
-    for(var option in this.optionsToGrab) {
-        if(this.optionsToGrab.hasOwnProperty(option)) {
-            currentOptionValue = null;
-            if (this.optionsToGrab.hasOwnProperty(option)) {// if this is own option
-                currentOption = this.optionsToGrab[option];
-                if (currentOption.hasOwnProperty("value")) {// we have default option. Let's grab it for first
-                    currentOptionValue = currentOption.value;
-                }
-
-                if (this.sf.options.instances[this.name] && this.sf.options.instances[this.name].hasOwnProperty(option)) {
-                    currentOptionValue = this.sf.options.instances[this.name][option];
-                }
-
-                if (currentOption.hasOwnProperty("domAttr") && node.attributes.hasOwnProperty(currentOption.domAttr)) {// we can grab the attribute of node
-                    currentOptionValue = node.attributes[currentOption.domAttr].value;
-                }
-
-                if (currentOption.hasOwnProperty("processor")) {// we have processor. Let's execute it
-                    currentOptionValue = currentOption.processor.call(this, node, currentOptionValue, currentOption);
-                }
-
-                if (currentOptionValue !== null) {
-                    options[option] = currentOptionValue;
-                }
-            }
+  const options = {};
+  let currentOptionValue;
+  let currentOption;
+  // for (const option in this.optionsToGrab) {
+  Object.keys(this.optionsToGrab).forEach((option) => {
+    if (this.optionsToGrab.hasOwnProperty(option)) {
+      currentOptionValue = null;
+      if (this.optionsToGrab.hasOwnProperty(option)) { // if this is own option
+        currentOption = this.optionsToGrab[option];
+        if (currentOption.hasOwnProperty('value')) { // we have default option. Let's grab it for first
+          currentOptionValue = currentOption.value;
         }
+
+        if (this.sf.options.instances[this.name] && this.sf.options.instances[this.name].hasOwnProperty(option)) {
+          currentOptionValue = this.sf.options.instances[this.name][option];
+        }
+
+        if (currentOption.hasOwnProperty('domAttr') && node.attributes.hasOwnProperty(currentOption.domAttr)) { // we can grab the attribute of node
+          currentOptionValue = node.attributes[currentOption.domAttr].value;
+        }
+
+        if (currentOption.hasOwnProperty('processor')) { // we have processor. Let's execute it
+          currentOptionValue = currentOption.processor.call(this, node, currentOptionValue, currentOption);
+        }
+
+        if (currentOptionValue !== null) {
+          options[option] = currentOptionValue;
+        }
+      }
     }
-    return options;
+  });
+  return options;
 };
 
 module.exports = BaseDOMConstructor;

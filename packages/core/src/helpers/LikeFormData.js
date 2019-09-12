@@ -1,4 +1,6 @@
-"use strict";
+/* eslint-disable no-console */
+/* eslint-disable func-names */
+/* eslint-disable max-len */
 
 /**
  * This object try to be easy as FormData.
@@ -46,24 +48,24 @@
  * //--SpiralFormData-988681384595111--
  * //"
  */
-var LikeFormData = function (data, boundary) {
-    this.data = {};
-    if (data) {
-        if (Object.prototype.toString.call(data) !== "[object Object]") { // non object/ Alert developer
-            console.warn("LikeFormData can't accept non Object. Please reefer to documentation. Problem parameter is:", data);
-        } else {
-            this.data = data;
-        }
+const LikeFormData = function (data, boundary) {
+  this.data = {};
+  if (data) {
+    if (Object.prototype.toString.call(data) !== '[object Object]') { // non object/ Alert developer
+      console.warn("LikeFormData can't accept non Object. Please reefer to documentation. Problem parameter is:", data);
+    } else {
+      this.data = data;
     }
-    this.boundary = (boundary) ? boundary : ("SpiralFormData-" + Math.random().toString().substr(2));
+  }
+  this.boundary = (boundary) || (`SpiralFormData-${Math.random().toString().substr(2)}`);
 
 
-    // if (!isOldIE) {
-    //    this.boundary = "SpiralAjax-" + Math.random().toString().substr(2);
-    //    //xhr.setRequestHeader("content-type", "multipart/form-data; charset=utf-8; boundary=" + this.boundary);
-    // } else {
-    //    this.boundary = "SpiralAjax-oldIE9876gsloiHGldowu";
-    // }
+  // if (!isOldIE) {
+  //    this.boundary = "SpiralAjax-" + Math.random().toString().substr(2);
+  //    //xhr.setRequestHeader("content-type", "multipart/form-data; charset=utf-8; boundary=" + this.boundary);
+  // } else {
+  //    this.boundary = "SpiralAjax-oldIE9876gsloiHGldowu";
+  // }
 };
 
 /**
@@ -75,9 +77,9 @@ var LikeFormData = function (data, boundary) {
  * formData.append("key2","val2");
  */
 LikeFormData.prototype.append = function (key, val) {
-    // https://developer.mozilla.org/en-US/docs/Web/API/FormData
-    // TODO ***Appends a new value**** onto an existing key inside a FormData object, or adds the key if it does not already exist.
-    this.data[key] = val;
+  // https://developer.mozilla.org/en-US/docs/Web/API/FormData
+  // TODO ***Appends a new value**** onto an existing key inside a FormData object, or adds the key if it does not already exist.
+  this.data[key] = val;
 };
 
 /**
@@ -95,30 +97,32 @@ LikeFormData.prototype.append = function (key, val) {
  * @return {string}
  */
 LikeFormData.prototype.toString = function () {
-    var retString = "";
-    var boundary = this.boundary;
-    var iterate = function (data, partOfKey) {
-        for (var key in data) {
-            if (data.hasOwnProperty(key) && (typeof data[key] !== "undefined" )) {
-                if (typeof data[key] === "object") {
-                    iterate(data[key], ((partOfKey.length === 0) ? key : (partOfKey + "[" + key + "]")));
-                } else {
-                    retString += "--" + boundary
-                        + "\r\nContent-Disposition: form-data; name=" + ((partOfKey.length === 0) ? key : (partOfKey + "[" + key + "]"))
-                        + "\r\n\r\n" + data[key] + "\r\n";
-                }
-            }
+  let retString = '';
+  const { boundary } = this;
+  const iterate = function (data, partOfKey) {
+    // for (const key in data) {
+    Object.keys(data).forEach((key) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (data.hasOwnProperty(key) && (typeof data[key] !== 'undefined')) {
+        if (typeof data[key] === 'object') {
+          iterate(data[key], ((partOfKey.length === 0) ? key : (`${partOfKey}[${key}]`)));
+        } else {
+          retString += `--${boundary
+          }\r\nContent-Disposition: form-data; name=${(partOfKey.length === 0) ? key : (`${partOfKey}[${key}]`)
+          }\r\n\r\n${data[key]}\r\n`;
         }
+      }
+    });
+  };
+  if (typeof this.data !== 'object') {
+    this.data = {
+      data: this.data,
     };
-    if (typeof this.data !== "object") {
-        this.data = {
-            data: this.data
-        };
-    }
-    iterate(this.data, "");
+  }
+  iterate(this.data, '');
 
-    retString += "--" + this.boundary + "--\r\n";
-    return retString;
+  retString += `--${this.boundary}--\r\n`;
+  return retString;
 };
 
 /**
@@ -127,7 +131,7 @@ LikeFormData.prototype.toString = function () {
  * @return {*}
  */
 LikeFormData.prototype.delete = function (key) {
-    return delete(this.data[key]);
+  return delete (this.data[key]);
 };
 
 /**
@@ -136,7 +140,7 @@ LikeFormData.prototype.delete = function (key) {
  * @return {*}
  */
 LikeFormData.prototype.get = function (key) {
-    return this.data[key];
+  return this.data[key];
 };
 
 /**
@@ -144,7 +148,7 @@ LikeFormData.prototype.get = function (key) {
  * @return {*}
  */
 LikeFormData.prototype.getAll = function () {
-    return this.data;
+  return this.data;
 };
 
 /**
@@ -153,7 +157,8 @@ LikeFormData.prototype.getAll = function () {
  * @return {*}
  */
 LikeFormData.prototype.has = function (key) {
-    return this.data.hasOwnProperty(key);
+  // eslint-disable-next-line no-prototype-builtins
+  return this.data.hasOwnProperty(key);
 };
 
 /**
@@ -164,7 +169,7 @@ LikeFormData.prototype.has = function (key) {
  * @param {*} val
  */
 LikeFormData.prototype.set = function (key, val) {
-    this.data[key] = val;
+  this.data[key] = val;
 };
 
 /**
@@ -178,7 +183,7 @@ LikeFormData.prototype.set = function (key, val) {
  * formData.getContentTypeHeader(); //return "multipart/form-data; charset=utf-8; boundary=testBoundary"
  */
 LikeFormData.prototype.getContentTypeHeader = function () {
-    return "multipart/form-data; charset=utf-8; boundary=" + this.boundary;
+  return `multipart/form-data; charset=utf-8; boundary=${this.boundary}`;
 };
 
 module.exports = LikeFormData;
