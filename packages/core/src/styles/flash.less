@@ -1,0 +1,44 @@
+.flash-wrapper {
+  position: fixed;
+  top: 40px;
+  right: -200px;
+  width: 200px;
+  height: 130px;
+  -webkit-transition-duration: 0.7s;
+  -moz-transition-duration: 0.7s;
+  -o-transition-duration: 0.7s;
+  transition-duration: 0.7s;
+  -webkit-border-radius: 0 0 5px;
+  -moz-border-radius: 0 0 5px;
+  border-radius: 0 0 5px;
+
+  &.show {
+    right: 10px;
+  }
+
+  .flash {
+    color: #fff;
+    position: relative;
+    border-radius: 3px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    -webkit-transform: rotateX(0deg);
+    -moz-transform: rotateX(0deg);
+    -ms-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+    opacity: 1;
+
+    &.info {
+      background: #86c6e4;
+    }
+
+    &.debug {
+      background: #83c34a;
+    }
+
+    &.danger {
+      background: #f44336;
+    }
+  }
+}

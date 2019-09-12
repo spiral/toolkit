@@ -1,0 +1,43 @@
+{
+  "name": "@spiral-toolkit/core",
+  "version": "0.3.6",
+  "description": "Spiral Scout Frontend Framework",
+  "main": "dist/core.js",
+  "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "npm run test && npm run build:prod",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "clean": "rimraf /resources/index.js",
+    "prepublish": "npm run build",
+    "clean-after-deploy": "rimraf node_modules/",
+
+    "lint": "yarn lint:js",
+    "lint:fix": "yarn lint:js --fix",
+    "lint:js": "eslint \"src/**/**.js\""
+  },
+  "author": {
+    "name": "Spiral Scout",
+    "email": "info@spiralscout.com",
+    "url": "http://spiralscout.com"
+  },
+  "contributors": [
+    {
+      "name": "Andrey Logunov",
+      "email": "systerr@gmail.com",
+      "url": "http://spiralscout.com"
+    },
+    {
+      "name": "Alex Chepura",
+      "email": "a.chepura@gmail.com",
+      "url": "http://spiralscout.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spiral/toolkit/issues"
+  },
+  "homepage": "https://github.com/spiral/toolkit#readme",
+  "devDependencies": {}
+}
