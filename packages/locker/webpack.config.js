@@ -1,6 +1,4 @@
 const baseConfig = require('../../webpack/config');
-const loaders = require('../../webpack/loaders');
-const plugins = require('../../webpack/plugins');
 
 const config = {
   ...baseConfig,
@@ -12,15 +10,6 @@ const config = {
   output: {
     ...baseConfig.output,
     library: '@spiral-toolkit/locker',
-  },
-
-  plugins,
-
-  module: {
-    rules: [
-      loaders.jsmap,
-      loaders.js,
-    ],
   },
 
   externals: {
