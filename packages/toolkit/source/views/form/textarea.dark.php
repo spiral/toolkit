@@ -1,5 +1,14 @@
-<extends:spiral:form.input/>
+<extends path="form/field" />
 
-<block:input-body>
-    <textarea name="${name}" node:attributes>${value}${context}</textarea>
-</block:input-body>
+<block:element>
+  <textarea
+    id="${id}"
+    data-input="true"
+    class="form-control@if(inject('error', null)) is-invalid@endif@if(inject('success', null)) is-valid@endif"
+    name="${name}"
+    placeholder="${placeholder}"
+    @if(inject('disabled', null))disabled@endif
+  >
+    ${value}${context}
+  </textarea>
+</block:element>

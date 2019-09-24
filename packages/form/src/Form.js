@@ -102,7 +102,7 @@ Form.prototype.optionsToGrab = {
      */
   lockType: {
     value: 'default',
-    domAttr: 'data-lockType',
+    domAttr: 'data-lock-type',
   },
   /**
      *

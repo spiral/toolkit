@@ -49,7 +49,7 @@ Lock.prototype.add = function (type, context) {
   }
   const node = document.createElement('div');
   node.classList.add(this.types[type].className || 'js-sf-lock');
-  node.classList.add(this.types[type].className || 'locker');
+  node.classList.add('locker');
   node.innerHTML = this.types[type].html;
   context.appendChild(node);
   context.classList.add('locked');

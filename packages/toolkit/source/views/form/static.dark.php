@@ -1,5 +1,13 @@
-<extends:spiral:form.input/>
+<extends path="form/field" />
 
-<block:input-body>
-    <span class="item-static ${class}" node:attributes>${value}${context}</span>
-</block:input-body>
+<block:element>
+  <input
+    id="${id}"
+    data-input="true"
+    readonly="true"
+    class="form-control-plaintext@if(inject('error', null)) is-invalid@endif@if(inject('success', null)) is-valid@endif"
+    type="text"
+    name="${name}"
+    value="${value}${context}"
+  >
+</block:element>
