@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import core from '@spiral-toolkit/core';
+import './styles.css';
 
 /**
  * Spiral lock for forms
@@ -47,7 +48,8 @@ Lock.prototype.add = function (type, context) {
     return false;
   }
   const node = document.createElement('div');
-  node.className = this.types[type].className || 'js-sf-lock';
+  node.classList.add(this.types[type].className || 'js-sf-lock');
+  node.classList.add(this.types[type].className || 'locker');
   node.innerHTML = this.types[type].html;
   context.appendChild(node);
   context.classList.add('locked');
@@ -85,7 +87,7 @@ Lock.prototype.types = {
          * @inner
          * @type String
          */
-    html: '<div class="sf-spinner"></div>',
+    html: '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>',
   },
   progress: {
     /**
@@ -93,14 +95,14 @@ Lock.prototype.types = {
          * @inner
          * @type String
          */
-    html: '<div class="sf-progress"><div class="progress-line"></div></div>',
+    html: '<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div></div>',
     /**
          * Function to change styles while AJAX progress
          * @param {Number} current
          * @param {Number} total
          */
     progress(current, total) {
-      const progress = this.context.getElementsByClassName('progress-line')[0];
+      const progress = this.context.getElementsByClassName('progress-bar')[0];
       progress.style.width = `${100 * (current / total)}%`;
     },
   },

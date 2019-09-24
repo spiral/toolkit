@@ -12,7 +12,6 @@
     "clean": "rimraf dist",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",
-
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js --fix",
     "lint:js": "eslint \"src/**/**.js\""
@@ -47,10 +46,11 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "devDependencies": {},
   "dependencies": {
-    "moment": "^2.18.1",
-    "pikaday": "^1.5.1",
     "@spiral-toolkit/core": "^0.3.6",
+    "@spiral-toolkit/form": "^0.1.0",
     "@spiral-toolkit/locker": "^0.1.0",
-    "@spiral-toolkit/form": "^0.1.0"
+    "date-fns": "^2.2.1",
+    "moment": "^2.24.0",
+    "pikaday": "^1.8.0"
   }
 }

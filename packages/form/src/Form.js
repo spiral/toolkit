@@ -6,9 +6,10 @@
 import core from '@spiral-toolkit/core';
 
 import FormToObject from './formToObject';
+import formMessages from './formMessages';
+import iterateInputs from './iterateInputs';
 
-const formMessages = require('./formMessages');
-const iterateInputs = require('./iterateInputs');
+import './styles.css';
 
 
 /**

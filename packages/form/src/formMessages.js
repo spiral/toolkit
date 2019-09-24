@@ -3,21 +3,29 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-multi-assign */
+/* eslint-disable no-template-curly-in-string */
 
 const defaults = {
-  // eslint-disable-next-line no-template-curly-in-string
-  template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',
-  close: '.btn-close',
+  // template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',
+  template: '<div class="alert alert-${type} alert-dismissible fade show" role="alert">'
+    + '${text}'
+    + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+    + '<span aria-hidden="true">&times;</span>'
+    + '</button>'
+    + '</div>',
+  close: '.close',
   place: 'bottom',
   levels: {
     success: 'success', info: 'info', warning: 'warning', error: 'error',
   },
-  field: '.item-form',
-  // eslint-disable-next-line no-template-curly-in-string
-  fieldTemplate: '<div class="alert form-msg ${type}"><p class="msg">${text}</p></div>',
-  fieldClose: '.btn-close',
+  field: '.form-group',
+  fieldCheck: '.form-check',
+  fieldElement: '[data-input]',
+  fieldTemplate: '<div class="invalid-feedback" data-form-message>${text}</div>',
   fieldPlace: 'bottom',
-  fieldPrefix: '', // For bootstrap: class="has-danger"
+  fieldClasses: {
+    success: 'is-valid', info: 'is-valid', warning: 'is-invalid', error: 'is-invalid',
+  },
 };
 
 // Often used alias
@@ -36,7 +44,7 @@ defaults.levels.danger = defaults.levels.critical = defaults.levels.alert = defa
  * @return {Object}
  */
 function prepareMessageObject(message, type) {
-  if (Object.prototype.toString.call(message) !== '[object Object]') {
+  if (typeof message !== 'object') {
     message = { text: message, type };
   }
   message.text = message.text || message.message || message;
@@ -89,9 +97,18 @@ module.exports = {
     });
   },
   removeMessage(m, e) {
-    m.close && m.close.removeEventListener('click', m.closeHandler);
+    if (m.close) {
+      m.close.removeEventListener('click', m.closeHandler);
+    }
     m.el.parentNode.removeChild(m.el);
-    m.field && m.field.classList.remove(this.options.messages.fieldPrefix + m.type);
+    if (m.field) {
+      const fieldEl = m.field.querySelector(this.options.messages.fieldElement);
+      if (fieldEl) {
+        fieldEl.classList.remove(this.options.messages.fieldClasses[m.type]);
+      } else {
+        m.field.classList.remove(this.options.messages.fieldClasses[m.type]);
+      }
+    }
     if (e) {
       e.preventDefault && e.preventDefault();
       this._messages.splice(this._messages.indexOf(m), 1);
@@ -109,7 +126,6 @@ module.exports = {
   showFormMessage(message, type) {
     let parent;
     let tpl = this.options.messages.template;
-    const parser = new DOMParser();
 
     message = prepareMessageObject(message, type);
 
@@ -120,7 +136,9 @@ module.exports = {
       tpl = tpl.replace(`\${${item}}`, message[item]);
     });
 
-    const msgEl = parser.parseFromString(tpl, 'text/html').firstChild.lastChild.firstChild;
+    const tplElem = document.createElement('div');
+    tplElem.innerHTML = tpl;
+    const msgEl = tplElem.firstChild;
 
     if (this.options.messages.place === 'bottom') {
       this.node.appendChild(msgEl);
@@ -144,10 +162,16 @@ module.exports = {
 
     if (!field) return;
 
-    const parser = new DOMParser();
     message = prepareMessageObject(message, type);
 
-    field.classList.add(this.options.messages.fieldPrefix + type);
+    const fieldEl = field.querySelector(this.options.messages.fieldElement);
+    const checkEl = field.querySelector(this.options.messages.fieldCheck);
+
+    if (fieldEl) {
+      fieldEl.classList.add(this.options.messages.fieldClasses[type]);
+    } else {
+      field.classList.add(this.options.messages.fieldClasses[type]);
+    }
 
     // for (const item in message) {
     Object.keys(message).forEach((item) => {
@@ -156,10 +180,18 @@ module.exports = {
       tpl = tpl.replace(`\${${item}}`, message[item]);
     });
 
-    const msgEl = parser.parseFromString(tpl, 'text/html').firstChild.lastChild.firstChild;
+    const tplElem = document.createElement('div');
+    tplElem.innerHTML = tpl;
+    const msgEl = tplElem.firstChild;
 
     if (this.options.messages.fieldPlace === 'bottom') {
-      field.appendChild(msgEl);
+      if (checkEl) { // separate rule for checkbox
+        checkEl.appendChild(msgEl);
+      } else if (fieldEl) {
+        field.insertBefore(msgEl, fieldEl.nextSibling);
+      } else {
+        field.appendChild(msgEl);
+      }
     } else if (this.options.messages.fieldPlace === 'top') {
       field.insertBefore(msgEl, field.firstChild);
     } else {

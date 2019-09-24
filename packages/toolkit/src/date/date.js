@@ -4,7 +4,7 @@
 /* eslint-disable func-names */
 
 import core from '@spiral-toolkit/core';
-import moment from 'moment';
+// import moment from 'moment';
 import Pikaday from 'pikaday';
 
 const DateInput = function (sf, node, options) {
@@ -39,9 +39,10 @@ DateInput.prototype._construct = function (sf, node, options) {
 
   this.picker = new Pikaday({ field: this.els.node });
 
-  const momentDate = moment(this.els.node.dataset.value, this.options.valueMask);
-
-  this.els.node.value = momentDate.format(this.options.format);
+  // if (this.els.node.dataset.value) {
+  //   const momentDate = moment(this.els.node.dataset.value, this.options.valueMask);
+  //   this.els.node.value = momentDate.format(this.options.format);
+  // }
 };
 
 /**
@@ -49,50 +50,50 @@ DateInput.prototype._construct = function (sf, node, options) {
  * @inheritDoc
  * @enum {string}
  */
-DateInput.prototype.optionsToGrab = {
-  /**
-     *  Predefined value in any format
-     */
-  value: {
-    domAttr: 'data-value',
-  },
-  /**
-     *  Mask of predefined value, for example: "X" - Unix timestamp, "x" - Unix ms timestamp, "YYYY" - 4 or 2 digit year
-     *  http://momentjs.com/docs/  Section: "String+Format"
-     */
-  valueMask: {
-    domAttr: 'data-value-mask',
-    value: 'X',
-  },
-  /**
-     *  Format of value in input
-     *  http://momentjs.com/docs/  Section: "String+Format"
-     */
-  format: {
-    domAttr: 'data-format',
-    value: 'YYYY-MM-DD',
-  },
-  /**
-     *  Pass all other custom options of Pikaday via json
-     */
-  config: {
-    value: {},
-    domAttr: 'data-config',
-    processor(node, val, self) {
-      if (!val) return this.value;
-      if (typeof val === 'string') {
-        try {
-          // eslint-disable-next-line no-param-reassign
-          val = JSON.parse(val);
-        } catch (e) {
-          console.error('Config JSON.parse error: ', e);
-        }
-      }
-      return Object.assign(self.value, val);
-    },
-  },
+// DateInput.prototype.optionsToGrab = {
+//   /**
+//      *  Predefined value in any format
+//      */
+//   value: {
+//     domAttr: 'data-value',
+//   },
+//   /**
+//      *  Mask of predefined value, for example: "X" - Unix timestamp, "x" - Unix ms timestamp, "YYYY" - 4 or 2 digit year
+//      *  http://momentjs.com/docs/  Section: "String+Format"
+//      */
+//   valueMask: {
+//     domAttr: 'data-value-mask',
+//     value: 'X',
+//   },
+//   /**
+//      *  Format of value in input
+//      *  http://momentjs.com/docs/  Section: "String+Format"
+//      */
+//   format: {
+//     domAttr: 'data-format',
+//     value: 'YYYY-MM-DD',
+//   },
+//   /**
+//      *  Pass all other custom options of Pikaday via json
+//      */
+//   config: {
+//     value: {},
+//     domAttr: 'data-config',
+//     processor(node, val, self) {
+//       if (!val) return this.value;
+//       if (typeof val === 'string') {
+//         try {
+//           // eslint-disable-next-line no-param-reassign
+//           val = JSON.parse(val);
+//         } catch (e) {
+//           console.error('Config JSON.parse error: ', e);
+//         }
+//       }
+//       return Object.assign(self.value, val);
+//     },
+//   },
 
-};
+// };
 
 
 DateInput.prototype.die = function () {

@@ -14,6 +14,8 @@ const basePlugins = [
   new webpack.LoaderOptionsPlugin({
     debug: true,
   }),
+  // eslint-disable-next-line no-useless-escape
+  new webpack.ContextReplacementPlugin(/moment[\/\\]locale/, /en/),
 ].concat(sourceMap);
 
 const devPlugins = [];
