@@ -2,6 +2,7 @@
   display: none;
 }
 
-.is-invalid[data-message-placeholder]>.invalid-feedback {
+.is-invalid[data-message-placeholder]>.invalid-feedback,
+.is-invalid[data-field]>.invalid-feedback {
   display: block;
 }

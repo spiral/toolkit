@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-/* eslint-disable no-unused-expressions */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-multi-assign */
@@ -18,10 +17,10 @@ const defaults = {
   levels: {
     success: 'success', info: 'info', warning: 'warning', error: 'error',
   },
+  selector: '[data-message]',
   field: '[data-field]',
-  fieldCheck: '[data-check]',
   fieldElement: '[data-input]',
-  fieldTemplate: '<div class="invalid-feedback" data-form-message>${text}</div>',
+  fieldTemplate: '<div data-message class="invalid-feedback" data-form-message>${text}</div>',
   fieldPlace: 'bottom',
   fieldClasses: {
     success: 'is-valid', info: 'is-valid', warning: 'is-invalid', error: 'is-invalid',
@@ -110,7 +109,7 @@ module.exports = {
       }
     }
     if (e) {
-      e.preventDefault && e.preventDefault();
+      if (e.preventDefault) e.preventDefault();
       this._messages.splice(this._messages.indexOf(m), 1);
     }
   },
@@ -160,12 +159,14 @@ module.exports = {
     let field = isContainer ? el : window.sf.helpers.domTools.closest(el, this.options.messages.field);
     let tpl = this.options.messages.fieldTemplate;
 
-    if (!field) return;
+    if (!field) {
+      return;
+    }
 
     message = prepareMessageObject(message, type);
 
     const fieldEl = field.querySelector(this.options.messages.fieldElement);
-    const checkEl = field.querySelector(this.options.messages.fieldCheck);
+    const currentMsgEl = field.querySelector(this.options.messages.selector);
 
     if (fieldEl) {
       fieldEl.classList.add(this.options.messages.fieldClasses[type]);
@@ -185,11 +186,9 @@ module.exports = {
     const msgEl = tplElem.firstChild;
 
     if (this.options.messages.fieldPlace === 'bottom') {
-      if (checkEl) { // separate rule for checkbox
-        checkEl.appendChild(msgEl);
-      } else if (fieldEl) {
+      if (fieldEl) {
         field.insertBefore(msgEl, fieldEl.nextSibling);
-      } else {
+      } else if (!currentMsgEl) {
         field.appendChild(msgEl);
       }
     } else if (this.options.messages.fieldPlace === 'top') {
