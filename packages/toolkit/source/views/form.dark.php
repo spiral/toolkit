@@ -4,6 +4,7 @@
   enctype="multipart/form-data"
   accept-charset="UTF-8"
   class="${class}"
+  data-lock-type="${lock-type}"
 >
   <!--
   NOTE: .form-content was added for blur effects

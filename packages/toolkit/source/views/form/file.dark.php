@@ -4,12 +4,12 @@
   <input
     id="${id}"
     data-input="true"
-    class="form-control-file@if(inject('error', null)) is-invalid@endif@if(inject('success', null)) is-valid@endif"
+    class="form-control-file@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
     data-file="true"
     type="file"
     name="${name}"
     value="${value}${context}"
-    @if(inject('multiple', null))multiple@endif
-    @if(inject('disabled', null))disabled@endif
+    @if(inject('multiple'))multiple@endif
+    @if(inject('disabled'))disabled@endif
   >
 </block:element>

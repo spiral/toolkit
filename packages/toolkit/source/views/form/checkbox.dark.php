@@ -3,12 +3,11 @@
 <block:element>
   <input
     id="${id}"
-    data-input="true"
-    class="form-check-input@if(inject('error', null)) is-invalid@endif @if(inject('success', null)) is-valid@endif"
+    class="@if(inject('is-native'))form-check-input@else custom-control-input@endif @if(inject('error')) is-invalid@endif @if(inject('success')) is-valid@endif"
     type="checkbox"
     name="${name}"
     value="${value}"
-    @if(inject('checked', null))checked@endif
-    @if(inject('disabled', null))disabled@endif
+    @if(inject('checked'))checked@endif
+    @if(inject('disabled'))disabled@endif
   >
 </block:element>

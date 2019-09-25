@@ -2,9 +2,9 @@
 
 <block:element>
   <?php
-  $_selected = inject('value', null) || inject('context', null);
+  $_selected = inject('value') || inject('context');
   $_values = inject('values', []);
-  $_placeholder = inject('placeholder', null);
+  $_placeholder = inject('placeholder');
   $_options = [];
   if ($_placeholder) {
     $_options[] = "<option>{$_placeholder}</option>";
@@ -26,9 +26,9 @@
   <select
     id="${id}"
     data-input="true"
-    class="form-control@if(inject('error', null)) is-invalid@endif @if(inject('success', null)) is-valid@endif"
+    class="form-control@if(inject('error')) is-invalid@endif @if(inject('success')) is-valid@endif"
     name="${name}"
-    @if(inject('disabled', null))disabled@endif
+    @if(inject('disabled'))disabled@endif
   >
     {!! $_options_str !!}
   </select>
