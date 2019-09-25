@@ -74,7 +74,7 @@ const iterateInputs = function (context, names, callback, prefix) {
   findNodes(context, names, callback, prefix);
   if (notFound.length !== 0) {
     // eslint-disable-next-line no-console
-    console.log('Some element not found in form', notFound);
+    // console.log('Some element not found in form', notFound);
   }
   return notFound;
 };

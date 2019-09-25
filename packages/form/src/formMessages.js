@@ -18,8 +18,8 @@ const defaults = {
   levels: {
     success: 'success', info: 'info', warning: 'warning', error: 'error',
   },
-  field: '.form-group',
-  fieldCheck: '.form-check',
+  field: '[data-field]',
+  fieldCheck: '[data-check]',
   fieldElement: '[data-input]',
   fieldTemplate: '<div class="invalid-feedback" data-form-message>${text}</div>',
   fieldPlace: 'bottom',

@@ -5,6 +5,7 @@ const config = {
 
   entry: {
     toolkit: ['./src/index.js'],
+    toolkit_full: ['./src/index_full.js'],
   },
 
   output: {
