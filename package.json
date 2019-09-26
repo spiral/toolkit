@@ -16,7 +16,6 @@
     "build:dev:toolkit": "npx lerna run build:dev --scope=@spiral-toolkit/toolkit --stream",
     "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:locker && yarn build:dev:toolkit"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",

@@ -31,6 +31,11 @@
       "name": "Alex Chepura",
       "email": "a.chepura@gmail.com",
       "url": "http://spiralscout.com"
+    },
+    {
+      "name": "Anna Selezniova",
+      "email": "ask.dev@gmail.com",
+      "url": "http://spiralscout.com"
     }
   ],
   "license": "MIT",
@@ -40,6 +45,6 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "devDependencies": {},
   "dependencies": {
-    "es6-promise": "^4.2.8"
+    "axios": "^0.19.0"
   }
 }

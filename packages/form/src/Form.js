@@ -239,9 +239,14 @@ Form.prototype.lock = function (remove) {
     if (!this.sf.removeInstance('lock', this.node)) {
       console.warn("You try to remove 'lock' instance, but it is not available or not started");
     }
-  } else if (!this.sf.addInstance('lock', this.node, { type: this.options.lockType })) {
-    console.warn("You try to add 'lock' instance, but it is not available or already started");
+    return;
   }
+  const lock = this.sf.addInstance('lock', this.node, { type: this.options.lockType });
+  if (!lock) {
+    console.warn("You try to add 'lock' instance, but it is not available or already started");
+    return;
+  }
+  this.options.onProgress = lock.progress;
 };
 
 // Form messages
@@ -253,8 +258,9 @@ Form.prototype.removeMessages = formMessages.removeMessages;
 Form.prototype.removeMessage = formMessages.removeMessage;
 
 Form.prototype.processAnswer = function (answer) {
-  // eslint-disable-next-line no-unused-expressions
-  this.options.messagesType && this.showMessages(answer);
+  if (this.options.messagesType) {
+    this.showMessages(answer);
+  }
 };
 
 /**
@@ -285,6 +291,9 @@ Form.prototype.send = function (sendOptions) {
     that.processAnswer(answer);
     that.events.trigger('always', sendOptions);
   });
+
+  // To cancel request:
+  // if (this.sf.ajax.cancel) this.sf.ajax.cancel();
 };
 
 /**

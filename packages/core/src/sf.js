@@ -11,14 +11,14 @@ const core = {
 const helpers = {
   DOMEvents: require('./helpers/DOMEvents'),
   domTools: require('./helpers/domTools'),
-  LikeFormData: require('./helpers/LikeFormData'),
-  tools: require('./helpers/tools'),
+  // LikeFormData: require('./helpers/LikeFormData'),
+  // tools: require('./helpers/tools'),
 };
 
 const sf = {
   core,
   helpers,
-  tools: helpers.tools,
+  tools: require('./helpers/tools'),
 };
 
 module.exports = sf;

@@ -19,10 +19,10 @@ const sfWrapper = {
 require('./shim/console');
 require('./shim/Object.assign');
 
-if (typeof Promise !== 'function') {
-  // eslint-disable-next-line no-unused-vars
-  const { Promise } = require('es6-promise');
-}
+// if (typeof Promise !== 'function') {
+//   // eslint-disable-next-line no-unused-vars
+//   const { Promise } = require('es6-promise');
+// }
 
 if (!sfWrapper.hasOwnProperty('options')) sfWrapper.options = { instances: {} };
 if (!sfWrapper.options.hasOwnProperty('instances')) sfWrapper.options.instances = {};
@@ -47,7 +47,8 @@ sfWrapper.ajax = new sfWrapper.core.Ajax(window && window.csrfToken ? {
   },
 } : null);
 
-require('./core/ajax/baseActions.js')(sfWrapper);
+// deprecated
+// require('./core/ajax/baseActions.js')(sfWrapper);
 
 // API
 sfWrapper.createModulePrototype = function () {

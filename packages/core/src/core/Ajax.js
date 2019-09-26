@@ -1,13 +1,13 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-expressions */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 /* eslint-disable func-names */
 
+const axios = require('axios');
+
 // var tools = require("../helpers/tools");
 const Events = require('../core/Events');
-const LikeFormData = require('../helpers/LikeFormData');
+// const LikeFormData = require('../helpers/LikeFormData');
 
 /**
  * This is an Ajax transport.
@@ -20,6 +20,7 @@ const LikeFormData = require('../helpers/LikeFormData');
 const Ajax = function (options) {
   this.currentRequests = 0;
   this.events = new Events(['beforeSend', 'load']);
+  this.cancel = null;
 
   if (options && options.headers) {
     this.headers = Object.assign(this.headers, options.headers);
@@ -45,7 +46,6 @@ Ajax.prototype.headers = {
  * @param {String} [options.method]
  * @param {Object} [options.headers] headers to add to the request
  * @param {Function} [options.onProgress] callback function on progress. Two callback options: current bytes sent,totalBytes
- * @param {Function} [options.isReturnXHRToo===false] should method return array instead of Promise. Some times is needed to control ajax (abort, etc).
  * If tree then  [window.Promise, XMLHttpRequest ] will be returned
  * @return {Promise|Array}
  */
@@ -61,7 +61,43 @@ Ajax.prototype.send = function (options) {
   }
 
   options.headers = options.headers ? Object.assign(options.headers, this.headers, options.headers) : ({ ...this.headers });
-  let xhr;
+
+  // eslint-disable-next-line prefer-destructuring
+  const CancelToken = axios.CancelToken;
+  const cancelSource = CancelToken.source();
+
+  const config = {
+    // `url` is the server URL that will be used for the request
+    url: options.url,
+
+    // `method` is the request method to be used when making the request
+    method: options.method,
+
+    // `headers` are custom headers to be sent
+    headers: options.headers,
+
+    // `data` is the data to be sent as the request body
+    // Only applicable for request methods 'PUT', 'POST', and 'PATCH'
+    // When no `transformRequest` is set, must be of one of the following types:
+    // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
+    // - Browser only: FormData, File, Blob
+    // - Node only: Stream, Buffer
+    data: options.data,
+
+    // `onUploadProgress` allows handling of progress events for uploads
+    onUploadProgress: (progressEvent) => {
+      if (options.onProgress) {
+        options.onProgress(progressEvent.loaded, progressEvent.total);
+      }
+    },
+
+    // `cancelToken` specifies a cancel token that can be used to cancel the request
+    // (see Cancellation section below for details)
+    cancelToken: cancelSource.token,
+  };
+
+  this.cancel = cancelSource.cancel;
+
   const ajaxPromise = new Promise(((resolve, reject) => { // Return a new promise.
     if (!options.url) {
       console.error('You should provide url');
@@ -69,173 +105,33 @@ Ajax.prototype.send = function (options) {
       reject('You should provide url'); // TODO
     }
     that.currentRequests += 1;
+    axios
+      .request(config)
+      .then((response) => {
+        that.currentRequests -= 1;
 
-    let oldIE = false;
-
-    if ((typeof window !== 'undefined')
-            && window.XDomainRequest && (window.XMLHttpRequest && new XMLHttpRequest().responseType === undefined)
-            && (window.url.indexOf('http') === 0)) { // old IE CORS
-      // TODO maybe we should use XDomainRequest only for cross domain requests? But  Spiral for now works great with XDomainRequest (based on IEJSON)
-      xhr = new window.XDomainRequest();
-      // @see http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx
-      oldIE = true;
-      // @see http://social.msdn.microsoft.com/Forums/ie/en-US/30ef3add-767c-4436-b8a9-f1ca19b4812e/ie9-rtm-xdomainrequest-issued-requests-may-abort-if-all-event-handlers-not-specified?forum=iewebdevelopment
-
-      xhr.onprogress = function (e) {
-        // TODO adjust options
-        options.onProgress && options.onProgress(e);
-      };
-    } else {
-      xhr = new XMLHttpRequest();
-      if (options.onProgress) {
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            options.onProgress(event.loaded, event.total);
+        if (response.status) {
+          if (response.status > 199 && response.status < 300) { // 200-299
+            resolve(response);
+          } else if (response.status > 399 && response.status < 600) { // 400-599
+            reject(response);
+          } else {
+            console.error('unknown status %d. Rejecting', response.status);
+            reject(response);
           }
-        }, false);
-      }
-    }
-
-    xhr.open(options.method, options.url);
-
-    xhr.onload = function () { // On loaded
-      that.currentRequests -= 1;
-      const ans = that._parseJSON(xhr);
-
-      if (ans.status) {
-        if (ans.status > 199 && ans.status < 300) { // 200-299
-          resolve(ans);
-        } else if (ans.status > 399 && ans.status < 600) { // 400-599
-          reject(ans);
         } else {
-          console.error('unknown status %d. Rejecting', ans.status);
-          reject(ans);
+          reject(response); // reject with the status text
         }
-      } else if (oldIE) {
-        resolve(ans); // OLD IE + downloading file is producing  no status.
-      } else {
-        reject(ans); // reject with the status text
-      }
-      options.response = ans;
-      that.events.trigger('load', options); // for example - used to handle actions
-    };
-
-    xhr.onerror = function () { // Handle network errors
-      that.currentRequests -= 1;
-      reject(Error('Network Error'), xhr);
-    };
-
-    that.events.trigger('beforeSend', options); // you can modify "options" object inside event (like adding you headers,data,etc)
-
-    let dataToSend;
-    if (options.data !== null) { // if data to send is not empty
-      if (!oldIE) {
-        if (options.data.toString().indexOf('FormData') !== -1) { // if form data
-          dataToSend = options.data;
-        } else {
-          dataToSend = new LikeFormData(options.data);
-          options.headers['content-type'] = dataToSend.getContentTypeHeader();
-        }
-        that._setHeaders(xhr, options.headers);
-      } else {
-        dataToSend = `IEJSON${JSON.stringify(options.data)}`;
-      }
-    } else { // else send empty data
-      dataToSend = null;
-    }
-
-    //        if (!oldIE) {
-    //            //xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    //            dataToSend = new spiral.LikeFormData(data, xhr, oldIE);
-    //        } else {
-    //            if (data !==null && data !== void 0 && data !== 'undefined'){
-    //                dataToSend = "IEJSON"+JSON.stringify(data);
-    //            } else {
-    //                 dataToSend =data;
-    //            }
-    //
-    //        }
-
-
-    try { // working around FF bug
-      xhr.send(dataToSend);// Make the request
-    } catch (e) {
-      // console.error("error sending trying another method");
-      xhr.send(dataToSend.toString());
-    }
-
-    return xhr;
+        options.response = response;
+        that.events.trigger('load', options); // for example - used to handle actions
+      })
+      .catch((error) => {
+        that.currentRequests -= 1;
+        reject(error);
+      });
   }));
 
-  if (options.isReturnXHRToo) { // return xhr too
-    return [ajaxPromise, xhr];
-  }
   return ajaxPromise;
-};
-
-/**
- * Iterate over headers object and call xhr.setRequestHeader
- * @param {XMLHttpRequest} xhr
- * @param {Object} headers object with headers to set
- */
-Ajax.prototype._setHeaders = function (xhr, headers) {
-  // for (const header in headers) {
-  Object.keys(headers).forEach((header) => {
-    // eslint-disable-next-line no-prototype-builtins
-    if (headers.hasOwnProperty(header)) {
-      xhr.setRequestHeader(header, headers[header]);
-    }
-  });
-};
-
-/**
- * Try to parse and normalize answer
- * @param {XHR} xhr
- * @return {*}
- * @private
- */
-Ajax.prototype._parseJSON = function (xhr) {
-  if (!xhr.response) {
-    xhr.response = xhr.responseText;
-  }
-
-  let ret = {};
-  let contentType = false;
-
-  if (xhr.getResponseHeader) {
-    contentType = xhr.getResponseHeader('Content-Type');
-  }
-
-  if (!contentType
-        || contentType.toLowerCase() === 'application/json'
-        || contentType.toLowerCase() === 'text/json'
-        || contentType.toLowerCase() === 'inode/symlink') { // application/json or inode/symlink  (AmazonS3 bug? )
-    try {
-      ret = JSON.parse(xhr.response);
-    } catch (e) {
-      console.error('Not a JSON!', xhr.response);
-      ret = { data: xhr.response };
-    }
-  } else {
-    ret = { data: xhr.response };
-  }
-
-  if (!ret.status) {
-    ret.status = xhr.status;
-  }
-  // Some servers can answer status in JSON as "HTTP/1.1 200 OK"  but we need a status number
-  if (typeof ret.status === 'string' && ret.status.indexOf('HTTP/') === 0 && ret.status.match(/ (\d\d\d)/)) {
-    ret.status = parseInt(ret.status.match(/ (\d\d\d)/)[1], 10);// TODO check this code
-  }
-
-  if (!ret.statusText) {
-    ret.statusText = xhr.statusText;
-  }
-  if (xhr.status && xhr.status !== ret.status) {
-    console.warn('Status from request %d, but response contains status %d', xhr.status, ret.status);
-  }
-
-  return ret;
 };
 
 module.exports = Ajax;

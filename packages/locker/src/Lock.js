@@ -33,7 +33,7 @@ Lock.prototype.name = 'lock';
  */
 Lock.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options);
-  this.add(this.options.type, this.node);
+  this.progress = this.add(this.options.type, this.node);
 };
 
 /**

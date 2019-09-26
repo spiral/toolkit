@@ -15,7 +15,7 @@ const defaults = {
   close: '.close',
   place: 'bottom',
   levels: {
-    success: 'success', info: 'info', warning: 'warning', error: 'error',
+    success: 'success', info: 'info', warning: 'warning', error: 'danger',
   },
   selector: '[data-message]',
   field: '[data-field]',
@@ -59,33 +59,39 @@ module.exports = {
     let isMsg = false;
     const that = this;
 
-    // for (const type in this.options.messages.levels) {
-    Object.keys(this.options.messages.levels).forEach((type) => {
-      if (answer[type]) {
-        this.showFormMessage(answer[type], this.options.messages.levels[type]);
+    if (answer.data) {
+      // for (const type in this.options.messages.levels) {
+      Object.keys(this.options.messages.levels).forEach((type) => {
+        if (answer.data[type]) {
+          this.showFormMessage(answer.data[type], this.options.messages.levels[type]);
+          isMsg = true;
+        }
+      });
+
+      if (answer.data.messages) {
+        this.showFieldsMessages(answer.data.messages, 'success');
         isMsg = true;
       }
-    });
-
-    if (answer.messages) {
-      this.showFieldsMessages(answer.messages, 'success');
-      isMsg = true;
-    }
-    if (answer.errors) {
-      this.showFieldsMessages(answer.errors, 'error');
-      isMsg = true;
-    }
-    if (answer.warnings) {
-      this.showFieldsMessages(answer.warnings, 'warning');
-      isMsg = true;
+      if (answer.data.errors) {
+        this.showFieldsMessages(answer.data.errors, 'error');
+        isMsg = true;
+      }
+      if (answer.data.warnings) {
+        this.showFieldsMessages(answer.data.warnings, 'warning');
+        isMsg = true;
+      }
     }
 
-    if (!isMsg && answer.status > 300) {
-      let error = answer.status ? `${answer.status} ` : '';
-      error += answer.statusText ? answer.statusText : '';
-      error += answer.data && !answer.statusText ? answer.data : '';
-      error += error.length === 0 ? answer : '';
-      this.showFormMessage(error, 'error');
+    if (!isMsg) {
+      let error;
+      if (!answer.status) { // Network.error
+        error = answer;
+      } else if (answer.status > 300) {
+        error = answer.status ? `${answer.status} ` : '';
+        error += answer.statusText ? answer.statusText : '';
+        error += answer.data && !answer.statusText ? answer.data : '';
+      }
+      this.showFormMessage(error, this.options.messages.levels.error);
     }
 
     this._messages.forEach((m) => {
