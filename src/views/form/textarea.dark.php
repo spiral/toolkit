@@ -1,4 +1,4 @@
-<extends path="form/field" />
+<extends path="toolkit:form/field" />
 
 <block:element>
   <textarea

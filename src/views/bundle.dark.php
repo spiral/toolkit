@@ -1,19 +1,11 @@
-<!--Generic set of toolkit elements-->
-<dark:use path="spiral:*" namespace="spiral"/>
-
-<!--Resource imports-->
-<dark:use path="spiral:import/*" prefix="asset."/>
-<dark:use path="spiral:import/*" prefix="asset:"/>
-<dark:use path="spiral:import/*" prefix="resource."/>
-<dark:use path="spiral:import/*" prefix="resource:"/>
-
-<!--Form inputs-->
-<dark:use path="spiral:form/*" prefix="form."/>
-<dark:use path="spiral:form/*" prefix="form:"/>
-
-<!--Grid cells-->
-<dark:use path="spiral:grid/*" prefix="grid."/>
-<dark:use path="spiral:grid/*" prefix="grid:"/>
-
-<!--Assets-->
-<dark:use path="spiral:assets/*" prefix="toolkit:"/>
+<use:element path="toolkit:form" as="form:wrapper"/>
+<use:element path="toolkit:form/input" as="form:input"/>
+<use:element path="toolkit:form/checkbox" as="form:checkbox"/>
+<use:element path="toolkit:form/radio" as="form:radio"/>
+<use:element path="toolkit:form/radio-group" as="form:radio-group"/>
+<use:element path="toolkit:form/select" as="form:select"/>
+<use:element path="toolkit:form/file" as="form:file"/>
+<use:element path="toolkit:form/date" as="form:date"/>
+<use:element path="toolkit:form/textarea" as="form:textarea"/>
+<use:element path="toolkit:form/static" as="form:static"/>
+<use:element path="toolkit:form/button" as="form:button"/>

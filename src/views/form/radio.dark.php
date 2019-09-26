@@ -1,4 +1,4 @@
-<extends path="form/field-checkbox" type="radio" />
+<extends path="toolkit:form/field-checkbox" type="radio" />
 
 <block:element>
   <input

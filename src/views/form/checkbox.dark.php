@@ -1,4 +1,4 @@
-<extends path="form/field-checkbox" />
+<extends path="toolkit:form/field-checkbox" />
 
 <block:element>
   <input

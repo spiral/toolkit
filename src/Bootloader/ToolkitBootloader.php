@@ -30,7 +30,5 @@ final class ToolkitBootloader extends Bootloader
     public function boot(ViewsBootloader $views, StemplerBootloader $stempler)
     {
         $views->addDirectory('toolkit', dirname(__DIR__) . '/views/');
-
-
     }
 }

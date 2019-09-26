@@ -1,4 +1,5 @@
-<use:element path="form/radio" as="form:radio"/>
+<use:element path="toolkit:form/radio" as="form:radio"/>
+
 <?php
   $_values = inject('values', []);
   $_selected = inject('value');
