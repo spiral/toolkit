@@ -1,7 +1,7 @@
 {
   "name": "spiral/toolkit",
   "type": "library",
-  "description": "Set of virtual tags and frontend library",
+  "description": "Form serialization toolkit for Spiral Framework",
   "license": "MIT",
   "authors": [
     {
@@ -10,11 +10,12 @@
     }
   ],
   "require": {
-    "spiral/framework": "^1.0"
+    "php": "^7.2",
+    "spiral/stempler-bridge": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "Spiral\\": "source/"
+      "Spiral\\Toolkit\\": "src/"
     }
   }
 }
