@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable func-names */
 
 // Plugin in formMessages to iterate form inputs
