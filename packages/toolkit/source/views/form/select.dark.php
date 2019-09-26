@@ -1,56 +1,35 @@
-<extends:spiral:element/>
+<extends path="form/field" />
 
-<block:body>
-    <div class="item-form ${wrapper-class}" node:attributes="prefix:wrapper">
-        <?php #compiled
-        //Receiving label content as evaluator variable
-        $this->evaluatorVariable('label', '${label}');
-        if (!empty($label) && $label != "''") {
-            ?>
-            <block:input-label>
-                <label class="${label-class} item-label" node:attributes="prefix:label">${label}</label>
-            </block:input-label>
-            <?php #compiled
-        }
-        ?>
-        <block:input-body>
-            <div class="form-group">
-                <select name="${name}" class="item-select ${custom|browser-default} ${class}" node:attributes>
-                    <?php #compile
-                    //Receiving placeholder content as evaluator variable
-                    $this->evaluatorVariable('placeholder', '${placeholder}${default}');
-                    if (!empty($placeholder) && $placeholder != "''") {
-                        ?>
-                        <option value="">${placeholder}${default}</option>
-                        <?php #compile
-                    }
+<block:element>
+  <?php
+  $_selected = inject('value') || inject('context');
+  $_values = inject('values', []);
+  $_placeholder = inject('placeholder');
+  $_options = [];
+  if ($_placeholder) {
+    $_options[] = "<option>{$_placeholder}</option>";
+  }
 
-                    //We need value set as php variable __values__
-                    $this->runtimeVariable('__values__', '${values}');
+  if (is_array($_values)) {
+    foreach ($_values as $_value => $_label) {
+      if ($_value == $_selected) {
+        $_options[] = "<option value=\"{$_value}\" selected>{$_label}</option>";
+      } else {
+        $_options[] = "<option value=\"{$_value}\">{$_label}</option>";
+      }
+    }
+  }
 
-                    //Selected value
-                    $this->runtimeVariable('__selected__', '${value}${selected}');
-                    ?><?php
-                    if (empty($__values__)) {
-                        $__values__ = [];
-                    }
+  $_options_str = join('', $_options);
+  ?>
 
-                    if (!is_array($__values__)) {
-                        throw new \Spiral\Toolkit\Exceptions\ToolkitException(
-                            "Select values must be supplied as associated array."
-                        );
-                    }
-
-                    foreach ($__values__ as $__value__ => $__label__) {
-                        if ($__value__ == $__selected__) {
-                            echo "<option value=\"{$__value__}\" selected>{$__label__}</option>";
-                        } else {
-                            echo "<option value=\"{$__value__}\">{$__label__}</option>";
-                        }
-                    }
-                    ?>
-                </select>
-            </div>
-        </block:input-body>
-    </div>
-</block:body>
+  <select
+    id="${id}"
+    data-input="true"
+    class="form-control@if(inject('error')) is-invalid@endif @if(inject('success')) is-valid@endif"
+    name="${name}"
+    @if(inject('disabled'))disabled@endif
+  >
+    {!! $_options_str !!}
+  </select>
+</block:element>

@@ -1,6 +1,6 @@
-"use strict";
-var sf = require('@spiral-toolkit/core');
-var Lock = require('./Lock').default;
+
+const sf = require('@spiral-toolkit/core');
+const Lock = require('./Lock').default;
 
 sf.registerInstanceType(Lock);
 

@@ -1,21 +1,13 @@
-<extends:spiral:element/>
+<extends path="form/field-checkbox" type="radio" />
 
-<block:body>
-    <label class="item-form item-form-radio ${wrapper-class}">
-        <block:input-body>
-            <input type="radio" name="${name}" node:attributes="exclude:context"/>
-        </block:input-body>
-
-        <?php #compiled
-        //Receiving label content as evaluator variable
-        $this->evaluatorVariable('label', '${label}');
-        if (!empty($label) && $label != "''") {
-            ?>
-            <block:input-label>
-                <span class="${label-class} item-label" node:attributes="prefix:label">${label}</span>
-            </block:input-label>
-            <?php #compiled
-        }
-        ?>
-    </label>
-</block:body>
+<block:element>
+  <input
+    id="${id}"
+    class="@if(inject('is-native'))form-check-input@else custom-control-input@endif @if(inject('error')) is-invalid@endif @if(inject('success')) is-valid@endif"
+    type="radio"
+    name="${name}"
+    value="${value}"
+    @if(inject('checked'))checked@endif
+    @if(inject('disabled'))disabled@endif
+  >
+</block:element>

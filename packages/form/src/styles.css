@@ -1,0 +1,8 @@
+[data-form-message] ~ [data-form-hint] {
+  display: none;
+}
+
+.is-invalid[data-message-placeholder]>.invalid-feedback,
+.is-invalid[data-field]>.invalid-feedback {
+  display: block;
+}

@@ -16,7 +16,6 @@
     "build:dev:toolkit": "npx lerna run build:dev --scope=@spiral-toolkit/toolkit --stream",
     "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:locker && yarn build:dev:toolkit"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
@@ -27,13 +26,9 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "lerna": "^3.16.4",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
     "rimraf": "^3.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-recommended": "^2.2.0",
     "url-loader": "^2.1.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8"

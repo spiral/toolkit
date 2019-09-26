@@ -1,0 +1,14 @@
+.locked .form-content {
+  pointer-events: none;
+  filter: blur(3px);
+  opacity: .7;
+}
+
+.locker {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+}

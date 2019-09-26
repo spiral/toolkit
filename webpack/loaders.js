@@ -24,16 +24,6 @@ exports.css = {
   ],
 };
 
-exports.less = {
-  test: /\.less$/,
-  use: [
-    'style-loader',
-    'css-loader?-url&sourceMap',
-    'less-loader?sourceMap',
-  ],
-  exclude: /node_modules/,
-};
-
 exports.js = {
   test: /\.js$/,
   use: [
@@ -43,7 +33,5 @@ exports.js = {
 };
 
 exports.svg = makeUrlLoader(/\.svg$/);
-exports.eot = makeUrlLoader(/\.eot$/);
 exports.woff = makeUrlLoader(/\.woff$/);
 exports.woff2 = makeUrlLoader(/\.woff2$/);
-exports.ttf = makeUrlLoader(/\.ttf$/);

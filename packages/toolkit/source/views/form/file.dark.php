@@ -1,13 +1,15 @@
-<extends:spiral:element/>
+<extends path="form/field"/>
 
-<block:resources>
-</block:resources>
-
-<block:body>
-    <div class="file-field item-form">
-        <input type="file" id="${id}" class="inputfile sf-js-file-input" data-file="true" data-multiple-caption="{count} ${multiple-text | files selected}" node:attributes/>
-        <label for="${id}">
-            <span class="btn ${class}">${label | Choose file}</span>
-        </label>
-    </div>
-</block:body>
+<block:element>
+  <input
+    id="${id}"
+    data-input="true"
+    class="form-control-file@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+    data-file="true"
+    type="file"
+    name="${name}"
+    value="${value}${context}"
+    @if(inject('multiple'))multiple@endif
+    @if(inject('disabled'))disabled@endif
+  >
+</block:element>

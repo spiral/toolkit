@@ -1,5 +1,8 @@
 const path = require('path');
 
+const loaders = require('./loaders');
+const plugins = require('./plugins');
+
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
@@ -27,10 +30,14 @@ module.exports = {
     ],
   },
 
-  plugins: [],
+  plugins,
 
   module: {
-    rules: [],
+    rules: [
+      loaders.jsmap,
+      loaders.js,
+      loaders.css,
+    ],
   },
 
   devServer: {

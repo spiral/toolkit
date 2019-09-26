@@ -1,9 +1,11 @@
-"use strict";
+/* eslint-disable no-console */
+/* eslint-disable func-names */
+
 // Plugin in formMessages to iterate form inputs
 
 // TODO comment all of this
 // TODO ask @Systerr the reason of variable 'prefix'
-var notFound = [];
+let notFound = [];
 
 /**
  *
@@ -13,50 +15,52 @@ var notFound = [];
  * @param {String} [prefix]
  */
 function findNodes(context, names, callback, prefix) {
-    for (var name in names) {
-        if (!names.hasOwnProperty(name)) {
-            continue;
-        }
-
-        var partOfSelector = (prefix) ? prefix + "[" + name + "]" : name;
-        var type = Object.prototype.toString.call(names[name]);
-        var selector = "[name='" + partOfSelector + "']";
-
-        switch (type) {
-            case '[object Object]':
-                findNodes(context, names[name], callback, partOfSelector);
-                break;
-            case '[object Array]':
-                names[name].forEach(function (el) {
-                    "use strict";
-                    // TODO refactor this should call recursive
-                    var sel = "[name='" + partOfSelector + "[]']" + "[value='" + el + "']";
-                    var nodes = context.querySelectorAll(sel);
-                    if (nodes.length === 0) {
-                        notFound.push(sel);
-                    }
-                    for (var i = 0, max = nodes.length; i < max; i++) {
-                        callback(nodes[i], true);
-                    }
-                });
-                break;
-            case '[object String]':
-            case '[object Number]':
-                var nodes = context.querySelectorAll(selector);
-                if (nodes.length === 0) {
-                    var obj = {};
-                    obj[partOfSelector] = names[name];
-                    notFound.push(obj);
-                }
-                for (var i = 0, max = nodes.length; i < max; i++) {
-                    callback(nodes[i], names[name]);
-                }
-                break;
-
-            default :
-                console.error("unknown type -", type, " and message", names[name]);
-        }
+  // for (const name in names) {
+  Object.keys(names).forEach((name) => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (!names.hasOwnProperty(name)) {
+      return;
     }
+
+    const partOfSelector = (prefix) ? `${prefix}[${name}]` : name;
+    const type = Object.prototype.toString.call(names[name]);
+    const selector = `[name='${partOfSelector}']`;
+
+    switch (type) {
+      case '[object Object]':
+        findNodes(context, names[name], callback, partOfSelector);
+        break;
+      case '[object Array]':
+        names[name].forEach((el) => {
+          // TODO refactor this should call recursive
+          const sel = `[name='${partOfSelector}[]'][value='${el}']`;
+          const nodes = context.querySelectorAll(sel);
+          if (nodes.length === 0) {
+            notFound.push(sel);
+          }
+          for (let i = 0, max = nodes.length; i < max; i += 1) {
+            callback(nodes[i], true);
+          }
+        });
+        break;
+      case '[object String]':
+      case '[object Number]':
+        // eslint-disable-next-line no-case-declarations
+        const nodes = context.querySelectorAll(selector);
+        if (nodes.length === 0) {
+          const obj = {};
+          obj[partOfSelector] = names[name];
+          notFound.push(obj);
+        }
+        for (let i = 0, max = nodes.length; i < max; i += 1) {
+          callback(nodes[i], names[name]);
+        }
+        break;
+
+      default:
+        console.error('unknown type -', type, ' and message', names[name]);
+    }
+  });
 }
 
 /**
@@ -66,13 +70,14 @@ function findNodes(context, names, callback, prefix) {
  * @param {String} [prefix]
  * @return {String[]}
  */
-var iterateInputs = function (context, names, callback, prefix) {
-    notFound = [];
-    findNodes(context, names, callback, prefix);
-    if (notFound.length !== 0) {
-        console.log("Some element not found in form", notFound);
-    }
-    return notFound;
+const iterateInputs = function (context, names, callback, prefix) {
+  notFound = [];
+  findNodes(context, names, callback, prefix);
+  if (notFound.length !== 0) {
+    // eslint-disable-next-line no-console
+    // console.log('Some element not found in form', notFound);
+  }
+  return notFound;
 };
 
 module.exports = iterateInputs;

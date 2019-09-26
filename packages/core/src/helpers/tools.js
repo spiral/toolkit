@@ -1,15 +1,14 @@
-"use strict";
+/* eslint-disable no-restricted-globals */
 
 /**
  * @module tools
  * @namespace
  */
-var tools = {
-    resolveKeyPath: function (path, obj, safe) {
-        return path.split('.').reduce(function (prev, curr) {
-            return !safe ? prev[curr] : (prev ? prev[curr] : void 0);
-        }, obj || self);
-    }
+const tools = {
+  resolveKeyPath(path, obj, safe) {
+    // eslint-disable-next-line no-nested-ternary
+    return path.split('.').reduce((prev, curr) => (!safe ? prev[curr] : (prev ? prev[curr] : undefined)), obj || self);
+  },
 };
 
 module.exports = tools;
