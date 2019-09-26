@@ -1,5 +1,5 @@
 # Spiral Toolkit
-Form serialization toolkit for Spiral Framework. 
+AJAX and form serialization toolkit for Spiral Framework.
 
 ## Prerequisites
 * [node 11.15.0+](https://nodejs.org/en/download/) use recent LTS version
