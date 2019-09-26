@@ -28,7 +28,7 @@ class AssociateIDs implements VisitorInterface
     private const ID_CONSUME = '--id-consume';
 
     /** @var int */
-    private $nextID = 1000;
+    private static $nextID = 1000;
 
     /**
      * @inheritDoc
@@ -103,7 +103,7 @@ class AssociateIDs implements VisitorInterface
      */
     private function nextID(): string
     {
-        return 'i-' . dechex($this->nextID++);
+        return 'i-' . dechex(self::$nextID++);
     }
 
     /**
