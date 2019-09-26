@@ -1,5 +1,15 @@
+{{--form wrapper--}}
 <use:element path="toolkit:form" as="form:wrapper"/>
+<use:element path="toolkit:form" as="form:form"/>
+<use:element path="toolkit:form" as="form:ajax"/>
+
+{{--default, non typed input--}}
 <use:element path="toolkit:form/input" as="form:input"/>
+
+{{--buttons--}}
+<use:element path="toolkit:form/button" as="form:button"/>
+
+others
 <use:element path="toolkit:form/checkbox" as="form:checkbox"/>
 <use:element path="toolkit:form/radio" as="form:radio"/>
 <use:element path="toolkit:form/radio-group" as="form:radio-group"/>
@@ -8,4 +18,3 @@
 <use:element path="toolkit:form/date" as="form:date"/>
 <use:element path="toolkit:form/textarea" as="form:textarea"/>
 <use:element path="toolkit:form/static" as="form:static"/>
-<use:element path="toolkit:form/button" as="form:button"/>

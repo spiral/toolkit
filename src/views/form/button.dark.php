@@ -1,5 +1,5 @@
-<div class="form-group col-12">
-  <button type="${type|submit}" class="btn btn-${style|primary}">
-    ${label|Submit}
-  </button>
+<div class="form-group col-${col|12} ${group-class}" attr:aggregate="prefix:group-">
+    <button type="${type|submit}" class="btn btn-${class|primary}" attr:aggregate>
+        ${label|Submit}
+    </button>
 </div>
