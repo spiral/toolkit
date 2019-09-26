@@ -17,5 +17,10 @@
     "psr-4": {
       "Spiral\\Toolkit\\": "src/"
     }
+  },
+  "extra": {
+    "publish": {
+      "packages/toolkit/dist/*:@public/scripts/": "replace:readonly"
+    }
   }
 }
