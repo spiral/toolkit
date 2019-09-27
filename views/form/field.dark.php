@@ -1,5 +1,5 @@
-<div class="form-group col-${col|12} ${group-class}" data-field="true" attr:aggregate="prefix:group-" --id-group>
-    <label for="${id}" attr:aggregate="prefix:label-" --id-consume>${label}</label>
+<div inputID:define class="form-group col-${col|12} ${field-class}" data-field="true" attr:aggregate="prefix:field-">
+    <label inputID:consume for="${id}" attr:aggregate="prefix:label-">${label}</label>
 
     <block:element/>
 

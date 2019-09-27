@@ -13,7 +13,7 @@ use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\Views\ViewsBootloader;
 use Spiral\Stempler\Bootloader\StemplerBootloader;
 use Spiral\Stempler\Builder;
-use Spiral\Toolkit\Visitor\AssociateIDs;
+use Spiral\Toolkit\Visitor\GenerateIDs;
 
 /**
  * Enables toolkit view namespace and additional directives.
@@ -31,9 +31,9 @@ final class ToolkitBootloader extends Bootloader
      */
     public function boot(ViewsBootloader $views, StemplerBootloader $stempler)
     {
-        $views->addDirectory('toolkit', dirname(__DIR__) . '/views/');
+        $views->addDirectory('toolkit', dirname(dirname(__DIR__)) . '/views/');
 
         // automatically generate unique input ids
-        $stempler->addVisitor(AssociateIDs::class, Builder::STAGE_COMPILE);
+        $stempler->addVisitor(GenerateIDs::class, Builder::STAGE_COMPILE);
     }
 }

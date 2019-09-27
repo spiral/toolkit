@@ -9,12 +9,15 @@
 {{--buttons--}}
 <use:element path="toolkit:form/button" as="form:button"/>
 
-others
-<use:element path="toolkit:form/checkbox" as="form:checkbox"/>
-<use:element path="toolkit:form/radio" as="form:radio"/>
-<use:element path="toolkit:form/radio-group" as="form:radio-group"/>
-<use:element path="toolkit:form/select" as="form:select"/>
+{{--other type of inputs--}}
 <use:element path="toolkit:form/file" as="form:file"/>
-<use:element path="toolkit:form/date" as="form:date"/>
-<use:element path="toolkit:form/textarea" as="form:textarea"/>
 <use:element path="toolkit:form/static" as="form:static"/>
+<use:element path="toolkit:form/textarea" as="form:textarea"/>
+<use:element path="toolkit:form/checkbox" as="form:checkbox"/>
+
+{{--multivalue--}}
+<use:element path="toolkit:form/select" as="form:select"/>
+<use:element path="toolkit:form/radio-group" as="form:radio-group"/>
+
+{{--dates--}}
+<use:element path="toolkit:form/date" as="form:date"/>

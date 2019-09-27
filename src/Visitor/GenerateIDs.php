@@ -21,11 +21,11 @@ use Spiral\Stempler\VisitorInterface;
  * Automatically issues unique IDs for inputs and labels. Visitor expends the `id` or `for` attribute to be defined
  * with ${id} block inside it.
  */
-class AssociateIDs implements VisitorInterface
+final class GenerateIDs implements VisitorInterface
 {
     // id group definition and completion
-    private const ID_GROUP   = '--id-group';
-    private const ID_CONSUME = '--id-consume';
+    private const ID_GROUP   = 'inputID:define';
+    private const ID_CONSUME = 'inputID:consume';
 
     /** @var int */
     private static $nextID = 1000;
@@ -36,7 +36,7 @@ class AssociateIDs implements VisitorInterface
     public function enterNode($node, VisitorContext $ctx)
     {
         if (!$node instanceof Attr) {
-            return null;
+            return;
         }
 
         if ($node->name === self::ID_GROUP) {
