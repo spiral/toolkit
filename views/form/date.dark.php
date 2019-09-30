@@ -1,10 +1,6 @@
 <extends path="toolkit:form/field"/>
 
 <block:element>
-    <stack:push name="styles">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css"/>
-    </stack:push>
-
     <input inputID:consume
            id="${id}"
            data-input="true"
