@@ -109,7 +109,7 @@ Form.prototype.optionsToGrab = {
      */
   messagesType: {
     value: 'spiral',
-    domAttr: 'data-messagesType',
+    domAttr: 'data-messages-type',
   },
   /**
      * Pass custom template for form messages
@@ -134,7 +134,7 @@ Form.prototype.optionsToGrab = {
      */
   useAjax: { // Attribute of form
     value: true, // Default value
-    domAttr: 'data-useAjax',
+    domAttr: 'data-use-ajax',
     processor(node, val) { // processor to process data before return
       if (typeof val === 'boolean') {
         return val;
@@ -263,6 +263,16 @@ Form.prototype.processAnswer = function (answer) {
   }
 };
 
+Form.prototype.optCallback = function (options, type) {
+  if (options[type]) {
+    // eslint-disable-next-line no-eval
+    const fn = eval(options[type]);
+    if (typeof (fn) === 'function') {
+      fn.call(options);
+    }
+  }
+};
+
 /**
  * Send form to server
  * @param {Object} sendOptions
@@ -270,13 +280,7 @@ Form.prototype.processAnswer = function (answer) {
 Form.prototype.send = function (sendOptions) {
   const that = this;
   this.lock();
-  if (sendOptions.beforeSubmitCallback) {
-    // eslint-disable-next-line no-eval
-    const fn = eval(sendOptions.beforeSubmitCallback);
-    if (typeof (fn) === 'function') {
-      fn.call(sendOptions);
-    }
-  }
+  this.optCallback(sendOptions, 'beforeSubmitCallback');
   this.sf.ajax.send(sendOptions).then(
     (answer) => {
       that.events.trigger('success', sendOptions);
@@ -289,6 +293,7 @@ Form.prototype.send = function (sendOptions) {
   ).then((answer) => {
     that.lock(true);
     that.processAnswer(answer);
+    this.optCallback(sendOptions, 'afterSubmitCallback');
     that.events.trigger('always', sendOptions);
   });
 

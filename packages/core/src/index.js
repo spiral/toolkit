@@ -47,8 +47,8 @@ sfWrapper.ajax = new sfWrapper.core.Ajax(window && window.csrfToken ? {
   },
 } : null);
 
-// deprecated
-// require('./core/ajax/baseActions.js')(sfWrapper);
+// ACTIONS
+require('./core/ajax/baseActions.js')(sfWrapper);
 
 // API
 sfWrapper.createModulePrototype = function () {

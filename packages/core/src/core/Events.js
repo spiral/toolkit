@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 
@@ -34,7 +33,8 @@ const Events = function (allowedEvents) {
 Events.prototype.on = function (events, callback) {
   const eventArr = events.replace(/\s{2,}/g, ' ').split(' ');
   eventArr.forEach(function (event) {
-    if (this._allowedEvents && this._allowedEvents.indexOf(event) === -1) { // event not inside allowed events
+    // event not inside allowed events
+    if (this._allowedEvents && this._allowedEvents.indexOf(event) === -1) {
       console.warn('Events. Try to register event %s, but event is not allowed', event);
       return;
     }
@@ -76,7 +76,8 @@ Events.prototype.off = function () {
  * events.trigger("myBestEvent",{bestKey:42}); //will show in log
  */
 Events.prototype.trigger = function (event, options) {
-  if (this._allowedEvents && this._allowedEvents.indexOf(event) === -1) { // event not inside allowed events
+  // event not inside allowed events
+  if (this._allowedEvents && this._allowedEvents.indexOf(event) === -1) {
     console.warn('Events. Try to trigger event %s, but event is not allowed', event);
     return;
   }

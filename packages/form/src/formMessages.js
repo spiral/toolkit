@@ -91,7 +91,7 @@ module.exports = {
         error += answer.statusText ? answer.statusText : '';
         error += answer.data && !answer.statusText ? answer.data : '';
       }
-      this.showFormMessage(error, this.options.messages.levels.error);
+      if (error) this.showFormMessage(error, this.options.messages.levels.error);
     }
 
     this._messages.forEach((m) => {
@@ -101,6 +101,7 @@ module.exports = {
       }
     });
   },
+
   removeMessage(m, e) {
     if (m.close) {
       m.close.removeEventListener('click', m.closeHandler);
@@ -119,6 +120,7 @@ module.exports = {
       this._messages.splice(this._messages.indexOf(m), 1);
     }
   },
+
   removeMessages() {
     const that = this;
     if (this._messages) {
@@ -128,6 +130,7 @@ module.exports = {
     }
     that._messages = [];
   },
+
   showFormMessage(message, type) {
     let parent;
     let tpl = this.options.messages.template;
@@ -155,6 +158,7 @@ module.exports = {
     }
     this._messages.push({ el: msgEl, close: msgEl.querySelector(this.options.messages.close) });
   },
+
   /**
      * @param {HTMLElement} el
      * @param {String} message
@@ -211,6 +215,7 @@ module.exports = {
       type,
     });
   },
+
   showFieldsMessages(messages, type) {
     const that = this;
     const notFound = window.sf.iterateInputs(this.node, messages, (el, message) => {
