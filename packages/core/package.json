@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/core",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Spiral Scout Frontend Framework",
   "main": "dist/core.js",
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
