@@ -1,28 +1,34 @@
 {
-  "name": "root",
+  "name": "@spiral-toolkit/root",
   "private": true,
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build:form": "npx lerna run build --scope=@spiral-toolkit/form --stream",
+    "build:datagrid": "npx lerna run build --scope=@spiral-toolkit/datagrid --stream",
     "build:locker": "npx lerna run build --scope=@spiral-toolkit/locker --stream",
     "build:core": "npx lerna run build --scope=@spiral-toolkit/core --stream",
     "build:toolkit": "npx lerna run build --scope=@spiral-toolkit/toolkit --stream",
-    "build": "yarn build:core && yarn build:form && yarn build:locker && yarn build:toolkit",
+    "build:keeper": "npx lerna run build --scope=@spiral-toolkit/keeper --stream",
+    "build": "yarn build:core && yarn build:form && yarn build:datagrid && yarn build:locker && yarn build:toolkit && yarn build:keeper",
     "build:dev:form": "npx lerna run build:dev --scope=@spiral-toolkit/form --stream",
     "build:dev:locker": "npx lerna run build:dev --scope=@spiral-toolkit/locker --stream",
     "build:dev:core": "npx lerna run build:dev --scope=@spiral-toolkit/core --stream",
     "build:dev:toolkit": "npx lerna run build:dev --scope=@spiral-toolkit/toolkit --stream",
-    "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:locker && yarn build:dev:toolkit"
+    "build:dev:datagrid": "npx lerna run build:dev --scope=@spiral-toolkit/datagrid --stream",
+    "build:dev:keeper": "npx lerna run build:dev --scope=@spiral-toolkit/keeper --stream",
+    "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:datagrid && yarn build:dev:locker && yarn build:dev:toolkit && yarn build:dev:keeper"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "babel-loader": "^8.0.6",
-    "cross-env": "^5.2.1",
+    "concurrently": "^5.1.0",
+    "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
-    "eslint": "^6.3.0",
+    "eslint": "^6.5.1",
+    "eslint-loader": "^3.0.2",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "lerna": "^3.20.2",
@@ -30,7 +36,9 @@
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.0.0",
     "url-loader": "^2.1.0",
-    "webpack": "4.42.0",
-    "webpack-cli": "^3.3.8"
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.8",
+    "webpack-dev-server": "^3.8.2",
+    "webpack-livereload-plugin": "^2.2.0"
   }
 }

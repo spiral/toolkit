@@ -38,7 +38,7 @@ const InstancesController = function (spiral) {
  * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
  */
 InstancesController.prototype.registerInstanceType = function (constructorFunction, cssClassName, isSkipInitialization) {
-  const instanceName = constructorFunction.prototype.name;
+  const instanceName = constructorFunction.spiralFrameworkName || constructorFunction.prototype.name;
 
   if (!instanceName) {
     console.error('Instance constructor should have name inside it');

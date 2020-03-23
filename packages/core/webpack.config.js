@@ -9,7 +9,11 @@ const config = {
 
   output: {
     ...baseConfig.output,
-    library: '@spiral-toolkit/core',
+    library: {
+      amd: '@spiral-toolkit/core',
+      commonjs: '@spiral-toolkit/core',
+      root: 'sf',
+    },
   },
 };
 

@@ -4,9 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 
-const srcPath = 'frontend';
-const distPath = 'keeper';
-const buildPath = path.resolve(__dirname, 'public', distPath);
+const srcPath = 'src';
+const distPath = 'dist';
+const buildPath = path.resolve(__dirname, distPath);
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
@@ -17,6 +17,13 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: buildPath,
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+    library: {
+      amd: '@spiral-toolkit/keeper',
+      commonjs: '@spiral-toolkit/keeper',
+      root: 'SFKeeper',
+    },
   },
   node: {
     fs: 'empty',

@@ -27,10 +27,12 @@ require('./shim/Object.assign');
 if (!sfWrapper.hasOwnProperty('options')) sfWrapper.options = { instances: {} };
 if (!sfWrapper.options.hasOwnProperty('instances')) sfWrapper.options.instances = {};
 
+/*
 // TODO delete this in future
 if (window && !window.hasOwnProperty('sf')) { // bind only if  window.sf is empty to avoid conflicts with other libs
   window.sf = sfWrapper;
 }
+ */
 
 sfWrapper.instancesController = new sfWrapper.core.InstancesController(sfWrapper);
 sfWrapper.domMutation = new sfWrapper.core.DomMutations(sfWrapper.instancesController);

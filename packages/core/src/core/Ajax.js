@@ -6,7 +6,7 @@
 const axios = require('axios');
 
 // var tools = require("../helpers/tools");
-const Events = require('../core/Events');
+const Events = require('./Events');
 // const LikeFormData = require('../helpers/LikeFormData');
 
 /**
