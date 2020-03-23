@@ -1,0 +1,59 @@
+.sf-table {
+  margin: 1.25rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  border-bottom-width: 2px;
+  font-size: 0.875rem;
+  background-color: var(--white);
+
+  border-radius: 0.25rem;
+}
+
+.sf-table .table {
+  margin-bottom: 0;
+}
+
+.sf-table thead th {
+  border-top: 0;
+}
+
+.sf-table .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sf-table__sort {
+  position: relative;
+  padding-right: 1.5rem;
+}
+.sf-table__sort::before,
+.sf-table__sort::after {
+  position: absolute;
+  opacity: 0.3;
+  font-size: 1rem;
+  line-height: 1;
+}
+.sf-table__sort::before {
+  content: '\2191';
+  right: 0.5rem;
+}
+.sf-table__sort::after {
+  content: '\2193';
+  right: 0;
+}
+
+.sf-table__sort_asc::before,
+.sf-table__sort_desc::after {
+  opacity: 1;
+}
+
+.sf-table__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sf-table__actions > a {
+  flex-shrink: 0;
+}
+
+.sf-table__actions > a:not(:first-of-type) {
+  margin-left: 0.75rem;
+}

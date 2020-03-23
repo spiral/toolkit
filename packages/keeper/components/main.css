@@ -1,0 +1,16 @@
+.sf-main {
+  flex: 1;
+  min-width: 32rem;
+  background-color: var(--light);
+}
+
+.sf-main__wrapper {
+  margin: 0 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .sf-main {
+    min-width: 20rem;
+  }
+}

@@ -1,0 +1,59 @@
+.sf-notification {
+  display: none;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+.sf-notification.active {
+  display: block;
+}
+
+.sf-notification.closing {
+  opacity: 0;
+}
+
+.sf-notification.alert-dismissible {
+  padding-right: 3rem;
+}
+
+.sf-notification .close {
+  padding: 0.5rem 1rem;
+  width: 3rem;
+  font-size: 1.5rem;
+  text-shadow: none;
+  outline: 0;
+}
+
+.sf-notification .close:hover {
+  color: inherit;
+}
+
+.sf-notification__corner {
+  position: fixed;
+  z-index: 30;
+}
+
+.sf-notification__corner--tl {
+  top: 0;
+  left: 0;
+}
+
+.sf-notification__corner--tr {
+  top: 0;
+  right: 0;
+}
+
+.sf-notification__corner--bl {
+  bottom: 0;
+  left: 0;
+}
+
+.sf-notification__corner--br {
+  bottom: 0;
+  right: 0;
+}
+
+.sf-notification__corner .sf-notification {
+  display: block;
+  margin: 1rem;
+}

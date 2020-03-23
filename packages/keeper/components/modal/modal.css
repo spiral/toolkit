@@ -1,0 +1,49 @@
+.sf-modal {
+  display: block;
+  bottom: auto;
+  height: 0;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: height 0s 0.15s, opacity 0.15s;
+}
+
+.sf-modal.show {
+  height: 100%;
+  opacity: 1;
+  transition: height 0s 0s, opacity 0.15s;
+}
+
+.sf-modal .modal-dialog {
+  transform: translateY(-25%);
+  transition: transform 0.3s;
+}
+
+.sf-modal.show .modal-dialog {
+  transform: translateY(0);
+}
+
+.sf-modal .modal-content {
+  background-clip: initial;
+  border: none;
+}
+
+.sf-modal .modal-header.bg-primary,
+.sf-modal .modal-header.bg-secondary,
+.sf-modal .modal-header.bg-info,
+.sf-modal .modal-header.bg-success,
+.sf-modal .modal-header.bg-danger,
+.sf-modal .modal-header.bg-warning {
+  color: var(--white);
+}
+
+.sf-modal .close {
+  font-size: 1.5rem;
+  outline: 0;
+  color: inherit;
+  text-shadow: none;
+  opacity: 1;
+}
+
+.sf-modal .close:hover {
+  color: inherit;
+}

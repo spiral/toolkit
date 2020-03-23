@@ -1,0 +1,29 @@
+.sf-tabnav {
+  margin: 0 1.25rem 1.25rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+.sf-tabnav .nav-link {
+  border: none;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+/* .sf-tabnav .nav-link:hover,
+.sf-tabnav .nav-link:focus {
+  border-color: transparent;
+} */
+
+.sf-tabnav .nav-link.active {
+  background: none;
+  border-color: transparent transparent var(--primary);
+}
+
+.sf-tabnav__content {
+  display: none;
+}
+
+.sf-tabnav__content.active {
+  display: block;
+}
