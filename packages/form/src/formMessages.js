@@ -3,6 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-template-curly-in-string */
+const sf = require('@spiral-toolkit/core');
 
 const defaults = {
   // template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',
@@ -166,7 +167,7 @@ module.exports = {
      * @param {Boolean} [isContainer]
      */
   showFieldMessage(el, message, type, isContainer) {
-    let field = isContainer ? el : window.sf.helpers.domTools.closest(el, this.options.messages.field);
+    let field = isContainer ? el : sf.helpers.domTools.closest(el, this.options.messages.field);
     let tpl = this.options.messages.fieldTemplate;
 
     if (!field) {
@@ -218,7 +219,7 @@ module.exports = {
 
   showFieldsMessages(messages, type) {
     const that = this;
-    const notFound = window.sf.iterateInputs(this.node, messages, (el, message) => {
+    const notFound = sf.iterateInputs(this.node, messages, (el, message) => {
       that.showFieldMessage(el, message, type);
     });
 

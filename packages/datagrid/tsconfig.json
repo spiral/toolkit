@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
-    "baseUrl": "src",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist",
     "target": "es6",
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "allowJs": true,
+    "composite": true,
     "pretty": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -15,7 +17,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "typeRoots": [ "./types", "./node_modules/@types" ],
+    "typeRoots": [ "./typings", "./node_modules/@types" ],
   },
   "include": [
     "src"

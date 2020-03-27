@@ -21,7 +21,7 @@
   "extra": {
     "publish": {
       "packages/toolkit/dist/*:@public/scripts/": "replace:readonly",
-      "packages/keeper/dist/*:@public/scripts/": "replace:readonly"
+      "packages/keeper/dist/*:@public/keeper/": "replace:readonly"
     }
   }
 }

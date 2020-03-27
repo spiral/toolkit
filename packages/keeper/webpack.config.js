@@ -110,7 +110,7 @@ module.exports = {
             options: {
               name: '[name].[ext]',
               outputPath: 'fonts',
-              publicPath: path.join('/', distPath, 'fonts'),
+              // publicPath: path.join('/', distPath, 'fonts'),
             },
           },
         ],

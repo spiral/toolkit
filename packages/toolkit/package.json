@@ -9,6 +9,7 @@
     "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:dev": "cross-env NODE_ENV=development webpack",
+    "watch": "cross-env NODE_ENV=development webpack --watch",
     "clean": "rimraf dist",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",

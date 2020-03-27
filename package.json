@@ -18,7 +18,14 @@
     "build:dev:toolkit": "npx lerna run build:dev --scope=@spiral-toolkit/toolkit --stream",
     "build:dev:datagrid": "npx lerna run build:dev --scope=@spiral-toolkit/datagrid --stream",
     "build:dev:keeper": "npx lerna run build:dev --scope=@spiral-toolkit/keeper --stream",
-    "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:datagrid && yarn build:dev:locker && yarn build:dev:toolkit && yarn build:dev:keeper"
+    "watch:form": "npx lerna run watch --scope=@spiral-toolkit/form --stream",
+    "watch:locker": "npx lerna run watch --scope=@spiral-toolkit/locker --stream",
+    "watch:core": "npx lerna run watch --scope=@spiral-toolkit/core --stream",
+    "watch:toolkit": "npx lerna run watch --scope=@spiral-toolkit/toolkit --stream",
+    "watch:datagrid": "npx lerna run watch --scope=@spiral-toolkit/datagrid --stream",
+    "watch:keeper": "npx lerna run watch --scope=@spiral-toolkit/keeper --stream",
+    "build:dev": "yarn build:dev:core && yarn build:dev:form && yarn build:dev:datagrid && yarn build:dev:locker && yarn build:dev:toolkit && yarn build:dev:keeper",
+    "watch": "concurrently npm:watch:core npm:watch:locker npm:watch:form npm:watch:datagrid npm:watch:toolkit npm:watch:keeper"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

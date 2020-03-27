@@ -1,6 +1,7 @@
-const CheckerPlugin = require('fork-ts-checker-webpack-plugin');
-const baseConfig = require('../../webpack/config');
+// const CheckerPlugin = require('fork-ts-checker-webpack-plugin');
+// const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require('path');
+const baseConfig = require('../../webpack/config');
 
 const config = {
   ...baseConfig,
@@ -23,12 +24,12 @@ const config = {
   },
 
   plugins: [
-    new CheckerPlugin(
-      {
-        tsconfig: path.resolve('tsconfig.json'),
-        diagnosticFormatter: 'ts-loader', // optional, one of 'ts-loader', 'stylish', 'codeframe'
-      },
-    ),
+    /* new CheckerPlugin(
+          {
+            tsconfig: path.resolve('tsconfig.json'),
+            diagnosticFormatter: 'ts-loader',
+          },
+        ), */
   ],
   module: {
     rules: [
@@ -37,13 +38,14 @@ const config = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          transpileOnly: true,
+          transpileOnly: false,
         },
       },
     ],
   },
 
   resolve: {
+    modules: [path.resolve(__dirname, './src'), 'node_modules'],
     extensions: [
       '.ts',
       '.js',
