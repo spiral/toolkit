@@ -1,2 +1,2 @@
-import { IGridRenderer } from "../types";
-export declare const defaultRenderer: IGridRenderer;
+import { IGridRenderOptions } from "../types";
+export declare const defaultRenderer: IGridRenderOptions;

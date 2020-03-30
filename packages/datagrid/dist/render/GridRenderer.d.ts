@@ -1,5 +1,5 @@
 import Datagrid from '../Datagrid';
-import { IGridRenderer } from '../types';
+import { IGridRenderOptions } from '../types';
 export declare class GridRenderer {
-    constructor(options: IGridRenderer, root: Datagrid);
+    constructor(options: IGridRenderOptions, root: Datagrid);
 }

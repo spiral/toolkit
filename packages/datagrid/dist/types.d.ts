@@ -50,7 +50,7 @@ export declare type ISortDescriptor = string | {
 export declare type IHeaderRenderer = string | ((cell: ICellMeta, node: Element) => Element);
 export declare type ICellRenderer = string | ((cell: ICellMeta, node: Element) => Element);
 export declare type IRowRenderer = (row: IRowMeta, node: Element) => Element;
-export interface IGridRenderer<RowData = any, CellData = any> {
+export interface IGridRenderOptions<RowData = any, CellData = any> {
     /**
      * Basic class/attribute properties
      */
@@ -60,6 +60,7 @@ export interface IGridRenderer<RowData = any, CellData = any> {
     cells?: ICellRenderer[];
 }
 export interface IDataGridOptions<RowData = any, CellData = any> {
+    id: string;
     /**
      * Id of forms or paginators to attach to and use their data in requests
      */
@@ -84,5 +85,5 @@ export interface IDataGridOptions<RowData = any, CellData = any> {
     ui: IDataGridUIOptions<RowData, CellData>;
     columns: IColumnDescriptor[];
     sortable: ISortDescriptor[];
-    renderers: IGridRenderer | IGridRenderer[];
+    renderers: IGridRenderOptions | IGridRenderOptions[];
 }
