@@ -1,4 +1,4 @@
-import {IRowRenderer, ITableWrapperRenderer} from '../types';
+import {ITableWrapperRenderer} from '../types';
 
 export const defaultTableWrapper: ITableWrapperRenderer = (node, options) => {
     const el = document.createElement('table');

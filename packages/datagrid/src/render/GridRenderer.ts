@@ -6,6 +6,8 @@ import {defaultBodyWrapper} from './defaultBodyWrapper';
 import {defaultFooterWrapper} from './defaultFooterWrapper';
 import {defaultHeaderCellRenderer} from './defaultHeaderCellRenderer';
 import {defaultHeaderWrapper} from './defaultHeaderWrapper';
+import {defaultRowCellRenderer} from './defaultRowRenderer';
+import {defaultRowWrapper} from './defaultRowWrapper';
 import {defaultTableWrapper} from './defaultTableWrapper';
 
 export class GridRenderer {
@@ -45,7 +47,6 @@ export class GridRenderer {
       this.tableEl.appendChild(this.headerEl);
       // TODO: Render header cells
       if(this.columnInfo.length) {
-        this.headerEl.innerHTML = '';
         this.columnInfo.forEach((cI, index) => {
           const headerCellRenderer = (this.options.headerList || {})[cI.id] || defaultHeaderCellRenderer;
           this.headerEl!.appendChild(headerCellRenderer(cI, this.options, state));
@@ -61,11 +62,16 @@ export class GridRenderer {
     this.bodyEl = bodyRenderer(this.tableEl, this.options, state);
     if(this.bodyEl) {
       this.tableEl.appendChild(this.bodyEl);
-      this.bodyEl.innerHTML = '';
-      this.columnInfo.forEach((cI, index) => {
-        const headerCellRenderer = (this.options.headerList || {})[cI.id] || defaultHeaderCellRenderer;
-        this.bodyEl!.appendChild(headerCellRenderer(cI, this.options, state));
-      })
+      const row = this.options.rowWrapper || defaultRowWrapper;
+      state.data.forEach((item: any, index)=>{
+        const el = row(this.bodyEl!, this.options, state, index);
+
+        this.columnInfo.forEach((cI) => {
+          const rowCellRenderer = (this.options.cells || {})[cI.id] || defaultRowCellRenderer;
+          el.appendChild(rowCellRenderer(cI, this.options, state, index));
+        })
+      });
+
     }
 
     // Render footer

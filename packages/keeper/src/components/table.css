@@ -20,6 +20,18 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+.sf-table__empty {
+  padding: 30px;
+  text-align: center;
+  color: var(--info);
+}
+
+.sf-table__error {
+  padding: 30px;
+  text-align: center;
+  color: var(--danger);
+}
+
 .sf-table__sort {
   position: relative;
   padding-right: 1.5rem;

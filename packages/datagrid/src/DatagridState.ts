@@ -50,6 +50,10 @@ export class DatagridState<Item = any> {
         return !!this.state.error;
     }
 
+    get errorMessage() {
+        return this.state.error;
+    }
+
     get sortBy() {
         return this.state.sortBy;
     }

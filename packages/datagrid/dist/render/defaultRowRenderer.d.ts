@@ -1,2 +1,2 @@
-import { IRowRenderer } from "../types";
-export declare const defaultRowRenderer: IRowRenderer;
+import { IRowCellRenderer } from '../types';
+export declare const defaultRowCellRenderer: IRowCellRenderer;

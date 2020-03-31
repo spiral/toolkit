@@ -53,8 +53,8 @@ export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOpti
 export type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions)=>Element);
 export type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
 export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
-export type IRowCellRenderer = string | ((parent: Element, cell: ICellMeta, options: IGridRenderOptions)=>Element);
-export type IRowRenderer = (row: IRowMeta, node: Element) => Element;
+export type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number)=>Element);
+export type IRowWrapperRenderer =((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number)=>Element);
 
 export interface ITableMeta<RowData = any, CellData = any> {
   columns: IColumnDescriptor[];
@@ -70,7 +70,7 @@ export interface IGridRenderOptions<RowData = any, CellData = any> extends ITabl
   headerWrapper?: IHeaderWrapperRenderer;
   bodyWrapper?: IBodyWrapperRenderer;
   headerList?: {[columnId: string]: IHeaderCellRenderer};
-  rowWrapper?: IRowRenderer;
+  rowWrapper?: IRowWrapperRenderer;
   footerWrapper?: IFooterWrapperRenderer;
   cells?: {[columnId: string]: IRowCellRenderer};
 }

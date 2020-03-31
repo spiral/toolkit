@@ -1,8 +1,7 @@
-import { IRowRenderer } from "../types";
+import {IRowCellRenderer} from '../types';
 
-export const defaultRowRenderer: IRowRenderer = (row, node) => {
-  const el = document.createElement('td');
-  el.innerText = (row.rowData || '').toString();
-  node.appendChild(el);
-  return el;
+export const defaultRowCellRenderer: IRowCellRenderer = (column, options, state, index) => {
+    const el = document.createElement('td');
+    el.innerText = state.data[index][column.id];
+    return el;
 };

@@ -11,6 +11,7 @@ export declare class DatagridState<Item = any> {
     get data(): Array<Item>;
     set data(data: Array<Item>);
     get hasError(): boolean;
+    get errorMessage(): string | undefined;
     get sortBy(): string | undefined;
     get sortDir(): SortDirection;
     setSuccess(data: Array<Item>, pagination: {

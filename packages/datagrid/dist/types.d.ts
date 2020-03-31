@@ -55,8 +55,8 @@ export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRe
 export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
 export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
 export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export declare type IRowCellRenderer = string | ((parent: Element, cell: ICellMeta, options: IGridRenderOptions) => Element);
-export declare type IRowRenderer = (row: IRowMeta, node: Element) => Element;
+export declare type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number) => Element);
+export declare type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
 export interface ITableMeta<RowData = any, CellData = any> {
     columns: IColumnDescriptor[];
     sortable: ISortDescriptor[];
@@ -72,7 +72,7 @@ export interface IGridRenderOptions<RowData = any, CellData = any> extends ITabl
     headerList?: {
         [columnId: string]: IHeaderCellRenderer;
     };
-    rowWrapper?: IRowRenderer;
+    rowWrapper?: IRowWrapperRenderer;
     footerWrapper?: IFooterWrapperRenderer;
     cells?: {
         [columnId: string]: IRowCellRenderer;
