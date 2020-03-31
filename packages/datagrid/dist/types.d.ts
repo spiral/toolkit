@@ -1,4 +1,6 @@
+import { INormalizedColumnDescriptor } from '../dist/utils';
 import { RequestMethod, SortDirection } from "./constants";
+import { DatagridState } from './DatagridState';
 export interface IRowMeta<T = any> {
     id: string;
     selected: boolean;
@@ -10,6 +12,7 @@ export interface ICellMeta<T = any> {
 }
 export interface IDataGridUIOptions<RowData = any, CellData = any> {
     tableClassName: string;
+    wrapperClassName: string;
     rowClassName: ((rowMeta: IRowMeta<RowData>) => string) | string;
     rowAttributes: ((rowMeta: IRowMeta<RowData>) => {
         [attr: string]: string;
@@ -47,24 +50,49 @@ export declare type ISortDescriptor = string | {
     field: string;
     direction: SortDirection;
 };
-export declare type IHeaderRenderer = string | ((cell: ICellMeta, node: Element) => Element);
-export declare type ICellRenderer = string | ((cell: ICellMeta, node: Element) => Element);
+export declare type IHeaderCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => Element);
+export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
+export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type IRowCellRenderer = string | ((parent: Element, cell: ICellMeta, options: IGridRenderOptions) => Element);
 export declare type IRowRenderer = (row: IRowMeta, node: Element) => Element;
-export interface IGridRenderOptions<RowData = any, CellData = any> {
+export interface ITableMeta<RowData = any, CellData = any> {
+    columns: IColumnDescriptor[];
+    sortable: ISortDescriptor[];
+    ui: IDataGridUIOptions<RowData, CellData>;
+}
+export interface IGridRenderOptions<RowData = any, CellData = any> extends ITableMeta<RowData, CellData> {
     /**
      * Basic class/attribute properties
      */
-    ui: IDataGridUIOptions<RowData, CellData>;
-    headerRow?: IHeaderRenderer[];
-    row?: IRowRenderer;
-    cells?: ICellRenderer[];
+    tableWrapper?: ITableWrapperRenderer;
+    headerWrapper?: IHeaderWrapperRenderer;
+    bodyWrapper?: IBodyWrapperRenderer;
+    headerList?: {
+        [columnId: string]: IHeaderCellRenderer;
+    };
+    rowWrapper?: IRowRenderer;
+    footerWrapper?: IFooterWrapperRenderer;
+    cells?: {
+        [columnId: string]: IRowCellRenderer;
+    };
 }
-export interface IDataGridOptions<RowData = any, CellData = any> {
+export interface IDataGridOptions<RowData = any, CellData = any> extends ITableMeta<RowData, CellData> {
     id: string;
     /**
      * Id of forms or paginators to attach to and use their data in requests
      */
     captureForms: string[];
+    /**
+     * lock type to use on grids
+     */
+    lockType: string;
+    /**
+     * reset data to empty array upon getting error response from server
+     * default to false
+     */
+    resetOnError: boolean;
     /**
      * Data url to grab data from
      */
@@ -80,10 +108,36 @@ export interface IDataGridOptions<RowData = any, CellData = any> {
         [id: string]: string;
     };
     /**
-     * Basic class/attribute properties
+     * Default/starting sorting
      */
-    ui: IDataGridUIOptions<RowData, CellData>;
-    columns: IColumnDescriptor[];
-    sortable: ISortDescriptor[];
+    sort?: ISortDescriptor;
     renderers: IGridRenderOptions | IGridRenderOptions[];
+}
+export interface IDatagridResponse<Item = any> {
+    pagination: {
+        limit: number;
+        page: number;
+        count?: number;
+    };
+    data: Array<Item>;
+}
+export interface IDatagridErrorResponse {
+    originalError?: any;
+    error: string;
+    errors?: {
+        [fieldName: string]: string;
+    };
+}
+export interface IDatagridRequest {
+    fetchCount: boolean;
+    paginate: {
+        limit: number;
+        page: number;
+    };
+    filter: {
+        [filterField: string]: string;
+    };
+    sort: {
+        [sortField: string]: SortDirection;
+    };
 }

@@ -4,6 +4,9 @@ export enum SortDirection {
 }
 
 export enum RequestMethod {
-  GET = 'get',
-  POST = 'post'
+  GET = 'GET',
+  POST = 'POST',
+  DELETE = 'DELETE',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
 }

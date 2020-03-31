@@ -1,11 +1,13 @@
-import { defaultRowRenderer } from "./defaultRowRenderer";
-import { ICellRenderer, IDataGridUIOptions, IGridRenderOptions, IHeaderRenderer, IRowRenderer } from "../types";
+import { IGridRenderOptions } from "../types";
 
 export const defaultRenderer: IGridRenderOptions = {
+  columns: [],
+  sortable: [],
   /**
    * Basic class/attribute properties
    */
   ui: {
+    wrapperClassName: 'table-responsive',
     tableClassName: 'table table-striped',
     cellClassName: '',
     rowClassName: '',
@@ -16,5 +18,4 @@ export const defaultRenderer: IGridRenderOptions = {
       return {};
     }
   },
-  row: defaultRowRenderer,
 }

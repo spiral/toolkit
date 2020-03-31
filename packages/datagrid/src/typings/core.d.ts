@@ -1,5 +1,4 @@
 declare module '@spiral-toolkit/core' {
-
   class BaseDOMConstructor {
     static optionsToGrab: {[key: string]: any};
     public sf: ISpiralFramework;
@@ -7,6 +6,22 @@ declare module '@spiral-toolkit/core' {
     public options: Object;
 
     public init(sf: ISpiralFramework, node: Element, options: any): void;
+  }
+
+  export interface IAjaxOptions {
+    url: string;
+    data?: any;
+    headers?: {[header: string]: string};
+    method?: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH';
+  }
+
+  class IAjax {
+    currentRequests: number;
+    headers: {[header: string]: string};
+    events: any[];
+    cancel: any;
+    send<ResponseData = any>(options: IAjaxOptions): Promise<ResponseData>;
+    constructor(options: {headers: {[header: string]: string}});
   }
 
   export interface ISFCore {
@@ -27,6 +42,7 @@ declare module '@spiral-toolkit/core' {
   const helpers: ISFHelpers;
 
   export interface ISpiralFramework {
+    ajax: IAjax,
     core: ISFCore,
     helpers: ISFHelpers,
     tools: any;
@@ -38,6 +54,8 @@ declare module '@spiral-toolkit/core' {
      * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
      */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
+    addInstance: (instanceType: string, node: Element, options: any) => any;
+    removeInstance: (instanceType: string, node: Element) => any;
   }
 
   const framework: ISpiralFramework;

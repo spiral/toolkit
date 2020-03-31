@@ -23,6 +23,7 @@
 .sf-table__sort {
   position: relative;
   padding-right: 1.5rem;
+  cursor: pointer;
 }
 .sf-table__sort::before,
 .sf-table__sort::after {

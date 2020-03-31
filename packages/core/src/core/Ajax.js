@@ -98,11 +98,15 @@ Ajax.prototype.send = function (options) {
 
   this.cancel = cancelSource.cancel;
 
+  const wrapError = (e) => {
+    e.isSFAjaxError = true; // Marks error that can have normal data inside
+    return e;
+  };
+
   const ajaxPromise = new Promise(((resolve, reject) => { // Return a new promise.
     if (!options.url) {
       console.error('You should provide url');
-      // eslint-disable-next-line prefer-promise-reject-errors
-      reject('You should provide url'); // TODO
+      reject(new Error('You should provide url'));
     }
     that.currentRequests += 1;
     axios
@@ -114,20 +118,24 @@ Ajax.prototype.send = function (options) {
           if (response.status > 199 && response.status < 300) { // 200-299
             resolve(response);
           } else if (response.status > 399 && response.status < 600) { // 400-599
-            reject(response);
+            reject(wrapError(response));
           } else {
             console.error('unknown status %d. Rejecting', response.status);
-            reject(response);
+            reject(wrapError(response));
           }
         } else {
-          reject(response); // reject with the status text
+          reject(wrapError(response)); // reject with the status text
         }
         options.response = response;
         that.events.trigger('load', options); // for example - used to handle actions
       })
       .catch((error) => {
         that.currentRequests -= 1;
-        reject(error);
+        if (error.response) {
+          reject(wrapError(error.response));
+        } else {
+          reject(error);
+        }
       });
   }));
 
