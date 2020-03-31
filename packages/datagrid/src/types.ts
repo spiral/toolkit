@@ -4,22 +4,38 @@ import {DatagridState} from './DatagridState';
 
 export interface IRowMeta<T = any> {
   id: string;
+  index: number;
   selected: boolean;
-  rowData: T;
+  item: T;
+  state: DatagridState;
 }
 
 export interface ICellMeta<T = any> {
-  columnName: string;
-  cellData: T;
+  id: string;
+  index: number;
+  rowSelected: boolean;
+  column: INormalizedColumnDescriptor;
+  item: T;
+  state: DatagridState;
 }
 
-export interface IDataGridUIOptions<RowData = any, CellData = any> {
-  tableClassName: string;
-  wrapperClassName: string;
-  rowClassName: ((rowMeta: IRowMeta<RowData>) => string) | string,
-  rowAttributes: ((rowMeta: IRowMeta<RowData>) => { [attr: string]: string }) | { [attr: string]: string },
-  cellClassName: ((cellMeta: ICellMeta<CellData>) => string) | string,
-  cellAttributes: ((cellMeta: ICellMeta<CellData>) => { [attr: string]: string }) | { [attr: string]: string },
+export interface IDataGridUIOptions<Item = any> {
+  tableClassName?: string;
+  wrapperClassName?: string;
+  headerCellClassName?:
+      ((cellMeta: ICellMeta<Item>) => string) |
+      {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  headerCellAttributes?:
+      ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+      | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
+  rowClassName?: ((rowMeta: IRowMeta<Item>) => string) | string,
+  rowAttributes?: ((rowMeta: IRowMeta<Item>) => { [attr: string]: string }) | { [attr: string]: string },
+  cellClassName?:
+      ((cellMeta: ICellMeta<Item>) => string) |
+      {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  cellAttributes?:
+      ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+      | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
 }
 
 export type IColumnDescriptor = string | {
@@ -56,13 +72,13 @@ export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOpti
 export type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number)=>Element);
 export type IRowWrapperRenderer =((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number)=>Element);
 
-export interface ITableMeta<RowData = any, CellData = any> {
+export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
   sortable: ISortDescriptor[];
-  ui: IDataGridUIOptions<RowData, CellData>;
+  ui: IDataGridUIOptions<Item>;
 }
 
-export interface IGridRenderOptions<RowData = any, CellData = any> extends ITableMeta<RowData, CellData> {
+export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   /**
    * Basic class/attribute properties
    */
@@ -75,7 +91,7 @@ export interface IGridRenderOptions<RowData = any, CellData = any> extends ITabl
   cells?: {[columnId: string]: IRowCellRenderer};
 }
 
-export interface IDataGridOptions<RowData = any, CellData = any> extends ITableMeta<RowData, CellData> {
+export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   id: string;
   /**
    * Id of forms or paginators to attach to and use their data in requests

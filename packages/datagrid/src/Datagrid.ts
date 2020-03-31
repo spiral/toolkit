@@ -31,7 +31,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             cellAttributes: {},
             rowAttributes: {},
             rowClassName: '',
-            cellClassName: '',
+            cellClassName: {},
             tableClassName: 'table table-stripped',
             wrapperClassName: 'table-responsive'
         },
@@ -49,13 +49,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         }
     };
 
-    options: IDataGridOptions = {...Datagrid.defaultOptions};
+    options: IDataGridOptions<Item> = {...Datagrid.defaultOptions};
     grids: GridRenderer[] = [];
     sf!: ISpiralFramework;
     state: DatagridState<Item> = new DatagridState<Item>(this);
     private columnInfo: INormalizedColumnDescriptor[];
 
-    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions) {
+    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>) {
         super();
         this.init(sf, node, options);
         this.options = {

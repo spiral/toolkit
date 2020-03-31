@@ -15,12 +15,12 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             domAttr: string;
         };
     };
-    options: IDataGridOptions;
+    options: IDataGridOptions<Item>;
     grids: GridRenderer[];
     sf: ISpiralFramework;
     state: DatagridState<Item>;
     private columnInfo;
-    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions);
+    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     /**
      * Sets sort for this field if not yet, or changes direction if already same
      * @param fieldId

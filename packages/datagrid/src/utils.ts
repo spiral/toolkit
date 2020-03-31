@@ -45,3 +45,9 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
         }
     });
 };
+
+export const applyAttrributes = (node: Element, attrs: {[name: string]: string})=>{
+    Object.keys(attrs).forEach((name)=>{
+        node.setAttribute(name, attrs[name]);
+    })
+}

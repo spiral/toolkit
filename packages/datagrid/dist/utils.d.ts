@@ -12,3 +12,6 @@ export declare const normalizeColumns: (columns: IColumnDescriptor[], sortable: 
     sortable: boolean;
     direction: SortDirection;
 }[];
+export declare const applyAttrributes: (node: Element, attrs: {
+    [name: string]: string;
+}) => void;
