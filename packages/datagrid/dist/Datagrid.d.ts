@@ -19,6 +19,8 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     grids: GridRenderer[];
     sf: ISpiralFramework;
     state: DatagridState<Item>;
+    capturedForms: Array<any>;
+    capturedPaginators: Array<any>;
     private columnInfo;
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     captureForms(): void;

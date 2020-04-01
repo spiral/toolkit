@@ -23,4 +23,6 @@ export declare class DatagridState<Item = any> {
         [field: string]: string;
     }, resetData?: boolean): void;
     setSort(field: string, direction: SortDirection): void;
+    setFormData(formId: string, data: any): void;
+    getFilter(): {};
 }

@@ -14,12 +14,14 @@ export class DatagridState<Item = any> {
         data: Array<Item>,
         error?: string;
         errors?: { [field: string]: string };
+        formData: {[formId: string]: any}
     } = {
         loading: false,
         page: 1,
         sortDir: SortDirection.ASC,
         limit: DEFAULT_LIMIT,
         data: [],
+        formData: {},
     };
 
     constructor(public parent: Datagrid) {
@@ -86,5 +88,15 @@ export class DatagridState<Item = any> {
     setSort(field: string, direction: SortDirection) {
         this.state.sortBy = field;
         this.state.sortDir = direction;
+    }
+
+    setFormData(formId: string, data: any) {
+        this.state.formData[formId] = data;
+    }
+
+    getFilter() {
+        return Object.keys(this.state.formData).reduce((prev, key)=>{
+            return {...prev, ...this.state.formData[key]}
+        }, {})
     }
 }

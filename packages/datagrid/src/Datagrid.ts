@@ -24,7 +24,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         captureForms: [],
         columns: [],
         headers: {},
-        method: RequestMethod.GET,
+        method: RequestMethod.POST,
         sortable: [],
         url: '',
         ui: {
@@ -53,6 +53,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     grids: GridRenderer[] = [];
     sf!: ISpiralFramework;
     state: DatagridState<Item> = new DatagridState<Item>(this);
+    capturedForms: Array<any> = []; // TODO: type as sf.Form instance array
+    capturedPaginators: Array<any> = []; // TODO: type as sf.Paginator instance array
+
     private columnInfo: INormalizedColumnDescriptor[];
 
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>) {
@@ -105,10 +108,14 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         const forms = this.sf.getInstances('form');
         forms.forEach((f)=>{
             console.log(f);
-            if(f.instance.options && this.options.captureForms.indexOf(f.instance.options.url)>=0) {
+            // TODO: should be an async capture
+            if(f.instance.options && f.instance.options.id && this.options.captureForms.indexOf(f.instance.options.url)>=0) {
                 const instance = f.instance;
-                instance.options.beforeSubmitCallback = (data: any)=>{
-                    console.log(data);
+                this.capturedForms.push(instance);
+                instance.options.jsonOnly = true;
+                instance.options.beforeSubmitCallback = (options: any)=>{
+                    this.state.setFormData(instance.options.id, options.data);
+                    this.request(); // TODO: better way
                     return false;
                 }
             }
@@ -142,7 +149,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         // TODO: 2. Collect data from state
         const request: IDatagridRequest = {
             fetchCount: true,
-            filter: {},
+            filter: this.state.getFilter(),
             paginate: {
                 limit: 25,
                 page: 1,
@@ -157,7 +164,16 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         if (!this.sf.removeInstance('lock', this.node)) {
             console.warn('You try to remove \'lock\' instance, but it is not available or not started');
         }
-        // TODO: trigger unlocks of dependent forms
+        this.capturedForms.forEach((f)=>{
+            if(f.unlock) {
+                f.unlock();
+            }
+        });
+        this.capturedPaginators.forEach((f)=>{
+            if(f.unlock) {
+                f.unlock();
+            }
+        });
         return;
     }
 
@@ -170,7 +186,16 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             console.warn('You try to add \'lock\' instance, but it is not available or already started');
             return;
         }
-        // TODO: trigger locks of dependent forms
+        this.capturedForms.forEach((f)=>{
+            if(f.lock) {
+                f.lock();
+            }
+        });
+        this.capturedPaginators.forEach((f)=>{
+            if(f.lock) {
+                f.lock();
+            }
+        });
     }
 
     private handleSuccess({data}: { data: IDatagridResponse<Item> }) {

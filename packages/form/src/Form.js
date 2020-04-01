@@ -11,6 +11,8 @@ import iterateInputs from './iterateInputs';
 
 import './styles.css';
 
+let idCounter = 1;
+
 
 /**
  * Spiral Forms
@@ -45,6 +47,7 @@ Form.prototype.name = 'form';
  */
 Form.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options);
+  this.options.jsonOnly = this.options.jsonOnly && !!window.FormData;
   this.mixMessagesOptions();
   // this.options.fillFrom && this.fillFieldsFrom(); // id required to fill form
 
@@ -84,7 +87,8 @@ Form.prototype.optionsToGrab = {
     },
   },
   id: {
-    value: `${Date.now()}${Math.random()}`,
+    // eslint-disable-next-line no-plusplus
+    value: `form:${idCounter++}`,
     domAttr: 'id',
   },
   /**
@@ -107,6 +111,13 @@ Form.prototype.optionsToGrab = {
   lockType: {
     value: 'default',
     domAttr: 'data-lock-type',
+  },
+  /**
+     * Force to not use FormData even if it's available
+     */
+  jsonOnly: {
+    value: false,
+    domAttr: 'data-json-only',
   },
   /**
      *
@@ -216,7 +227,7 @@ Form.prototype.onSubmit = function (e) {
 
   // We can send files only with FormData
   // If form contain files and no FormData than disable ajax
-  if (!window.FormData && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
+  if (!this.options.jsonOnly && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
     this.options.useAjax = false;
   }
   this.events.trigger('beforeSend', this.options);
@@ -317,10 +328,10 @@ Form.prototype.send = function (sendOptions) {
  * @return {Object}
  */
 Form.prototype.getFormData = function () {
-  if (window.FormData) {
+  if (!this.options.jsonOnly) {
     return new FormData(this.options.context);
   }
-  console.log(`Form \`${this.options.context}\` were processed without FormData.`);
+  // console.log(`Form \`${this.options.context}\` were processed without FormData.`);
   return new FormToObject(this.options.context);
 };
 
