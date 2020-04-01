@@ -56,6 +56,7 @@ declare module '@spiral-toolkit/core' {
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
     addInstance: (instanceType: string, node: Element, options: any) => any;
     removeInstance: (instanceType: string, node: Element) => any;
+    getInstances: (instanceType: string) => Array<{node: Element, instance: any}>;
   }
 
   const framework: ISpiralFramework;

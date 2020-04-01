@@ -97,7 +97,22 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         }
 
         this.createRenderers();
+        this.captureForms();
         this.request();
+    }
+
+    captureForms() {
+        const forms = this.sf.getInstances('form');
+        forms.forEach((f)=>{
+            console.log(f);
+            if(f.instance.options && this.options.captureForms.indexOf(f.instance.options.url)>=0) {
+                const instance = f.instance;
+                instance.options.beforeSubmitCallback = (data: any)=>{
+                    console.log(data);
+                    return false;
+                }
+            }
+        });
     }
 
     /**

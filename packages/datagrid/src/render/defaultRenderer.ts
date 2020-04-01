@@ -9,7 +9,7 @@ export const defaultRenderer: IGridRenderOptions = {
   ui: {
     wrapperClassName: 'table-responsive',
     tableClassName: 'table table-striped',
-    cellClassName: '',
+    cellClassName: {},
     rowClassName: '',
     cellAttributes: cellMeta => {
       return {};

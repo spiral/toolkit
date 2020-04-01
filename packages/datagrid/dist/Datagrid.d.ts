@@ -21,6 +21,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     state: DatagridState<Item>;
     private columnInfo;
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
+    captureForms(): void;
     /**
      * Sets sort for this field if not yet, or changes direction if already same
      * @param fieldId

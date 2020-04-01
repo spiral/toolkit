@@ -83,6 +83,10 @@ Form.prototype.optionsToGrab = {
       return this;
     },
   },
+  id: {
+    value: `${Date.now()}${Math.random()}`,
+    domAttr: 'id',
+  },
   /**
      * URL to send form (if ajax form) <b>Default: "/"</b>
      */
@@ -229,16 +233,9 @@ Form.prototype.onSubmit = function (e) {
 
 /**
  * Locker. Add or remove.
- * @param {Boolean} [remove]
  */
-Form.prototype.lock = function (remove) {
+Form.prototype.lock = function () {
   if (!this.options.lockType || this.options.lockType === 'none') {
-    return;
-  }
-  if (remove) {
-    if (!this.sf.removeInstance('lock', this.node)) {
-      console.warn("You try to remove 'lock' instance, but it is not available or not started");
-    }
     return;
   }
   const lock = this.sf.addInstance('lock', this.node, { type: this.options.lockType });
@@ -247,6 +244,18 @@ Form.prototype.lock = function (remove) {
     return;
   }
   this.options.onProgress = lock.progress;
+};
+
+/**
+ * Locker. Add or remove.
+ */
+Form.prototype.unlock = function () {
+  if (!this.options.lockType || this.options.lockType === 'none') {
+    return;
+  }
+  if (!this.sf.removeInstance('lock', this.node)) {
+    console.warn("You try to remove 'lock' instance, but it is not available or not started");
+  }
 };
 
 // Form messages
@@ -268,7 +277,7 @@ Form.prototype.optCallback = function (options, type) {
     // eslint-disable-next-line no-eval
     const fn = eval(options[type]);
     if (typeof (fn) === 'function') {
-      fn.call(options);
+      return fn.call(this, options);
     }
   }
 };
@@ -279,8 +288,10 @@ Form.prototype.optCallback = function (options, type) {
  */
 Form.prototype.send = function (sendOptions) {
   const that = this;
+  if (this.optCallback(sendOptions, 'beforeSubmitCallback') === false) {
+    return;
+  }
   this.lock();
-  this.optCallback(sendOptions, 'beforeSubmitCallback');
   this.sf.ajax.send(sendOptions).then(
     (answer) => {
       that.events.trigger('success', sendOptions);
