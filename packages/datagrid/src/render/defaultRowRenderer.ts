@@ -1,11 +1,11 @@
-import {IRowCellRenderer} from '../types';
+import {ICellMeta, IRowCellRenderer} from '../types';
 import {applyAttrributes} from '../utils';
 
 export const defaultRowCellRenderer: IRowCellRenderer = (column, options, state, index) => {
     const el = document.createElement('td');
     el.innerText = state.data[index][column.id];
 
-    const cellMeta = {
+    const cellMeta: ICellMeta = {
         id: column.id,
         column: column,
         index,

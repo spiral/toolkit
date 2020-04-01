@@ -88,8 +88,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
 
         // Set default sort if present
-        if(this.options.sort) {
-            if(typeof this.options.sort === 'string') {
+        if (this.options.sort) {
+            if (typeof this.options.sort === 'string') {
                 this.state.setSort(this.options.sort, SortDirection.ASC);
             } else {
                 this.state.setSort(this.options.sort.field, this.options.sort.direction || SortDirection.ASC);
@@ -105,15 +105,15 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
      * @param fieldId
      */
     triggerSort(fieldId: string) {
-        if(this.state.sortBy === fieldId) {
-            if(this.state.sortDir === SortDirection.ASC) {
+        if (this.state.sortBy === fieldId) {
+            if (this.state.sortDir === SortDirection.ASC) {
                 this.state.setSort(fieldId, SortDirection.DESC);
             } else {
                 this.state.setSort(fieldId, SortDirection.ASC);
             }
         } else {
-            const field = this.columnInfo.find(cI=>cI.id===fieldId);
-            if(field) {
+            const field = this.columnInfo.find(cI => cI.id === fieldId);
+            if (field) {
                 this.state.setSort(field.id, field.direction);
             } else {
                 console.warn(`Trying to sort by unsortable field ${fieldId}`);
@@ -128,11 +128,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         const request: IDatagridRequest = {
             fetchCount: true,
             filter: {},
-            sort: {},
             paginate: {
                 limit: 25,
                 page: 1,
-            }
+            },
+            sort: this.state.sortBy ? {[this.state.sortBy]: this.state.sortDir} : {}
         };
 
         return request;
@@ -175,7 +175,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
 
     async request() {
-        if(this.state.isLoading) {
+        if (this.state.isLoading) {
             console.warn('Cant start new request');
             return;
         }
