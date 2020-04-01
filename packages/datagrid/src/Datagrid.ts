@@ -106,14 +106,14 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
     captureForms() {
         const forms = this.sf.getInstances('form');
-        forms.forEach((f)=>{
+        forms.forEach((f) => {
             console.log(f);
             // TODO: should be an async capture
-            if(f.instance.options && f.instance.options.id && this.options.captureForms.indexOf(f.instance.options.url)>=0) {
+            if (f.instance.options && f.instance.options.id && this.options.captureForms.indexOf(f.instance.options.url) >= 0) {
                 const instance = f.instance;
                 this.capturedForms.push(instance);
                 instance.options.jsonOnly = true;
-                instance.options.beforeSubmitCallback = (options: any)=>{
+                instance.options.beforeSubmitCallback = (options: any) => {
                     this.state.setFormData(instance.options.id, options.data);
                     this.request(); // TODO: better way
                     return false;
@@ -164,13 +164,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         if (!this.sf.removeInstance('lock', this.node)) {
             console.warn('You try to remove \'lock\' instance, but it is not available or not started');
         }
-        this.capturedForms.forEach((f)=>{
-            if(f.unlock) {
+        this.capturedForms.forEach((f) => {
+            if (f.unlock) {
                 f.unlock();
             }
         });
-        this.capturedPaginators.forEach((f)=>{
-            if(f.unlock) {
+        this.capturedPaginators.forEach((f) => {
+            if (f.unlock) {
                 f.unlock();
             }
         });
@@ -186,13 +186,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             console.warn('You try to add \'lock\' instance, but it is not available or already started');
             return;
         }
-        this.capturedForms.forEach((f)=>{
-            if(f.lock) {
+        this.capturedForms.forEach((f) => {
+            if (f.lock) {
                 f.lock();
             }
         });
-        this.capturedPaginators.forEach((f)=>{
-            if(f.lock) {
+        this.capturedPaginators.forEach((f) => {
+            if (f.lock) {
                 f.lock();
             }
         });
@@ -205,9 +205,19 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         // TODO: rerender data
     }
 
-    private handleError({data}: { data: IDatagridErrorResponse }) {
+    private handleError({data, status, statusText}: { data: IDatagridErrorResponse, status: number, statusText: string }) {
         console.log('Error', data);
         this.state.setError(data.error, data.errors, this.options.resetOnError);
+        this.capturedForms.forEach((f) => {
+            if (f.processAnswer) {
+                f.processAnswer({data, status, statusText});
+            }
+        });
+        this.capturedPaginators.forEach((f) => {
+            if (f.processAnswer) {
+                f.processAnswer({data, status, statusText}); // TODO: might be different API
+            }
+        });
         this.render();
         // TODO: set error status
         // TODO: remove data and display error
@@ -239,7 +249,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
                     data: {
                         error: e.toString(),
                         originalError: e,
-                    }
+                    },
+                    status: 1000,
+                    statusText: e.toString(),
                 });
             }
         } finally {
