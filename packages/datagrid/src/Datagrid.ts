@@ -104,22 +104,28 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.request();
     }
 
+    private registerFormInstance(formInstance: any) {
+        if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
+            this.capturedForms.push(formInstance);
+            formInstance.options.jsonOnly = true;
+            formInstance.options.beforeSubmitCallback = (options: any) => {
+                this.state.setFormData(formInstance.options.id, options.data);
+                this.request(); // TODO: better way
+                return false;
+            }
+        }
+    }
+
     captureForms() {
         const forms = this.sf.getInstances('form');
         forms.forEach((f) => {
-            console.log(f);
-            // TODO: should be an async capture
-            if (f.instance.options && f.instance.options.id && this.options.captureForms.indexOf(f.instance.options.url) >= 0) {
-                const instance = f.instance;
-                this.capturedForms.push(instance);
-                instance.options.jsonOnly = true;
-                instance.options.beforeSubmitCallback = (options: any) => {
-                    this.state.setFormData(instance.options.id, options.data);
-                    this.request(); // TODO: better way
-                    return false;
-                }
-            }
+            this.registerFormInstance(f.instance);
         });
+        this.sf.instancesController.events.on('onAddInstance', ({instance, type}: { instance: any, type: string }) => {
+            if (type === 'form') {
+                this.registerFormInstance(instance);
+            }
+        })
     }
 
     /**
@@ -205,6 +211,14 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         // TODO: rerender data
     }
 
+    private beforeSubmit() {
+        this.capturedForms.forEach((f) => {
+            if (f.removeMessages) {
+                f.removeMessages();
+            }
+        });
+    }
+
     private handleError({data, status, statusText}: { data: IDatagridErrorResponse, status: number, statusText: string }) {
         console.log('Error', data);
         this.state.setError(data.error, data.errors, this.options.resetOnError);
@@ -230,6 +244,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             return;
         }
         this.state.startLoading();
+        this.beforeSubmit();
         this.lock();
         const data = this.formRequest();
         const request = this.sf.ajax.send<{ data: IDatagridResponse }>({

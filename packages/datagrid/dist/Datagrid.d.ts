@@ -23,6 +23,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     capturedPaginators: Array<any>;
     private columnInfo;
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
+    private registerFormInstance;
     captureForms(): void;
     /**
      * Sets sort for this field if not yet, or changes direction if already same
@@ -33,6 +34,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     private unlock;
     private lock;
     private handleSuccess;
+    private beforeSubmit;
     private handleError;
     request(): Promise<void>;
     createRenderers(): void;

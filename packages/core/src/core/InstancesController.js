@@ -25,9 +25,7 @@ const InstancesController = function (spiral) {
     instances: {},
   };
 
-  // todo decide if we need this
-  // ["onAddInstance", "onRemoveInstance"]
-  // this.events = new spiral.modules.core.Events();
+  this.events = new spiral.core.Events(['onRemoveInstance', 'onAddInstance']);
 };
 
 /**
@@ -108,7 +106,7 @@ InstancesController.prototype.addInstance = function (instanceName, node, option
     instance,
   });
 
-  // this.events.trigger("onAddInstance", instance);
+  this.events.trigger('onAddInstance', { instance, type: instanceName });
 
   return instance;
 };
@@ -130,6 +128,7 @@ InstancesController.prototype.removeInstance = function (instanceName, node) {
   if (key !== -1) { // remove key
     this._storage.instances[instanceName].splice(key, 1);
   }
+  this.events.trigger('onRemoveInstance', { instance: instanceObj, type: instanceName });
   return true;
 };
 
