@@ -12,5 +12,7 @@ export declare class GridRenderer {
     private columnInfo;
     constructor(options: IGridRenderOptions, root: Datagrid);
     private create;
+    private applyAdditionalCellAttributes;
+    private applyAdditionalHeaderCellAttributes;
     render(state: DatagridState): void;
 }
