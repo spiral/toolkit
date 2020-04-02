@@ -15,6 +15,7 @@ module.exports = {
     keeper: path.join(__dirname, srcPath, 'index.js'),
   },
   output: {
+    publicPath: isDevelopment ? '/keeper/' : undefined,
     filename: '[name].js',
     path: buildPath,
     libraryTarget: 'umd',
@@ -119,7 +120,7 @@ module.exports = {
   },
   plugins: isDevelopment
     ? [
-      new LiveReloadPlugin(),
+      new LiveReloadPlugin({ port: 35729 }),
       new StyleLintPlugin({
         configFile: './.stylelintrc.json',
         files: [path.join(srcPath, '**/*.css')],
