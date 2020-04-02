@@ -127,12 +127,12 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     }
 
     private generatePageList() {
-        const extendCurrent = 2;
+        const extendCurrent = 1;
         const page = this.state.page!;
-        const pagesCount = this.hasTotal() ? page : Math.ceil(this.state.count! / this.state.limit!);
+        const pagesCount = this.hasTotal() ? Math.ceil(this.state.count! / this.state.limit!) : page;
         const hasNext = this.hasTotal() ? (page < pagesCount) : true;
         const hasPrevious = page > 1;
-        const currentRange = [Math.max(page - extendCurrent - 1, 1), Math.min(page + extendCurrent + 1, pagesCount)];
+        const currentRange = [Math.max(page - extendCurrent, 1), Math.min(page + extendCurrent, pagesCount)];
         const startRange = [1, Math.min(extendCurrent + 1, pagesCount)];
         const endRange = [Math.max(pagesCount - extendCurrent, 1), pagesCount];
 
@@ -175,7 +175,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
                 }
             }
             i += 1;
-        } while (i < pagesCount);
+        } while (i <= pagesCount);
 
         return {
             pages,
@@ -198,7 +198,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
     render() {
         const counterDiv = document.createElement('div');
-        counterDiv.className = 'col-12 col-lg-6';
+        counterDiv.className = 'col-12 col-lg-4';
         if (this.hasPages()) {
             if (this.hasTotal()) {
                 counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} of ${this.state.count!} entries`;
@@ -233,7 +233,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         }
 
         const pagesDiv = document.createElement('div');
-        pagesDiv.className = 'col-8 col-md-10 col-lg-4';
+        pagesDiv.className = 'col-8 col-md-10 col-lg-6';
         if (this.hasPages()) {
             pagesDiv.innerHTML = `<ul class="pagination pagination-sm justify-content-end mb-0">`;
             const ul = pagesDiv.querySelector('ul')!;
@@ -245,7 +245,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
                 if (pageInfo.hasPrevious) {
                     li.addEventListener('click', () => this.setPage(this.state.page! - 1));
                 }
-                li.innerHTML = `<a tabindex="0" class="page-link">«</a>`;
+                li.innerHTML = `<a href="#" tabindex="0" class="page-link">«</a>`;
                 ul.appendChild(li);
             }
 
@@ -254,8 +254,11 @@ export class Paginator extends sf.core.BaseDOMConstructor {
                 li.className = p.active ? 'page-item active' : 'page-item';
                 if (p.page) {
                     li.addEventListener('click', () => this.setPage(p.page));
+                    li.innerHTML = `<a href="#" tabindex="0" class="page-link">${p.text}</a>`;
+                } else {
+                    li.innerHTML = `<a tabindex="0" class="page-link">${p.text}</a>`;
                 }
-                li.innerHTML = `<a tabindex="0" class="page-link">${p.text}</a>`;
+
                 ul.appendChild(li);
             });
 
@@ -265,7 +268,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
                 if (pageInfo.hasNext) {
                     li.addEventListener('click', () => this.setPage(this.state.page! + 1));
                 }
-                li.innerHTML = `<a tabindex="0" class="page-link">»</a>`;
+                li.innerHTML = `<a href="#" tabindex="0" class="page-link">»</a>`;
                 ul.appendChild(li);
             }
         }
