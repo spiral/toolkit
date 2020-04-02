@@ -110,6 +110,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             this.capturedForms.push(formInstance);
             formInstance.options.jsonOnly = true;
             formInstance.options.beforeSubmitCallback = (options: any) => {
+                this.resetPaginator();
                 this.state.setFormData(formInstance.options.id, options.data);
                 this.request(); // TODO: better way
                 return false;
@@ -168,12 +169,21 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
                 console.warn(`Trying to sort by unsortable field ${fieldId}`);
             }
         }
+        this.resetPaginator();
         this.request();
     }
 
+    private resetPaginator() {
+        // TODO: depending on paginator type perform different reset type
+        this.state.updatePaginator({page: 1});
+        this.capturedPaginators.forEach((f) => {
+            if (f.setParams) {
+                f.setParams(this.state.paginate);
+            }
+        });
+    }
+
     private formRequest() {
-        // TODO: 1. Collect data from forms
-        // TODO: 2. Collect data from state
         const request: IDatagridRequest = {
             fetchCount: true,
             filter: this.state.getFilter(),

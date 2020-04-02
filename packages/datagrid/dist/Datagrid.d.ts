@@ -31,6 +31,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
      * @param fieldId
      */
     triggerSort(fieldId: string): void;
+    private resetPaginator;
     private formRequest;
     private unlock;
     private lock;
