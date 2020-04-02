@@ -1,5 +1,6 @@
 import { SortDirection } from './constants';
 import Datagrid from './Datagrid';
+import { IPaginatorParams } from './Paginator';
 export declare const DEFAULT_LIMIT = 25;
 export declare class DatagridState<Item = any> {
     parent: Datagrid;
@@ -9,6 +10,8 @@ export declare class DatagridState<Item = any> {
     startLoading(): void;
     stopLoading(): void;
     get data(): Array<Item>;
+    get paginate(): IPaginatorParams;
+    updatePaginator(params: IPaginatorParams): void;
     set data(data: Array<Item>);
     get hasError(): boolean;
     get errorMessage(): string | undefined;

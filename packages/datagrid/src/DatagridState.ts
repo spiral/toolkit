@@ -1,14 +1,13 @@
 import {SortDirection} from './constants';
 import Datagrid from './Datagrid';
+import {IPaginatorParams} from './Paginator';
 
 export const DEFAULT_LIMIT = 25;
 
 export class DatagridState<Item = any> {
     private state: {
         loading: boolean,
-        page: number,
-        limit: number,
-        count?: number,
+        paginator: IPaginatorParams,
         sortBy?: string,
         sortDir: SortDirection,
         data: Array<Item>,
@@ -17,9 +16,11 @@ export class DatagridState<Item = any> {
         formData: {[formId: string]: any}
     } = {
         loading: false,
-        page: 1,
+        paginator: {
+            page: 1,
+            limit: DEFAULT_LIMIT,
+        },
         sortDir: SortDirection.ASC,
-        limit: DEFAULT_LIMIT,
         data: [],
         formData: {},
     };
@@ -42,6 +43,17 @@ export class DatagridState<Item = any> {
 
     get data() {
         return this.state.data;
+    }
+
+    get paginate() {
+        return this.state.paginator;
+    }
+
+    updatePaginator(params: IPaginatorParams) {
+        this.state.paginator = {
+            ...this.state.paginator,
+            ...params,
+        };
     }
 
     set data(data: Array<Item>) {
@@ -72,9 +84,7 @@ export class DatagridState<Item = any> {
         this.data = data;
         this.state.error = undefined;
         this.state.errors = undefined;
-        this.state.page = pagination.page;
-        this.state.limit = pagination.limit;
-        this.state.count = (typeof pagination.count !== 'undefined') ? pagination.count : this.state.count;
+        this.updatePaginator(pagination);
     }
 
     setError(error: string, errors: { [field: string]: string } = {}, resetData: boolean = false) {

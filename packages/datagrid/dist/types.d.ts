@@ -1,6 +1,7 @@
 import { INormalizedColumnDescriptor } from '../dist/utils';
 import { RequestMethod, SortDirection } from "./constants";
 import { DatagridState } from './DatagridState';
+import { IPaginatorParams } from './Paginator';
 export interface IRowMeta<T = any> {
     id: string;
     index: number;
@@ -154,10 +155,7 @@ export interface IDatagridErrorResponse {
 }
 export interface IDatagridRequest {
     fetchCount: boolean;
-    paginate: {
-        limit: number;
-        page: number;
-    };
+    paginate: IPaginatorParams;
     filter: {
         [filterField: string]: string;
     };

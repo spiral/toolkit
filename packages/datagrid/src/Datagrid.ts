@@ -2,6 +2,7 @@ import sf, {ISpiralFramework} from '@spiral-toolkit/core';
 import * as assert from 'assert';
 import {RequestMethod, SortDirection} from './constants';
 import {DatagridState} from './DatagridState';
+import Paginator, {IPaginatorParams} from './Paginator';
 import {defaultRenderer} from './render/defaultRenderer';
 import {GridRenderer} from './render/GridRenderer';
 import {
@@ -116,16 +117,36 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         }
     }
 
+    private registerPaginatorInstance(formInstance: any) {
+        if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.id) >= 0) {
+            this.capturedPaginators.push(formInstance);
+            formInstance.options.onPageChange = (options: IPaginatorParams) => {
+                this.state.updatePaginator(options);
+                this.request(); // TODO: better way
+                return false;
+            }
+        }
+    }
+
     captureForms() {
-        const forms = this.sf.getInstances('form');
+        const forms = this.sf.getInstances('form') || [];
         forms.forEach((f) => {
             this.registerFormInstance(f.instance);
         });
+
+        const paginators = this.sf.getInstances(Paginator.spiralFrameworkName) || [];
+        paginators.forEach((f) => {
+            this.registerFormInstance(f.instance);
+        });
+
         this.sf.instancesController.events.on('onAddInstance', ({instance, type}: { instance: any, type: string }) => {
             if (type === 'form') {
                 this.registerFormInstance(instance);
             }
-        })
+            if (type === Paginator.spiralFrameworkName) {
+                this.registerPaginatorInstance(instance);
+            }
+        });
     }
 
     /**
@@ -156,10 +177,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         const request: IDatagridRequest = {
             fetchCount: true,
             filter: this.state.getFilter(),
-            paginate: {
-                limit: 25,
-                page: 1,
-            },
+            paginate: this.state.paginate,
             sort: this.state.sortBy ? {[this.state.sortBy]: this.state.sortDir} : {}
         };
 
@@ -206,9 +224,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
     private handleSuccess({data}: { data: IDatagridResponse<Item> }) {
         console.log('Success', data);
-        this.state.setSuccess(data.data, data.pagination); // TODO: set success status
+        this.state.setSuccess(data.data, data.pagination);
         this.render();
-        // TODO: rerender data
+        this.capturedPaginators.forEach((f) => {
+            if (f.setParams) {
+                f.setParams(this.state.paginate);
+            }
+        });
     }
 
     private beforeSubmit() {
