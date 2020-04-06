@@ -131,7 +131,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
                 [key]: this.state.urlData[key],
             }), {}) : undefined;
 
-            if(urlDataForForm) {
+            if (urlDataForForm) {
                 formInstance.setFieldValues(urlDataForForm);
             }
 
@@ -357,7 +357,12 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
     private serialize() {
         const custom = this.state.getFilter();
-        const pagination = this.state.paginate;
+        const pagination = Object.keys(this.state.paginate)
+            .filter((k) => pageParams.indexOf(k) >= 0)
+            .reduce((map: any, key) => ({
+                ...map,
+                [key]: (this.state.paginate as any)[key],
+            }), {});
         const sortOptions = this.state.sortBy ? {sortBy: this.state.sortBy, sortDir: this.state.sortDir} : {};
 
         return {
@@ -422,7 +427,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             }
             return map;
         }, {});
-        history.pushState({}, document.title, stringifyUrl({url: window.location.protocol + "//" + window.location.host + window.location.pathname, query})); // TODO: merge with existing?
+        history.pushState({}, document.title, stringifyUrl({
+            url: window.location.protocol + '//' + window.location.host + window.location.pathname,
+            query
+        })); // TODO: merge with existing?
     }
 }
 

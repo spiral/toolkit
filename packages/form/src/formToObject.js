@@ -108,13 +108,18 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
 
     // Multiple select is a special case.
     // We have to grab each selected option and put them into an array.
-    if (domNode.nodeName === 'SELECT' && domNode.type === 'select-multiple') {
-      result[keys] = [];
-      const DOMchilds = domNode.querySelectorAll('option[selected]');
-      if (DOMchilds) {
-        this.forEach(DOMchilds, (child) => {
-          result[keys].push(child.value);
-        });
+    if (domNode.nodeName === 'SELECT') {
+      if (domNode.type === 'select-multiple') {
+        result[keys] = [];
+        const DOMchilds = domNode.querySelectorAll('option[selected]'); // TODO: that wont work
+        if (DOMchilds) {
+          this.forEach(DOMchilds, (child) => {
+            result[keys].push(child.value);
+          });
+        }
+      } else {
+        // const selected = domNode.querySelector('option[selected]');
+        result[keys] = value; // select.value isn't getting proper value for value-less options
       }
       return;
     }
