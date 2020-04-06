@@ -288,6 +288,14 @@ Form.prototype.setFieldValues = function (values) {
     if (typeof el.sfSetValue === 'function') {
       el.sfSetValue(value);
     } else {
+      if (el.type === 'checkbox') {
+        if (!el.value) { // single checkbox
+          el.checked = !!value;
+        } else {
+          // eslint-disable-next-line eqeqeq,max-len
+          el.checked = Array.isArray(value) ? (value.indexOf(el.value) >= 0) : (el.value == value);
+        }
+      }
       el.value = value; // TODO: That wont work for radiogroups, etc.
     }
   });

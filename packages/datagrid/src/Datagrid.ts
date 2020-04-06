@@ -398,7 +398,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
 
     private getObjectFromUrl(defaults: any, prefix = '') {
-        const obj = parse(window.location.search);
+        const obj = parse(window.location.search, {parseNumbers: true, parseBooleans: true});
         const result = Object.keys(obj).reduce((map, oK) => {
             if (!prefix || oK.indexOf(prefix) === 0) {
                 return {
@@ -422,8 +422,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             }
             return map;
         }, {});
-        console.log(obj, defaults, query);
-        history.pushState({}, document.title, stringifyUrl({url: window.location.href, query}))
+        history.pushState({}, document.title, stringifyUrl({url: window.location.protocol + "//" + window.location.host + window.location.pathname, query})); // TODO: merge with existing?
     }
 }
 

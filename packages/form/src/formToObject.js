@@ -92,19 +92,19 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     // Checkboxes are a special case. We have to grab each checked values
     // and put them into an array.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'checkbox') {
-      if (domNode.checked) {
-        if (value) { // Looks like checkbox array
+      if (value) { // Looks like checkbox array
+        if (domNode.checked) {
           if (!result[keys]) {
             result[keys] = [];
           }
           result[keys].push(value);
-        } else {
-          result[keys] = true; // Single checkbox
         }
-        return;
+      } else {
+        result[keys] = domNode.checked ? 1 : 0; // Single checkbox
       }
       return;
     }
+
 
     // Multiple select is a special case.
     // We have to grab each selected option and put them into an array.
@@ -132,9 +132,8 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     this.addChild(result[keys[0]], domNode, keys.splice(1, keys.length), value);
   }
 
-  // return result; // ?
+// return result; // ?
 };
-
 FormToObject.prototype.setFormObj = function () {
   let test;
   let i = 0;
