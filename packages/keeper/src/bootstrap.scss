@@ -65,3 +65,8 @@ $custom-select-border-radius: .125rem;
 select.form-control:not([multiple]) {
   background: $custom-select-background;
 }
+
+a.card,
+a.card:hover {
+  text-decoration: none;
+}

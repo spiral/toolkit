@@ -23,6 +23,10 @@
   cursor: pointer;
 }
 
+.sf-nav__item-heading:hover {
+  color: var(--white);
+}
+
 .sf-nav__item-heading[data-sf]::after {
   content: '\f105';
   flex-shrink: 0;
