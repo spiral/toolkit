@@ -137,6 +137,13 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      */
     sort?: ISortDescriptor;
     renderers: IGridRenderOptions | IGridRenderOptions[];
+    /**
+     * If to use URL serialization
+     * pass true to use it
+     * pass string to have grid use specific prefix to params in url
+     * pass false to not use it
+     */
+    serialize: string | boolean;
 }
 export interface IDatagridResponse<Item = any> {
     pagination: {

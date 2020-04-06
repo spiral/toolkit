@@ -293,6 +293,11 @@ Form.prototype.setFieldValues = function (values) {
   });
 };
 
+Form.prototype.enumerateFieldNames = function () {
+  console.log(this.node.querySelectorAll('input,select,textarea'));
+  return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
+};
+
 Form.prototype.optCallback = function (options, type) {
   if (options[type]) {
     // eslint-disable-next-line no-eval
