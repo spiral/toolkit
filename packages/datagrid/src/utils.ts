@@ -19,6 +19,7 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
         let id: string;
         let title: string;
         let sortDir: SortDirection;
+        let sortable = false;
         if (typeof c === 'string') {
             id = c;
             title = c;
@@ -27,6 +28,7 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
             id = c.id;
             title = c.title || c.id;
             sortDir = c.sortDir || SortDirection.ASC;
+            sortable = !!c.sortDir;
         }
         const sort = sList.find((s) => (s.field === id));
         if(sort) {
@@ -40,8 +42,8 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
         return {
             id,
             title,
-            sortable: false,
-            direction: SortDirection.ASC,
+            sortable,
+            direction: sortDir,
         }
     });
 };

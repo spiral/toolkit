@@ -93,10 +93,14 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     // and put them into an array.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'checkbox') {
       if (domNode.checked) {
-        if (!result[keys]) {
-          result[keys] = [];
+        if (value) { // Looks like checkbox array
+          if (!result[keys]) {
+            result[keys] = [];
+          }
+          result[keys].push(value);
+        } else {
+          result[keys] = true; // Single checkbox
         }
-        result[keys].push(value);
         return;
       }
       return;
