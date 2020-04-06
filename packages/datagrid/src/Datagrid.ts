@@ -1,6 +1,6 @@
 import sf, {ISpiralFramework} from '@spiral-toolkit/core';
 import * as assert from 'assert';
-import {RequestMethod, SortDirection} from './constants';
+import {pageParams, RequestMethod, SortDirection, sortParams} from './constants';
 import {DatagridState} from './DatagridState';
 import Paginator, {IPaginatorParams} from './Paginator';
 import {defaultRenderer} from './render/defaultRenderer';
@@ -13,6 +13,8 @@ import {
     IGridRenderOptions
 } from './types';
 import {INormalizedColumnDescriptor, normalizeColumns} from './utils';
+
+import {parse, stringifyUrl} from 'query-string';
 
 // import './styles.css';
 
@@ -28,6 +30,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         method: RequestMethod.POST,
         sortable: [],
         url: '',
+        serialize: true,
         ui: {
             cellAttributes: {},
             rowAttributes: {},
@@ -101,6 +104,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         }
 
         this.createRenderers();
+        this.initFromUrl();
         this.captureForms();
         this.request();
     }
@@ -233,7 +237,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
 
     private handleSuccess({data}: { data: IDatagridResponse<Item> }) {
-        console.log('Success', data);
         this.state.setSuccess(data.data, data.pagination);
         this.render();
         this.capturedPaginators.forEach((f) => {
@@ -276,6 +279,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.state.startLoading();
         this.beforeSubmit();
         this.lock();
+        this.updateUrl();
         const data = this.formRequest();
         const request = this.sf.ajax.send<{ data: IDatagridResponse }>({
             url: this.options.url,
@@ -321,6 +325,73 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.grids.forEach((grid) => {
             grid.render(this.state);
         });
+    }
+
+    private serialize() {
+        const custom = this.state.getFilter();
+        const pagination = this.state.paginate;
+        const sortOptions = this.state.sortBy ? {sortBy: this.state.sortBy, sortDir: this.state.sortDir} : {};
+
+        return {
+            ...custom,
+            ...pagination,
+            ...sortOptions,
+        };
+    }
+
+    private deserialize(values: { [value: string]: string }) {
+        const {page, limit, cid, lid} = values;
+        this.state.updatePaginator({page: +page, limit: +limit, cid, lid}); // TODO: skip invalid page/limit values
+
+        const {sortBy, sortDir} = values;
+        if (sortBy) {
+            this.state.setSort(sortBy, sortDir as any || SortDirection.ASC); // TODO: skip
+        }
+        [...pageParams, ...sortParams].forEach((p) => delete values[p]);
+        this.state.urlData = values;
+    }
+
+    private initFromUrl() {
+        if (this.options.serialize) {
+            if (window.location.search) {
+                const urlData = this.getObjectFromUrl(typeof this.options.serialize === 'string' ? this.options.serialize : '');
+                if (Object.keys(urlData).length) {
+                    this.deserialize(urlData);
+                }
+            }
+        }
+    }
+
+    private updateUrl() {
+        if (this.options.serialize) {
+            const data = this.serialize();
+            this.putObjectToUrl(data, typeof this.options.serialize === 'string' ? this.options.serialize : '');
+        }
+    }
+
+    private getObjectFromUrl(prefix = '') {
+        const obj = parse(window.location.search);
+        const result = Object.keys(obj).reduce((map, oK) => {
+            if (!prefix || oK.indexOf(prefix) === 0) {
+                return {
+                    ...map,
+                    [oK.substr(prefix.length)]: obj[oK],
+                }
+            }
+            return map;
+        }, {});
+        return result;
+    }
+
+    private putObjectToUrl(obj: any, prefix = '') {
+        if (!window.history) {
+            console.warn('Cant update URL without reload, skipping');
+            return;
+        }
+        const query = Object.keys(obj).reduce((map, oK) => {
+            return {...map, [`${prefix}${oK}`]: obj[oK]}
+        }, {});
+        history.pushState({}, document.title, stringifyUrl({url: window.location.href, query}))
     }
 }
 

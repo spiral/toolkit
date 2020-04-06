@@ -41,5 +41,11 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     request(): Promise<void>;
     createRenderers(): void;
     render(): void;
+    private serialize;
+    private deserialize;
+    private initFromUrl;
+    private updateUrl;
+    private getObjectFromUrl;
+    private putObjectToUrl;
 }
 export default Datagrid;

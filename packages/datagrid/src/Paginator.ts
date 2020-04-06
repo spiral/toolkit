@@ -1,4 +1,5 @@
 import sf, {ISpiralFramework} from '@spiral-toolkit/core';
+import {CURSOR_ID_FIELD, LAST_ID_FIELD} from './constants';
 // import * as assert from 'assert';
 import {DEFAULT_LIMIT} from './DatagridState';
 import {
@@ -27,8 +28,14 @@ export interface IPaginatorParams {
     page?: number,
     limit?: number,
     fetchCount?: boolean,
-    lastId?: string,
-    cursorId?: string;
+    /**
+     * Optional 'last id' parameter
+     */
+    lid?: string,
+    /**
+     * Optional 'cursor id' parameter
+     */
+    cid?: string;
 }
 
 export class Paginator extends sf.core.BaseDOMConstructor {

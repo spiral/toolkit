@@ -18,8 +18,14 @@ export interface IPaginatorParams {
     page?: number;
     limit?: number;
     fetchCount?: boolean;
-    lastId?: string;
-    cursorId?: string;
+    /**
+     * Optional 'last id' parameter
+     */
+    lid?: string;
+    /**
+     * Optional 'cursor id' parameter
+     */
+    cid?: string;
 }
 export declare class Paginator extends sf.core.BaseDOMConstructor {
     static spiralFrameworkName: string;

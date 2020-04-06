@@ -9,3 +9,7 @@ export declare enum RequestMethod {
     PUT = "PUT",
     PATCH = "PATCH"
 }
+export declare const CURSOR_ID_FIELD = "cid";
+export declare const LAST_ID_FIELD = "lid";
+export declare const pageParams: string[];
+export declare const sortParams: string[];
