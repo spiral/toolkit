@@ -277,10 +277,20 @@ Form.prototype.showMessages = formMessages.showMessages;
 Form.prototype.removeMessages = formMessages.removeMessages;
 Form.prototype.removeMessage = formMessages.removeMessage;
 
-Form.prototype.processAnswer = function (answer) {
+Form.prototype.processAnswer = function (answer, showUnknown = true) {
   if (this.options.messagesType) {
-    this.showMessages(answer);
+    this.showMessages(answer, showUnknown);
   }
+};
+
+Form.prototype.setFieldValues = function (values) {
+  this.sf.iterateInputs(this.node, values, (el, value) => {
+    if (typeof el.sfSetValue === 'function') {
+      el.sfSetValue(value);
+    } else {
+      el.value = value; // TODO: That wont work for radiogroups, etc.
+    }
+  });
 };
 
 Form.prototype.optCallback = function (options, type) {

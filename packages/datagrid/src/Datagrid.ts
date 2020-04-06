@@ -252,11 +252,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
 
     private handleError({data, status, statusText}: { data: IDatagridErrorResponse, status: number, statusText: string }) {
-        console.log('Error', data);
         this.state.setError(data.error, data.errors, this.options.resetOnError);
         this.capturedForms.forEach((f) => {
             if (f.processAnswer) {
-                f.processAnswer({data, status, statusText});
+                f.processAnswer({data, status, statusText}, false); // false stands for 'dont display errors unrelated to form inputs'
             }
         });
         this.capturedPaginators.forEach((f) => {
@@ -265,7 +264,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             }
         });
         this.render();
-        // TODO: set error status
         // TODO: remove data and display error
         // TODO: send validation errors to other forms
     }

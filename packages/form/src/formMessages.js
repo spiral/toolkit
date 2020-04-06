@@ -54,7 +54,7 @@ function prepareMessageObject(message, type) {
 
 module.exports = {
   defaults,
-  showMessages(answer) {
+  showMessages(answer, showUnknown = true) {
     if (!answer) return;
 
     let isMsg = false;
@@ -70,15 +70,15 @@ module.exports = {
       });
 
       if (answer.data.messages) {
-        this.showFieldsMessages(answer.data.messages, 'success');
+        this.showFieldsMessages(answer.data.messages, 'success', showUnknown);
         isMsg = true;
       }
       if (answer.data.errors) {
-        this.showFieldsMessages(answer.data.errors, 'error');
+        this.showFieldsMessages(answer.data.errors, 'error', showUnknown);
         isMsg = true;
       }
       if (answer.data.warnings) {
-        this.showFieldsMessages(answer.data.warnings, 'warning');
+        this.showFieldsMessages(answer.data.warnings, 'warning', showUnknown);
         isMsg = true;
       }
     }
@@ -217,20 +217,22 @@ module.exports = {
     });
   },
 
-  showFieldsMessages(messages, type) {
+  showFieldsMessages(messages, type, showUnknown = true) {
     const that = this;
     const notFound = sf.iterateInputs(this.node, messages, (el, message) => {
       that.showFieldMessage(el, message, type);
     });
 
-    notFound.forEach((msgObj) => {
-      Object.keys(msgObj).forEach((name) => {
-        const container = that.node.querySelector(`[data-message-placeholder="${name}"]`);
-        if (container) {
-          // TODO check container.dataset.messageVariant? variants are "field" and "form"
-          that.showFieldMessage(container, msgObj[name], type, true);
-        }
+    if (showUnknown) {
+      notFound.forEach((msgObj) => {
+        Object.keys(msgObj).forEach((name) => {
+          const container = that.node.querySelector(`[data-message-placeholder="${name}"]`);
+          if (container) {
+            // TODO check container.dataset.messageVariant? variants are "field" and "form"
+            that.showFieldMessage(container, msgObj[name], type, true);
+          }
+        });
       });
-    });
+    }
   },
 };
