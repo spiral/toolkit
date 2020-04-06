@@ -13,7 +13,8 @@ export class DatagridState<Item = any> {
         data: Array<Item>,
         error?: string;
         errors?: { [field: string]: string };
-        formData: {[formId: string]: any}
+        formData: {[formId: string]: any};
+        urlData?: any;
     } = {
         loading: false,
         paginator: {
@@ -47,6 +48,14 @@ export class DatagridState<Item = any> {
 
     get paginate() {
         return this.state.paginator;
+    }
+
+    get urlData() {
+        return this.state.urlData;
+    }
+
+    set urlData(data: any) {
+        this.state.urlData = data;
     }
 
     updatePaginator(params: IPaginatorParams) {
@@ -105,8 +114,12 @@ export class DatagridState<Item = any> {
     }
 
     getFilter() {
-        return Object.keys(this.state.formData).reduce((prev, key)=>{
+        const forms = Object.keys(this.state.formData).reduce((prev, key)=>{
             return {...prev, ...this.state.formData[key]}
-        }, {})
+        }, {});
+        return {
+            ...this.state.urlData,
+            ...forms,
+        };
     }
 }
