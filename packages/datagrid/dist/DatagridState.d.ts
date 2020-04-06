@@ -11,8 +11,6 @@ export declare class DatagridState<Item = any> {
     stopLoading(): void;
     get data(): Array<Item>;
     get paginate(): IPaginatorParams;
-    get urlData(): any;
-    set urlData(data: any);
     updatePaginator(params: IPaginatorParams): void;
     set data(data: Array<Item>);
     get hasError(): boolean;
@@ -29,5 +27,5 @@ export declare class DatagridState<Item = any> {
     }, resetData?: boolean): void;
     setSort(field: string, direction: SortDirection): void;
     setFormData(formId: string, data: any): void;
-    getFilter(): any;
+    getFilter(): {};
 }

@@ -1,4 +1,5 @@
 import sf, { ISpiralFramework } from '@spiral-toolkit/core';
+import { SortDirection } from './constants';
 import { DatagridState } from './DatagridState';
 import { GridRenderer } from './render/GridRenderer';
 import { IDataGridOptions } from './types';
@@ -41,11 +42,26 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     request(): Promise<void>;
     createRenderers(): void;
     render(): void;
-    private serialize;
-    private deserialize;
-    private initFromUrl;
-    private updateUrl;
-    private getObjectFromUrl;
-    private putObjectToUrl;
+    serialize(): {
+        sortBy: string;
+        sortDir: SortDirection;
+        page?: number | undefined;
+        limit?: number | undefined;
+        fetchCount?: boolean | undefined;
+        lid?: string | undefined;
+        cid?: string | undefined;
+    } | {
+        sortBy?: undefined;
+        sortDir?: undefined;
+        page?: number | undefined;
+        limit?: number | undefined;
+        fetchCount?: boolean | undefined;
+        lid?: string | undefined;
+        cid?: string | undefined;
+    };
+    deserialize(values: {
+        [value: string]: string;
+    }): void;
+    getObjectFromUrl(prefix?: string): void;
 }
 export default Datagrid;
