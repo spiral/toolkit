@@ -23,6 +23,11 @@ $custom-select-border-radius: .125rem;
 
 @import "~bootstrap/scss/bootstrap";
 
+
+.btn {
+  border-radius: .125rem;
+}
+
 .btn > .fa:first-child {
   margin-right: 0.5rem;
 }
@@ -34,6 +39,11 @@ $custom-select-border-radius: .125rem;
 .card {
   margin-bottom: 1.25rem;
   border-bottom-width: 2px;
+}
+
+a.card,
+a.card:hover {
+  text-decoration: none;
 }
 
 .table th, .table td {
@@ -54,19 +64,23 @@ $custom-select-border-radius: .125rem;
   border-radius: .125rem;
 }
 
-.col-form-label-sm { /* TODO: ? */
-  margin-bottom: 0;
+@-webkit-keyframes input-autofill {
+  to {
+    color: $dark;
+    background: $white;
+  }
 }
 
-.btn {
-  border-radius: .125rem;
+.form-control:-webkit-autofill {
+  -webkit-animation-name: input-autofill;
+  -webkit-animation-fill-mode: both;
+}
+
+.col-form-label-sm { /* TODO: ? */
+  margin-bottom: 0;
 }
 
 select.form-control:not([multiple]) {
   background: $custom-select-background;
 }
 
-a.card,
-a.card:hover {
-  text-decoration: none;
-}

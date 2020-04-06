@@ -9,6 +9,7 @@ import './components/heading.css';
 import './components/signin.css';
 import './components/statpanel.css';
 import './components/table.css';
+import './components/user.css';
 
 import Nav from './components/nav';
 import Dropdown from './components/dropdown';
