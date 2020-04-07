@@ -165,7 +165,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
         const paginators = this.sf.getInstances(Paginator.spiralFrameworkName) || [];
         paginators.forEach((f) => {
-            this.registerFormInstance(f.instance);
+            this.registerPaginatorInstance(f.instance);
         });
 
         this.sf.instancesController.events.on('onAddInstance', ({instance, type}: { instance: any, type: string }) => {
@@ -206,7 +206,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.state.updatePaginator({page: 1});
         this.capturedPaginators.forEach((f) => {
             if (f.setParams) {
-                f.setParams(this.state.paginate);
+                f.setParams(this.state.paginate, this.options.serialize);
             }
         });
     }
@@ -267,7 +267,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.render();
         this.capturedPaginators.forEach((f) => {
             if (f.setParams) {
-                f.setParams(this.state.paginate);
+                f.setParams(this.state.paginate, this.options.serialize);
             }
         });
     }
@@ -429,7 +429,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         }, {});
         history.pushState({}, document.title, stringifyUrl({
             url: window.location.protocol + '//' + window.location.host + window.location.pathname,
-            query
+            query,
         })); // TODO: merge with existing?
     }
 }

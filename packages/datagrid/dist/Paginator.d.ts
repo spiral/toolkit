@@ -9,6 +9,7 @@ export interface IPaginatorOptions {
     type: PaginatorType;
     fetchCount: boolean;
     fetchCountOnce: boolean;
+    serialize: string | boolean;
     onPageChange?: (params: IPaginatorParams) => void;
     lockType: string;
     className?: string;
@@ -58,7 +59,7 @@ export declare class Paginator extends sf.core.BaseDOMConstructor {
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions);
     unlock(): void;
     lock(): void;
-    setParams(params: IPaginatorParams): void;
+    setParams(params: IPaginatorParams, serialize: string | boolean): void;
     private hasPages;
     private hasTotal;
     private hasLimitOptions;

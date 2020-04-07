@@ -1,5 +1,5 @@
 import sf, {ISpiralFramework} from '@spiral-toolkit/core';
-import {CURSOR_ID_FIELD, LAST_ID_FIELD} from './constants';
+import {stringifyUrl} from 'query-string';
 // import * as assert from 'assert';
 import {DEFAULT_LIMIT} from './DatagridState';
 import {
@@ -18,6 +18,7 @@ export interface IPaginatorOptions {
     type: PaginatorType,
     fetchCount: boolean;
     fetchCountOnce: boolean;
+    serialize: string | boolean;
     onPageChange?: (params: IPaginatorParams) => void,
     lockType: string,
     className?: string,
@@ -44,6 +45,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         id: '',
         lockType: 'none',
         fetchCount: true,
+        serialize: true,
         fetchCountOnce: true,
         type: PaginatorType.pages,
         className: 'row no-gutters align-items-center m-3',
@@ -113,7 +115,8 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         }
     }
 
-    public setParams(params: IPaginatorParams) {
+    public setParams(params: IPaginatorParams, serialize: string | boolean) {
+        this.options.serialize = serialize;
         this.state = {
             ...this.state,
             ...params,
@@ -246,38 +249,60 @@ export class Paginator extends sf.core.BaseDOMConstructor {
             const ul = pagesDiv.querySelector('ul')!;
             const pageInfo = this.generatePageList();
 
-            {
+            const addLi = (className: string, text: string, url?: string, onClick?: (e: MouseEvent) => any) => {
                 const li = document.createElement('li');
-                li.className = pageInfo.hasPrevious ? 'page-item previous' : 'page-item previous disabled';
-                if (pageInfo.hasPrevious) {
-                    li.addEventListener('click', () => this.setPage(this.state.page! - 1));
+                li.className = className;
+                if (onClick) {
+                    li.addEventListener('click', onClick);
                 }
-                li.innerHTML = `<a href="#" tabindex="0" class="page-link">«</a>`;
+                li.innerHTML = `<a href="${url || '#'}" tabindex="0" class="page-link">${text}</a>`;
                 ul.appendChild(li);
-            }
+            };
+
+            const urlForPage = (page: number) => {
+                console.log(this.options.serialize);
+                if (!this.options.serialize) {
+                    return undefined;
+                }
+                return stringifyUrl({
+                        url: window.location.href,
+                        query: {
+                            [this.options.serialize === true ? 'page' : `${this.options.serialize}page`]: page.toString(),
+                        }
+                    }
+                );
+            };
+
+            const clickForPage = (page: number) => {
+                return (e: MouseEvent) => {
+                    this.setPage(page);
+                    e.preventDefault();
+                    return false;
+                }
+            };
+
+            addLi(
+                pageInfo.hasPrevious ? 'page-item previous' : 'page-item previous disabled',
+                '«',
+                pageInfo.hasPrevious ? urlForPage(this.state.page! - 1) : undefined,
+                pageInfo.hasPrevious ? clickForPage(this.state.page! - 1) : undefined
+            );
 
             pageInfo.pages.forEach((p) => {
-                const li = document.createElement('li');
-                li.className = p.active ? 'page-item active' : 'page-item';
-                if (p.page) {
-                    li.addEventListener('click', () => this.setPage(p.page));
-                    li.innerHTML = `<a href="#" tabindex="0" class="page-link">${p.text}</a>`;
-                } else {
-                    li.innerHTML = `<a tabindex="0" class="page-link">${p.text}</a>`;
-                }
-
-                ul.appendChild(li);
+                addLi(
+                    p.active ? 'page-item active' : 'page-item',
+                    p.text,
+                    p.page ? urlForPage(p.page) : undefined,
+                    p.page ? clickForPage(p.page) : undefined
+                );
             });
 
-            {
-                const li = document.createElement('li');
-                li.className = pageInfo.hasNext ? 'page-item next' : 'page-item next disabled';
-                if (pageInfo.hasNext) {
-                    li.addEventListener('click', () => this.setPage(this.state.page! + 1));
-                }
-                li.innerHTML = `<a href="#" tabindex="0" class="page-link">»</a>`;
-                ul.appendChild(li);
-            }
+            addLi(
+                pageInfo.hasNext ? 'page-item next' : 'page-item next disabled',
+                '»',
+                pageInfo.hasNext ? urlForPage(this.state.page! + 1) : undefined,
+                pageInfo.hasNext ? clickForPage(this.state.page! + 1) : undefined
+            );
         }
 
         if (!this.el) {
