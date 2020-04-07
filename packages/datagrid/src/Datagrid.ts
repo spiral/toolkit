@@ -416,21 +416,32 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         return result;
     }
 
-    private putObjectToUrl(obj: any, defaults: any, prefix = '') {
+    private putObjectToUrl(obj1: any, defaults: any, prefix = '') {
         if (!window.history) {
             console.warn('Cant update URL without reload, skipping');
             return;
         }
-        const query = Object.keys(obj).reduce((map, oK) => {
-            if (obj[oK] && obj[oK] != defaults[oK]) {
-                return {...map, [`${prefix}${oK}`]: obj[oK]}
+        const queryRaw = Object.keys(obj1).reduce((map, oK) => {
+            if (obj1[oK] && obj1[oK] != defaults[oK]) {
+                return {...map, [`${prefix}${oK}`]: obj1[oK]}
             }
             return map;
         }, {});
+        let obj2 = parse(window.location.search, {parseNumbers: true, parseBooleans: true});
+        if (typeof this.options.serialize === 'string') {
+            Object.keys((k: string) => { // Remove params belonging to this table
+                if (k.indexOf(this.options.serialize.toString()) === 0) {
+                    delete obj2[k];
+                }
+            })
+        } else {
+            obj2 = {}; // If table is not using prefixes, all params are that table params
+        }
+        const query = {...obj2, ...queryRaw};
         history.pushState({}, document.title, stringifyUrl({
             url: window.location.protocol + '//' + window.location.host + window.location.pathname,
             query,
-        })); // TODO: merge with existing?
+        }));
     }
 }
 

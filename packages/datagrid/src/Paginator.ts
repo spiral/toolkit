@@ -260,7 +260,6 @@ export class Paginator extends sf.core.BaseDOMConstructor {
             };
 
             const urlForPage = (page: number) => {
-                console.log(this.options.serialize);
                 if (!this.options.serialize) {
                     return undefined;
                 }
