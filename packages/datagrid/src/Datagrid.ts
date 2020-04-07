@@ -31,6 +31,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         sortable: [],
         url: '',
         serialize: true,
+        paginator: true,
         ui: {
             cellAttributes: {},
             rowAttributes: {},
@@ -267,7 +268,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.render();
         this.capturedPaginators.forEach((f) => {
             if (f.setParams) {
-                f.setParams(this.state.paginate, this.options.serialize);
+                f.setParams({...this.state.paginate, error: false}, this.options.serialize);
             }
         });
     }
@@ -290,8 +291,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             }
         });
         this.capturedPaginators.forEach((f) => {
-            if (f.processAnswer) {
-                f.processAnswer({data, status, statusText}); // TODO: might be different API
+            if (f.setParams) {
+                f.setParams({error: true}, this.options.serialize);
             }
         });
         this.render();
@@ -345,6 +346,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
                 ...renderOption, // TODO: we want to be able to override ui option too
                 columns: (renderOption.columns && renderOption.columns.length) ? renderOption.columns : this.options.columns,
                 sortable: (renderOption.sortable && renderOption.sortable.length) ? renderOption.sortable : this.options.sortable,
+                paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
             }, this));
         });
     }

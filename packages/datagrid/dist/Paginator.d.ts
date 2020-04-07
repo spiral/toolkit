@@ -31,7 +31,7 @@ export interface IPaginatorParams {
 export declare class Paginator extends sf.core.BaseDOMConstructor {
     static spiralFrameworkName: string;
     static defaultOptions: IPaginatorOptions;
-    el?: Element;
+    el?: HTMLDivElement;
     protected optionsToGrab: {
         id: {
             value: string;
@@ -53,13 +53,16 @@ export declare class Paginator extends sf.core.BaseDOMConstructor {
     options: IPaginatorOptions;
     sf: ISpiralFramework;
     state: {
-        fetching: boolean;
+        error: boolean;
         count?: number;
     } & IPaginatorParams;
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions);
     unlock(): void;
     lock(): void;
-    setParams(params: IPaginatorParams, serialize: string | boolean): void;
+    setParams(params: IPaginatorParams & {
+        fetching?: boolean;
+        error?: boolean;
+    }, serialize: string | boolean): void;
     private hasPages;
     private hasTotal;
     private hasLimitOptions;

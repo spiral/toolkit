@@ -102,6 +102,10 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
     cells?: {
         [columnId: string]: IRowCellRenderer;
     };
+    /**
+     * Add default paginator
+     */
+    paginator?: boolean;
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;
@@ -144,6 +148,11 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      * pass false to not use it
      */
     serialize: string | boolean;
+    /**
+     * Add default paginator below the table
+     * @default true
+     */
+    paginator: boolean;
 }
 export interface IDatagridResponse<Item = any> {
     pagination: {

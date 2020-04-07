@@ -11,6 +11,7 @@ export enum RequestMethod {
   PATCH = 'PATCH',
 }
 
+export const PAGINATOR_CLASS_NAME = 'sf-js-datagrid-paginator';
 export const CURSOR_ID_FIELD = 'cid';
 export const LAST_ID_FIELD = 'lid';
 

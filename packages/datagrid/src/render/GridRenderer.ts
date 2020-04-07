@@ -1,3 +1,4 @@
+import {PAGINATOR_CLASS_NAME} from '../constants';
 import Datagrid from '../Datagrid';
 import {DatagridState} from '../DatagridState';
 import {ICellMeta, IGridRenderOptions} from '../types';
@@ -10,18 +11,21 @@ import {defaultRowCellRenderer} from './defaultRowRenderer';
 import {defaultRowWrapper} from './defaultRowWrapper';
 import {defaultTableWrapper} from './defaultTableWrapper';
 
+let instanceCounter = 1;
+
 export class GridRenderer {
+  private instance = instanceCounter++;
   private wrapper!: Element;
   private tableEl!: Element;
   private headerEl?: Element;
   private footerEl?: Element;
   private bodyEl?: Element;
+  private paginatorEl?: Element;
   private columnInfo: INormalizedColumnDescriptor[];
 
   constructor(private options: IGridRenderOptions, private root: Datagrid) {
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
-    console.log(this.columnInfo);
-      this.create();
+    this.create();
   }
 
   private create() {
@@ -32,9 +36,23 @@ export class GridRenderer {
     this.root.node.innerHTML = '';
     this.root.node.appendChild(this.wrapper);
 
+    if(this.options.paginator) {
+      this.createDefaultPaginator();
+    }
+
     const tableRenderer = this.options.tableWrapper || defaultTableWrapper;
     this.tableEl = tableRenderer(this.wrapper, this.options);
   }
+
+  private createDefaultPaginator() {
+    const id = `${Date.now()}${this.instance}`;
+    this.root.options.captureForms.push(id);
+    this.paginatorEl = document.createElement('div');
+    this.paginatorEl.className = PAGINATOR_CLASS_NAME;
+    this.paginatorEl.id = id;
+    this.root.node.appendChild(this.paginatorEl);
+  }
+
 
   private applyAdditionalCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, index: number) {
     const cellMeta: ICellMeta = {

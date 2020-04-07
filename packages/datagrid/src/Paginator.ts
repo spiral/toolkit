@@ -52,7 +52,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         limitOptions: [10, 25, 50, 100],
     };
 
-    el?: Element;
+    el?: HTMLDivElement;
 
     protected optionsToGrab = {
         id: {
@@ -77,10 +77,10 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     sf!: ISpiralFramework;
 
     state: {
-        fetching: boolean,
+        error: boolean,
         count?: number,
     } & IPaginatorParams = {
-        fetching: false,
+        error: false,
         limit: DEFAULT_LIMIT,
     };
 
@@ -115,7 +115,10 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         }
     }
 
-    public setParams(params: IPaginatorParams, serialize: string | boolean) {
+    public setParams(params: IPaginatorParams & {
+        fetching?: boolean,
+        error?: boolean
+    }, serialize: string | boolean) {
         this.options.serialize = serialize;
         this.state = {
             ...this.state,
@@ -316,6 +319,12 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         el.appendChild(counterDiv);
         el.appendChild(limitDiv);
         el.appendChild(pagesDiv);
+
+        if(this.state.error) {
+            el.style.opacity = '0'; // TODO: Better way?
+        } else {
+            el.style.opacity = '';
+        }
     }
 }
 
