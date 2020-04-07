@@ -225,12 +225,4 @@ InstancesController.prototype.getInstanceNameByCssClass = function (cssClass) {
   return this._storage.instancesConstructors.cssClasses[cssClass];
 };
 
-/**
- * Get constructor by name or class name
- * @param {*} name
- */
-InstancesController.prototype.getInstanceConstructors = function () {
-  // TODO
-};
-
 module.exports = InstancesController;

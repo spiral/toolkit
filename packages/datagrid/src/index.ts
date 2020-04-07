@@ -11,6 +11,6 @@ export const renders = {
 
 sf.registerInstanceType(DataGrid, 'sf-js-datagrid');
 sf.registerInstanceType(Paginator, 'sf-js-datagrid-paginator');
-
+sf.events.on('ddd');
 
 export default DataGrid; // ES6 default export will not expose us as global

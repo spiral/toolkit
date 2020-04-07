@@ -3,6 +3,7 @@
   "version": "0.3.7",
   "description": "Spiral Scout Frontend Framework",
   "main": "dist/core.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
   "scripts": {
     "prebuild": "npm run clean",

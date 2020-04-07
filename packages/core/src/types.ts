@@ -1,47 +1,46 @@
-declare module '@spiral-toolkit/core' {
-  class BaseDOMConstructor {
-    static optionsToGrab: {[key: string]: any};
-    public sf: ISpiralFramework;
-    public node: Element;
-    public options: Object;
+import type { Events } from "core/Events";
 
-    public init(sf: ISpiralFramework, node: Element, options: any): void;
-  }
+export interface IBaseDOMConstructor {
+    optionsToGrab: { [key: string]: any };
+    sf: ISpiralFramework;
+    node: Element;
+    options: Object;
 
-  export interface IAjaxOptions {
+    init(sf: ISpiralFramework, node: Element, options: any): void;
+}
+
+export interface IAjaxOptions {
     url: string;
     data?: any;
-    headers?: {[header: string]: string};
+    headers?: { [header: string]: string };
     method?: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH';
-  }
+}
 
-  class IAjax {
+export interface IAjax {
     currentRequests: number;
-    headers: {[header: string]: string};
-    events: any[];
+    headers: { [header: string]: string };
+    events: Events;
     cancel: any;
+
     send<ResponseData = any>(options: IAjaxOptions): Promise<ResponseData>;
-    constructor(options: {headers: {[header: string]: string}});
-  }
+}
 
-  export interface ISFCore {
+export interface ISFCore {
     Ajax: any,
-    BaseDOMConstructor: typeof BaseDOMConstructor,
+    BaseDOMConstructor: any,
     DomMutations: any,
-    Events: any,
+    Events: typeof Events,
     InstancesController: any,
-  }
+}
 
-  const core: ISFCore;
-
-  export interface ISFHelpers {
+export interface ISFHelpers {
     DOMEvents: any,
     domTools: any,
-  }
+}
 
-  const helpers: ISFHelpers;
+export type ISFInstance = any;
 
-  export interface IInstancesController {
+export interface IInstancesController {
     /**
      * Register new instance type
      * @param {Function} constructorFunction - constructor function of instance
@@ -52,20 +51,24 @@ declare module '@spiral-toolkit/core' {
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
     addInstance: (instanceType: string, node: Element, options: any) => any;
     removeInstance: (instanceType: string, node: Element) => any;
-    getInstances: (instanceType: string) => Array<{node: Element, instance: any}>;
+    getInstances: (instanceType: string) => Array<{ node: Element, instance: any }>;
+    getInstance: (instanceName: string) => Array<{ node: Element, instance: any }>;
 
-    events: {
-      on: (eventName: string, callback: Function)=>void,
-      off: (eventName: string, callback: Function)=>void,
-    },
-  }
+    events: Events,
+}
 
-  export interface ISpiralFramework {
+export interface ISpiralFramework {
     ajax: IAjax,
     core: ISFCore,
     helpers: ISFHelpers,
     tools: any;
+    events: Events,
+    createModulePrototype: Function,
     instancesController: IInstancesController;
+    closest: any;
+    resolveKeyPath: any;
+    domMutation: any;
+    options: { instances: {[id: string]: ISFInstance} }
     /**
      * Register new instance type
      * @param {Function} constructorFunction - constructor function of instance
@@ -74,12 +77,8 @@ declare module '@spiral-toolkit/core' {
      * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
      */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
-    addInstance: (instanceType: string, node: Element, options: any) => any;
+    addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
     removeInstance: (instanceType: string, node: Element) => any;
-    getInstances: (instanceType: string) => Array<{node: Element, instance: any}>;
-  }
-
-  const framework: ISpiralFramework;
-
-  export default framework;
+    getInstances: (instanceType: string) => Array<{ node: Element, instance: ISFInstance }>;
+    getInstance: (instanceName: string) => ISFInstance;
 }
