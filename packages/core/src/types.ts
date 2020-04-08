@@ -1,4 +1,5 @@
 import type { Events } from "core/Events";
+import type { Ajax } from "core/Ajax";
 
 export interface IBaseDOMConstructor {
     optionsToGrab: { [key: string]: any };
@@ -9,24 +10,8 @@ export interface IBaseDOMConstructor {
     init(sf: ISpiralFramework, node: Element, options: any): void;
 }
 
-export interface IAjaxOptions {
-    url: string;
-    data?: any;
-    headers?: { [header: string]: string };
-    method?: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH';
-}
-
-export interface IAjax {
-    currentRequests: number;
-    headers: { [header: string]: string };
-    events: Events;
-    cancel: any;
-
-    send<ResponseData = any>(options: IAjaxOptions): Promise<ResponseData>;
-}
-
 export interface ISFCore {
-    Ajax: any,
+    Ajax: typeof Ajax,
     BaseDOMConstructor: any,
     DomMutations: any,
     Events: typeof Events,
@@ -58,7 +43,7 @@ export interface IInstancesController {
 }
 
 export interface ISpiralFramework {
-    ajax: IAjax,
+    ajax: Ajax,
     core: ISFCore,
     helpers: ISFHelpers,
     tools: any;

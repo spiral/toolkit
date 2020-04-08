@@ -1,7 +1,7 @@
-import type {IAjax} from '../../types';
+import type {Ajax} from '../Ajax';
 import type {Events} from '../Events';
 
-export const attachDefaultActions = (ajaxInstance: IAjax, globalEvents: Events) => {
+export const attachDefaultActions = (ajaxInstance: Ajax, globalEvents: Events) => {
     ajaxInstance.events.on('load', (options: any) => {
         const {response} = options;
         if (!response || !response.data) return;
