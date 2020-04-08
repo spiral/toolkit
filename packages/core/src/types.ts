@@ -12,7 +12,7 @@ export interface ISFCore {
   BaseDOMConstructor: typeof BaseDOMConstructor,
   DomMutations: typeof DomMutations,
   Events: typeof Events,
-  InstancesController: any,
+  InstancesController: typeof InstancesController,
 }
 
 export interface ISFHelpers {
