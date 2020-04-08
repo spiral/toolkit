@@ -1,4 +1,5 @@
-import sf, {ISpiralFramework} from '@spiral-toolkit/core';
+import sf from '@spiral-toolkit/core';
+import type {IOptionToGrab, ISpiralFramework} from '@spiral-toolkit/core';
 import * as assert from 'assert';
 import {RequestMethod, SortDirection} from './constants';
 import {DatagridState} from './DatagridState';
@@ -17,7 +18,9 @@ import {INormalizedColumnDescriptor, normalizeColumns} from './utils';
 // import './styles.css';
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
-    static spiralFrameworkName: string = 'datagrid';
+    static readonly spiralFrameworkName: string = 'datagrid';
+    public readonly name = Datagrid.spiralFrameworkName;
+
     static defaultOptions: IDataGridOptions = {
         id: '',
         lockType: 'default',
@@ -39,7 +42,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         renderers: defaultRenderer,
     };
 
-    protected optionsToGrab = {
+    public readonly optionsToGrab: {[option: string]: IOptionToGrab} = {
         id: {
             value: Datagrid.defaultOptions.id,
             domAttr: 'id',

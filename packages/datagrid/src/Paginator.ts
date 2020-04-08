@@ -1,4 +1,5 @@
-import sf, {ISpiralFramework} from '@spiral-toolkit/core';
+import sf from '@spiral-toolkit/core';
+import type {IOptionToGrab, ISpiralFramework} from '@spiral-toolkit/core';
 // import * as assert from 'assert';
 import {DEFAULT_LIMIT} from './DatagridState';
 import {
@@ -32,7 +33,9 @@ export interface IPaginatorParams {
 }
 
 export class Paginator extends sf.core.BaseDOMConstructor {
-    static spiralFrameworkName: string = 'datagrid-paginator';
+    static readonly spiralFrameworkName: string = 'datagrid-paginator';
+    public readonly name = Paginator.spiralFrameworkName;
+
     static defaultOptions: IPaginatorOptions = {
         id: '',
         lockType: 'none',
@@ -45,7 +48,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
     el?: Element;
 
-    protected optionsToGrab = {
+    public readonly optionsToGrab: {[option: string]: IOptionToGrab} = {
         id: {
             value: Paginator.defaultOptions.id,
             domAttr: 'id',

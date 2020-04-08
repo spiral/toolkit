@@ -1,21 +1,13 @@
 import type {Events} from 'core/Events';
 import type {Ajax} from 'core/Ajax';
+import type BaseDOMConstructor from './core/BaseDOMConstructor';
 import type DOMEvents from './helpers/DOMEvents';
 import type domTools from './helpers/domTools';
 import type { tools } from 'sf';
 
-export interface IBaseDOMConstructor {
-    optionsToGrab: { [key: string]: any };
-    sf: ISpiralFramework;
-    node: Element;
-    options: Object;
-
-    init(sf: ISpiralFramework, node: Element, options: any): void;
-}
-
 export interface ISFCore {
     Ajax: typeof Ajax,
-    BaseDOMConstructor: any,
+    BaseDOMConstructor: typeof BaseDOMConstructor,
     DomMutations: any,
     Events: typeof Events,
     InstancesController: any,
@@ -26,7 +18,7 @@ export interface ISFHelpers {
     domTools: typeof domTools,
 }
 
-export type ISFInstance = any;
+export type ISFInstance = any & {name: string};
 
 export interface IInstancesController {
     /**
@@ -37,10 +29,10 @@ export interface IInstancesController {
      * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
      */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
-    addInstance: (instanceType: string, node: Element, options: any) => any;
-    removeInstance: (instanceType: string, node: Element) => any;
-    getInstances: (instanceType: string) => Array<{ node: Element, instance: any }>;
-    getInstance: (instanceName: string) => Array<{ node: Element, instance: any }>;
+    addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
+    removeInstance: (instanceType: string, node: Element) => ISFInstance;
+    getInstances: (instanceType: string) => Array<{ node: Element, instance: ISFInstance }>;
+    getInstance: (instanceName: string) => Array<{ node: Element, instance: ISFInstance }>;
 
     events: Events,
 }
@@ -53,8 +45,8 @@ export interface ISpiralFramework {
     events: Events,
     createModulePrototype: Function,
     instancesController: IInstancesController;
-    closest: any;
-    resolveKeyPath: any;
+    closest: typeof domTools.closest;
+    resolveKeyPath: typeof tools.resolveKeyPath;
     domMutation: any;
     options: { instances: { [id: string]: ISFInstance } }
     /**
@@ -66,7 +58,13 @@ export interface ISpiralFramework {
      */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
     addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
-    removeInstance: (instanceType: string, node: Element) => any;
+    removeInstance: (instanceType: string, node: Element) => ISFInstance;
     getInstances: (instanceType: string) => Array<{ node: Element, instance: ISFInstance }>;
     getInstance: (instanceName: string) => ISFInstance;
+}
+
+export interface IOptionToGrab {
+    value?: any,
+    domAttr?: string,
+    processor?: Function,
 }
