@@ -9,7 +9,7 @@ export const renders = {
 
 (window as any).SFDatagridTools = renders; // TODO: How to export that properly?
 
-sf.registerInstanceType(DataGrid, 'sf-js-datagrid');
-sf.registerInstanceType(Paginator, 'sf-js-datagrid-paginator');
+sf.registerInstanceType(DataGrid as any, 'sf-js-datagrid'); // TODO: needs better typing for instance class
+sf.registerInstanceType(Paginator as any, 'sf-js-datagrid-paginator'); // TODO: needs better typing for instance class
 
 export default DataGrid; // ES6 default export will not expose us as global

@@ -13,7 +13,7 @@ const sfWrapper: Partial<ISpiralFramework> = {
 };
 
 
-sfWrapper.instancesController = new core.InstancesController(sfWrapper as ISpiralFramework) as IInstancesController;
+sfWrapper.instancesController = new core.InstancesController(sfWrapper as ISpiralFramework);
 sfWrapper.domMutation = new core.DomMutations(sfWrapper.instancesController!);
 
 // Events system
