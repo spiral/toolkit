@@ -1,36 +1,10 @@
-import sf from '@spiral-toolkit/core';
-import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import { stringifyUrl } from 'query-string';
+import { DEFAULT_LIMIT, PaginatorType } from './constants';
 // import * as assert from 'assert';
-import { DEFAULT_LIMIT } from './DatagridState';
-import {
-  IDataGridOptions,
-} from './types';
+import { IDataGridOptions, IPaginatorOptions, IPaginatorParams } from './types';
 
 // import './styles.css';
-
-export enum PaginatorType {
-  pages = 'pages',
-  infinite = 'infinite',
-}
-
-export interface IPaginatorOptions {
-  id: string,
-  type: PaginatorType,
-  fetchCount: boolean;
-  fetchCountOnce: boolean;
-  onPageChange?: (params: IPaginatorParams) => void,
-  lockType: string,
-  className?: string,
-  limitOptions: Array<number>,
-}
-
-export interface IPaginatorParams {
-  page?: number,
-  limit?: number,
-  fetchCount?: boolean,
-  lastId?: string,
-  cursorId?: string;
-}
 
 export class Paginator extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid-paginator';
@@ -41,13 +15,14 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     id: '',
     lockType: 'none',
     fetchCount: true,
+    serialize: true,
     fetchCountOnce: true,
     type: PaginatorType.pages,
     className: 'row no-gutters align-items-center m-3',
     limitOptions: [10, 25, 50, 100],
   };
 
-  el?: Element;
+  el?: HTMLDivElement;
 
   public readonly optionsToGrab: {[option: string]: IOptionToGrab} = {
     id: {
@@ -73,16 +48,16 @@ export class Paginator extends sf.core.BaseDOMConstructor {
   sf!: ISpiralFramework;
 
   state: {
-    fetching: boolean,
+    error: boolean,
     count?: number,
   } & IPaginatorParams = {
-    fetching: false,
+    error: false,
     limit: DEFAULT_LIMIT,
   };
 
-  constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions) {
+  constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions) {
     super();
-    this.init(sf, node, options);
+    this.init(ssf, node, options);
     this.options = {
       ...Paginator.defaultOptions,
       ...this.options,
@@ -109,7 +84,11 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     }
   }
 
-  public setParams(params: IPaginatorParams) {
+  public setParams(params: IPaginatorParams & {
+    fetching?: boolean,
+    error?: boolean
+  }, serialize: string | boolean) {
+    this.options.serialize = serialize;
     this.state = {
       ...this.state,
       ...params,
@@ -189,13 +168,17 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
   setLimit(limit: number) {
     this.state.limit = limit;
-    this.options.onPageChange ? this.options.onPageChange(this.state) : 1;
+    if (this.options.onPageChange) {
+      this.options.onPageChange(this.state);
+    }
     this.render();
   }
 
   setPage(page: number) {
     this.state.page = page;
-    this.options.onPageChange ? this.options.onPageChange(this.state) : 1;
+    if (this.options.onPageChange) {
+      this.options.onPageChange(this.state);
+    }
     this.render();
   }
 
@@ -204,7 +187,8 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     counterDiv.className = 'col-12 col-lg-4';
     if (this.hasPages()) {
       if (this.hasTotal()) {
-        counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} of ${this.state.count!} entries`;
+        counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!}`
+          + ` of ${this.state.count!} entries`;
       } else {
         counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} entries`;
       }
@@ -229,10 +213,9 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         select.appendChild(option);
       });
       select.value = `${this.state.limit}`;
-      select.addEventListener('change', (e) => {
+      select.addEventListener('change', () => {
         this.setLimit(+select.value);
       });
-    } else {
     }
 
     const pagesDiv = document.createElement('div');
@@ -242,38 +225,56 @@ export class Paginator extends sf.core.BaseDOMConstructor {
       const ul = pagesDiv.querySelector('ul')!;
       const pageInfo = this.generatePageList();
 
-      {
+      const addLi = (className: string, text: string, url?: string, onClick?: (e: MouseEvent) => any) => {
         const li = document.createElement('li');
-        li.className = pageInfo.hasPrevious ? 'page-item previous' : 'page-item previous disabled';
-        if (pageInfo.hasPrevious) {
-          li.addEventListener('click', () => this.setPage(this.state.page! - 1));
+        li.className = className;
+        if (onClick) {
+          li.addEventListener('click', onClick);
         }
-        li.innerHTML = '<a href="#" tabindex="0" class="page-link">«</a>';
+        li.innerHTML = `<a href="${url || '#'}" tabindex="0" class="page-link">${text}</a>`;
         ul.appendChild(li);
-      }
+      };
+
+      const urlForPage = (page: number) => {
+        if (!this.options.serialize) {
+          return undefined;
+        }
+        return stringifyUrl({
+          url: window.location.href,
+          query: {
+            [this.options.serialize === true ? 'page' : `${this.options.serialize}page`]: page.toString(),
+          },
+        });
+      };
+
+      const clickForPage = (page: number) => (e: MouseEvent) => {
+        this.setPage(page);
+        e.preventDefault();
+        return false;
+      };
+
+      addLi(
+        pageInfo.hasPrevious ? 'page-item previous' : 'page-item previous disabled',
+        '«',
+        pageInfo.hasPrevious ? urlForPage(this.state.page! - 1) : undefined,
+        pageInfo.hasPrevious ? clickForPage(this.state.page! - 1) : undefined,
+      );
 
       pageInfo.pages.forEach((p) => {
-        const li = document.createElement('li');
-        li.className = p.active ? 'page-item active' : 'page-item';
-        if (p.page) {
-          li.addEventListener('click', () => this.setPage(p.page));
-          li.innerHTML = `<a href="#" tabindex="0" class="page-link">${p.text}</a>`;
-        } else {
-          li.innerHTML = `<a tabindex="0" class="page-link">${p.text}</a>`;
-        }
-
-        ul.appendChild(li);
+        addLi(
+          p.active ? 'page-item active' : 'page-item',
+          p.text,
+          p.page ? urlForPage(p.page) : undefined,
+          p.page ? clickForPage(p.page) : undefined,
+        );
       });
 
-      {
-        const li = document.createElement('li');
-        li.className = pageInfo.hasNext ? 'page-item next' : 'page-item next disabled';
-        if (pageInfo.hasNext) {
-          li.addEventListener('click', () => this.setPage(this.state.page! + 1));
-        }
-        li.innerHTML = '<a href="#" tabindex="0" class="page-link">»</a>';
-        ul.appendChild(li);
-      }
+      addLi(
+        pageInfo.hasNext ? 'page-item next' : 'page-item next disabled',
+        '»',
+        pageInfo.hasNext ? urlForPage(this.state.page! + 1) : undefined,
+        pageInfo.hasNext ? clickForPage(this.state.page! + 1) : undefined,
+      );
     }
 
     if (!this.el) {
@@ -288,6 +289,12 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     el.appendChild(counterDiv);
     el.appendChild(limitDiv);
     el.appendChild(pagesDiv);
+
+    if (this.state.error) {
+      el.style.opacity = '0'; // TODO: Better way?
+    } else {
+      el.style.opacity = '';
+    }
   }
 }
 

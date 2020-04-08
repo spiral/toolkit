@@ -1,15 +1,8 @@
 import { SortDirection } from './constants';
 import { IColumnDescriptor, ISortDescriptor } from './types';
 
-export interface INormalizedColumnDescriptor {
-  id: string,
-  title: string,
-  sortable: boolean;
-  direction: SortDirection;
-}
-
-export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDescriptor[]) => {
-  const sList = sortable.map((s: ISortDescriptor) => {
+export const normalizeColumns = (columns: IColumnDescriptor[], sortables: ISortDescriptor[]) => {
+  const sList = sortables.map((s: ISortDescriptor) => {
     if (typeof s === 'string') {
       return { field: s, direction: undefined };
     }
@@ -19,6 +12,7 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
     let id: string;
     let title: string;
     let sortDir: SortDirection;
+    let sortable = false;
     if (typeof c === 'string') {
       id = c;
       title = c;
@@ -27,6 +21,7 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
       id = c.id;
       title = c.title || c.id;
       sortDir = c.sortDir || SortDirection.ASC;
+      sortable = !!c.sortDir;
     }
     const sort = sList.find((s) => (s.field === id));
     if (sort) {
@@ -40,8 +35,8 @@ export const normalizeColumns = (columns: IColumnDescriptor[], sortable: ISortDe
     return {
       id,
       title,
-      sortable: false,
-      direction: SortDirection.ASC,
+      sortable,
+      direction: sortDir,
     };
   });
 };

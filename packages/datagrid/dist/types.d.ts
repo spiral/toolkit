@@ -1,13 +1,17 @@
-import { INormalizedColumnDescriptor } from '../dist/utils';
-import { RequestMethod, SortDirection } from './constants';
-import { DatagridState } from './DatagridState';
-import { IPaginatorParams } from './Paginator';
+import { PaginatorType, RequestMethod, SortDirection } from './constants';
+import type { DatagridState } from './DatagridState';
 export interface IRowMeta<T = any> {
     id: string;
     index: number;
     selected: boolean;
     item: T;
     state: DatagridState;
+}
+export interface INormalizedColumnDescriptor {
+    id: string;
+    title: string;
+    sortable: boolean;
+    direction: SortDirection;
 }
 export interface ICellMeta<T = any> {
     id: string;
@@ -102,6 +106,10 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
     cells?: {
         [columnId: string]: IRowCellRenderer;
     };
+    /**
+     * Add default paginator
+     */
+    paginator?: boolean;
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;
@@ -137,6 +145,18 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      */
     sort?: ISortDescriptor;
     renderers: IGridRenderOptions | IGridRenderOptions[];
+    /**
+     * If to use URL serialization
+     * pass true to use it
+     * pass string to have grid use specific prefix to params in url
+     * pass false to not use it
+     */
+    serialize: string | boolean;
+    /**
+     * Add default paginator below the table
+     * @default true
+     */
+    paginator: boolean;
 }
 export interface IDatagridResponse<Item = any> {
     pagination: {
@@ -152,6 +172,30 @@ export interface IDatagridErrorResponse {
     errors?: {
         [fieldName: string]: string;
     };
+}
+export interface IPaginatorOptions {
+    id: string;
+    type: PaginatorType;
+    fetchCount: boolean;
+    fetchCountOnce: boolean;
+    serialize: string | boolean;
+    onPageChange?: (params: IPaginatorParams) => void;
+    lockType: string;
+    className?: string;
+    limitOptions: Array<number>;
+}
+export interface IPaginatorParams {
+    page?: number;
+    limit?: number;
+    fetchCount?: boolean;
+    /**
+     * Optional 'last id' parameter
+     */
+    lid?: string;
+    /**
+     * Optional 'cursor id' parameter
+     */
+    cid?: string;
 }
 export interface IDatagridRequest {
     fetchCount: boolean;

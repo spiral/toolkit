@@ -1,7 +1,8 @@
-import Datagrid from '../Datagrid';
+import { PAGINATOR_CLASS_NAME } from '../constants';
+import type { Datagrid } from '../Datagrid';
 import { DatagridState } from '../DatagridState';
-import { ICellMeta, IGridRenderOptions } from '../types';
-import { applyAttrributes, INormalizedColumnDescriptor, normalizeColumns } from '../utils';
+import { ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
+import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';
 import { defaultHeaderCellRenderer } from './defaultHeaderCellRenderer';
@@ -10,7 +11,12 @@ import { defaultRowCellRenderer } from './defaultRowRenderer';
 import { defaultRowWrapper } from './defaultRowWrapper';
 import { defaultTableWrapper } from './defaultTableWrapper';
 
+let instanceCounter = 1;
+
 export class GridRenderer {
+  // eslint-disable-next-line
+  private instance = instanceCounter++;
+
   private wrapper!: Element;
 
   private tableEl!: Element;
@@ -21,11 +27,12 @@ export class GridRenderer {
 
   private bodyEl?: Element;
 
+  private paginatorEl?: Element;
+
   private columnInfo: INormalizedColumnDescriptor[];
 
   constructor(private options: IGridRenderOptions, private root: Datagrid) {
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
-    console.log(this.columnInfo);
     this.create();
   }
 
@@ -37,10 +44,25 @@ export class GridRenderer {
     this.root.node.innerHTML = '';
     this.root.node.appendChild(this.wrapper);
 
+    if (this.options.paginator) {
+      this.createDefaultPaginator();
+    }
+
     const tableRenderer = this.options.tableWrapper || defaultTableWrapper;
     this.tableEl = tableRenderer(this.wrapper, this.options);
   }
 
+  private createDefaultPaginator() {
+    const id = `${Date.now()}${this.instance}`;
+    this.root.options.captureForms.push(id);
+    this.paginatorEl = document.createElement('div');
+    this.paginatorEl.className = PAGINATOR_CLASS_NAME;
+    this.paginatorEl.id = id;
+    this.root.node.appendChild(this.paginatorEl);
+  }
+
+
+  // eslint-disable-next-line class-methods-use-this
   private applyAdditionalCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, index: number) {
     const cellMeta: ICellMeta = {
       id: column.id,
@@ -82,6 +104,7 @@ export class GridRenderer {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private applyAdditionalHeaderCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) {
     const cellMeta = {
       id: column.id,
@@ -132,6 +155,7 @@ export class GridRenderer {
     if (this.headerEl) {
       this.tableEl.appendChild(this.headerEl);
       if (this.columnInfo.length) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
           const headerCellRenderer = (this.options.headerList || {})[cI.id] || defaultHeaderCellRenderer;
           const node = headerCellRenderer(cI, this.options, state);

@@ -277,10 +277,33 @@ Form.prototype.showMessages = formMessages.showMessages;
 Form.prototype.removeMessages = formMessages.removeMessages;
 Form.prototype.removeMessage = formMessages.removeMessage;
 
-Form.prototype.processAnswer = function (answer) {
+Form.prototype.processAnswer = function (answer, showUnknown = true) {
   if (this.options.messagesType) {
-    this.showMessages(answer);
+    this.showMessages(answer, showUnknown);
   }
+};
+
+Form.prototype.setFieldValues = function (values) {
+  this.sf.iterateInputs(this.node, values, (el, value) => {
+    if (typeof el.sfSetValue === 'function') {
+      el.sfSetValue(value);
+    } else {
+      if (el.type === 'checkbox') {
+        if (!el.value) { // single checkbox
+          el.checked = !!value;
+        } else {
+          // eslint-disable-next-line eqeqeq,max-len
+          el.checked = Array.isArray(value) ? (value.indexOf(el.value) >= 0) : (el.value == value);
+        }
+      }
+      el.value = value; // TODO: That wont work for radiogroups, etc.
+    }
+  });
+};
+
+Form.prototype.enumerateFieldNames = function () {
+  console.log(this.node.querySelectorAll('input,select,textarea'));
+  return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
 };
 
 Form.prototype.optCallback = function (options, type) {

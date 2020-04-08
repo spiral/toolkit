@@ -1,9 +1,13 @@
 import sf from '@spiral-toolkit/core';
 import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import * as assert from 'assert';
-import { RequestMethod, SortDirection } from './constants';
+import { parse, stringifyUrl } from 'query-string';
+import {
+  DEFAULT_LIMIT,
+  pageParams, RequestMethod, SortDirection, sortParams,
+} from './constants';
 import { DatagridState } from './DatagridState';
-import Paginator, { IPaginatorParams } from './Paginator';
+import Paginator from './Paginator';
 import { defaultRenderer } from './render/defaultRenderer';
 import { GridRenderer } from './render/GridRenderer';
 import {
@@ -11,9 +15,10 @@ import {
   IDataGridOptions,
   IDatagridRequest,
   IDatagridResponse,
-  IGridRenderOptions,
+  IGridRenderOptions, INormalizedColumnDescriptor, IPaginatorParams,
 } from './types';
-import { INormalizedColumnDescriptor, normalizeColumns } from './utils';
+import { normalizeColumns } from './utils';
+
 
 // import './styles.css';
 
@@ -32,6 +37,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     method: RequestMethod.POST,
     sortable: [],
     url: '',
+    serialize: true,
+    paginator: true,
     ui: {
       cellAttributes: {},
       rowAttributes: {},
@@ -62,15 +69,20 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   state: DatagridState<Item> = new DatagridState<Item>(this);
 
-  capturedForms: Array<any> = []; // TODO: type as sf.Form instance array
+  capturedForms: { [id: string]: { instance: any, fields: Array<string> } } = {}; // TODO: type as sf.Form instance array
 
   capturedPaginators: Array<any> = []; // TODO: type as sf.Paginator instance array
 
+  private defaults: IPaginatorParams & { sortBy?: string, sortDir?: SortDirection } = {
+    page: 1, // TODO: different defaults depending on paginator type
+    limit: DEFAULT_LIMIT,
+  };
+
   private columnInfo: INormalizedColumnDescriptor[];
 
-  constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>) {
+  constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>) {
     super();
-    this.init(sf, node, options);
+    this.init(ssf, node, options);
     this.options = {
       ...Datagrid.defaultOptions,
       ...this.options,
@@ -78,6 +90,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
     if (additionalOptionsEl) {
       try {
+        // eslint-disable-next-line
         const one = Function(`"use strict";return ${additionalOptionsEl.innerHTML.trim()}`);
         // console.log('"use strict";return ' + additionalOptionsEl.innerHTML.trim() + '');
         const overrides = one()();
@@ -103,24 +116,47 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     // Set default sort if present
     if (this.options.sort) {
       if (typeof this.options.sort === 'string') {
-        this.state.setSort(this.options.sort, SortDirection.ASC);
+        this.defaults.sortBy = this.options.sort;
+        this.defaults.sortDir = SortDirection.ASC;
       } else {
-        this.state.setSort(this.options.sort.field, this.options.sort.direction || SortDirection.ASC);
+        this.defaults.sortBy = this.options.sort.field;
+        this.defaults.sortDir = this.options.sort.direction || SortDirection.ASC;
       }
+      this.state.setSort(this.defaults.sortBy, this.defaults.sortDir);
     }
 
     this.createRenderers();
+    this.initFromUrl();
     this.captureForms();
     this.request();
   }
 
   private registerFormInstance(formInstance: any) {
     if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
-      this.capturedForms.push(formInstance);
+      const { id } = formInstance.options;
+      const fields = formInstance.enumerateFieldNames();
+
+      this.capturedForms[id] = {
+        instance: formInstance,
+        fields,
+      };
+
+      const urlDataForForm = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
+        ...map,
+        [key]: this.state.urlData[key],
+      }), {}) : undefined;
+
+      if (urlDataForForm) {
+        formInstance.setFieldValues(urlDataForForm);
+      }
+
+      // eslint-disable-next-line
       formInstance.options.jsonOnly = true;
+      // eslint-disable-next-line
       formInstance.options.beforeSubmitCallback = (options: any) => {
         this.resetPaginator();
-        this.state.setFormData(formInstance.options.id, options.data);
+        this.state.setFormData(id, options.data);
+        this.capturedForms[id].fields = [...new Set([...Object.keys(options.data), ...this.capturedForms[id].fields])]; // Merge new fields if any
         this.request(); // TODO: better way
         return false;
       };
@@ -130,6 +166,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private registerPaginatorInstance(formInstance: any) {
     if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.id) >= 0) {
       this.capturedPaginators.push(formInstance);
+      // eslint-disable-next-line
       formInstance.options.onPageChange = (options: IPaginatorParams) => {
         this.state.updatePaginator(options);
         this.request(); // TODO: better way
@@ -146,7 +183,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
     const paginators = this.sf.getInstances(Paginator.spiralFrameworkName) || [];
     paginators.forEach((f) => {
-      this.registerFormInstance(f.instance);
+      this.registerPaginatorInstance(f.instance);
     });
 
     this.sf.instancesController.events.on('onAddInstance', ({ instance, type }: { instance: any, type: string }) => {
@@ -187,7 +224,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.state.updatePaginator({ page: 1 });
     this.capturedPaginators.forEach((f) => {
       if (f.setParams) {
-        f.setParams(this.state.paginate);
+        f.setParams(this.state.paginate, this.options.serialize);
       }
     });
   }
@@ -207,7 +244,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (!this.sf.removeInstance('lock', this.node)) {
       console.warn('You try to remove \'lock\' instance, but it is not available or not started');
     }
-    this.capturedForms.forEach((f) => {
+    Object.keys(this.capturedForms).forEach((fKey) => {
+      const f = this.capturedForms[fKey].instance;
       if (f.unlock) {
         f.unlock();
       }
@@ -228,7 +266,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       console.warn('You try to add \'lock\' instance, but it is not available or already started');
       return;
     }
-    this.capturedForms.forEach((f) => {
+    Object.keys(this.capturedForms).forEach((fKey) => {
+      const f = this.capturedForms[fKey].instance;
       if (f.lock) {
         f.lock();
       }
@@ -241,18 +280,18 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   private handleSuccess({ data }: { data: IDatagridResponse<Item> }) {
-    console.log('Success', data);
     this.state.setSuccess(data.data, data.pagination);
     this.render();
     this.capturedPaginators.forEach((f) => {
       if (f.setParams) {
-        f.setParams(this.state.paginate);
+        f.setParams({ ...this.state.paginate, error: false }, this.options.serialize);
       }
     });
   }
 
   private beforeSubmit() {
-    this.capturedForms.forEach((f) => {
+    Object.keys(this.capturedForms).forEach((fKey) => {
+      const f = this.capturedForms[fKey].instance;
       if (f.removeMessages) {
         f.removeMessages();
       }
@@ -260,20 +299,19 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   private handleError({ data, status, statusText }: { data: IDatagridErrorResponse, status: number, statusText: string }) {
-    console.log('Error', data);
     this.state.setError(data.error, data.errors, this.options.resetOnError);
-    this.capturedForms.forEach((f) => {
+    Object.keys(this.capturedForms).forEach((fKey) => {
+      const f = this.capturedForms[fKey].instance;
       if (f.processAnswer) {
-        f.processAnswer({ data, status, statusText });
+        f.processAnswer({ data, status, statusText }, false); // false stands for 'dont display errors unrelated to form inputs'
       }
     });
     this.capturedPaginators.forEach((f) => {
-      if (f.processAnswer) {
-        f.processAnswer({ data, status, statusText }); // TODO: might be different API
+      if (f.setParams) {
+        f.setParams({ error: true }, this.options.serialize);
       }
     });
     this.render();
-    // TODO: set error status
     // TODO: remove data and display error
     // TODO: send validation errors to other forms
   }
@@ -286,6 +324,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.state.startLoading();
     this.beforeSubmit();
     this.lock();
+    this.updateUrl();
     const data = this.formRequest();
     const request = this.sf.ajax.send<IDatagridResponse>({
       url: this.options.url,
@@ -323,6 +362,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         ...renderOption, // TODO: we want to be able to override ui option too
         columns: (renderOption.columns && renderOption.columns.length) ? renderOption.columns : this.options.columns,
         sortable: (renderOption.sortable && renderOption.sortable.length) ? renderOption.sortable : this.options.sortable,
+        paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
       }, this));
     });
   }
@@ -331,6 +371,103 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.grids.forEach((grid) => {
       grid.render(this.state);
     });
+  }
+
+  private serialize() {
+    const custom = this.state.getFilter();
+    const pagination = Object.keys(this.state.paginate)
+      .filter((k) => pageParams.indexOf(k) >= 0)
+      .reduce((map: any, key) => ({
+        ...map,
+        [key]: (this.state.paginate as any)[key],
+      }), {});
+    const sortOptions = this.state.sortBy ? { sortBy: this.state.sortBy, sortDir: this.state.sortDir } : {};
+
+    return {
+      ...custom,
+      ...pagination,
+      ...sortOptions,
+    };
+  }
+
+  private deserialize(values: { [value: string]: string }) {
+    const {
+      page, limit, cid, lid,
+      ...rest
+    } = values;
+    this.state.updatePaginator({
+      page: +page, limit: +limit, cid, lid,
+    }); // TODO: skip invalid page/limit values
+
+    const { sortBy, sortDir, ...rest2 } = rest;
+    if (sortBy) {
+      this.state.setSort(sortBy, sortDir as any || SortDirection.ASC); // TODO: skip
+    }
+
+    [...pageParams, ...sortParams].forEach((p) => delete rest2[p]);
+    this.state.urlData = rest2;
+  }
+
+  private initFromUrl() {
+    if (this.options.serialize) {
+      if (window.location.search) {
+        const urlData = this.getObjectFromUrl(this.defaults, typeof this.options.serialize === 'string' ? this.options.serialize : '');
+        if (Object.keys(urlData).length) {
+          this.deserialize(urlData);
+        }
+      }
+    }
+  }
+
+  private updateUrl() {
+    if (this.options.serialize) {
+      const data = this.serialize();
+      this.putObjectToUrl(data, this.defaults, typeof this.options.serialize === 'string' ? this.options.serialize : '');
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private getObjectFromUrl(defaults: any, prefix = '') {
+    const obj = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
+    const result = Object.keys(obj).reduce((map, oK) => {
+      if (!prefix || oK.indexOf(prefix) === 0) {
+        return {
+          ...map,
+          [oK.substr(prefix.length)]: (typeof obj[oK] !== 'undefined') ? obj[oK] : defaults[oK.substr(prefix.length)],
+        };
+      }
+      return map;
+    }, {});
+    return result;
+  }
+
+  private putObjectToUrl(obj1: any, defaults: any, prefix = '') {
+    if (!window.history) {
+      console.warn('Cant update URL without reload, skipping');
+      return;
+    }
+    const queryRaw = Object.keys(obj1).reduce((map, oK) => {
+      // eslint-disable-next-line eqeqeq
+      if (obj1[oK] && obj1[oK] != defaults[oK]) {
+        return { ...map, [`${prefix}${oK}`]: obj1[oK] };
+      }
+      return map;
+    }, {});
+    let obj2 = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
+    if (typeof this.options.serialize === 'string') {
+      Object.keys((k: string) => { // Remove params belonging to this table
+        if (k.indexOf(this.options.serialize.toString()) === 0) {
+          delete obj2[k];
+        }
+      });
+    } else {
+      obj2 = {}; // If table is not using prefixes, all params are that table params
+    }
+    const query = { ...obj2, ...queryRaw };
+    window.history.pushState({}, document.title, stringifyUrl({
+      url: `${window.location.protocol}//${window.location.host}${window.location.pathname}`,
+      query,
+    }));
   }
 }
 

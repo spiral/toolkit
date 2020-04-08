@@ -14,10 +14,16 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     grids: GridRenderer[];
     sf: ISpiralFramework;
     state: DatagridState<Item>;
-    capturedForms: Array<any>;
+    capturedForms: {
+        [id: string]: {
+            instance: any;
+            fields: Array<string>;
+        };
+    };
     capturedPaginators: Array<any>;
+    private defaults;
     private columnInfo;
-    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
+    constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     private registerFormInstance;
     private registerPaginatorInstance;
     captureForms(): void;
@@ -36,5 +42,11 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     request(): Promise<void>;
     createRenderers(): void;
     render(): void;
+    private serialize;
+    private deserialize;
+    private initFromUrl;
+    private updateUrl;
+    private getObjectFromUrl;
+    private putObjectToUrl;
 }
 export default Datagrid;

@@ -38,5 +38,10 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 - `packages/lock` - lock module for the toolkit
 - `packages/core` - main toolkit package
 
+Windows
+------
+
+On windows execute `git config core.autocrlf false` to disable automatic line ending conversion.
+
 --------
 MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).

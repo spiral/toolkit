@@ -4,3 +4,4 @@
 *.css		text eol=lf
 *.php		text eol=lf
 *.json		text eol=lf
+packages/*/dist/**/* binary

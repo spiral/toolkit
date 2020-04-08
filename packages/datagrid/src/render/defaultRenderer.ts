@@ -11,7 +11,9 @@ export const defaultRenderer: IGridRenderOptions = {
     tableClassName: 'table table-striped',
     cellClassName: {},
     rowClassName: '',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     cellAttributes: (cellMeta) => ({}),
-    rowAttributes: (rowlMeta) => ({}),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    rowAttributes: (rowMeta) => ({}),
   },
 };

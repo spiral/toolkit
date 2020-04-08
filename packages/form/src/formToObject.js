@@ -92,25 +92,34 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     // Checkboxes are a special case. We have to grab each checked values
     // and put them into an array.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'checkbox') {
-      if (domNode.checked) {
-        if (!result[keys]) {
-          result[keys] = [];
+      if (value) { // Looks like checkbox array
+        if (domNode.checked) {
+          if (!result[keys]) {
+            result[keys] = [];
+          }
+          result[keys].push(value);
         }
-        result[keys].push(value);
-        return;
+      } else {
+        result[keys] = domNode.checked ? 1 : 0; // Single checkbox
       }
       return;
     }
 
+
     // Multiple select is a special case.
     // We have to grab each selected option and put them into an array.
-    if (domNode.nodeName === 'SELECT' && domNode.type === 'select-multiple') {
-      result[keys] = [];
-      const DOMchilds = domNode.querySelectorAll('option[selected]');
-      if (DOMchilds) {
-        this.forEach(DOMchilds, (child) => {
-          result[keys].push(child.value);
-        });
+    if (domNode.nodeName === 'SELECT') {
+      if (domNode.type === 'select-multiple') {
+        result[keys] = [];
+        const DOMchilds = domNode.querySelectorAll('option[selected]'); // TODO: that wont work
+        if (DOMchilds) {
+          this.forEach(DOMchilds, (child) => {
+            result[keys].push(child.value);
+          });
+        }
+      } else {
+        // const selected = domNode.querySelector('option[selected]');
+        result[keys] = value; // select.value isn't getting proper value for value-less options
       }
       return;
     }
@@ -128,9 +137,8 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     this.addChild(result[keys[0]], domNode, keys.splice(1, keys.length), value);
   }
 
-  // return result; // ?
+// return result; // ?
 };
-
 FormToObject.prototype.setFormObj = function () {
   let test;
   let i = 0;
