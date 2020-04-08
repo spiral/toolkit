@@ -19,13 +19,13 @@ export declare class Events {
     constructor(allowedEvents?: string[] | undefined);
     on(events: string, callback: IEventCallback): void;
     /**
-     * @deprecated
-     */
+       * @deprecated
+       */
     registerAction(events: string, callback: IEventCallback): void;
     off(events: string, callback: IEventCallback): void;
     trigger(event: string, data?: any): void;
     /**
-     * @deprecated
-     */
+       * @deprecated
+       */
     performAction(event: string, data?: any): void;
 }

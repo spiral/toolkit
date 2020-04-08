@@ -12,41 +12,41 @@ export interface IEventDescription {
  */
 export declare class DOMEvents {
     /**
-     * Internal storage for events
-     * @property {Array.<Object>} DOMEvents - dom events array
-     * @property {Object} DOMEvents.DOMNode -   DOM node
-     * @property {String} DOMEvents.eventType -   Event type
-     * @property {Function} DOMEvents.eventFunction -   Function
-     * @property {Boolean} DOMEvents.useCapture=false -   useCapture
-     * @property {Object} ... -   another object
-     * @private
-     */
+       * Internal storage for events
+       * @property {Array.<Object>} DOMEvents - dom events array
+       * @property {Object} DOMEvents.DOMNode -   DOM node
+       * @property {String} DOMEvents.eventType -   Event type
+       * @property {Function} DOMEvents.eventFunction -   Function
+       * @property {Boolean} DOMEvents.useCapture=false -   useCapture
+       * @property {Object} ... -   another object
+       * @private
+       */
     private DOMEventsStorage;
     /**
-     * Add event(s) to node(s).
-     * @param {Array.<Object>|Object} events - event array or event itself
-     * @param {Object} events.DOMNode -   DOM node
-     * @param {String} events.eventType -   Event type
-     * @param {Function} events.eventFunction -   Function
-     * @param {Boolean} [events.useCapture=false] -   useCapture
-     * @example
-     * var DOMEventsInstance = new DOMEvents();
-     * var eventOne = {
-     *      DOMNode: document.getElementById("example"),
-     *      eventType: "click",
-     *      eventFunction: function (e) {
-     *          console.log("Hi there. Native  DOM events is:",e);
-     *      }
-     * }
-     *  var eventTwo = {
-     *      DOMNode: document.getElementById("example2"),
-     *      eventType: "mousedown",
-     *      eventFunction: function (e) {
-     *          console.log("Hi there. mousedown event. Native  DOM events is:",e);
-     *      }
-     * }
-     *  DOMEventsInstance.add([eventOne,eventTwo]);
-     */
+       * Add event(s) to node(s).
+       * @param {Array.<Object>|Object} events - event array or event itself
+       * @param {Object} events.DOMNode -   DOM node
+       * @param {String} events.eventType -   Event type
+       * @param {Function} events.eventFunction -   Function
+       * @param {Boolean} [events.useCapture=false] -   useCapture
+       * @example
+       * var DOMEventsInstance = new DOMEvents();
+       * var eventOne = {
+       *      DOMNode: document.getElementById("example"),
+       *      eventType: "click",
+       *      eventFunction: function (e) {
+       *          console.log("Hi there. Native  DOM events is:",e);
+       *      }
+       * }
+       *  var eventTwo = {
+       *      DOMNode: document.getElementById("example2"),
+       *      eventType: "mousedown",
+       *      eventFunction: function (e) {
+       *          console.log("Hi there. mousedown event. Native  DOM events is:",e);
+       *      }
+       * }
+       *  DOMEventsInstance.add([eventOne,eventTwo]);
+       */
     add(events: IEventDescription | IEventDescription[]): void;
     /**
      * Remove all dom events registered with this instance (added by method add)

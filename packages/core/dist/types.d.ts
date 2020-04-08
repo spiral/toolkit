@@ -1,9 +1,9 @@
-import type { Events } from 'core/Events';
-import type { Ajax } from 'core/Ajax';
+import type { Events } from './core/Events';
+import type { Ajax } from './core/Ajax';
+import type { tools } from './sf';
 import type BaseDOMConstructor from './core/BaseDOMConstructor';
 import type DOMEvents from './helpers/DOMEvents';
 import type domTools from './helpers/domTools';
-import type { tools } from 'sf';
 export interface ISFCore {
     Ajax: typeof Ajax;
     BaseDOMConstructor: typeof BaseDOMConstructor;
@@ -20,12 +20,12 @@ export declare type ISFInstance = any & {
 };
 export interface IInstancesController {
     /**
-     * Register new instance type
-     * @param {Function} constructorFunction - constructor function of instance
-     * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-     * controlled by DomMutation. But you still can use it from JS.
-     * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-     */
+       * Register new instance type
+       * @param {Function} constructorFunction - constructor function of instance
+       * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
+       * controlled by DomMutation. But you still can use it from JS.
+       * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
+       */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
     addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
     removeInstance: (instanceType: string, node: Element) => ISFInstance;
@@ -56,12 +56,12 @@ export interface ISpiralFramework {
         };
     };
     /**
-     * Register new instance type
-     * @param {Function} constructorFunction - constructor function of instance
-     * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-     * controlled by DomMutation. But you still can use it from JS.
-     * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-     */
+       * Register new instance type
+       * @param {Function} constructorFunction - constructor function of instance
+       * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
+       * controlled by DomMutation. But you still can use it from JS.
+       * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
+       */
     registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
     addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
     removeInstance: (instanceType: string, node: Element) => ISFInstance;

@@ -19,102 +19,102 @@ export declare class BaseDOMConstructor {
     node: Element;
     options: any;
     /**
-     * This is a options to generate.
-     * You should provide processor or value.
-     * @type {Object}
-     * @property {Object} propertyKey - object of property
-     * @property {String} propertyKey.value - default value to return
-     * @property {String} [propertyKey.domAttr] - dom attribute to grab data
-     * @property {Function} [propertyKey.processor] -  processor to process data before return
-     * @property {Object}  ... - Another object of one property
-     * @type {{}}
-     *  @example
-     * "someAttribute": {// key
-     *      value: true, //default Value
-     *      domAttr: "data-some-attribute", // attribute from node to grab
-     *      processor: function (node,val,self) { //processor to process values before return
-     *          //some calculations
-     *      return someValue;
-     *      }
-     *  },
-     *  "anotherAttribute":{...},
-     *  "..."
-     *
-     *  @example
-     *  //return node as value
-     *  "context": {
-     *      "processor": function (node,val,key) { //processor
-     *          return node;
-     *      }
-     *  },
-     *  "Another-key":{...},
-     *  "..."
-     * @example
-     * //Grab attribute "data-attribute" as "MyAttribute" if attribute not provided return "DefaultValue"
-     * // Dom node <div data-attribute="someValue"></div>
-     * "MyAttribute": {
-     *      value: "DefaultValue",
-     *      domAttr: "data-attribute"
-     *  }
-     *  //after processing we should have
-     *  {"MyAttribute":"someValue"}
-     *
-     *  @example
-     * //Grab attribute "data-attribute" as "MyAttribute" and return some value instead
-     * //Dom node  <div data-attribute="someValue"></div>
-     * "MyAttribute": {
-     *      domAttr: "data-attribute",
-     *      processor: function (node,val,self) {
-     *          return val+"SomeCalculation";
-     *      }
-     *  }
-     *  //after processing we should have
-     *  {"MyAttribute":"someValueSomeCalculation"}
-     *
-     * @example
-     * //return function as value
-     * processAnswer: {
-     *      "value": function (options) {
-     *         return "someVal";
-     *      }
-     *  //after processing we should have
-     *  {"processAnswer":function (options) {
-     *         return "someVal";
-     *      }
-     *   }
-     *
-     * @example
-     * //return init time as value
-     * initTime: {
-     *      "processor": function (node,val,self) {
-     *         return new Date().getTime;
-     *      }
-     *  //after processing we should have
-     *  {"initTime":1429808977404}
-     * @example
-     * //return other value instead of real one
-     * processAnswer: {
-     *      "processor": function (node,val,self) {
-     *         return "someVal";
-     *      }
-     *  //after processing we should have
-     *  {"processAnswer":"someVal"}
-     */
+       * This is a options to generate.
+       * You should provide processor or value.
+       * @type {Object}
+       * @property {Object} propertyKey - object of property
+       * @property {String} propertyKey.value - default value to return
+       * @property {String} [propertyKey.domAttr] - dom attribute to grab data
+       * @property {Function} [propertyKey.processor] -  processor to process data before return
+       * @property {Object}  ... - Another object of one property
+       * @type {{}}
+       *  @example
+       * "someAttribute": {// key
+       *      value: true, //default Value
+       *      domAttr: "data-some-attribute", // attribute from node to grab
+       *      processor: function (node,val,self) { //processor to process values before return
+       *          //some calculations
+       *      return someValue;
+       *      }
+       *  },
+       *  "anotherAttribute":{...},
+       *  "..."
+       *
+       *  @example
+       *  //return node as value
+       *  "context": {
+       *      "processor": function (node,val,key) { //processor
+       *          return node;
+       *      }
+       *  },
+       *  "Another-key":{...},
+       *  "..."
+       * @example
+       * //Grab attribute "data-attribute" as "MyAttribute" if attribute not provided return "DefaultValue"
+       * // Dom node <div data-attribute="someValue"></div>
+       * "MyAttribute": {
+       *      value: "DefaultValue",
+       *      domAttr: "data-attribute"
+       *  }
+       *  //after processing we should have
+       *  {"MyAttribute":"someValue"}
+       *
+       *  @example
+       * //Grab attribute "data-attribute" as "MyAttribute" and return some value instead
+       * //Dom node  <div data-attribute="someValue"></div>
+       * "MyAttribute": {
+       *      domAttr: "data-attribute",
+       *      processor: function (node,val,self) {
+       *          return val+"SomeCalculation";
+       *      }
+       *  }
+       *  //after processing we should have
+       *  {"MyAttribute":"someValueSomeCalculation"}
+       *
+       * @example
+       * //return function as value
+       * processAnswer: {
+       *      "value": function (options) {
+       *         return "someVal";
+       *      }
+       *  //after processing we should have
+       *  {"processAnswer":function (options) {
+       *         return "someVal";
+       *      }
+       *   }
+       *
+       * @example
+       * //return init time as value
+       * initTime: {
+       *      "processor": function (node,val,self) {
+       *         return new Date().getTime;
+       *      }
+       *  //after processing we should have
+       *  {"initTime":1429808977404}
+       * @example
+       * //return other value instead of real one
+       * processAnswer: {
+       *      "processor": function (node,val,self) {
+       *         return "someVal";
+       *      }
+       *  //after processing we should have
+       *  {"processAnswer":"someVal"}
+       */
     readonly optionsToGrab: {
         [option: string]: IOptionToGrab;
     };
     /**
-     * Init method. Call after construct instance
-     * @param {Object} sf
-     * @param {Object} node  DomNode of form
-     * @param {Object} [options] all options to override default
-     */
+       * Init method. Call after construct instance
+       * @param {Object} sf
+       * @param {Object} node  DomNode of form
+       * @param {Object} [options] all options to override default
+       */
     init(sf: ISpiralFramework, node: Element, options: any): void;
     /**
-     * Grab all options that described in optionsToGrab
-     * @param {Object} node domNode
-     * @return {Object}
-     */
+       * Grab all options that described in optionsToGrab
+       * @param {Object} node domNode
+       * @return {Object}
+       */
     grabOptions(node: Element): {
         [key: string]: any;
     };

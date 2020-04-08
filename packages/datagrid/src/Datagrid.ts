@@ -287,7 +287,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.beforeSubmit();
     this.lock();
     const data = this.formRequest();
-    const request = this.sf.ajax.send<{ data: IDatagridResponse }>({
+    const request = this.sf.ajax.send<IDatagridResponse>({
       url: this.options.url,
       method: this.options.method,
       headers: this.options.headers,

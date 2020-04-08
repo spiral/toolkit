@@ -6,36 +6,36 @@ export declare class InstancesController {
     events: Events;
     constructor(spiral: ISpiralFramework);
     /**
-     * Register new instance type
-     * @param {Function} constructorFunction - constructor function of instance
-     * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-     * controlled by DomMutation. But you still can use it from JS.
-     * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-     */
+       * Register new instance type
+       * @param {Function} constructorFunction - constructor function of instance
+       * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
+       * controlled by DomMutation. But you still can use it from JS.
+       * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
+       */
     registerInstanceType(constructorFunction: ISpiralInstanceClass, cssClassName?: string, isSkipInitialization?: boolean): void;
     /**
-     * Old method to register instance type
-     * @param {*} className
-     * @param {*} constructorFunction
-     * @param {*} isSkipInitialization
-     * @return {*}
-     * @deprecated
-     */
+       * Old method to register instance type
+       * @param {*} className
+       * @param {*} constructorFunction
+       * @param {*} isSkipInitialization
+       * @return {*}
+       * @deprecated
+       */
     addInstanceType(className: string, constructorFunction: ISpiralInstanceClass, isSkipInitialization?: boolean): void;
     /**
-     * Add instance
-     * @param {String} instanceName - name of instance
-     * @param {Object} node - dom node
-     * @param {Object} [options] all options for send to the constructor
-     * @return {boolean}
-     */
+       * Add instance
+       * @param {String} instanceName - name of instance
+       * @param {Object} node - dom node
+       * @param {Object} [options] all options for send to the constructor
+       * @return {boolean}
+       */
     addInstance(instanceName: string, node: Element, options?: any): false | ISpiralInstanceClass;
     /**
-     * Remove instance.
-     * @param {String} instanceName - name of instance class
-     * @param {Object|String} node - dom node ID
-     * @return {boolean}
-     */
+       * Remove instance.
+       * @param {String} instanceName - name of instance class
+       * @param {Object|String} node - dom node ID
+       * @return {boolean}
+       */
     removeInstance(instanceName: string, node: Element): boolean;
     /**
      * Get instance. Return instance object of this dom node
