@@ -12,7 +12,7 @@ import { Events } from './core/Events';
 
 import InstancesController from './core/InstancesController';
 
-import tools1 from './helpers/tools';
+import {resolveKeyPath} from './helpers/tools';
 import type {ISFCore, ISFHelpers} from './types';
 
 export const core: ISFCore = {
@@ -28,4 +28,4 @@ export const helpers: ISFHelpers = {
   domTools,
 };
 
-export const tools = tools1;
+export const tools = {resolveKeyPath};

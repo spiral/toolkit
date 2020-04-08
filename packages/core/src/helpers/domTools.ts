@@ -15,3 +15,5 @@ export const closest = (el: Element, selectors: string | string[]) => {
     }
     return false;
 };
+
+export default {closest};

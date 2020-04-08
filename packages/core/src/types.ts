@@ -1,5 +1,8 @@
-import type { Events } from "core/Events";
-import type { Ajax } from "core/Ajax";
+import type {Events} from 'core/Events';
+import type {Ajax} from 'core/Ajax';
+import type DOMEvents from './helpers/DOMEvents';
+import type domTools from './helpers/domTools';
+import type { tools } from 'sf';
 
 export interface IBaseDOMConstructor {
     optionsToGrab: { [key: string]: any };
@@ -19,8 +22,8 @@ export interface ISFCore {
 }
 
 export interface ISFHelpers {
-    DOMEvents: any,
-    domTools: any,
+    DOMEvents: typeof DOMEvents,
+    domTools: typeof domTools,
 }
 
 export type ISFInstance = any;
@@ -46,14 +49,14 @@ export interface ISpiralFramework {
     ajax: Ajax,
     core: ISFCore,
     helpers: ISFHelpers,
-    tools: any;
+    tools: typeof tools;
     events: Events,
     createModulePrototype: Function,
     instancesController: IInstancesController;
     closest: any;
     resolveKeyPath: any;
     domMutation: any;
-    options: { instances: {[id: string]: ISFInstance} }
+    options: { instances: { [id: string]: ISFInstance } }
     /**
      * Register new instance type
      * @param {Function} constructorFunction - constructor function of instance
