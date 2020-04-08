@@ -1,7 +1,6 @@
 import { SortDirection } from '../constants';
-import { DatagridState } from '../DatagridState';
-import { IGridRenderOptions } from '../types';
-import { INormalizedColumnDescriptor } from '../utils';
+import type { DatagridState } from '../DatagridState';
+import { IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
 
 export const defaultHeaderCellRenderer = (column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => {
   const el = document.createElement('th');

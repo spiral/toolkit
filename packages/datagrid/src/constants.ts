@@ -17,3 +17,9 @@ export const LAST_ID_FIELD = 'lid';
 
 export const pageParams = ['page', 'limit', CURSOR_ID_FIELD, LAST_ID_FIELD];
 export const sortParams = ['sortBy', 'sortDir'];
+export const DEFAULT_LIMIT = 25;
+
+export enum PaginatorType {
+  pages = 'pages',
+  infinite = 'infinite',
+}

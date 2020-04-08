@@ -1,7 +1,5 @@
-import { INormalizedColumnDescriptor } from '../dist/utils';
-import { RequestMethod, SortDirection } from './constants';
-import { DatagridState } from './DatagridState';
-import { IPaginatorParams } from './Paginator';
+import { PaginatorType, RequestMethod, SortDirection } from './constants';
+import type { DatagridState } from './DatagridState';
 
 export interface IRowMeta<T = any> {
   id: string;
@@ -9,6 +7,13 @@ export interface IRowMeta<T = any> {
   selected: boolean;
   item: T;
   state: DatagridState;
+}
+
+export interface INormalizedColumnDescriptor {
+  id: string,
+  title: string,
+  sortable: boolean;
+  direction: SortDirection;
 }
 
 export interface ICellMeta<T = any> {
@@ -158,6 +163,32 @@ export interface IDatagridErrorResponse {
   originalError?: any;
   error: string;
   errors?: {[fieldName: string]: string}
+}
+
+export interface IPaginatorOptions {
+  id: string,
+  type: PaginatorType,
+  fetchCount: boolean;
+  fetchCountOnce: boolean;
+  serialize: string | boolean;
+  onPageChange?: (params: IPaginatorParams) => void,
+  lockType: string,
+  className?: string,
+  limitOptions: Array<number>,
+}
+
+export interface IPaginatorParams {
+  page?: number,
+  limit?: number,
+  fetchCount?: boolean,
+  /**
+   * Optional 'last id' parameter
+   */
+  lid?: string,
+  /**
+   * Optional 'cursor id' parameter
+   */
+  cid?: string;
 }
 
 export interface IDatagridRequest {

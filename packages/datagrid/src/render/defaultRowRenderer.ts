@@ -1,5 +1,4 @@
-import { ICellMeta, IRowCellRenderer } from '../types';
-import { applyAttrributes } from '../utils';
+import { IRowCellRenderer } from '../types';
 
 export const defaultRowCellRenderer: IRowCellRenderer = (column, options, state, index) => {
   const el = document.createElement('td');
