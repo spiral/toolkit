@@ -1,7 +1,8 @@
-import {attachDefaultActions} from './core/ajax/baseActions';
-import {registerBaseEvents} from './core/events/baseEvents';
-import {core, tools, helpers} from './sf';
-import type {IInstancesController, ISpiralFramework} from './types';
+import { attachDefaultActions } from './core/ajax/baseActions';
+import { registerBaseEvents } from './core/events/baseEvents';
+import { core, tools, helpers } from './sf';
+import type { IInstancesController, ISpiralFramework } from './types';
+
 const options = { instances: {} };
 
 const sfWrapper: Partial<ISpiralFramework> = {

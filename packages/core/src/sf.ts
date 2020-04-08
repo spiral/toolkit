@@ -12,8 +12,8 @@ import { Events } from './core/Events';
 
 import InstancesController from './core/InstancesController';
 
-import {resolveKeyPath} from './helpers/tools';
-import type {ISFCore, ISFHelpers} from './types';
+import { resolveKeyPath } from './helpers/tools';
+import type { ISFCore, ISFHelpers } from './types';
 
 export const core: ISFCore = {
   Ajax,
@@ -28,4 +28,4 @@ export const helpers: ISFHelpers = {
   domTools,
 };
 
-export const tools = {resolveKeyPath};
+export const tools = { resolveKeyPath };

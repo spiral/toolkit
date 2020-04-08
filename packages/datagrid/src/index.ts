@@ -1,7 +1,7 @@
 import sf from '@spiral-toolkit/core';
 import DataGrid from './Datagrid';
 import Paginator from './Paginator';
-import {simpleCellFormatter} from './render/premade/simpleCellFormatter';
+import { simpleCellFormatter } from './render/premade/simpleCellFormatter';
 
 export const renders = {
   simpleCellFormatter,

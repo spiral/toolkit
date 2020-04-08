@@ -1,4 +1,4 @@
-import type {IOptionToGrab, ISpiralFramework} from '../types';
+import type { IOptionToGrab, ISpiralFramework } from '../types';
 
 /**
  * This a base constructor (class) for any DOM based instance.
@@ -15,12 +15,15 @@ import type {IOptionToGrab, ISpiralFramework} from '../types';
  * @constructor
  */
 export class BaseDOMConstructor {
-    public name: string = '';
-    public sf!: ISpiralFramework;
-    public node!: Element;
-    public options: any;
+  public name: string = '';
 
-    /**
+  public sf!: ISpiralFramework;
+
+  public node!: Element;
+
+  public options: any;
+
+  /**
      * This is a options to generate.
      * You should provide processor or value.
      * @type {Object}
@@ -102,61 +105,61 @@ export class BaseDOMConstructor {
      *  //after processing we should have
      *  {"processAnswer":"someVal"}
      */
-    public readonly optionsToGrab: {
-        [option: string]: IOptionToGrab
-    } = {};
+  public readonly optionsToGrab: {
+    [option: string]: IOptionToGrab
+  } = {};
 
-    /**
+  /**
      * Init method. Call after construct instance
      * @param {Object} sf
      * @param {Object} node  DomNode of form
      * @param {Object} [options] all options to override default
      */
-    init(sf: ISpiralFramework, node: Element, options: any) {
-        this.sf = sf;
-        this.node = node;
-        this.options = Object.assign(this.grabOptions(node), options);
-    };
+  init(sf: ISpiralFramework, node: Element, options: any) {
+    this.sf = sf;
+    this.node = node;
+    this.options = Object.assign(this.grabOptions(node), options);
+  }
 
-    /**
+  /**
      * Grab all options that described in optionsToGrab
      * @param {Object} node domNode
      * @return {Object}
      */
-    grabOptions(node: Element) {
-        const options: { [key: string]: any } = {};
-        let currentOptionValue;
-        let currentOption;
+  grabOptions(node: Element) {
+    const options: { [key: string]: any } = {};
+    let currentOptionValue;
+    let currentOption;
 
-        const optionsToGrab = this.optionsToGrab || (this as any)['__proto__'].optionsToGrab || {}; // TODO: get rid of __proto__, replace with static(?)
-        // for (const option in this.optionsToGrab) {
-        Object.keys(optionsToGrab).forEach((option) => {
+    // eslint-disable-next-line no-proto
+    const optionsToGrab = this.optionsToGrab || (this as any).__proto__.optionsToGrab || {}; // TODO: get rid of __proto__, replace with static(?)
+    // for (const option in this.optionsToGrab) {
+    Object.keys(optionsToGrab).forEach((option) => {
+      currentOptionValue = null;
 
-            currentOptionValue = null;
+      currentOption = optionsToGrab[option];
+      if (currentOption.value) { // we have default option. Let's grab it for first
+        currentOptionValue = currentOption.value;
+      }
 
-            currentOption = optionsToGrab[option];
-            if (currentOption.value) { // we have default option. Let's grab it for first
-                currentOptionValue = currentOption.value;
-            }
+      if (this.sf.options.instances[this.name] && this.sf.options.instances[this.name][option]) {
+        currentOptionValue = this.sf.options.instances[this.name][option];
+      }
 
-            if (this.sf.options.instances[this.name] && this.sf.options.instances[this.name][option]) {
-                currentOptionValue = this.sf.options.instances[this.name][option];
-            }
+      if (currentOption.domAttr && node.hasAttribute(currentOption.domAttr)) { // we can grab the attribute of node
+        currentOptionValue = node.getAttribute(currentOption.domAttr);
+      }
 
-            if (currentOption.domAttr && node.hasAttribute(currentOption.domAttr)) { // we can grab the attribute of node
-                currentOptionValue = node.getAttribute(currentOption.domAttr);
-            }
+      if (currentOption.processor) { // we have processor. Let's execute it
+        currentOptionValue = currentOption.processor.call(this, node, currentOptionValue, currentOption);
+      }
 
-            if (currentOption.processor) { // we have processor. Let's execute it
-                currentOptionValue = currentOption.processor.call(this, node, currentOptionValue, currentOption);
-            }
-
-            if (currentOptionValue !== null) {
-                options[option] = currentOptionValue;
-            }
-        });
-        return options;
-    };
+      if (currentOptionValue !== null) {
+        options[option] = currentOptionValue;
+      }
+    });
+    return options;
+  }
 }
 
 export default BaseDOMConstructor;

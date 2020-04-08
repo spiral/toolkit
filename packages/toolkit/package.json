@@ -15,7 +15,7 @@
     "clean-after-deploy": "rimraf node_modules/",
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js --fix",
-    "lint:js": "eslint \"src/**/*.js\""
+    "lint:js": "eslint \"src/**/*.js\" \"src/**/*.ts\""
   },
   "keywords": [
     "input",

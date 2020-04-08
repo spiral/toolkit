@@ -15,63 +15,63 @@
 export type IEventCallback = (data?: any) => any;
 
 export class Events {
-    private storage: { [eventName: string]: Array<IEventCallback> } = {};
+  private storage: { [eventName: string]: Array<IEventCallback> } = {};
 
-    constructor(private allowedEvents?: string[]) {
-    }
+  constructor(private allowedEvents?: string[]) {
+  }
 
-    on(events: string, callback: IEventCallback) {
-        const eventArr = events.replace(/\s{2,}/g, ' ').split(' ');
-        eventArr.forEach((event) => {
-            // event not inside allowed events
-            if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
-                console.warn('Events. Try to register event %s, but event is not allowed', event);
-                return;
-            }
-            if (!this.storage[events]) {
-                this.storage[event] = [];
-            }
-            this.storage[event].push(callback);
-        });
-    }
+  on(events: string, callback: IEventCallback) {
+    const eventArr = events.replace(/\s{2,}/g, ' ').split(' ');
+    eventArr.forEach((event) => {
+      // event not inside allowed events
+      if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
+        console.warn('Events. Try to register event %s, but event is not allowed', event);
+        return;
+      }
+      if (!this.storage[events]) {
+        this.storage[event] = [];
+      }
+      this.storage[event].push(callback);
+    });
+  }
 
-    /**
+  /**
      * @deprecated
      */
-    registerAction(events: string, callback: IEventCallback) {
-        return this.on(events, callback);
+  registerAction(events: string, callback: IEventCallback) {
+    return this.on(events, callback);
+  }
+
+
+  off(events: string, callback: IEventCallback) {
+    const eventArr = events.replace(/\s{2,}/g, ' ').split(' ');
+    eventArr.forEach((event) => {
+      // event not inside allowed events
+      if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
+        console.warn('Events. Try to deregister event %s, but event is not allowed', event);
+        return;
+      }
+      if (this.storage[event]) {
+        this.storage[event] = this.storage[event].filter((cb) => cb !== callback);
+      }
+    });
+  }
+
+  trigger(event: string, data?: any) {
+    // event not inside allowed events
+    if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
+      console.warn('Events. Try to trigger event %s, but event is not allowed', event);
+      return;
     }
-
-
-    off(events: string, callback: IEventCallback) {
-        const eventArr = events.replace(/\s{2,}/g, ' ').split(' ');
-        eventArr.forEach((event) => {
-            // event not inside allowed events
-            if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
-                console.warn('Events. Try to deregister event %s, but event is not allowed', event);
-                return;
-            }
-            if (this.storage[event]) {
-                this.storage[event] = this.storage[event].filter(cb => cb !== callback);
-            }
-        });
+    if (this.storage[event]) {
+      this.storage[event].forEach((cb) => cb(data));
     }
+  }
 
-    trigger(event: string, data?: any) {
-        // event not inside allowed events
-        if (this.allowedEvents && this.allowedEvents.indexOf(event) === -1) {
-            console.warn('Events. Try to trigger event %s, but event is not allowed', event);
-            return;
-        }
-        if (this.storage[event]) {
-            this.storage[event].forEach((cb) => cb(data));
-        }
-    }
-
-    /**
+  /**
      * @deprecated
      */
-    performAction(event: string, data?: any) {
-        return this.trigger(event, data);
-    }
+  performAction(event: string, data?: any) {
+    return this.trigger(event, data);
+  }
 }

@@ -1,8 +1,8 @@
 export interface IEventDescription {
-    DOMNode: Element,
-    eventType: string,
-    eventFunction: (this: Element, ev: any) => any,
-    useCapture?: boolean,
+  DOMNode: Element,
+  eventType: string,
+  eventFunction: (this: Element, ev: any) => any,
+  useCapture?: boolean,
 }
 
 /**
@@ -12,7 +12,7 @@ export interface IEventDescription {
  * @constructor
  */
 export class DOMEvents {
-    /**
+  /**
      * Internal storage for events
      * @property {Array.<Object>} DOMEvents - dom events array
      * @property {Object} DOMEvents.DOMNode -   DOM node
@@ -22,9 +22,9 @@ export class DOMEvents {
      * @property {Object} ... -   another object
      * @private
      */
-    private DOMEventsStorage: IEventDescription[] = [];
+  private DOMEventsStorage: IEventDescription[] = [];
 
-    /**
+  /**
      * Add event(s) to node(s).
      * @param {Array.<Object>|Object} events - event array or event itself
      * @param {Object} events.DOMNode -   DOM node
@@ -49,13 +49,13 @@ export class DOMEvents {
      * }
      *  DOMEventsInstance.add([eventOne,eventTwo]);
      */
-    add(events: IEventDescription | IEventDescription[]) {
-        const eventArray = Array.isArray(events) ? events : [events];
-        eventArray.forEach((val) => {
-            val.DOMNode.addEventListener(val.eventType as any, val.eventFunction, !!val.useCapture);
-            this.DOMEventsStorage.push(val);
-        }, this);
-    };
+  add(events: IEventDescription | IEventDescription[]) {
+    const eventArray = Array.isArray(events) ? events : [events];
+    eventArray.forEach((val) => {
+      val.DOMNode.addEventListener(val.eventType as any, val.eventFunction, !!val.useCapture);
+      this.DOMEventsStorage.push(val);
+    }, this);
+  }
 
 
   /**
@@ -69,7 +69,7 @@ export class DOMEvents {
       val.DOMNode.removeEventListener(val.eventType, val.eventFunction, val.useCapture);
     });
     this.DOMEventsStorage = [];
-  };
+  }
 }
 
 export default DOMEvents;

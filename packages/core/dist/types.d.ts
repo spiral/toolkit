@@ -76,3 +76,8 @@ export interface IOptionToGrab {
     domAttr?: string;
     processor?: Function;
 }
+export declare type ISpiralInstanceClass = Function & {
+    spiralFrameworkName?: string;
+    die?: () => void;
+    new (sf?: ISpiralFramework, node?: Element, options?: any): ISpiralInstanceClass;
+};
