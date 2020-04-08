@@ -23,14 +23,14 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     capturedPaginators: Array<any>;
     private defaults;
     private columnInfo;
-    constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
+    constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     private registerFormInstance;
     private registerPaginatorInstance;
     captureForms(): void;
     /**
-     * Sets sort for this field if not yet, or changes direction if already same
-     * @param fieldId
-     */
+       * Sets sort for this field if not yet, or changes direction if already same
+       * @param fieldId
+       */
     triggerSort(fieldId: string): void;
     private resetPaginator;
     private formRequest;

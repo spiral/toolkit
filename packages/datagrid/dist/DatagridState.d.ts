@@ -1,7 +1,6 @@
 import { SortDirection } from './constants';
-import Datagrid from './Datagrid';
-import { IPaginatorParams } from './Paginator';
-export declare const DEFAULT_LIMIT = 25;
+import type { Datagrid } from './Datagrid';
+import { IPaginatorParams } from './types';
 export declare class DatagridState<Item = any> {
     parent: Datagrid;
     private state;

@@ -1,4 +1,4 @@
-import Datagrid from '../Datagrid';
+import type { Datagrid } from '../Datagrid';
 import { DatagridState } from '../DatagridState';
 import { IGridRenderOptions } from '../types';
 export declare class GridRenderer {
