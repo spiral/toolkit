@@ -1,4 +1,4 @@
-import { IGridRenderOptions } from "../types";
+import { IGridRenderOptions } from '../types';
 
 export const defaultRenderer: IGridRenderOptions = {
   columns: [],
@@ -11,11 +11,7 @@ export const defaultRenderer: IGridRenderOptions = {
     tableClassName: 'table table-striped',
     cellClassName: {},
     rowClassName: '',
-    cellAttributes: cellMeta => {
-      return {};
-    },
-    rowAttributes: rowlMeta => {
-      return {};
-    }
+    cellAttributes: (cellMeta) => ({}),
+    rowAttributes: (rowlMeta) => ({}),
   },
-}
+};

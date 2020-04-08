@@ -1,4 +1,4 @@
-const core = require('@spiral-toolkit/core');
+const core = require('@spiral-toolkit/core').default;
 
 require('./input');
 

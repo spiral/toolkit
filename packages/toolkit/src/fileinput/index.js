@@ -1,5 +1,5 @@
 
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 const FileInput = require('./fileinput').default;
 
 sf.instancesController.registerInstanceType(FileInput, 'sf-js-file-input');

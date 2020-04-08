@@ -1,5 +1,5 @@
 
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 const Input = require('./input').default;
 
 sf.instancesController.registerInstanceType(Input, 'sf-js-input');

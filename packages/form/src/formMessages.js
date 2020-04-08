@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-template-curly-in-string */
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 
 const defaults = {
   // template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',

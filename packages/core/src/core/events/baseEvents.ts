@@ -1,15 +1,17 @@
-/* eslint-disable no-restricted-globals */
+import type { Events } from '../Events';
 
-module.exports = function baseEvents(events) {
-  events.on('redirect', (event) => {
+export const registerBaseEvents = (events: Events) => {
+  events.on('redirect', (event: any) => {
     const url = Object.prototype.toString.call(event) === '[object String]' ? event : event.url;
     // http://stackoverflow.com/questions/10687099/how-to-test-if-a-url-string-is-absolute-or-relative
     const isAbsolute = /^(?:[a-z]+:)?\/\//i.test(url);
     if (isAbsolute) {
+      // eslint-disable-next-line no-restricted-globals
       self.location.href = url;
     } else {
       const origin = window.location.origin
                 || (`${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}`);
+      // eslint-disable-next-line no-restricted-globals
       self.location.href = origin + ((url.charAt(0) === '/') ? url : (`/${url}`)); // Relative path
     }
   });
@@ -23,6 +25,7 @@ module.exports = function baseEvents(events) {
   });
 
   events.on('close', () => {
+    // eslint-disable-next-line no-restricted-globals
     self.close();
   });
 };

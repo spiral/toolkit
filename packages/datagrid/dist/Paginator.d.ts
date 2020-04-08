@@ -1,4 +1,5 @@
-import sf, { ISpiralFramework } from '@spiral-toolkit/core';
+import sf from '@spiral-toolkit/core';
+import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { IDataGridOptions } from './types';
 export declare enum PaginatorType {
     pages = "pages",
@@ -22,26 +23,12 @@ export interface IPaginatorParams {
     cursorId?: string;
 }
 export declare class Paginator extends sf.core.BaseDOMConstructor {
-    static spiralFrameworkName: string;
+    static readonly spiralFrameworkName: string;
+    readonly name: string;
     static defaultOptions: IPaginatorOptions;
     el?: Element;
-    protected optionsToGrab: {
-        id: {
-            value: string;
-            domAttr: string;
-        };
-        type: {
-            value: PaginatorType;
-            domAttr: string;
-        };
-        fetchCount: {
-            value: boolean;
-            domAttr: string;
-        };
-        fetchCountOnce: {
-            value: boolean;
-            domAttr: string;
-        };
+    readonly optionsToGrab: {
+        [option: string]: IOptionToGrab;
     };
     options: IPaginatorOptions;
     sf: ISpiralFramework;

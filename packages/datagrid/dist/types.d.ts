@@ -1,5 +1,5 @@
 import { INormalizedColumnDescriptor } from '../dist/utils';
-import { RequestMethod, SortDirection } from "./constants";
+import { RequestMethod, SortDirection } from './constants';
 import { DatagridState } from './DatagridState';
 import { IPaginatorParams } from './Paginator';
 export interface IRowMeta<T = any> {
