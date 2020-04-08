@@ -1,5 +1,3 @@
-import {IBodyWrapperRenderer} from '../types';
+import { IBodyWrapperRenderer } from '../types';
 
-export const defaultFooterWrapper: IBodyWrapperRenderer = (node, options, state) => {
-    return undefined;
-};
+export const defaultFooterWrapper: IBodyWrapperRenderer = (node, options, state) => undefined;

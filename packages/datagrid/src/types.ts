@@ -1,7 +1,7 @@
-import {INormalizedColumnDescriptor} from '../dist/utils';
-import { RequestMethod, SortDirection } from "./constants";
-import {DatagridState} from './DatagridState';
-import {IPaginatorParams} from './Paginator';
+import { INormalizedColumnDescriptor } from '../dist/utils';
+import { RequestMethod, SortDirection } from './constants';
+import { DatagridState } from './DatagridState';
+import { IPaginatorParams } from './Paginator';
 
 export interface IRowMeta<T = any> {
   id: string;
@@ -24,19 +24,19 @@ export interface IDataGridUIOptions<Item = any> {
   tableClassName?: string;
   wrapperClassName?: string;
   headerCellClassName?:
-      ((cellMeta: ICellMeta<Item>) => string) |
-      {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  ((cellMeta: ICellMeta<Item>) => string) |
+  {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
   headerCellAttributes?:
-      ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-      | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
+  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+  | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
   rowClassName?: ((rowMeta: IRowMeta<Item>) => string) | string,
   rowAttributes?: ((rowMeta: IRowMeta<Item>) => { [attr: string]: string }) | { [attr: string]: string },
   cellClassName?:
-      ((cellMeta: ICellMeta<Item>) => string) |
-      {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  ((cellMeta: ICellMeta<Item>) => string) |
+  {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
   cellAttributes?:
-      ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-      | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
+  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+  | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
 }
 
 export type IColumnDescriptor = string | {
@@ -55,7 +55,7 @@ export type IColumnDescriptor = string | {
    * Default sort direction
    */
   sortDir?: SortDirection;
-}
+};
 
 /**
  * Specifies field id or field id + default sort direction
@@ -63,7 +63,7 @@ export type IColumnDescriptor = string | {
 export type ISortDescriptor = string | {
   field: string;
   direction: SortDirection;
-}
+};
 
 export type IHeaderCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState)=>Element);
 export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
@@ -147,17 +147,17 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
 }
 
 export interface IDatagridResponse<Item = any> {
-    pagination: {
-      limit: number;
-      page: number;
-      count?: number; // Present if fetchCount = true;
-    },
-    data: Array<Item>
+  pagination: {
+    limit: number;
+    page: number;
+    count?: number; // Present if fetchCount = true;
+  },
+  data: Array<Item>
 }
 export interface IDatagridErrorResponse {
-    originalError?: any;
-    error: string;
-    errors?: {[fieldName: string]: string}
+  originalError?: any;
+  error: string;
+  errors?: {[fieldName: string]: string}
 }
 
 export interface IDatagridRequest {

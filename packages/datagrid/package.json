@@ -13,8 +13,8 @@
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",
     "lint": "yarn lint:js",
-    "lint:fix": "yarn lint:js --fix",
-    "lint:js": "eslint \"src/**/*.js\""
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "lint:js": "eslint \"src/**/*.ts\""
   },
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/locker",
   "keywords": [

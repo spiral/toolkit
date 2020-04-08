@@ -1,4 +1,5 @@
-import sf, { ISpiralFramework } from '@spiral-toolkit/core';
+import sf from '@spiral-toolkit/core';
+import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { IDataGridOptions } from './types';
 export declare enum PaginatorType {
     pages = "pages",
@@ -9,7 +10,6 @@ export interface IPaginatorOptions {
     type: PaginatorType;
     fetchCount: boolean;
     fetchCountOnce: boolean;
-    serialize: string | boolean;
     onPageChange?: (params: IPaginatorParams) => void;
     lockType: string;
     className?: string;
@@ -19,50 +19,27 @@ export interface IPaginatorParams {
     page?: number;
     limit?: number;
     fetchCount?: boolean;
-    /**
-     * Optional 'last id' parameter
-     */
-    lid?: string;
-    /**
-     * Optional 'cursor id' parameter
-     */
-    cid?: string;
+    lastId?: string;
+    cursorId?: string;
 }
 export declare class Paginator extends sf.core.BaseDOMConstructor {
-    static spiralFrameworkName: string;
+    static readonly spiralFrameworkName: string;
+    readonly name: string;
     static defaultOptions: IPaginatorOptions;
-    el?: HTMLDivElement;
-    protected optionsToGrab: {
-        id: {
-            value: string;
-            domAttr: string;
-        };
-        type: {
-            value: PaginatorType;
-            domAttr: string;
-        };
-        fetchCount: {
-            value: boolean;
-            domAttr: string;
-        };
-        fetchCountOnce: {
-            value: boolean;
-            domAttr: string;
-        };
+    el?: Element;
+    readonly optionsToGrab: {
+        [option: string]: IOptionToGrab;
     };
     options: IPaginatorOptions;
     sf: ISpiralFramework;
     state: {
-        error: boolean;
+        fetching: boolean;
         count?: number;
     } & IPaginatorParams;
     constructor(sf: ISpiralFramework, node: Element, options: IDataGridOptions);
     unlock(): void;
     lock(): void;
-    setParams(params: IPaginatorParams & {
-        fetching?: boolean;
-        error?: boolean;
-    }, serialize: string | boolean): void;
+    setParams(params: IPaginatorParams): void;
     private hasPages;
     private hasTotal;
     private hasLimitOptions;
