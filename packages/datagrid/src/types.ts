@@ -30,18 +30,18 @@ export interface IDataGridUIOptions<Item = any> {
   wrapperClassName?: string;
   headerCellClassName?:
   ((cellMeta: ICellMeta<Item>) => string) |
-  {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   headerCellAttributes?:
   ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-  | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
+  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
   rowClassName?: ((rowMeta: IRowMeta<Item>) => string) | string,
   rowAttributes?: ((rowMeta: IRowMeta<Item>) => { [attr: string]: string }) | { [attr: string]: string },
   cellClassName?:
   ((cellMeta: ICellMeta<Item>) => string) |
-  {[fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string)},
+  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   cellAttributes?:
   ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-  | {[fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })},
+  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
 }
 
 export type IColumnDescriptor = string | {
@@ -70,13 +70,49 @@ export type ISortDescriptor = string | {
   direction: SortDirection;
 };
 
-export type IHeaderCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState)=>Element);
-export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
-export type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions)=>Element);
-export type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
-export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState)=>Element | undefined);
-export type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number)=>Element);
-export type IRowWrapperRenderer =((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number)=>Element);
+
+export type CellRenderFunction =
+  ((
+    cellValue: any, // Cell value if column id matches dataset, undefined for custom columns
+    rowItem: any, // Row item, can be used for custom render of cross-dependent fields
+    column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions,
+    rowIndex: number,
+    state: DatagridState,
+  )
+  => Element | string | undefined);
+
+/**
+ * Allows to create custom element or no element
+ */
+export type CellRenderAdvanced = {
+  render: CellRenderFunction,
+  createEl: ()=>Element | undefined,
+};
+
+export type HeaderCellRenderFunction =
+  ((
+    column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions,
+    state: DatagridState,
+  )
+  => Element | string | undefined);
+
+export type HeaderCellRenderAdvanced = {
+  render: HeaderCellRenderFunction,
+  createEl: ()=>Element | undefined,
+};
+
+export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
+
+export type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
+
+export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
+export type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+
+export type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
 
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
@@ -91,10 +127,10 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   tableWrapper?: ITableWrapperRenderer;
   headerWrapper?: IHeaderWrapperRenderer;
   bodyWrapper?: IBodyWrapperRenderer;
-  headerList?: {[columnId: string]: IHeaderCellRenderer};
+  headerList?: { [columnId: string]: IHeaderCellRenderer };
   rowWrapper?: IRowWrapperRenderer;
   footerWrapper?: IFooterWrapperRenderer;
-  cells?: {[columnId: string]: IRowCellRenderer};
+  cells?: { [columnId: string]: IRowCellRenderer };
   /**
    * Add default paginator
    */
@@ -159,10 +195,11 @@ export interface IDatagridResponse<Item = any> {
   },
   data: Array<Item>
 }
+
 export interface IDatagridErrorResponse {
   originalError?: any;
   error: string;
-  errors?: {[fieldName: string]: string}
+  errors?: { [fieldName: string]: string }
 }
 
 export interface IPaginatorOptions {
@@ -194,6 +231,6 @@ export interface IPaginatorParams {
 export interface IDatagridRequest {
   fetchCount: boolean;
   paginate: IPaginatorParams,
-  filter: {[filterField: string]: string},
-  sort: {[sortField: string]: SortDirection},
+  filter: { [filterField: string]: string },
+  sort: { [sortField: string]: SortDirection },
 }

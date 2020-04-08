@@ -9,3 +9,4 @@ export declare const normalizeColumns: (columns: IColumnDescriptor[], sortables:
 export declare const applyAttrributes: (node: Element, attrs: {
     [name: string]: string;
 }) => void;
+export declare function isString(something: any): something is string;
