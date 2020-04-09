@@ -9,9 +9,10 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     readonly optionsToGrab: {
         [option: string]: IOptionToGrab;
     };
-    options: IDataGridOptions<Item>;
+    readonly options: IDataGridOptions<Item>;
+    readonly sf: ISpiralFramework;
+    readonly node: Element;
     grids: GridRenderer[];
-    sf: ISpiralFramework;
     state: DatagridState<Item>;
     capturedForms: {
         [id: string]: {
@@ -31,6 +32,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
      * @param fieldId
      */
     triggerSort(fieldId: string): void;
+    private setAllPaginators;
     private resetPaginator;
     private formRequest;
     private unlock;
@@ -43,6 +45,8 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     render(): void;
     private serialize;
     private deserialize;
+    private usePrefix;
+    private getPrefix;
     private initFromUrl;
     private updateUrl;
     private getObjectFromUrl;

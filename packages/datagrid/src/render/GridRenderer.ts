@@ -6,6 +6,7 @@ import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';
 import { defaultHeaderWrapper } from './defaultHeaderWrapper';
+import { defaultGridUiOptions, defaultRenderer } from './defaultRenderer';
 import { defaultRowWrapper } from './defaultRowWrapper';
 import { defaultTableWrapper } from './defaultTableWrapper';
 import { normalizedCellRenderer, normalizedHeaderCellRenderer } from './normalizers';
@@ -30,7 +31,10 @@ export class GridRenderer {
 
   private columnInfo: INormalizedColumnDescriptor[];
 
-  constructor(private options: IGridRenderOptions, private root: Datagrid) {
+  private options: IGridRenderOptions;
+
+  constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
+    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
   }

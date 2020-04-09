@@ -3,7 +3,7 @@ import { IBodyWrapperRenderer } from '../types';
 export const defaultBodyWrapper: IBodyWrapperRenderer = (node, options, state) => {
   const el = document.createElement('tbody');
   node.appendChild(el);
-  if (state.hasError) {
+  if (state.hasError && !options.dontRenderError) {
     const errorTr = document.createElement('tr');
     const errorTd = document.createElement('td');
     errorTd.colSpan = options.columns.length;

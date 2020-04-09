@@ -23,7 +23,8 @@
 .sf-table__empty {
   padding: 30px;
   text-align: center;
-  color: var(--info);
+  color: var(--dark);
+  background-color: var(--white);
 }
 
 .sf-table__error {
