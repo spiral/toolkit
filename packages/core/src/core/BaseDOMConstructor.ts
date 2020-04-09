@@ -115,7 +115,7 @@ export class BaseDOMConstructor {
      * @param {Object} node  DomNode of form
      * @param {Object} [options] all options to override default
      */
-  init(sf: ISpiralFramework, node: Element, options: any) {
+  public init(sf: ISpiralFramework, node: Element, options: any) {
     this.sf = sf;
     this.node = node;
     this.options = Object.assign(this.grabOptions(node), options);

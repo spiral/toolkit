@@ -117,7 +117,6 @@ export type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
   sortable: ISortDescriptor[];
-  ui: IDataGridUIOptions<Item>;
 }
 
 export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
@@ -135,6 +134,8 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
    * Add default paginator
    */
   paginator?: boolean;
+  ui: Partial<IDataGridUIOptions<Item>>;
+  dontRenderError?: boolean;
 }
 
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
@@ -152,6 +153,12 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * default to false
    */
   resetOnError: boolean;
+
+  /**
+   * By default error is displayed inside table, define errorMessageTarget to target specific form that will be responsible for displaying error message
+   */
+  errorMessageTarget?: string;
+
   /**
    * Data url to grab data from
    */
@@ -178,13 +185,21 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * pass string to have grid use specific prefix to params in url
    * pass false to not use it
    */
-  serialize: string | boolean;
+  serialize: boolean;
+
+  /**
+   * When using several datagrids that you want to be serialized in URL specify namespace that will be used as a prefix for URL params
+   * Not non-namespaced datagrids will consume ALL url query params.
+   */
+  namespace?: string;
 
   /**
    * Add default paginator below the table
    * @default true
    */
   paginator: boolean;
+
+  ui?: Partial<IDataGridUIOptions<Item>>;
 }
 
 export interface IDatagridResponse<Item = any> {

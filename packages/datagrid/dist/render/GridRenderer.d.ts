@@ -2,7 +2,6 @@ import type { Datagrid } from '../Datagrid';
 import { DatagridState } from '../DatagridState';
 import { IGridRenderOptions } from '../types';
 export declare class GridRenderer {
-    private options;
     private root;
     private instance;
     private wrapper;
@@ -12,7 +11,8 @@ export declare class GridRenderer {
     private bodyEl?;
     private paginatorEl?;
     private columnInfo;
-    constructor(options: IGridRenderOptions, root: Datagrid);
+    private options;
+    constructor(partialOptions: Partial<IGridRenderOptions>, root: Datagrid);
     private create;
     private createDefaultPaginator;
     private applyAdditionalCellAttributes;

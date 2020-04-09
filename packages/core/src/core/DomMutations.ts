@@ -6,12 +6,12 @@
  * @param {Function} instancesController.removeInstance  remove instance method
  * @constructor
  */
-import type {InstancesController} from "./InstancesController";
+import type { InstancesController } from './InstancesController';
 
 export class DomMutations {
   observer: MutationObserver;
-  constructor(public instancesController: InstancesController) {
 
+  constructor(public instancesController: InstancesController) {
     const config = { // config for MutationObserver
       attributes: true,
       childList: true,
@@ -21,12 +21,11 @@ export class DomMutations {
       attributeOldValue: true,
       attributeFilter: ['class'],
     };
-    this.observer = new MutationObserver((mutations: MutationRecord[])=>{ // call function when dom mutated.
+    this.observer = new MutationObserver((mutations: MutationRecord[]) => { // call function when dom mutated.
       this.onDomMutate(mutations);
     });
     this.observer.observe(document, config);// start observer
   }
-
 
 
   /**
@@ -40,7 +39,7 @@ export class DomMutations {
     if (classSelector.length === 1) { // if not registered any instanceTypes
       return false;
     }
-    mutations.forEach((mutation)=>{ // loop over mutation array
+    mutations.forEach((mutation) => { // loop over mutation array
       switch (mutation.type) {
         case 'attributes':
           this.processMutationAttributes(mutation, classArray);
@@ -60,7 +59,7 @@ export class DomMutations {
       }
     }, this);
     return true;
-  };
+  }
 
 
   processMutationAttributes(mutation: MutationRecord, classArray: string[]) {
@@ -77,7 +76,8 @@ export class DomMutations {
     addedRegisteredClasses.forEach((val) => {
       this.instancesController.addInstance(this.instancesController.getInstanceNameByCssClass(val), target);
     });
-  };
+  }
+
   /**
    * Process mutation on ChildList
    * @param {NodeList} nodesList array with nodes
@@ -86,35 +86,35 @@ export class DomMutations {
    * @param {Array} classArray - array of all registered classes
    */
   processMutationChildList(nodesList: NodeList, action: 'addInstance' | 'removeInstance', classSelector: string, classArray: string[]) {
-
     /**
      * Internal function for checking node class
      * @param {Object} node dom node
      */
-    const checkNode = (node: Element)=>{
+    const checkNode = (node: Element) => {
       classArray.forEach((className) => { // loop over registered classes
         if (node.classList.contains(className)) { // if class match try to add or remove instance for this node
           this.instancesController[action](this.instancesController.getInstanceNameByCssClass(className), node);
         }
       });
-    }
+    };
 
     [].forEach.call(nodesList, (val: Element) => { // loop over mutation nodes
-      if (val.nodeType !== 1 || val.nodeName === 'SCRIPT' || val.nodeName === 'LINK') { // do not process other nodes then ELEMENT_NODE https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType also ignore SCRIPT and LINK tag
+      // do not process other nodes then ELEMENT_NODE https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType also ignore SCRIPT and LINK tag
+      if (val.nodeType !== 1 || val.nodeName === 'SCRIPT' || val.nodeName === 'LINK') {
         return false;
       }
       checkNode(val);// check mutation node
       [].forEach.call(val.querySelectorAll(classSelector), checkNode);// query all nodes with required classes and check it
       return true;
     });
-  };
+  }
 
   /**
    * Stop listening the dom changes
    */
   stopObserve() {
     this.observer.disconnect();
-  };
+  }
 }
 
 export default DomMutations;

@@ -1,7 +1,7 @@
 import { attachDefaultActions } from './core/ajax/baseActions';
 import { registerBaseEvents } from './core/events/baseEvents';
 import { core, tools, helpers } from './sf';
-import type { IInstancesController, ISpiralFramework } from './types';
+import type { ISpiralFramework } from './types';
 
 const options = { instances: {} };
 

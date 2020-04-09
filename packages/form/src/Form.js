@@ -106,6 +106,18 @@ Form.prototype.optionsToGrab = {
     value: 'POST',
   },
   /**
+     * If any input changes should trigger form submit
+     * Value is debounce value
+     */
+  immediate: {
+    domAttr: 'data-immediate',
+    value: false,
+    processor(node, val) {
+      if (!val) return false;
+      return +val;
+    },
+  },
+  /**
      * Lock type when form sending <b>Default: "default"</b> @see sf.lock
      */
   lockType: {
@@ -207,6 +219,24 @@ Form.prototype.mixMessagesOptions = function () {
     ...global && global.messages && global.messages[this.options.messagesType],
     ...this.options.messages,
   };
+};
+
+Form.prototype.onDebouncedSubmit = function (e) {
+  if (this.sf.getInstance('lock', this.node)) {
+    // On lock we should'n do any actions
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+
+  if (this.options.immediate) {
+    clearTimeout(this._submitTimeout);
+    this._submitTimeout = setTimeout(() => {
+      this.onSubmit(e);
+    }, this.options.immediate);
+  }
+
+  return true;
 };
 
 /**
@@ -314,6 +344,7 @@ Form.prototype.optCallback = function (options, type) {
       return fn.call(this, options);
     }
   }
+  return undefined;
 };
 
 /**
@@ -370,13 +401,26 @@ Form.prototype.setOptions = function (opt) {
  * Add all events for forms
  */
 Form.prototype.addEvents = function () {
-  const that = this;
   this.DOMEvents.add([
     {
       DOMNode: this.options.context,
       eventType: 'submit',
-      eventFunction(e) {
-        that.onSubmit.call(that, e);
+      eventFunction: (e) => {
+        this.onSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'change',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'input',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
       },
     },
   ]);
