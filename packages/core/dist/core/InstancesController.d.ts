@@ -1,6 +1,6 @@
-import type { ISpiralFramework, ISpiralInstanceClass } from '../types';
+import type { ISpiralFramework, ISFInstanceConstructor, IInstancesController } from '../types';
 import { Events } from './Events';
-export declare class InstancesController {
+export declare class InstancesController implements IInstancesController {
     spiral: ISpiralFramework;
     private storage;
     events: Events;
@@ -12,7 +12,7 @@ export declare class InstancesController {
        * controlled by DomMutation. But you still can use it from JS.
        * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
        */
-    registerInstanceType(constructorFunction: ISpiralInstanceClass, cssClassName?: string, isSkipInitialization?: boolean): void;
+    registerInstanceType(constructorFunction: ISFInstanceConstructor, cssClassName?: string, isSkipInitialization?: boolean): void;
     /**
        * Old method to register instance type
        * @param {*} className
@@ -21,7 +21,7 @@ export declare class InstancesController {
        * @return {*}
        * @deprecated
        */
-    addInstanceType(className: string, constructorFunction: ISpiralInstanceClass, isSkipInitialization?: boolean): void;
+    addInstanceType(className: string, constructorFunction: ISFInstanceConstructor, isSkipInitialization?: boolean): void;
     /**
        * Add instance
        * @param {String} instanceName - name of instance
@@ -29,7 +29,7 @@ export declare class InstancesController {
        * @param {Object} [options] all options for send to the constructor
        * @return {boolean}
        */
-    addInstance(instanceName: string, node: Element, options?: any): false | ISpiralInstanceClass;
+    addInstance(instanceName: string, node: Element, options?: any): import("../types").ISFInstanceClass | undefined;
     /**
        * Remove instance.
        * @param {String} instanceName - name of instance class
@@ -41,10 +41,12 @@ export declare class InstancesController {
      * Get instance. Return instance object of this dom node
      * @param {String} instanceName - name of instance
      * @param {Object|String} node - dom node o dome node ID
-     * @param {boolean} [isReturnObject] - return object or instance
      * @return {boolean}
      */
-    getInstance(instanceName: string, node: Element | string, isReturnObject?: boolean): any;
+    getInstance(instanceName: string, node: Element | string): {
+        node: Element;
+        instance: import("../types").ISFInstanceClass;
+    } | undefined;
     /**
      * Get instances. Return array of instances objects
      * @param {String} instanceName - name of instance
@@ -52,7 +54,7 @@ export declare class InstancesController {
      */
     getInstances(instanceName: string): {
         node: Element;
-        instance: any;
+        instance: import("../types").ISFInstanceClass;
     }[];
     /**
      * Register addon for instance
