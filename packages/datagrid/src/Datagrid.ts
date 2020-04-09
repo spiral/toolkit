@@ -1,10 +1,8 @@
-import sf from '@spiral-toolkit/core';
-import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import * as assert from 'assert';
 import { parse, stringifyUrl } from 'query-string';
 import {
-  DEFAULT_LIMIT,
-  pageParams, RequestMethod, SortDirection, sortParams,
+  DEFAULT_LIMIT, pageParams, RequestMethod, SortDirection, sortParams,
 } from './constants';
 import { DatagridState } from './DatagridState';
 import Paginator from './Paginator';
@@ -15,7 +13,9 @@ import {
   IDataGridOptions,
   IDatagridRequest,
   IDatagridResponse,
-  IGridRenderOptions, INormalizedColumnDescriptor, IPaginatorParams,
+  IGridRenderOptions,
+  INormalizedColumnDescriptor,
+  IPaginatorParams,
 } from './types';
 import { normalizeColumns } from './utils';
 
@@ -50,7 +50,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     renderers: defaultRenderer,
   };
 
-  public readonly optionsToGrab: {[option: string]: IOptionToGrab} = {
+  public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     id: {
       value: Datagrid.defaultOptions.id,
       domAttr: 'id',
@@ -197,9 +197,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   /**
-     * Sets sort for this field if not yet, or changes direction if already same
-     * @param fieldId
-     */
+   * Sets sort for this field if not yet, or changes direction if already same
+   * @param fieldId
+   */
   triggerSort(fieldId: string) {
     if (this.state.sortBy === fieldId) {
       if (this.state.sortDir === SortDirection.ASC) {
@@ -325,12 +325,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.beforeSubmit();
     this.lock();
     this.updateUrl();
+    const isGet = this.options.method === RequestMethod.GET;
     const data = this.formRequest();
     const request = this.sf.ajax.send<IDatagridResponse>({
-      url: this.options.url,
+      url: isGet ? stringifyUrl({ url: this.options.url, query: data as any }) : this.options.url, // TODO: need to verify GET api is same
       method: this.options.method,
       headers: this.options.headers,
-      data,
+      data: isGet ? undefined : data,
     });
     try {
       const response: { data: IDatagridResponse } = await request;

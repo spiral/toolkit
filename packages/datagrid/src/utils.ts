@@ -46,3 +46,7 @@ export const applyAttrributes = (node: Element, attrs: {[name: string]: string})
     node.setAttribute(name, attrs[name]);
   });
 };
+
+export function isString(something: any): something is string {
+  return typeof something === 'string';
+}

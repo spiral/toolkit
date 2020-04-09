@@ -5,11 +5,10 @@ import { ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor } from '../t
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';
-import { defaultHeaderCellRenderer } from './defaultHeaderCellRenderer';
 import { defaultHeaderWrapper } from './defaultHeaderWrapper';
-import { defaultRowCellRenderer } from './defaultRowRenderer';
 import { defaultRowWrapper } from './defaultRowWrapper';
 import { defaultTableWrapper } from './defaultTableWrapper';
+import { normalizedCellRenderer, normalizedHeaderCellRenderer } from './normalizers';
 
 let instanceCounter = 1;
 
@@ -157,10 +156,20 @@ export class GridRenderer {
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
-          const headerCellRenderer = (this.options.headerList || {})[cI.id] || defaultHeaderCellRenderer;
-          const node = headerCellRenderer(cI, this.options, state);
-          this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
-          this.headerEl!.appendChild(node);
+          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id]);
+          const node = headerCellRenderer.createEl();
+          if (node) {
+            const rendered = headerCellRenderer.render(cI, this.options, state);
+            if (rendered) {
+              if (typeof rendered === 'string') {
+                node.innerHTML = rendered;
+              } else {
+                node.appendChild(rendered);
+              }
+              this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
+              this.headerEl!.appendChild(node);
+            }
+          }
         });
       }
     }
@@ -177,10 +186,21 @@ export class GridRenderer {
       state.data.forEach((item: any, index) => {
         const el = row(this.bodyEl!, this.options, state, index);
         this.columnInfo.forEach((cI) => {
-          const rowCellRenderer = (this.options.cells || {})[cI.id] || defaultRowCellRenderer;
-          const node = rowCellRenderer(cI, this.options, state, index);
-          this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
-          el.appendChild(node);
+          const value = item[cI.id];
+          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
+          const node = rowCellRenderer.createEl();
+          if (node) { // If no node generated, skip it, that might be custom tr render or colspan
+            const rendered = rowCellRenderer.render(value, item, cI, this.options, index, state);
+            if (rendered) { // If no content generated, skip it, that might be custom tr render or colspan
+              if (typeof rendered === 'string') {
+                node.innerHTML = rendered;
+              } else {
+                node.appendChild(rendered);
+              }
+              this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
+              el.appendChild(node);
+            }
+          }
         });
       });
     }

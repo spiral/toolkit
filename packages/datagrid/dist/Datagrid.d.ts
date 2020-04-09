@@ -1,5 +1,4 @@
-import sf from '@spiral-toolkit/core';
-import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { DatagridState } from './DatagridState';
 import { GridRenderer } from './render/GridRenderer';
 import { IDataGridOptions } from './types';
@@ -28,9 +27,9 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     private registerPaginatorInstance;
     captureForms(): void;
     /**
-       * Sets sort for this field if not yet, or changes direction if already same
-       * @param fieldId
-       */
+     * Sets sort for this field if not yet, or changes direction if already same
+     * @param fieldId
+     */
     triggerSort(fieldId: string): void;
     private resetPaginator;
     private formRequest;

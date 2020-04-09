@@ -79,12 +79,29 @@ export declare type ISortDescriptor = string | {
     field: string;
     direction: SortDirection;
 };
-export declare type IHeaderCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => Element);
+export declare type CellRenderFunction = ((cellValue: any, // Cell value if column id matches dataset, undefined for custom columns
+rowItem: any, // Row item, can be used for custom render of cross-dependent fields
+column: INormalizedColumnDescriptor, // Column meta
+options: IGridRenderOptions, rowIndex: number, state: DatagridState) => Element | string | undefined);
+/**
+ * Allows to create custom element or no element
+ */
+export declare type CellRenderAdvanced = {
+    render: CellRenderFunction;
+    createEl: () => Element | undefined;
+};
+export declare type HeaderCellRenderFunction = ((column: INormalizedColumnDescriptor, // Column meta
+options: IGridRenderOptions, state: DatagridState) => Element | string | undefined);
+export declare type HeaderCellRenderAdvanced = {
+    render: HeaderCellRenderFunction;
+    createEl: () => Element | undefined;
+};
+export declare type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
+export declare type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
 export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
 export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
 export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
 export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export declare type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number) => Element);
 export declare type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
 export interface ITableMeta<Item = any> {
     columns: IColumnDescriptor[];
