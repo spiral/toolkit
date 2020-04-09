@@ -344,6 +344,7 @@ Form.prototype.optCallback = function (options, type) {
       return fn.call(this, options);
     }
   }
+  return undefined;
 };
 
 /**

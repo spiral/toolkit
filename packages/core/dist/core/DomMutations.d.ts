@@ -6,7 +6,7 @@
  * @param {Function} instancesController.removeInstance  remove instance method
  * @constructor
  */
-import type { InstancesController } from "./InstancesController";
+import type { InstancesController } from './InstancesController';
 export declare class DomMutations {
     instancesController: InstancesController;
     observer: MutationObserver;

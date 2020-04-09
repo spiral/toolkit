@@ -1,6 +1,3 @@
-import { defaultRenderer } from './render/defaultRenderer';
-import { IDataGridOptions } from './types';
-
 export enum SortDirection {
   ASC = 'asc',
   DESC = 'desc'

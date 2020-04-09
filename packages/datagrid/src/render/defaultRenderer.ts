@@ -1,5 +1,7 @@
 import { RequestMethod } from '../constants';
-import { ICellMeta, IDataGridOptions, IGridRenderOptions, IRowMeta } from '../types';
+import {
+  ICellMeta, IDataGridOptions, IGridRenderOptions, IRowMeta,
+} from '../types';
 
 export const defaultGridUiOptions = {
   wrapperClassName: 'table-responsive',

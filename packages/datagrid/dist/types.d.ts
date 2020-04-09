@@ -127,6 +127,7 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
      */
     paginator?: boolean;
     ui: Partial<IDataGridUIOptions<Item>>;
+    dontRenderError?: boolean;
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;

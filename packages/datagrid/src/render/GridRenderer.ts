@@ -34,7 +34,7 @@ export class GridRenderer {
   private options: IGridRenderOptions;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
+    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
   }
