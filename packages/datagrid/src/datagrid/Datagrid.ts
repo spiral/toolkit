@@ -506,7 +506,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }, {});
     let obj2 = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
     if (this.usePrefix()) {
-      Object.keys((k: string) => { // Remove params belonging to this table
+      console.log('Removing');
+      Object.keys(obj2).forEach((k: string) => { // Remove params belonging to this table
         if (k.indexOf(this.getPrefix()) === 0) {
           delete obj2[k];
         }
