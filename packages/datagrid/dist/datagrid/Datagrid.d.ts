@@ -1,7 +1,9 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import ActionPanel from '../actionpanel/ActionPanel';
 import { DatagridState } from './DatagridState';
-import { GridRenderer } from './render/GridRenderer';
-import { IDataGridOptions } from './types';
+import Paginator from '../paginator/Paginator';
+import { GridRenderer } from '../render/GridRenderer';
+import { IDataGridOptions } from '../types';
 export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     static readonly spiralFrameworkName: string;
     readonly name: string;
@@ -20,12 +22,14 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
             fields: Array<string>;
         };
     };
-    capturedPaginators: Array<any>;
+    capturedPaginators: Array<Paginator>;
+    capturedActionPanels: Array<ActionPanel>;
     private defaults;
     private columnInfo;
     constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     private registerFormInstance;
     private registerPaginatorInstance;
+    registerActionPanelInstance(formInstance: any): void;
     captureForms(): void;
     /**
      * Sets sort for this field if not yet, or changes direction if already same

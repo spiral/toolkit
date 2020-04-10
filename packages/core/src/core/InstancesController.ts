@@ -1,4 +1,6 @@
-import type { ISFInstance, ISpiralFramework, ISFInstanceConstructor, IInstancesController } from '../types';
+import type {
+  ISFInstance, ISpiralFramework, ISFInstanceConstructor, IInstancesController,
+} from '../types';
 import { Events } from './Events';
 
 export class InstancesController implements IInstancesController {

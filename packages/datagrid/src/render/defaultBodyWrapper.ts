@@ -6,16 +6,15 @@ export const defaultBodyWrapper: IBodyWrapperRenderer = (node, options, state) =
   if (state.hasError && !options.dontRenderError) {
     const errorTr = document.createElement('tr');
     const errorTd = document.createElement('td');
-    errorTd.colSpan = options.columns.length;
+    errorTd.colSpan = options.columns.length + (options.selectable ? 1 : 0);
     errorTd.innerText = state.errorMessage || 'Unknown Error';
     errorTd.classList.add('sf-table__error');
     errorTr.appendChild(errorTd);
     el.appendChild(errorTr);
-  } else
-  if (state.data.length === 0) {
+  } else if (state.data.length === 0) {
     const emptyTr = document.createElement('tr');
     const emptyTd = document.createElement('td');
-    emptyTd.colSpan = options.columns.length;
+    emptyTd.colSpan = options.columns.length + (options.selectable ? 1 : 0);
     emptyTd.innerHTML = 'No Data';
     emptyTd.classList.add('sf-table__empty');
     emptyTr.appendChild(emptyTd);

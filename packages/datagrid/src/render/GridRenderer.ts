@@ -1,6 +1,13 @@
-import { PAGINATOR_CLASS_NAME } from '../constants';
-import type { Datagrid } from '../Datagrid';
-import { DatagridState } from '../DatagridState';
+import sf from '@spiral-toolkit/core';
+import ActionPanel from '../actionpanel/ActionPanel';
+import {
+  DATAGRID_CHECK_SELECT_ALL_ATTR,
+  DATAGRID_CHECK_SELECT_ATTR,
+  PAGINATOR_CLASS_NAME,
+  SelectionType,
+} from '../constants';
+import type { Datagrid } from '../datagrid/Datagrid';
+import { DatagridState } from '../datagrid/DatagridState';
 import { ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
@@ -21,13 +28,15 @@ export class GridRenderer {
 
   private tableEl!: Element;
 
-  private headerEl?: Element;
+  private headerEl?: {outer: Element, inner: Element};
 
   private footerEl?: Element;
 
   private bodyEl?: Element;
 
   private paginatorEl?: Element;
+
+  private actionPanelEl?: Element;
 
   private columnInfo: INormalizedColumnDescriptor[];
 
@@ -47,6 +56,9 @@ export class GridRenderer {
     this.root.node.innerHTML = '';
     this.root.node.appendChild(this.wrapper);
 
+    if (this.options.actions) {
+      this.createDefaultActions();
+    }
     if (this.options.paginator) {
       this.createDefaultPaginator();
     }
@@ -64,6 +76,26 @@ export class GridRenderer {
     this.root.node.appendChild(this.paginatorEl);
   }
 
+  private createDefaultActions() {
+    const id = `${Date.now()}${this.instance}`;
+    this.actionPanelEl = document.createElement('div');
+    this.root.node.appendChild(this.actionPanelEl);
+    if (!this.root.options.captureActionPanels) {
+      this.root.options.captureActionPanels = [];
+    }
+    this.root.options.captureActionPanels.push(id);
+    const panel = new ActionPanel(sf, this.actionPanelEl, {
+      id,
+      className: (state) => (state.hasSelection ? 'row no-gutters align-items-center px-3 py-2 border-bottom' : 'd-none'),
+      lockType: 'none',
+      noSelection: document.createElement('div'),
+      actionClassName: 'btn btn-sm',
+      selectionType: this.options.selectable?.type || SelectionType.SINGLE,
+      actions: this.options.actions!,
+    });
+    this.root.registerActionPanelInstance(panel);
+  }
+
 
   // eslint-disable-next-line class-methods-use-this
   private applyAdditionalCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, index: number) {
@@ -71,22 +103,21 @@ export class GridRenderer {
       id: column.id,
       column,
       index,
-      // rowSelected: (state as any).isSelected(index),
-      rowSelected: false, // TODO: fetch selection status from state
+      rowSelected: options.selectable ? state.isSelected(state.data[index][options.selectable.id]) : false,
       state,
       item: state.data[index],
     };
 
     if (options.ui.cellClassName) {
       if (typeof options.ui.cellClassName === 'function') {
-        el.classList.add(options.ui.cellClassName(cellMeta));
+        el.classList.add(...options.ui.cellClassName(cellMeta).split(' '));
       } else {
         const specific = options.ui.cellClassName[column.id];
         if (specific) {
           if (typeof specific === 'string') {
-            el.classList.add(specific);
+            el.classList.add(...specific.split(' '));
           } else {
-            el.classList.add(specific(cellMeta));
+            el.classList.add(...specific(cellMeta).split(' '));
           }
         }
       }
@@ -113,21 +144,21 @@ export class GridRenderer {
       id: column.id,
       column,
       index: 0,
-      rowSelected: false,
+      rowSelected: options.selectable ? state.areAllSelected() : false,
       state,
       item: null,
     };
 
     if (options.ui.headerCellClassName) {
       if (typeof options.ui.headerCellClassName === 'function') {
-        el.classList.add(options.ui.headerCellClassName(cellMeta));
+        el.classList.add(...options.ui.headerCellClassName(cellMeta).split(' '));
       } else {
         const specific = options.ui.headerCellClassName[column.id];
         if (specific) {
           if (typeof specific === 'string') {
-            el.classList.add(specific);
+            el.classList.add(...specific.split(' '));
           } else {
-            el.classList.add(specific(cellMeta));
+            el.classList.add(...specific(cellMeta).split(' '));
           }
         }
       }
@@ -152,11 +183,10 @@ export class GridRenderer {
     // Render header
     const headerRenderer = this.options.headerWrapper || defaultHeaderWrapper;
     if (this.headerEl) {
-      this.tableEl.removeChild(this.headerEl);
+      this.tableEl.removeChild(this.headerEl.outer);
     }
     this.headerEl = headerRenderer(this.tableEl, this.options, state);
     if (this.headerEl) {
-      this.tableEl.appendChild(this.headerEl);
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
@@ -171,7 +201,7 @@ export class GridRenderer {
                 node.appendChild(rendered);
               }
               this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
-              this.headerEl!.appendChild(node);
+              this.headerEl!.inner.appendChild(node);
             }
           }
         });
@@ -188,7 +218,7 @@ export class GridRenderer {
       this.tableEl.appendChild(this.bodyEl);
       const row = this.options.rowWrapper || defaultRowWrapper;
       state.data.forEach((item: any, index) => {
-        const el = row(this.bodyEl!, this.options, state, index);
+        const rowEl = row(this.bodyEl!, this.options, state, index);
         this.columnInfo.forEach((cI) => {
           const value = item[cI.id];
           const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
@@ -202,7 +232,7 @@ export class GridRenderer {
                 node.appendChild(rendered);
               }
               this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
-              el.appendChild(node);
+              rowEl.appendChild(node);
             }
           }
         });
@@ -218,6 +248,22 @@ export class GridRenderer {
     if (this.footerEl) {
       this.tableEl.appendChild(this.footerEl);
       // We assume footer render handles all data so no additional renders here
+    }
+  }
+
+  updateCheckboxes(state: DatagridState) {
+    if (this.root.options.selectable) {
+      const headerEl: HTMLInputElement | null | undefined = this.headerEl?.outer.querySelector(`input[${DATAGRID_CHECK_SELECT_ALL_ATTR}]`);
+      if (headerEl) {
+        headerEl.checked = state.areAllSelected();
+      }
+      const checkboxes = this.bodyEl?.querySelectorAll(`input[${DATAGRID_CHECK_SELECT_ATTR}]`);
+      if (checkboxes) {
+        checkboxes.forEach((checkbox: Element) => {
+          const el = (checkbox as HTMLInputElement);
+          el.checked = state.isSelected(el.value);
+        });
+      }
     }
   }
 }

@@ -1,13 +1,14 @@
 import sf, { IOptionToGrab, ISFInstance, ISpiralFramework } from '@spiral-toolkit/core';
 import * as assert from 'assert';
 import { parse, stringifyUrl } from 'query-string';
+import ActionPanel from '../actionpanel/ActionPanel';
 import {
-  DEFAULT_LIMIT, pageParams, RequestMethod, SortDirection, sortParams,
-} from './constants';
+  DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
+} from '../constants';
 import { DatagridState } from './DatagridState';
-import Paginator from './Paginator';
-import { defaultGridOptions } from './render/defaultRenderer';
-import { GridRenderer } from './render/GridRenderer';
+import Paginator from '../paginator/Paginator';
+import { defaultGridOptions } from '../render/defaultRenderer';
+import { GridRenderer } from '../render/GridRenderer';
 import {
   IDatagridErrorResponse,
   IDataGridOptions,
@@ -16,8 +17,8 @@ import {
   IGridRenderOptions,
   INormalizedColumnDescriptor,
   IPaginatorParams,
-} from './types';
-import { normalizeColumns } from './utils';
+} from '../types';
+import { normalizeColumns } from '../utils';
 
 
 // import './styles.css';
@@ -52,7 +53,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   capturedForms: { [id: string]: { instance: any, fields: Array<string> } } = {}; // TODO: type as sf.Form instance array
 
-  capturedPaginators: Array<any> = []; // TODO: type as sf.Paginator instance array
+  capturedPaginators: Array<Paginator> = []; // TODO: type as sf.Paginator instance array
+
+  capturedActionPanels: Array<ActionPanel> = []; // TODO: type as sf.Paginator instance array
 
   private defaults: IPaginatorParams & { sortBy?: string, sortDir?: SortDirection } = {
     page: 1, // TODO: different defaults depending on paginator type
@@ -156,6 +159,19 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
   }
 
+  public registerActionPanelInstance(formInstance: any) {
+    if (formInstance.options
+      && formInstance.options.id
+      && this.options.captureActionPanels
+      && this.options.captureActionPanels.indexOf(formInstance.options.id) >= 0) {
+      this.capturedActionPanels.push(formInstance);
+      if (this.options.selectable) {
+        (formInstance as ActionPanel).reconfigure({ selectionType: this.options.selectable!.type });
+        (formInstance as ActionPanel).setSelection(this.state.selection, this.state.selectedItems);
+      }
+    }
+  }
+
   captureForms() {
     const forms = this.sf.getInstances('form') || [];
     forms.forEach((f: { instance: ISFInstance }) => {
@@ -167,12 +183,20 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       this.registerPaginatorInstance(f.instance);
     });
 
+    const actionPanels = this.sf.getInstances(ActionPanel.spiralFrameworkName) || [];
+    actionPanels.forEach((f: { instance: ISFInstance }) => {
+      this.registerActionPanelInstance(f.instance);
+    });
+
     this.sf.instancesController.events.on('onAddInstance', ({ instance, type }: { instance: any, type: string }) => {
       if (type === 'form') {
         this.registerFormInstance(instance);
       }
       if (type === Paginator.spiralFrameworkName) {
         this.registerPaginatorInstance(instance);
+      }
+      if (type === ActionPanel.spiralFrameworkName) {
+        this.registerActionPanelInstance(instance);
       }
     });
   }
@@ -346,6 +370,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         sortable: (renderOption.sortable && renderOption.sortable.length) ? renderOption.sortable : this.options.sortable,
         paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
         dontRenderError: !!this.options.errorMessageTarget,
+        selectable: renderOption.selectable || this.options.selectable,
       }, this));
     });
   }
@@ -354,6 +379,41 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.grids.forEach((grid) => {
       grid.render(this.state);
     });
+  }
+
+  private updateCheckboxes() {
+    this.grids.forEach((grid) => {
+      grid.updateCheckboxes(this.state);
+    });
+    this.capturedActionPanels.forEach((a: ActionPanel) => {
+      a.setSelection(this.state.selection, this.state.selectedItems);
+    });
+  }
+
+  public toggleSelectionAll(checked: boolean) {
+    if (this.options.selectable) {
+      if (checked) {
+        this.state.selectAll();
+      } else {
+        this.state.resetSelection();
+      }
+    }
+    this.updateCheckboxes();
+  }
+
+  public toggleSelection(value: string, checked: boolean) {
+    if (this.options.selectable) {
+      if (this.options.selectable.type === SelectionType.MULTIPLE) {
+        if (checked) {
+          this.state.addToSelection(value);
+        } else {
+          this.state.removeFromSelection(value);
+        }
+      } else if (checked) {
+        this.state.selectSingle(value);
+      }
+    }
+    this.updateCheckboxes();
   }
 
   private serialize() {

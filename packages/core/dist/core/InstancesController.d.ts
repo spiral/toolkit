@@ -1,4 +1,4 @@
-import type { ISpiralFramework, ISFInstanceConstructor, IInstancesController } from '../types';
+import type { ISFInstance, ISpiralFramework, ISFInstanceConstructor, IInstancesController } from '../types';
 import { Events } from './Events';
 export declare class InstancesController implements IInstancesController {
     spiral: ISpiralFramework;
@@ -29,7 +29,7 @@ export declare class InstancesController implements IInstancesController {
        * @param {Object} [options] all options for send to the constructor
        * @return {boolean}
        */
-    addInstance(instanceName: string, node: Element, options?: any): import("../types").ISFInstanceClass | undefined;
+    addInstance(instanceName: string, node: Element, options?: any): import("../types").ISFInstanceClass<any> | undefined;
     /**
        * Remove instance.
        * @param {String} instanceName - name of instance class
@@ -45,7 +45,7 @@ export declare class InstancesController implements IInstancesController {
      */
     getInstance(instanceName: string, node: Element | string): {
         node: Element;
-        instance: import("../types").ISFInstanceClass;
+        instance: ISFInstance;
     } | undefined;
     /**
      * Get instances. Return array of instances objects
@@ -54,7 +54,7 @@ export declare class InstancesController implements IInstancesController {
      */
     getInstances(instanceName: string): {
         node: Element;
-        instance: import("../types").ISFInstanceClass;
+        instance: ISFInstance;
     }[];
     /**
      * Register addon for instance

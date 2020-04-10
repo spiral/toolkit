@@ -59,8 +59,11 @@ export interface IOptionToGrab {
     domAttr?: string;
     processor?: Function;
 }
-export interface ISFInstanceClass {
+export interface ISFInstanceClass<Options = any> {
     name: string;
+    sf: ISpiralFramework;
+    node: Element;
+    options: Options;
     die?: () => void;
 }
 export interface ISFInstanceConstructor {

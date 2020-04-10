@@ -1,12 +1,14 @@
-import { SortDirection } from './constants';
+import { SortDirection } from '../constants';
 import type { Datagrid } from './Datagrid';
-import { IPaginatorParams } from './types';
+import { IPaginatorParams } from '../types';
 export declare class DatagridState<Item = any> {
     parent: Datagrid;
     private state;
     constructor(parent: Datagrid);
     isSelected(val: string): boolean;
     areAllSelected(): boolean;
+    get selection(): Set<string>;
+    get selectedItems(): Item[];
     get isLoading(): boolean;
     startLoading(): void;
     stopLoading(): void;
