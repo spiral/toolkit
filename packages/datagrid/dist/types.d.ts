@@ -1,5 +1,6 @@
-import { PaginatorType, RequestMethod, SortDirection } from './constants';
-import type { DatagridState } from './DatagridState';
+import type { ActionPanel, FlexibleRenderDefinition } from './actionpanel/ActionPanel';
+import { PaginatorType, RequestMethod, SelectionType, SortDirection } from './constants';
+import type { DatagridState } from './datagrid/DatagridState';
 export interface IRowMeta<T = any> {
     id: string;
     index: number;
@@ -98,7 +99,10 @@ export declare type HeaderCellRenderAdvanced = {
 };
 export declare type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
 export declare type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
-export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => {
+    outer: Element;
+    inner: Element;
+} | undefined);
 export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
 export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
 export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
@@ -128,13 +132,31 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
     paginator?: boolean;
     ui: Partial<IDataGridUIOptions<Item>>;
     dontRenderError?: boolean;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
+    /**
+     * Render default action bar, expected to work with selections only
+     */
+    actions?: {
+        [action: string]: IActionDescriptor;
+    };
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;
     /**
-     * Id of forms or paginators to attach to and use their data in requests
+     * Url(for legacy compatibility) forms or paginators ids to attach to and use their data in requests
      */
     captureForms: string[];
+    /**
+     * Ids of actions panels to connect to
+     */
+    captureActionPanels?: string[];
     /**
      * lock type to use on grids
      */
@@ -184,6 +206,14 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      * @default true
      */
     paginator: boolean;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
     ui?: Partial<IDataGridUIOptions<Item>>;
 }
 export interface IDatagridResponse<Item = any> {
@@ -233,5 +263,31 @@ export interface IDatagridRequest {
     };
     sort: {
         [sortField: string]: SortDirection;
+    };
+}
+export interface IActionPanelState<Item = any> {
+    hasSelection: boolean;
+    selectedCount: number;
+    selectionType: SelectionType;
+    selectedItems: Array<Item>;
+    selectedKeys: Set<string>;
+}
+export interface IActionDescriptor {
+    renderAs: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    onClick: (state: IActionPanelState, root: ActionPanel, e: MouseEvent) => any;
+}
+export interface IActionPanelOptions {
+    id: string;
+    lockType: string;
+    noSelection?: string | Element;
+    selectionLabel?: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    actionClassName?: string | ((actionId: string, state: IActionPanelState) => string) | {
+        [actionId: string]: string;
+    };
+    selectionType: SelectionType;
+    actions: {
+        [action: string]: IActionDescriptor;
     };
 }

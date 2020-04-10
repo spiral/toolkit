@@ -1,4 +1,4 @@
-import type { IOptionToGrab, ISpiralFramework } from '../types';
+import type { IOptionToGrab, ISFInstanceClass, ISpiralFramework } from '../types';
 /**
  * This a base constructor (class) for any DOM based instance.
  * This constructor just grab all node attributes and generates options. All processed options stored at this.options
@@ -13,7 +13,7 @@ import type { IOptionToGrab, ISpiralFramework } from '../types';
  * Note: data-test and data-value should be described in attributesToGrab
  * @constructor
  */
-export declare class BaseDOMConstructor {
+export declare class BaseDOMConstructor implements ISFInstanceClass {
     name: string;
     sf: ISpiralFramework;
     node: Element;

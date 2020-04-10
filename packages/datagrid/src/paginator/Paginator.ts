@@ -1,8 +1,8 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { stringifyUrl } from 'query-string';
-import { DEFAULT_LIMIT, PaginatorType } from './constants';
+import { DEFAULT_LIMIT, PaginatorType } from '../constants';
 // import * as assert from 'assert';
-import { IDataGridOptions, IPaginatorOptions, IPaginatorParams } from './types';
+import { IDataGridOptions, IPaginatorOptions, IPaginatorParams } from '../types';
 
 // import './styles.css';
 

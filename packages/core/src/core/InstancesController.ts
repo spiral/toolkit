@@ -1,11 +1,13 @@
-import type { ISFInstance, ISpiralFramework, ISpiralInstanceClass } from '../types';
+import type {
+  ISFInstance, ISpiralFramework, ISFInstanceConstructor, IInstancesController,
+} from '../types';
 import { Events } from './Events';
 
-export class InstancesController {
+export class InstancesController implements IInstancesController {
   private storage: {
     instancesConstructors: {
       cssClasses: { [key: string]: string },
-      jsConstructors: { [key: string]: ISpiralInstanceClass },
+      jsConstructors: { [key: string]: ISFInstanceConstructor },
     },
     addons: { [key: string]: any },
     instances: {
@@ -36,7 +38,7 @@ export class InstancesController {
      * controlled by DomMutation. But you still can use it from JS.
      * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
      */
-  registerInstanceType(constructorFunction: ISpiralInstanceClass, cssClassName?: string, isSkipInitialization?: boolean) {
+  registerInstanceType(constructorFunction: ISFInstanceConstructor, cssClassName?: string, isSkipInitialization?: boolean) {
     const instanceName = constructorFunction.spiralFrameworkName || constructorFunction.prototype.name;
 
     if (!instanceName) {
@@ -80,7 +82,7 @@ export class InstancesController {
      * @return {*}
      * @deprecated
      */
-  addInstanceType(className: string, constructorFunction: ISpiralInstanceClass, isSkipInitialization?: boolean) {
+  addInstanceType(className: string, constructorFunction: ISFInstanceConstructor, isSkipInitialization?: boolean) {
     console.warn('addInstanceType is deprecated. Please use registerInstanceType instead');
     return this.registerInstanceType(constructorFunction, className, isSkipInitialization);
   }
@@ -97,7 +99,7 @@ export class InstancesController {
     const isAlreadyAdded: boolean = !!this.getInstance(instanceName, node);
 
     if (!InstanceConstructor || isAlreadyAdded) { // if not found this type  or already added - return
-      return false;
+      return undefined;
     }
 
     const instance = new InstanceConstructor(this.spiral, node, options);
@@ -119,7 +121,7 @@ export class InstancesController {
      * @return {boolean}
      */
   removeInstance(instanceName: string, node: Element) {
-    const instanceObj: {node: Element, instance: ISFInstance} | false = this.getInstance(instanceName, node, true);
+    const instanceObj: {node: Element, instance: ISFInstance} | undefined = this.getInstance(instanceName, node);
 
     if (!instanceObj) {
       return false;
@@ -140,22 +142,21 @@ export class InstancesController {
    * Get instance. Return instance object of this dom node
    * @param {String} instanceName - name of instance
    * @param {Object|String} node - dom node o dome node ID
-   * @param {boolean} [isReturnObject] - return object or instance
    * @return {boolean}
    */
-  getInstance(instanceName: string, node: Element | string, isReturnObject?: boolean) {
+  getInstance(instanceName: string, node: Element | string) {
     const typeArr = this.storage.instances[instanceName];
-    let ret: {node: Element, instance: ISFInstance} | false | ISFInstance = false;
+    let ret: {node: Element, instance: ISFInstance} | undefined;
     if (!typeArr) {
-      return false;
+      return undefined;
     }
     const el = (node instanceof HTMLElement) ? node : document.getElementById(node.toString());
     if (!el) {
-      return false;
+      return undefined;
     }
     for (let key = 0, l = typeArr.length; key < l; key += 1) { // iterate storage and try to find instance
       if (typeArr[key].node === el) {
-        ret = (isReturnObject) ? typeArr[key] : typeArr[key].instance;
+        ret = typeArr[key];
         break;
       }
     }

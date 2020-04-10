@@ -1,6 +1,6 @@
-import { DEFAULT_LIMIT, SortDirection } from './constants';
+import { DEFAULT_LIMIT, SortDirection } from '../constants';
 import type { Datagrid } from './Datagrid';
-import { IPaginatorParams } from './types';
+import { IPaginatorParams } from '../types';
 
 export class DatagridState<Item = any> {
   private state: {
@@ -13,6 +13,7 @@ export class DatagridState<Item = any> {
     errors?: { [field: string]: string };
     formData: {[formId: string]: any};
     urlData?: any;
+    selection: Set<string>;
   } = {
     loading: false,
     paginator: {
@@ -22,10 +23,29 @@ export class DatagridState<Item = any> {
     sortDir: SortDirection.ASC,
     data: [],
     formData: {},
+    selection: new Set<string>(),
   };
 
   constructor(public parent: Datagrid) {
 
+  }
+
+  public isSelected(val: string) {
+    return this.state.selection.has(String(val));
+  }
+
+  public areAllSelected() {
+    return this.data.reduce((hasIt: boolean, item: any) => hasIt
+      && !!this.parent.options.selectable
+      && this.isSelected(String(item[this.parent.options.selectable.id])), true);
+  }
+
+  get selection() {
+    return this.state.selection;
+  }
+
+  get selectedItems() {
+    return this.data.filter((item: any) => !!this.parent.options.selectable && this.isSelected(String(item[this.parent.options.selectable.id])));
   }
 
   get isLoading() {
@@ -117,5 +137,28 @@ export class DatagridState<Item = any> {
       ...this.state.urlData,
       ...forms,
     };
+  }
+
+  addToSelection(value: string) {
+    this.state.selection.add(String(value));
+  }
+
+  removeFromSelection(value: string) {
+    this.state.selection.delete(String(value));
+  }
+
+  selectSingle(value: string) {
+    this.state.selection.clear();
+    this.state.selection.add(String(value));
+  }
+
+  resetSelection() {
+    this.state.selection.clear();
+  }
+
+  selectAll() {
+    if (this.parent.options.selectable) {
+      this.state.selection = new Set(this.data.map((item: any) => String(item[this.parent.options.selectable!.id])));
+    }
   }
 }

@@ -3,6 +3,11 @@ export enum SortDirection {
   DESC = 'desc'
 }
 
+export enum SelectionType {
+  SINGLE = 'single',
+  MULTIPLE = 'multiple'
+}
+
 export enum RequestMethod {
   GET = 'GET',
   POST = 'POST',
@@ -12,6 +17,7 @@ export enum RequestMethod {
 }
 
 export const PAGINATOR_CLASS_NAME = 'sf-js-datagrid-paginator';
+export const ACTION_PANEL_CLASS_NAME = 'sf-js-datagrid-actionpanel';
 export const CURSOR_ID_FIELD = 'cid';
 export const LAST_ID_FIELD = 'lid';
 
@@ -23,3 +29,6 @@ export enum PaginatorType {
   pages = 'pages',
   infinite = 'infinite',
 }
+
+export const DATAGRID_CHECK_SELECT_ATTR = 'data-datagrid-select';
+export const DATAGRID_CHECK_SELECT_ALL_ATTR = 'data-datagrid-select-all';

@@ -1,5 +1,5 @@
 import { SortDirection } from '../constants';
-import type { DatagridState } from '../DatagridState';
+import type { DatagridState } from '../datagrid/DatagridState';
 import {
   HeaderCellRenderAdvanced,
   IGridRenderOptions,

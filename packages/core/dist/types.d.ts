@@ -17,9 +17,6 @@ export interface ISFHelpers {
     DOMEvents: typeof DOMEvents;
     domTools: typeof domTools;
 }
-export declare type ISFInstance = any & {
-    name: string;
-};
 export interface IInstancesController {
     /**
        * Register new instance type
@@ -28,20 +25,19 @@ export interface IInstancesController {
        * controlled by DomMutation. But you still can use it from JS.
        * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
        */
-    registerInstanceType: (constructorFunction: Function, cssClassName?: string, isSkipInitialization?: boolean) => void;
-    addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
-    removeInstance: (instanceType: string, node: Element) => ISFInstance;
+    registerInstanceType: (constructorFunction: ISFInstanceConstructor, cssClassName?: string, isSkipInitialization?: boolean) => void;
+    addInstance: (instanceType: string, node: Element, options: any) => ISFInstance | undefined;
+    removeInstance: (instanceType: string, node: Element) => boolean;
     getInstances: (instanceType: string) => Array<{
         node: Element;
         instance: ISFInstance;
     }>;
-    getInstance: (instanceName: string) => Array<{
+    getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => {
         node: Element;
         instance: ISFInstance;
-    }>;
-    events: Events;
+    } | undefined;
 }
-export interface ISpiralFramework {
+export interface ISpiralFramework extends IInstancesController {
     ajax: Ajax;
     core: ISFCore;
     helpers: ISFHelpers;
@@ -54,35 +50,24 @@ export interface ISpiralFramework {
     domMutation: any;
     options: {
         instances: {
-            [id: string]: ISFInstance;
+            [id: string]: any;
         };
     };
-    /**
-       * Register new instance type
-       * @param {Function} constructorFunction - constructor function of instance
-       * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-       * controlled by DomMutation. But you still can use it from JS.
-       * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-       */
-    registerInstanceType: (constructorFunction: ISpiralInstanceClass, cssClassName?: string, isSkipInitialization?: boolean) => void;
-    addInstance: (instanceType: string, node: Element, options: any) => ISFInstance;
-    removeInstance: (instanceType: string, node: Element) => ISFInstance;
-    getInstances: (instanceType: string) => Array<{
-        node: Element;
-        instance: ISFInstance;
-    }>;
-    getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => {
-        node: Element;
-        instance: ISFInstance;
-    } | false | ISFInstance;
 }
 export interface IOptionToGrab {
     value?: any;
     domAttr?: string;
     processor?: Function;
 }
-export declare type ISpiralInstanceClass = Function & {
-    spiralFrameworkName?: string;
+export interface ISFInstanceClass<Options = any> {
+    name: string;
+    sf: ISpiralFramework;
+    node: Element;
+    options: Options;
     die?: () => void;
-    new (sf?: ISpiralFramework, node?: Element, options?: any): ISpiralInstanceClass;
-};
+}
+export interface ISFInstanceConstructor {
+    spiralFrameworkName?: string;
+    new (sf: ISpiralFramework, node: Element, options?: any): ISFInstanceClass;
+}
+export declare type ISFInstance = ISFInstanceClass;
