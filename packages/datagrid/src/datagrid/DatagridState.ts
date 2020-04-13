@@ -46,6 +46,10 @@ export class DatagridState<Item = any> {
     return this.state.selection;
   }
 
+  get isCustomSearch() {
+    return false; // TODO: Detect when search is filled
+  }
+
   get selectedItems() {
     return this.data.filter((item: any) => !!this.parent.options.selectable && this.isSelected(String(item[this.parent.options.selectable.id])));
   }

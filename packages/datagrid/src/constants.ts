@@ -1,3 +1,5 @@
+import { IDataGridMessages } from './types';
+
 export enum SortDirection {
   ASC = 'asc',
   DESC = 'desc'
@@ -24,6 +26,12 @@ export const LAST_ID_FIELD = 'lid';
 export const pageParams = ['page', 'limit', CURSOR_ID_FIELD, LAST_ID_FIELD];
 export const sortParams = ['sortBy', 'sortDir'];
 export const DEFAULT_LIMIT = 25;
+
+export const defaultGridMessages: IDataGridMessages = {
+  noData: "No Data",
+  noResults: "No data matches your search criteria",
+  error: "Unknown error"
+}
 
 export enum PaginatorType {
   pages = 'pages',

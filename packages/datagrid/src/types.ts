@@ -3,6 +3,7 @@ import {
   PaginatorType, RequestMethod, SelectionType, SortDirection,
 } from './constants';
 import type { DatagridState } from './datagrid/DatagridState';
+import { Messages } from './messages';
 
 export interface IRowMeta<T = any> {
   id: string;
@@ -32,19 +33,19 @@ export interface IDataGridUIOptions<Item = any> {
   tableClassName?: string;
   wrapperClassName?: string;
   headerCellClassName?:
-  ((cellMeta: ICellMeta<Item>) => string) |
-  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
+    ((cellMeta: ICellMeta<Item>) => string) |
+    { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   headerCellAttributes?:
-  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
+    ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+    | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
   rowClassName?: ((rowMeta: IRowMeta<Item>) => string) | string,
   rowAttributes?: ((rowMeta: IRowMeta<Item>) => { [attr: string]: string }) | { [attr: string]: string },
   cellClassName?:
-  ((cellMeta: ICellMeta<Item>) => string) |
-  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
+    ((cellMeta: ICellMeta<Item>) => string) |
+    { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   cellAttributes?:
-  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
+    ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+    | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
 }
 
 export type IColumnDescriptor = string | {
@@ -83,14 +84,14 @@ export type CellRenderFunction =
     rowIndex: number,
     state: DatagridState,
   )
-  => Element | string | undefined);
+    => Element | string | undefined);
 
 /**
  * Allows to create custom element or no element
  */
 export type CellRenderAdvanced = {
   render: CellRenderFunction,
-  createEl: ()=>Element | undefined,
+  createEl: () => Element | undefined,
 };
 
 export type HeaderCellRenderFunction =
@@ -99,23 +100,44 @@ export type HeaderCellRenderFunction =
     options: IGridRenderOptions,
     state: DatagridState,
   )
-  => Element | string | undefined);
+    => Element | string | undefined);
 
 export type HeaderCellRenderAdvanced = {
   render: HeaderCellRenderFunction,
-  createEl: ()=>Element | undefined,
+  createEl: () => Element | undefined,
 };
 
 export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
 
 export type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
 
-export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => {outer: Element, inner: Element} | undefined);
-export type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
-export type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export type IHeaderWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>,
+) => { outer: Element, inner: Element } | undefined);
+export type ITableWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions) => Element);
+export type IBodyWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>) => Element | undefined);
+export type IFooterWrapperRenderer = ((
+  parent: Element,
+  options:
+    IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>
+) => Element | undefined);
 
-export type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
+export type IRowWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  index: number) => Element);
 
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
@@ -153,6 +175,14 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   actions?: {
     [action: string]: IActionDescriptor,
   }
+
+  messages?: Partial<IDataGridMessages>,
+}
+
+export interface IDataGridMessages extends Object {
+  noData: string;
+  noResults: string;
+  error: string;
 }
 
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
@@ -179,6 +209,8 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * By default error is displayed inside table, define errorMessageTarget to target specific form that will be responsible for displaying error message
    */
   errorMessageTarget?: string;
+
+  messages?: Partial<IDataGridMessages>,
 
   /**
    * Data url to grab data from

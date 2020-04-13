@@ -3,14 +3,15 @@ import * as assert from 'assert';
 import { parse, stringifyUrl } from 'query-string';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
-  DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
+  DEFAULT_LIMIT, defaultGridMessages, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
+import { Messages } from '../messages';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
 import { defaultGridOptions } from '../render/defaultRenderer';
 import { GridRenderer } from '../render/GridRenderer';
 import {
-  IDatagridErrorResponse,
+  IDatagridErrorResponse, IDataGridMessages,
   IDataGridOptions,
   IDatagridRequest,
   IDatagridResponse,
