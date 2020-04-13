@@ -36,10 +36,16 @@ export declare class DatagridState<Item = any> {
     }, resetData?: boolean): void;
     setSort(field: string, direction: SortDirection): void;
     setFormData(formId: string, data: any): void;
-    getFilter(): any;
+    getFilter(): {};
     addToSelection(value: string): void;
     removeFromSelection(value: string): void;
     selectSingle(value: string): void;
     resetSelection(): void;
     selectAll(): void;
+    mergeDefaultData(data?: {
+        [field: string]: any;
+    }): void;
+    get defaultData(): {
+        [field: string]: any;
+    };
 }

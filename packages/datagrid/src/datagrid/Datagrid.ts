@@ -108,17 +108,14 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         fields,
       };
 
-      const urlDataForForm = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
-        ...map,
-        [key]: this.state.urlData[key],
-      }), {}) : undefined;
-
-      if (urlDataForForm) {
-        formInstance.setFieldValues(urlDataForForm);
-      }
-
       // eslint-disable-next-line
       formInstance.options.jsonOnly = true;
+
+      if(formInstance.getFormData) {
+        const data = formInstance.getFormData();
+        this.state.mergeDefaultData(data);
+        this.state.setFormData(id, data);
+      }
       // eslint-disable-next-line
       formInstance.options.beforeSubmitCallback = (options: any) => {
         this.resetPaginator();
@@ -127,6 +124,15 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.request();
         return false;
       };
+
+      const urlDataForForm = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
+        ...map,
+        [key]: this.state.urlData[key],
+      }), {}) : undefined;
+
+      if (urlDataForForm) {
+        formInstance.setFieldValues(urlDataForForm);
+      }
     }
   }
 
@@ -453,7 +459,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private initFromUrl() {
     if (this.options.serialize) {
       if (window.location.search) {
-        const urlData = this.getObjectFromUrl(this.defaults, this.getPrefix());
+        const urlData = this.getObjectFromUrl(this.getDefaults(), this.getPrefix());
         if (Object.keys(urlData).length) {
           this.deserialize(urlData);
         }
@@ -464,7 +470,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private updateUrl() {
     if (this.options.serialize) {
       const data = this.serialize();
-      this.putObjectToUrl(data, this.defaults, this.getPrefix());
+      this.putObjectToUrl(data, this.getDefaults(), this.getPrefix());
     }
   }
 
@@ -510,6 +516,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       url: `${window.location.protocol}//${window.location.host}${window.location.pathname}`,
       query,
     }));
+  }
+
+  private getDefaults() {
+    return {
+      ...this.defaults,
+      ...this.state.defaultData,
+    }
   }
 }
 

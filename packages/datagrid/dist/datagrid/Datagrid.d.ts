@@ -58,5 +58,6 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     private updateUrl;
     private getObjectFromUrl;
     private putObjectToUrl;
+    private getDefaults;
 }
 export default Datagrid;
