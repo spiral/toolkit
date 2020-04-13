@@ -20,10 +20,16 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+.sf-table__select {
+  padding-left: 1rem !important; /* TODO: should work without that */
+  width: 40px;
+}
+
 .sf-table__empty {
   padding: 30px;
   text-align: center;
-  color: var(--info);
+  color: var(--dark);
+  background-color: var(--white);
 }
 
 .sf-table__error {

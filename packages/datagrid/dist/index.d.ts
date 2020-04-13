@@ -1,5 +1,2 @@
-import DataGrid from './Datagrid';
-export declare const renders: {
-    simpleCellFormatter: (formatFunction?: (value: any, item: any) => string, tagName?: string) => import("./types").IRowCellRenderer;
-};
+import DataGrid from './datagrid/Datagrid';
 export default DataGrid;

@@ -1,27 +1,51 @@
-import Datagrid from '../Datagrid';
-import {DatagridState} from '../DatagridState';
-import {ICellMeta, IGridRenderOptions} from '../types';
-import {applyAttrributes, INormalizedColumnDescriptor, normalizeColumns} from '../utils';
-import {defaultBodyWrapper} from './defaultBodyWrapper';
-import {defaultFooterWrapper} from './defaultFooterWrapper';
-import {defaultHeaderCellRenderer} from './defaultHeaderCellRenderer';
-import {defaultHeaderWrapper} from './defaultHeaderWrapper';
-import {defaultRowCellRenderer} from './defaultRowRenderer';
-import {defaultRowWrapper} from './defaultRowWrapper';
-import {defaultTableWrapper} from './defaultTableWrapper';
+import sf from '@spiral-toolkit/core';
+import ActionPanel from '../actionpanel/ActionPanel';
+import {
+  DATAGRID_CHECK_SELECT_ALL_ATTR,
+  DATAGRID_CHECK_SELECT_ATTR,
+  PAGINATOR_CLASS_NAME,
+  SelectionType,
+} from '../constants';
+import type { Datagrid } from '../datagrid/Datagrid';
+import { DatagridState } from '../datagrid/DatagridState';
+import { ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
+import { applyAttrributes, normalizeColumns } from '../utils';
+import { defaultBodyWrapper } from './defaultBodyWrapper';
+import { defaultFooterWrapper } from './defaultFooterWrapper';
+import { defaultHeaderWrapper } from './defaultHeaderWrapper';
+import { defaultGridUiOptions, defaultRenderer } from './defaultRenderer';
+import { defaultRowWrapper } from './defaultRowWrapper';
+import { defaultTableWrapper } from './defaultTableWrapper';
+import { normalizedCellRenderer, normalizedHeaderCellRenderer } from './normalizers';
+
+let instanceCounter = 1;
 
 export class GridRenderer {
+  // eslint-disable-next-line
+  private instance = instanceCounter++;
+
   private wrapper!: Element;
+
   private tableEl!: Element;
-  private headerEl?: Element;
+
+  private headerEl?: {outer: Element, inner: Element};
+
   private footerEl?: Element;
+
   private bodyEl?: Element;
+
+  private paginatorEl?: Element;
+
+  private actionPanelEl?: Element;
+
   private columnInfo: INormalizedColumnDescriptor[];
 
-  constructor(private options: IGridRenderOptions, private root: Datagrid) {
+  private options: IGridRenderOptions;
+
+  constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
+    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
-    console.log(this.columnInfo);
-      this.create();
+    this.create();
   }
 
   private create() {
@@ -32,42 +56,79 @@ export class GridRenderer {
     this.root.node.innerHTML = '';
     this.root.node.appendChild(this.wrapper);
 
+    if (this.options.actions) {
+      this.createDefaultActions();
+    }
+    if (this.options.paginator) {
+      this.createDefaultPaginator();
+    }
+
     const tableRenderer = this.options.tableWrapper || defaultTableWrapper;
     this.tableEl = tableRenderer(this.wrapper, this.options);
   }
 
+  private createDefaultPaginator() {
+    const id = `${Date.now()}${this.instance}`;
+    this.root.options.captureForms.push(id);
+    this.paginatorEl = document.createElement('div');
+    this.paginatorEl.className = PAGINATOR_CLASS_NAME;
+    this.paginatorEl.id = id;
+    this.root.node.appendChild(this.paginatorEl);
+  }
+
+  private createDefaultActions() {
+    const id = `${Date.now()}${this.instance}`;
+    this.actionPanelEl = document.createElement('div');
+    this.root.node.appendChild(this.actionPanelEl);
+    if (!this.root.options.captureActionPanels) {
+      this.root.options.captureActionPanels = [];
+    }
+    this.root.options.captureActionPanels.push(id);
+    const panel = new ActionPanel(sf, this.actionPanelEl, {
+      id,
+      className: (state) => (state.hasSelection ? 'row no-gutters align-items-center px-3 py-2 border-bottom' : 'd-none'),
+      lockType: 'none',
+      noSelection: document.createElement('div'),
+      actionClassName: 'btn btn-sm',
+      selectionType: this.options.selectable?.type || SelectionType.SINGLE,
+      actions: this.options.actions!,
+    });
+    this.root.registerActionPanelInstance(panel);
+  }
+
+
+  // eslint-disable-next-line class-methods-use-this
   private applyAdditionalCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, index: number) {
     const cellMeta: ICellMeta = {
       id: column.id,
-      column: column,
+      column,
       index,
-      // rowSelected: (state as any).isSelected(index),
-      rowSelected: false, // TODO: fetch selection status from state
-      state: state,
+      rowSelected: options.selectable ? state.isSelected(state.data[index][options.selectable.id]) : false,
+      state,
       item: state.data[index],
     };
 
-    if(options.ui.cellClassName) {
-      if(typeof options.ui.cellClassName === 'function') {
-        el.classList.add(options.ui.cellClassName(cellMeta));
+    if (options.ui.cellClassName) {
+      if (typeof options.ui.cellClassName === 'function') {
+        el.classList.add(...options.ui.cellClassName(cellMeta).split(' '));
       } else {
         const specific = options.ui.cellClassName[column.id];
-        if(specific) {
-          if(typeof specific === 'string') {
-            el.classList.add(specific);
+        if (specific) {
+          if (typeof specific === 'string') {
+            el.classList.add(...specific.split(' '));
           } else {
-            el.classList.add(specific(cellMeta));
+            el.classList.add(...specific(cellMeta).split(' '));
           }
         }
       }
     }
-    if(options.ui.cellAttributes) {
-      if(typeof options.ui.cellAttributes === 'function') {
+    if (options.ui.cellAttributes) {
+      if (typeof options.ui.cellAttributes === 'function') {
         applyAttrributes(el, options.ui.cellAttributes(cellMeta));
       } else {
         const specific = options.ui.cellAttributes[column.id];
-        if(specific) {
-          if(typeof specific === 'function') {
+        if (specific) {
+          if (typeof specific === 'function') {
             applyAttrributes(el, specific(cellMeta));
           } else {
             applyAttrributes(el, specific);
@@ -77,37 +138,38 @@ export class GridRenderer {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private applyAdditionalHeaderCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) {
     const cellMeta = {
       id: column.id,
-      column: column,
+      column,
       index: 0,
-      rowSelected: false,
-      state: state,
+      rowSelected: options.selectable ? state.areAllSelected() : false,
+      state,
       item: null,
     };
 
-    if(options.ui.headerCellClassName) {
-      if(typeof options.ui.headerCellClassName === 'function') {
-        el.classList.add(options.ui.headerCellClassName(cellMeta));
+    if (options.ui.headerCellClassName) {
+      if (typeof options.ui.headerCellClassName === 'function') {
+        el.classList.add(...options.ui.headerCellClassName(cellMeta).split(' '));
       } else {
         const specific = options.ui.headerCellClassName[column.id];
-        if(specific) {
-          if(typeof specific === 'string') {
-            el.classList.add(specific);
+        if (specific) {
+          if (typeof specific === 'string') {
+            el.classList.add(...specific.split(' '));
           } else {
-            el.classList.add(specific(cellMeta));
+            el.classList.add(...specific(cellMeta).split(' '));
           }
         }
       }
     }
-    if(options.ui.headerCellAttributes) {
-      if(typeof options.ui.headerCellAttributes === 'function') {
+    if (options.ui.headerCellAttributes) {
+      if (typeof options.ui.headerCellAttributes === 'function') {
         applyAttrributes(el, options.ui.headerCellAttributes(cellMeta));
       } else {
         const specific = options.ui.headerCellAttributes[column.id];
-        if(specific) {
-          if(typeof specific === 'function') {
+        if (specific) {
+          if (typeof specific === 'function') {
             applyAttrributes(el, specific(cellMeta));
           } else {
             applyAttrributes(el, specific);
@@ -120,52 +182,88 @@ export class GridRenderer {
   render(state: DatagridState) {
     // Render header
     const headerRenderer = this.options.headerWrapper || defaultHeaderWrapper;
-    if(this.headerEl) {
-      this.tableEl.removeChild(this.headerEl);
+    if (this.headerEl) {
+      this.tableEl.removeChild(this.headerEl.outer);
     }
     this.headerEl = headerRenderer(this.tableEl, this.options, state);
-    if(this.headerEl) {
-      this.tableEl.appendChild(this.headerEl);
-      if(this.columnInfo.length) {
+    if (this.headerEl) {
+      if (this.columnInfo.length) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
-          const headerCellRenderer = (this.options.headerList || {})[cI.id] || defaultHeaderCellRenderer;
-          const node = headerCellRenderer(cI, this.options, state);
-          this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
-          this.headerEl!.appendChild(node);
-        })
+          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id]);
+          const node = headerCellRenderer.createEl();
+          if (node) {
+            const rendered = headerCellRenderer.render(cI, this.options, state);
+            if (rendered) {
+              if (typeof rendered === 'string') {
+                node.innerHTML = rendered;
+              } else {
+                node.appendChild(rendered);
+              }
+              this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
+              this.headerEl!.inner.appendChild(node);
+            }
+          }
+        });
       }
     }
 
     // Render body
-    if(this.bodyEl) {
+    if (this.bodyEl) {
       this.tableEl.removeChild(this.bodyEl);
     }
     const bodyRenderer = this.options.bodyWrapper || defaultBodyWrapper;
     this.bodyEl = bodyRenderer(this.tableEl, this.options, state);
-    if(this.bodyEl) {
+    if (this.bodyEl) {
       this.tableEl.appendChild(this.bodyEl);
       const row = this.options.rowWrapper || defaultRowWrapper;
-      state.data.forEach((item: any, index)=>{
-        const el = row(this.bodyEl!, this.options, state, index);
+      state.data.forEach((item: any, index) => {
+        const rowEl = row(this.bodyEl!, this.options, state, index);
         this.columnInfo.forEach((cI) => {
-          const rowCellRenderer = (this.options.cells || {})[cI.id] || defaultRowCellRenderer;
-          const node = rowCellRenderer(cI, this.options, state, index);
-          this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
-          el.appendChild(node);
-        })
+          const value = item[cI.id];
+          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
+          const node = rowCellRenderer.createEl();
+          if (node) { // If no node generated, skip it, that might be custom tr render or colspan
+            const rendered = rowCellRenderer.render(value, item, cI, this.options, index, state);
+            if (rendered) { // If no content generated, skip it, that might be custom tr render or colspan
+              if (typeof rendered === 'string') {
+                node.innerHTML = rendered;
+              } else {
+                node.appendChild(rendered);
+              }
+              this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
+              rowEl.appendChild(node);
+            }
+          }
+        });
       });
-
     }
 
     // Render footer
-    if(this.footerEl) {
+    if (this.footerEl) {
       this.tableEl.removeChild(this.footerEl);
     }
     const footerRenderer = this.options.footerWrapper || defaultFooterWrapper;
     this.footerEl = footerRenderer(this.tableEl, this.options, state);
-    if(this.footerEl) {
+    if (this.footerEl) {
       this.tableEl.appendChild(this.footerEl);
       // We assume footer render handles all data so no additional renders here
+    }
+  }
+
+  updateCheckboxes(state: DatagridState) {
+    if (this.root.options.selectable) {
+      const headerEl: HTMLInputElement | null | undefined = this.headerEl?.outer.querySelector(`input[${DATAGRID_CHECK_SELECT_ALL_ATTR}]`);
+      if (headerEl) {
+        headerEl.checked = state.areAllSelected();
+      }
+      const checkboxes = this.bodyEl?.querySelectorAll(`input[${DATAGRID_CHECK_SELECT_ATTR}]`);
+      if (checkboxes) {
+        checkboxes.forEach((checkbox: Element) => {
+          const el = (checkbox as HTMLInputElement);
+          el.checked = state.isSelected(el.value);
+        });
+      }
     }
   }
 }

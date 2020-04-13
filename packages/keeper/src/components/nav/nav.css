@@ -67,8 +67,11 @@ a.sf-nav__item-heading.active {
 .sf-nav__item-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.25s ease-in-out;
   background-color: var(--dark);
+}
+
+body.loaded .sf-nav__item-content {
+  transition: max-height 0.25s ease-in-out;
 }
 
 .sf-navgroup {

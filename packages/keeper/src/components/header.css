@@ -26,6 +26,9 @@
   border: none;
   box-shadow: none;
 }
+.sf-header-user__info:focus {
+  outline: 0;
+}
 
 
 .sf-header-user__menu {

@@ -47,6 +47,7 @@
  * //val2
  * //--SpiralFormData-988681384595111--
  * //"
+ * @deprecated
  */
 const LikeFormData = function (data, boundary) {
   this.data = {};

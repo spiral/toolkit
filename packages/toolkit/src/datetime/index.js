@@ -1,5 +1,5 @@
 
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 const Datetime = require('./datetime').default;
 
 sf.instancesController.registerInstanceType(Datetime, 'sf-js-datetime');

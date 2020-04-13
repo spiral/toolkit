@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Nav.init();
   Sidebar.init();
+
+  setTimeout(() => document.body.classList.add('loaded'), 1);
 });
 
 export {

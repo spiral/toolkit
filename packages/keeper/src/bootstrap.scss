@@ -1,4 +1,6 @@
 $primary: #497cb1;
+$primary-darken: darken($primary, 15%);
+$focus: lighten($primary, 25%);
 
 $font-family-sans-serif: 'Proxima Nova','Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
 
@@ -23,6 +25,13 @@ $custom-select-border-radius: .125rem;
 
 @import "~bootstrap/scss/bootstrap";
 
+:root {
+  --primary-darken: #{$primary-darken};
+}
+
+a:focus, button:focus {
+  outline: 5px auto #{$focus};
+}
 
 .btn {
   border-radius: .125rem;

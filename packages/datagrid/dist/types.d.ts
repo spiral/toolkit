@@ -1,13 +1,18 @@
-import { INormalizedColumnDescriptor } from '../dist/utils';
-import { RequestMethod, SortDirection } from "./constants";
-import { DatagridState } from './DatagridState';
-import { IPaginatorParams } from './Paginator';
+import type { ActionPanel, FlexibleRenderDefinition } from './actionpanel/ActionPanel';
+import { PaginatorType, RequestMethod, SelectionType, SortDirection } from './constants';
+import type { DatagridState } from './datagrid/DatagridState';
 export interface IRowMeta<T = any> {
     id: string;
     index: number;
     selected: boolean;
     item: T;
     state: DatagridState;
+}
+export interface INormalizedColumnDescriptor {
+    id: string;
+    title: string;
+    sortable: boolean;
+    direction: SortDirection;
 }
 export interface ICellMeta<T = any> {
     id: string;
@@ -75,17 +80,36 @@ export declare type ISortDescriptor = string | {
     field: string;
     direction: SortDirection;
 };
-export declare type IHeaderCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => Element);
-export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type CellRenderFunction = ((cellValue: any, // Cell value if column id matches dataset, undefined for custom columns
+rowItem: any, // Row item, can be used for custom render of cross-dependent fields
+column: INormalizedColumnDescriptor, // Column meta
+options: IGridRenderOptions, rowIndex: number, state: DatagridState) => Element | string | undefined);
+/**
+ * Allows to create custom element or no element
+ */
+export declare type CellRenderAdvanced = {
+    render: CellRenderFunction;
+    createEl: () => Element | undefined;
+};
+export declare type HeaderCellRenderFunction = ((column: INormalizedColumnDescriptor, // Column meta
+options: IGridRenderOptions, state: DatagridState) => Element | string | undefined);
+export declare type HeaderCellRenderAdvanced = {
+    render: HeaderCellRenderFunction;
+    createEl: () => Element | undefined;
+};
+export declare type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
+export declare type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
+export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => {
+    outer: Element;
+    inner: Element;
+} | undefined);
 export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
 export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
 export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export declare type IRowCellRenderer = ((column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState, rowIndex: number) => Element);
 export declare type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
 export interface ITableMeta<Item = any> {
     columns: IColumnDescriptor[];
     sortable: ISortDescriptor[];
-    ui: IDataGridUIOptions<Item>;
 }
 export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
     /**
@@ -102,13 +126,37 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
     cells?: {
         [columnId: string]: IRowCellRenderer;
     };
+    /**
+     * Add default paginator
+     */
+    paginator?: boolean;
+    ui: Partial<IDataGridUIOptions<Item>>;
+    dontRenderError?: boolean;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
+    /**
+     * Render default action bar, expected to work with selections only
+     */
+    actions?: {
+        [action: string]: IActionDescriptor;
+    };
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;
     /**
-     * Id of forms or paginators to attach to and use their data in requests
+     * Url(for legacy compatibility) forms or paginators ids to attach to and use their data in requests
      */
     captureForms: string[];
+    /**
+     * Ids of actions panels to connect to
+     */
+    captureActionPanels?: string[];
     /**
      * lock type to use on grids
      */
@@ -118,6 +166,10 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      * default to false
      */
     resetOnError: boolean;
+    /**
+     * By default error is displayed inside table, define errorMessageTarget to target specific form that will be responsible for displaying error message
+     */
+    errorMessageTarget?: string;
     /**
      * Data url to grab data from
      */
@@ -137,6 +189,37 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      */
     sort?: ISortDescriptor;
     renderers: IGridRenderOptions | IGridRenderOptions[];
+    /**
+     * If to use URL serialization
+     * pass true to use it
+     * pass string to have grid use specific prefix to params in url
+     * pass false to not use it
+     */
+    serialize: boolean;
+    /**
+     * If to fetch count of items on this table
+     * @default true
+     */
+    fetchCount: boolean;
+    /**
+     * When using several datagrids that you want to be serialized in URL specify namespace that will be used as a prefix for URL params
+     * Not non-namespaced datagrids will consume ALL url query params.
+     */
+    namespace?: string;
+    /**
+     * Add default paginator below the table
+     * @default true
+     */
+    paginator: boolean;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
+    ui?: Partial<IDataGridUIOptions<Item>>;
 }
 export interface IDatagridResponse<Item = any> {
     pagination: {
@@ -153,6 +236,28 @@ export interface IDatagridErrorResponse {
         [fieldName: string]: string;
     };
 }
+export interface IPaginatorOptions {
+    id: string;
+    type: PaginatorType;
+    willFetchCount: boolean;
+    serialize: string | boolean;
+    onPageChange?: (params: IPaginatorParams) => void;
+    lockType: string;
+    className?: string;
+    limitOptions: Array<number>;
+}
+export interface IPaginatorParams {
+    page?: number;
+    limit?: number;
+    /**
+     * Optional 'last id' parameter
+     */
+    lid?: string;
+    /**
+     * Optional 'cursor id' parameter
+     */
+    cid?: string;
+}
 export interface IDatagridRequest {
     fetchCount: boolean;
     paginate: IPaginatorParams;
@@ -161,5 +266,31 @@ export interface IDatagridRequest {
     };
     sort: {
         [sortField: string]: SortDirection;
+    };
+}
+export interface IActionPanelState<Item = any> {
+    hasSelection: boolean;
+    selectedCount: number;
+    selectionType: SelectionType;
+    selectedItems: Array<Item>;
+    selectedKeys: Set<string>;
+}
+export interface IActionDescriptor {
+    renderAs: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    onClick: (state: IActionPanelState, root: ActionPanel, e: MouseEvent) => any;
+}
+export interface IActionPanelOptions {
+    id: string;
+    lockType: string;
+    noSelection?: string | Element;
+    selectionLabel?: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    actionClassName?: string | ((actionId: string, state: IActionPanelState) => string) | {
+        [actionId: string]: string;
+    };
+    selectionType: SelectionType;
+    actions: {
+        [action: string]: IActionDescriptor;
     };
 }

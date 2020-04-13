@@ -1,5 +1,5 @@
 
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 const Form = require('./Form').default;
 
 sf.registerInstanceType(Form, 'js-sf-form');

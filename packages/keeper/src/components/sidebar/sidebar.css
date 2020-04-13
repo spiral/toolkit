@@ -67,6 +67,10 @@
   background-color: var(--light);
 }
 
+.sf-sidebar__toggle:focus {
+  outline: 0;
+}
+
 .sf-sidebar__collapse {
   display: flex;
   align-items: center;

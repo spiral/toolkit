@@ -106,6 +106,18 @@ Form.prototype.optionsToGrab = {
     value: 'POST',
   },
   /**
+     * If any input changes should trigger form submit
+     * Value is debounce value
+     */
+  immediate: {
+    domAttr: 'data-immediate',
+    value: false,
+    processor(node, val) {
+      if (!val) return false;
+      return +val;
+    },
+  },
+  /**
      * Lock type when form sending <b>Default: "default"</b> @see sf.lock
      */
   lockType: {
@@ -209,6 +221,24 @@ Form.prototype.mixMessagesOptions = function () {
   };
 };
 
+Form.prototype.onDebouncedSubmit = function (e) {
+  if (this.sf.getInstance('lock', this.node)) {
+    // On lock we should'n do any actions
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+
+  if (this.options.immediate) {
+    clearTimeout(this._submitTimeout);
+    this._submitTimeout = setTimeout(() => {
+      this.onSubmit(e);
+    }, this.options.immediate);
+  }
+
+  return true;
+};
+
 /**
  * Call on form submit
  * @param {Event} e submit event
@@ -277,10 +307,33 @@ Form.prototype.showMessages = formMessages.showMessages;
 Form.prototype.removeMessages = formMessages.removeMessages;
 Form.prototype.removeMessage = formMessages.removeMessage;
 
-Form.prototype.processAnswer = function (answer) {
+Form.prototype.processAnswer = function (answer, showUnknown = true) {
   if (this.options.messagesType) {
-    this.showMessages(answer);
+    this.showMessages(answer, showUnknown);
   }
+};
+
+Form.prototype.setFieldValues = function (values) {
+  this.sf.iterateInputs(this.node, values, (el, value) => {
+    if (typeof el.sfSetValue === 'function') {
+      el.sfSetValue(value);
+    } else {
+      if (el.type === 'checkbox') {
+        if (!el.value) { // single checkbox
+          el.checked = !!value;
+        } else {
+          // eslint-disable-next-line eqeqeq,max-len
+          el.checked = Array.isArray(value) ? (value.indexOf(el.value) >= 0) : (el.value == value);
+        }
+      }
+      el.value = value; // TODO: That wont work for radiogroups, etc.
+    }
+  });
+};
+
+Form.prototype.enumerateFieldNames = function () {
+  console.log(this.node.querySelectorAll('input,select,textarea'));
+  return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
 };
 
 Form.prototype.optCallback = function (options, type) {
@@ -291,6 +344,7 @@ Form.prototype.optCallback = function (options, type) {
       return fn.call(this, options);
     }
   }
+  return undefined;
 };
 
 /**
@@ -347,13 +401,26 @@ Form.prototype.setOptions = function (opt) {
  * Add all events for forms
  */
 Form.prototype.addEvents = function () {
-  const that = this;
   this.DOMEvents.add([
     {
       DOMNode: this.options.context,
       eventType: 'submit',
-      eventFunction(e) {
-        that.onSubmit.call(that, e);
+      eventFunction: (e) => {
+        this.onSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'change',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'input',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
       },
     },
   ]);

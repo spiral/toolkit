@@ -1,4 +1,18 @@
-import { IGridRenderOptions } from "../types";
+import { RequestMethod } from '../constants';
+import {
+  ICellMeta, IDataGridOptions, IGridRenderOptions, IRowMeta,
+} from '../types';
+
+export const defaultGridUiOptions = {
+  wrapperClassName: 'table-responsive',
+  tableClassName: 'table table-striped',
+  cellClassName: {},
+  rowClassName: '',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  cellAttributes: (cellMeta: ICellMeta) => ({}),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  rowAttributes: (rowMeta: IRowMeta) => ({}),
+};
 
 export const defaultRenderer: IGridRenderOptions = {
   columns: [],
@@ -6,16 +20,22 @@ export const defaultRenderer: IGridRenderOptions = {
   /**
    * Basic class/attribute properties
    */
-  ui: {
-    wrapperClassName: 'table-responsive',
-    tableClassName: 'table table-striped',
-    cellClassName: {},
-    rowClassName: '',
-    cellAttributes: cellMeta => {
-      return {};
-    },
-    rowAttributes: rowlMeta => {
-      return {};
-    }
-  },
-}
+  ui: defaultGridUiOptions,
+};
+
+export const defaultGridOptions: IDataGridOptions = {
+  id: '',
+  lockType: 'default',
+  resetOnError: false,
+  fetchCount: true,
+  captureForms: [],
+  columns: [],
+  headers: {},
+  method: RequestMethod.POST,
+  sortable: [],
+  url: '',
+  serialize: true,
+  paginator: true,
+  ui: defaultGridUiOptions,
+  renderers: defaultRenderer,
+};

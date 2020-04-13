@@ -1,16 +1,19 @@
 import { SortDirection } from './constants';
-import Datagrid from './Datagrid';
-import { IPaginatorParams } from './Paginator';
-export declare const DEFAULT_LIMIT = 25;
+import type { Datagrid } from './Datagrid';
+import { IPaginatorParams } from './types';
 export declare class DatagridState<Item = any> {
     parent: Datagrid;
     private state;
     constructor(parent: Datagrid);
+    isSelected(val: string): boolean;
+    areAllSelected(): boolean;
     get isLoading(): boolean;
     startLoading(): void;
     stopLoading(): void;
     get data(): Array<Item>;
     get paginate(): IPaginatorParams;
+    get urlData(): any;
+    set urlData(data: any);
     updatePaginator(params: IPaginatorParams): void;
     set data(data: Array<Item>);
     get hasError(): boolean;
@@ -27,5 +30,10 @@ export declare class DatagridState<Item = any> {
     }, resetData?: boolean): void;
     setSort(field: string, direction: SortDirection): void;
     setFormData(formId: string, data: any): void;
-    getFilter(): {};
+    getFilter(): any;
+    addToSelection(value: string): void;
+    removeFromSelection(value: string): void;
+    selectSingle(value: string): void;
+    resetSelection(): void;
+    selectAll(): void;
 }

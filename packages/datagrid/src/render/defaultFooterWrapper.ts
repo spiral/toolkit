@@ -1,5 +1,4 @@
-import {IBodyWrapperRenderer} from '../types';
+import { IBodyWrapperRenderer } from '../types';
 
-export const defaultFooterWrapper: IBodyWrapperRenderer = (node, options, state) => {
-    return undefined;
-};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const defaultFooterWrapper: IBodyWrapperRenderer = (node, options, state) => undefined;
