@@ -3,16 +3,15 @@ import * as assert from 'assert';
 import { parse, stringifyUrl } from 'query-string';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
-  DEFAULT_LIMIT, defaultGridMessages, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
+  DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
 import { extractOptions } from '../extractOptions';
-import { Messages } from '../messages';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
 import { defaultGridOptions } from '../render/defaultRenderer';
 import { GridRenderer } from '../render/GridRenderer';
 import {
-  IDatagridErrorResponse, IDataGridMessages,
+  IDatagridErrorResponse,
   IDataGridOptions,
   IDatagridRequest,
   IDatagridResponse,
@@ -21,9 +20,6 @@ import {
   IPaginatorParams,
 } from '../types';
 import { normalizeColumns } from '../utils';
-
-
-// import './styles.css';
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid';
@@ -364,8 +360,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
         dontRenderError: !!this.options.errorMessageTarget,
         selectable: renderOption.selectable || this.options.selectable,
-        messages: {...this.options.messages, ...renderOption.messages},
-        paginatorMessages: {...this.options.paginatorMessages, ...renderOption.paginatorMessages},
+        messages: { ...this.options.messages, ...renderOption.messages },
+        paginatorMessages: { ...this.options.paginatorMessages, ...renderOption.paginatorMessages },
       }, this));
     });
   }

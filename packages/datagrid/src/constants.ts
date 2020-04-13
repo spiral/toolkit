@@ -1,4 +1,4 @@
-import { IDataGridMessages, IPaginatorMessages } from './types';
+import type { IDataGridMessages, IPaginatorMessages } from './types';
 
 export enum SortDirection {
   ASC = 'asc',
@@ -28,20 +28,20 @@ export const sortParams = ['sortBy', 'sortDir'];
 export const DEFAULT_LIMIT = 25;
 
 export const defaultGridMessages: IDataGridMessages = {
-  noData: "No Data",
-  noResults: "No data matches your search criteria",
-  error: "Unknown error"
-}
+  noData: 'No Data',
+  noResults: 'No data matches your search criteria',
+  error: 'Unknown error',
+};
 
 export const defaultPaginatorMessages: IPaginatorMessages = {
-  currentPage: `Showing {from} to {to} of {total} entries`,
-  currentPageNoTotal: `Showing {from} to {to}`,
+  currentPage: 'Showing {from} to {to} of {total} entries',
+  currentPageNoTotal: 'Showing {from} to {to}',
   error: 'Showing no entries',
   limitLabel: 'Show',
   nextPage: '»',
   prevPage: '«',
   ellipsis: '...',
-}
+};
 
 export enum PaginatorType {
   pages = 'pages',

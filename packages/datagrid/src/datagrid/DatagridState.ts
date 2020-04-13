@@ -46,6 +46,7 @@ export class DatagridState<Item = any> {
     return this.state.selection;
   }
 
+  // eslint-disable-next-line
   get isCustomSearch() {
     return false; // TODO: Detect when search is filled
   }

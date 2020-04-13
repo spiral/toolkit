@@ -2,15 +2,16 @@ import sf from '@spiral-toolkit/core';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CHECK_SELECT_ALL_ATTR,
-  DATAGRID_CHECK_SELECT_ATTR, defaultGridMessages, defaultPaginatorMessages,
-  PAGINATOR_CLASS_NAME,
+  DATAGRID_CHECK_SELECT_ATTR, defaultGridMessages,
   SelectionType,
 } from '../constants';
 import type { Datagrid } from '../datagrid/Datagrid';
 import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
 import Paginator from '../paginator/Paginator';
-import { ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
+import {
+  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor,
+} from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';

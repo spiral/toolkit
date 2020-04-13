@@ -1,7 +1,7 @@
 export const extractOptions = (node: Element) => {
   const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
   if (additionalOptionsEl) {
-    if(additionalOptionsEl.getAttribute('type')==='text/javascript') {
+    if (additionalOptionsEl.getAttribute('type') === 'text/javascript') {
       try {
         // eslint-disable-next-line
         const one = Function(`"use strict";return ${additionalOptionsEl.innerHTML.trim()}`);
@@ -19,4 +19,5 @@ export const extractOptions = (node: Element) => {
       }
     }
   }
-}
+  return undefined;
+};

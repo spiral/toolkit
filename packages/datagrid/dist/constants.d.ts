@@ -1,4 +1,4 @@
-import { IDataGridMessages, IPaginatorMessages } from './types';
+import type { IDataGridMessages, IPaginatorMessages } from './types';
 export declare enum SortDirection {
     ASC = "asc",
     DESC = "desc"

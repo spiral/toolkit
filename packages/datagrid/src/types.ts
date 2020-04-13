@@ -33,19 +33,19 @@ export interface IDataGridUIOptions<Item = any> {
   tableClassName?: string;
   wrapperClassName?: string;
   headerCellClassName?:
-    ((cellMeta: ICellMeta<Item>) => string) |
-    { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
+  ((cellMeta: ICellMeta<Item>) => string) |
+  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   headerCellAttributes?:
-    ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-    | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
+  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
   rowClassName?: ((rowMeta: IRowMeta<Item>) => string) | string,
   rowAttributes?: ((rowMeta: IRowMeta<Item>) => { [attr: string]: string }) | { [attr: string]: string },
   cellClassName?:
-    ((cellMeta: ICellMeta<Item>) => string) |
-    { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
+  ((cellMeta: ICellMeta<Item>) => string) |
+  { [fieldId: string]: string | ((cellMeta: ICellMeta<Item>) => string) },
   cellAttributes?:
-    ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
-    | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
+  ((cellMeta: ICellMeta<Item>) => { [attr: string]: string })
+  | { [fieldId: string]: { [attr: string]: string } | ((cellMeta: ICellMeta<Item>) => { [attr: string]: string }) },
 }
 
 export type IColumnDescriptor = string | {
@@ -84,7 +84,7 @@ export type CellRenderFunction =
     rowIndex: number,
     state: DatagridState,
   )
-    => Element | string | undefined);
+  => Element | string | undefined);
 
 /**
  * Allows to create custom element or no element
@@ -100,7 +100,7 @@ export type HeaderCellRenderFunction =
     options: IGridRenderOptions,
     state: DatagridState,
   )
-    => Element | string | undefined);
+  => Element | string | undefined);
 
 export type HeaderCellRenderAdvanced = {
   render: HeaderCellRenderFunction,
@@ -128,7 +128,7 @@ export type IBodyWrapperRenderer = ((
 export type IFooterWrapperRenderer = ((
   parent: Element,
   options:
-    IGridRenderOptions,
+  IGridRenderOptions,
   state: DatagridState,
   messages: Messages<IDataGridMessages>
 ) => Element | undefined);

@@ -186,12 +186,12 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     if (this.hasPages()) {
       if (this.hasTotal()) {
         counterDiv.innerHTML = this.messages.getMessage('currentPage', {
-              total: this.state.count,
-              page: this.state.page,
-              limit: this.state.limit,
-              from: (this.state.page! - 1) * this.state.limit! + 1,
-              to: this.state.page! * this.state.limit!,
-          });
+          total: this.state.count,
+          page: this.state.page,
+          limit: this.state.limit,
+          from: (this.state.page! - 1) * this.state.limit! + 1,
+          to: this.state.page! * this.state.limit!,
+        });
       } else {
         counterDiv.innerHTML = this.messages.getMessage('currentPageNoTotal', {
           total: this.state.count,
