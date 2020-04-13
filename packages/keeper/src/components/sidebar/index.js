@@ -62,7 +62,7 @@ export default class Sidebar {
 
   checkMobile() {
     const currentIsMobile = this.isMobile;
-    if (window.matchMedia('(max-width: 768px)').matches) {
+    if (window.matchMedia('(max-width: 980px)').matches) {
       this.isMobile = true;
     } else {
       this.isMobile = false;

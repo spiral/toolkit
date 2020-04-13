@@ -46,7 +46,8 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
-            loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+            // loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+            loader: MiniCssExtractPlugin.loader,
           },
           {
             loader: 'css-loader',
@@ -66,7 +67,8 @@ module.exports = {
         test: /\.scss$/,
         use: [
           {
-            loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+            // loader: isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+            loader: MiniCssExtractPlugin.loader,
           },
           {
             loader: 'css-loader',
@@ -125,6 +127,9 @@ module.exports = {
         configFile: './.stylelintrc.json',
         files: [path.join(srcPath, '**/*.css')],
         failOnError: false,
+      }),
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
       }),
     ]
     : [

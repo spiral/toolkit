@@ -7,7 +7,9 @@ import './components/main.css';
 import './components/header.css';
 import './components/heading.css';
 import './components/signin.css';
+import './components/statpanel.css';
 import './components/table.css';
+import './components/user.css';
 
 import Nav from './components/nav';
 import Dropdown from './components/dropdown';
@@ -28,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Nav.init();
   Sidebar.init();
+
+  setTimeout(() => document.body.classList.add('loaded'), 1);
 });
 
 export {
