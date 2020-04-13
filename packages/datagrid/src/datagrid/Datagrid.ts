@@ -141,7 +141,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.resetPaginator();
         this.state.setFormData(id, options.data);
         this.capturedForms[id].fields = [...new Set([...Object.keys(options.data), ...this.capturedForms[id].fields])]; // Merge new fields if any
-        this.request(); // TODO: better way
+        this.request();
         return false;
       };
     }
@@ -151,9 +151,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.id) >= 0) {
       this.capturedPaginators.push(formInstance);
       // eslint-disable-next-line
+      formInstance.options.willFetchCount = this.options.fetchCount;
       formInstance.options.onPageChange = (options: IPaginatorParams) => {
         this.state.updatePaginator(options);
-        this.request(); // TODO: better way
+        this.request();
         return false;
       };
     }
@@ -234,13 +235,14 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   private resetPaginator() {
     // TODO: depending on paginator type perform different reset type
+    this.state.resetFetchCount();
     this.state.updatePaginator({ page: 1 });
     this.setAllPaginators(this.state.paginate);
   }
 
   private formRequest() {
     const request: IDatagridRequest = {
-      fetchCount: true,
+      fetchCount: this.state.needFetchCount,
       filter: this.state.getFilter(),
       paginate: this.state.paginate,
       sort: this.state.sortBy ? { [this.state.sortBy]: this.state.sortDir } : {},
@@ -290,6 +292,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   private handleSuccess({ data }: { data: IDatagridResponse<Item> }) {
     this.state.setSuccess(data.data, data.pagination);
+    if(typeof data.pagination.count !== 'undefined') {
+      this.state.onCountFetched();
+    }
     this.render();
     this.setAllPaginators({ ...this.state.paginate, error: false });
   }
@@ -506,7 +511,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }, {});
     let obj2 = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
     if (this.usePrefix()) {
-      console.log('Removing');
       Object.keys(obj2).forEach((k: string) => { // Remove params belonging to this table
         if (k.indexOf(this.getPrefix()) === 0) {
           delete obj2[k];

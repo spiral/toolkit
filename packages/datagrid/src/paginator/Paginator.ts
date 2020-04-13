@@ -14,9 +14,8 @@ export class Paginator extends sf.core.BaseDOMConstructor {
   static defaultOptions: IPaginatorOptions = {
     id: '',
     lockType: 'none',
-    fetchCount: true,
+    willFetchCount: true,
     serialize: true,
-    fetchCountOnce: true,
     type: PaginatorType.pages,
     className: 'row no-gutters align-items-center m-3',
     limitOptions: [10, 25, 50, 100],
@@ -33,13 +32,9 @@ export class Paginator extends sf.core.BaseDOMConstructor {
       value: Paginator.defaultOptions.type,
       domAttr: 'data-type',
     },
-    fetchCount: {
-      value: Paginator.defaultOptions.fetchCount,
+    willFetchCount: {
+      value: Paginator.defaultOptions.willFetchCount,
       domAttr: 'data-fetch-count',
-    },
-    fetchCountOnce: {
-      value: Paginator.defaultOptions.fetchCountOnce,
-      domAttr: 'data-fetch-count-once',
     },
   };
 
@@ -101,7 +96,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
   }
 
   private hasTotal() {
-    return typeof this.state.count !== 'undefined';
+    return this.options.willFetchCount && typeof this.state.count !== 'undefined';
   }
 
   private hasLimitOptions() {
@@ -192,6 +187,9 @@ export class Paginator extends sf.core.BaseDOMConstructor {
       } else {
         counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} entries`;
       }
+    }
+    if(this.state.error) {
+      counterDiv.innerHTML = `Showing no entries`;
     }
 
     const limitDiv = document.createElement('div');
@@ -291,9 +289,9 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     el.appendChild(pagesDiv);
 
     if (this.state.error) {
-      el.style.opacity = '0'; // TODO: Better way?
+      el?.classList.add('sf-paginator__error');
     } else {
-      el.style.opacity = '';
+      el?.classList.remove('sf-paginator__error');
     }
   }
 }

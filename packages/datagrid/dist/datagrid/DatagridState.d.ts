@@ -11,6 +11,9 @@ export declare class DatagridState<Item = any> {
     get selectedItems(): Item[];
     get isLoading(): boolean;
     startLoading(): void;
+    get needFetchCount(): boolean;
+    resetFetchCount(): void;
+    onCountFetched(): void;
     stopLoading(): void;
     get data(): Array<Item>;
     get paginate(): IPaginatorParams;
