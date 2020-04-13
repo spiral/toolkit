@@ -27,6 +27,7 @@ export const defaultGridOptions: IDataGridOptions = {
   id: '',
   lockType: 'default',
   resetOnError: false,
+  fetchCount: true,
   captureForms: [],
   columns: [],
   headers: {},

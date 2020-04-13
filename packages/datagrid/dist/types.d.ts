@@ -197,6 +197,11 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      */
     serialize: boolean;
     /**
+     * If to fetch count of items on this table
+     * @default true
+     */
+    fetchCount: boolean;
+    /**
      * When using several datagrids that you want to be serialized in URL specify namespace that will be used as a prefix for URL params
      * Not non-namespaced datagrids will consume ALL url query params.
      */
@@ -234,8 +239,7 @@ export interface IDatagridErrorResponse {
 export interface IPaginatorOptions {
     id: string;
     type: PaginatorType;
-    fetchCount: boolean;
-    fetchCountOnce: boolean;
+    willFetchCount: boolean;
     serialize: string | boolean;
     onPageChange?: (params: IPaginatorParams) => void;
     lockType: string;
@@ -245,7 +249,6 @@ export interface IPaginatorOptions {
 export interface IPaginatorParams {
     page?: number;
     limit?: number;
-    fetchCount?: boolean;
     /**
      * Optional 'last id' parameter
      */

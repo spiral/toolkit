@@ -14,12 +14,14 @@ export class DatagridState<Item = any> {
     formData: {[formId: string]: any};
     urlData?: any;
     selection: Set<string>;
+    fetchCount: boolean,
   } = {
     loading: false,
     paginator: {
       page: 1,
       limit: DEFAULT_LIMIT,
     },
+    fetchCount: false,
     sortDir: SortDirection.ASC,
     data: [],
     formData: {},
@@ -27,7 +29,7 @@ export class DatagridState<Item = any> {
   };
 
   constructor(public parent: Datagrid) {
-
+    this.state.fetchCount = this.parent.options.fetchCount;
   }
 
   public isSelected(val: string) {
@@ -54,6 +56,18 @@ export class DatagridState<Item = any> {
 
   startLoading() {
     this.state.loading = true;
+  }
+
+  get needFetchCount() {
+    return this.state.fetchCount;
+  }
+
+  resetFetchCount() {
+    this.state.fetchCount = this.parent.options.fetchCount;
+  }
+
+  onCountFetched() {
+    this.state.fetchCount = false;
   }
 
   stopLoading() {
