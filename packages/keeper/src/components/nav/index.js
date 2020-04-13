@@ -16,7 +16,7 @@ export default class Nav {
         index,
         toggleElem,
         contentElem: toggleElem.nextElementSibling,
-        isExpanded: toggleElem.getAttribute('aria-expanded') === 'true',
+        isExpanded: toggleElem.getAttribute('aria-expanded') === 'true' || toggleElem.classList.contains('active'),
       };
       this.handleToggleListeners[index] = this.handleToggle.bind(this, index);
     });
