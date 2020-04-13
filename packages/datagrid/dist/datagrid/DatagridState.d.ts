@@ -8,6 +8,7 @@ export declare class DatagridState<Item = any> {
     isSelected(val: string): boolean;
     areAllSelected(): boolean;
     get selection(): Set<string>;
+    get isCustomSearch(): boolean;
     get selectedItems(): Item[];
     get isLoading(): boolean;
     startLoading(): void;

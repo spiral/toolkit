@@ -1,5 +1,6 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
-import { IDataGridOptions, IPaginatorOptions, IPaginatorParams } from '../types';
+import { Messages } from '../messages';
+import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
 export declare class Paginator extends sf.core.BaseDOMConstructor {
     static readonly spiralFrameworkName: string;
     readonly name: string;
@@ -14,7 +15,8 @@ export declare class Paginator extends sf.core.BaseDOMConstructor {
         error: boolean;
         count?: number;
     } & IPaginatorParams;
-    constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions);
+    messages: Messages<IPaginatorMessages>;
+    constructor(ssf: ISpiralFramework, node: Element, options: IPaginatorOptions);
     unlock(): void;
     lock(): void;
     setParams(params: IPaginatorParams & {

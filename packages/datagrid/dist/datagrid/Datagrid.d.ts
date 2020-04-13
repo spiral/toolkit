@@ -28,7 +28,7 @@ export declare class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     private columnInfo;
     constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>);
     private registerFormInstance;
-    private registerPaginatorInstance;
+    registerPaginatorInstance(formInstance: any): void;
     registerActionPanelInstance(formInstance: any): void;
     captureForms(): void;
     /**

@@ -2,13 +2,16 @@ import sf from '@spiral-toolkit/core';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CHECK_SELECT_ALL_ATTR,
-  DATAGRID_CHECK_SELECT_ATTR,
-  PAGINATOR_CLASS_NAME,
+  DATAGRID_CHECK_SELECT_ATTR, defaultGridMessages,
   SelectionType,
 } from '../constants';
 import type { Datagrid } from '../datagrid/Datagrid';
 import { DatagridState } from '../datagrid/DatagridState';
-import { ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
+import { Messages } from '../messages';
+import Paginator from '../paginator/Paginator';
+import {
+  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor,
+} from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';
@@ -42,8 +45,11 @@ export class GridRenderer {
 
   private options: IGridRenderOptions;
 
+  private messages: Messages<IDataGridMessages>;
+
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
     this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.messages = new Messages<IDataGridMessages>(this.options.messages || {}, defaultGridMessages);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
   }
@@ -71,9 +77,13 @@ export class GridRenderer {
     const id = `${Date.now()}${this.instance}`;
     this.root.options.captureForms.push(id);
     this.paginatorEl = document.createElement('div');
-    this.paginatorEl.className = PAGINATOR_CLASS_NAME;
-    this.paginatorEl.id = id;
     this.root.node.appendChild(this.paginatorEl);
+    const paginator = new Paginator(sf, this.paginatorEl, {
+      ...Paginator.defaultOptions,
+      id,
+      messages: this.root.options.paginatorMessages,
+    });
+    this.root.registerPaginatorInstance(paginator);
   }
 
   private createDefaultActions() {
@@ -185,7 +195,7 @@ export class GridRenderer {
     if (this.headerEl) {
       this.tableEl.removeChild(this.headerEl.outer);
     }
-    this.headerEl = headerRenderer(this.tableEl, this.options, state);
+    this.headerEl = headerRenderer(this.tableEl, this.options, state, this.messages);
     if (this.headerEl) {
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -213,7 +223,7 @@ export class GridRenderer {
       this.tableEl.removeChild(this.bodyEl);
     }
     const bodyRenderer = this.options.bodyWrapper || defaultBodyWrapper;
-    this.bodyEl = bodyRenderer(this.tableEl, this.options, state);
+    this.bodyEl = bodyRenderer(this.tableEl, this.options, state, this.messages);
     if (this.bodyEl) {
       this.tableEl.appendChild(this.bodyEl);
       const row = this.options.rowWrapper || defaultRowWrapper;
@@ -244,7 +254,7 @@ export class GridRenderer {
       this.tableEl.removeChild(this.footerEl);
     }
     const footerRenderer = this.options.footerWrapper || defaultFooterWrapper;
-    this.footerEl = footerRenderer(this.tableEl, this.options, state);
+    this.footerEl = footerRenderer(this.tableEl, this.options, state, this.messages);
     if (this.footerEl) {
       this.tableEl.appendChild(this.footerEl);
       // We assume footer render handles all data so no additional renders here

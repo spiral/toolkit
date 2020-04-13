@@ -1,10 +1,9 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { stringifyUrl } from 'query-string';
-import { DEFAULT_LIMIT, PaginatorType } from '../constants';
-// import * as assert from 'assert';
-import { IDataGridOptions, IPaginatorOptions, IPaginatorParams } from '../types';
-
-// import './styles.css';
+import { DEFAULT_LIMIT, defaultPaginatorMessages, PaginatorType } from '../constants';
+import { extractOptions } from '../extractOptions';
+import { Messages } from '../messages';
+import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
 
 export class Paginator extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid-paginator';
@@ -50,13 +49,17 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     limit: DEFAULT_LIMIT,
   };
 
-  constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions) {
+  messages: Messages<IPaginatorMessages>;
+
+  constructor(ssf: ISpiralFramework, node: Element, options: IPaginatorOptions) {
     super();
     this.init(ssf, node, options);
     this.options = {
       ...Paginator.defaultOptions,
       ...this.options,
+      ...extractOptions(node),
     };
+    this.messages = new Messages<IPaginatorMessages>(this.options.messages || {}, defaultPaginatorMessages);
     this.render();
   }
 
@@ -127,7 +130,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           // If page is more than 1 page further from next page in range, add ellipsis and jump
           pages.push({
             page: undefined,
-            text: '...',
+            text: this.messages.getMessage('ellipsis'),
             active: false,
           });
           // eslint-disable-next-line prefer-destructuring
@@ -142,7 +145,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           // If page is more than 1 page further from next page in range, add ellipsis and jump
           pages.push({
             page: undefined,
-            text: '...',
+            text: this.messages.getMessage('ellipsis'),
             active: false,
           });
           // eslint-disable-next-line prefer-destructuring
@@ -182,21 +185,38 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     counterDiv.className = 'col-12 col-lg-4';
     if (this.hasPages()) {
       if (this.hasTotal()) {
-        counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!}`
-          + ` of ${this.state.count!} entries`;
+        counterDiv.innerHTML = this.messages.getMessage('currentPage', {
+          total: this.state.count,
+          page: this.state.page,
+          limit: this.state.limit,
+          from: (this.state.page! - 1) * this.state.limit! + 1,
+          to: this.state.page! * this.state.limit!,
+        });
       } else {
-        counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} entries`;
+        counterDiv.innerHTML = this.messages.getMessage('currentPageNoTotal', {
+          total: this.state.count,
+          page: this.state.page,
+          limit: this.state.limit,
+          from: (this.state.page! - 1) * this.state.limit! + 1,
+          to: this.state.page! * this.state.limit!,
+        });
       }
     }
     if (this.state.error) {
-      counterDiv.innerHTML = 'Showing no entries';
+      counterDiv.innerHTML = this.messages.getMessage('error', {
+        total: this.state.count,
+        page: this.state.page,
+        limit: this.state.limit,
+        from: (this.state.page! - 1) * this.state.limit! + 1,
+        to: this.state.page! * this.state.limit!,
+      });
     }
 
     const limitDiv = document.createElement('div');
     limitDiv.className = 'col-4 col-md-2 col-lg-2';
     if (this.hasLimitOptions()) {
       limitDiv.innerHTML = `<div class="form-group row mb-0">
-                    <label class="col-form-label-sm col-auto">Show</label>
+                    <label class="col-form-label-sm col-auto">${this.messages.getMessage('limitLabel')}</label>
                     <select name="limit" class="custom-select custom-select-sm col-6">
                     </select>
                   </div>`;
@@ -253,7 +273,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
       addLi(
         pageInfo.hasPrevious ? 'page-item previous' : 'page-item previous disabled',
-        '«',
+        this.messages.getMessage('prevPage'),
         pageInfo.hasPrevious ? urlForPage(this.state.page! - 1) : undefined,
         pageInfo.hasPrevious ? clickForPage(this.state.page! - 1) : undefined,
       );
@@ -269,7 +289,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
       addLi(
         pageInfo.hasNext ? 'page-item next' : 'page-item next disabled',
-        '»',
+        this.messages.getMessage('nextPage'),
         pageInfo.hasNext ? urlForPage(this.state.page! + 1) : undefined,
         pageInfo.hasNext ? clickForPage(this.state.page! + 1) : undefined,
       );

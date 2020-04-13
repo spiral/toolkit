@@ -3,6 +3,7 @@ import {
   PaginatorType, RequestMethod, SelectionType, SortDirection,
 } from './constants';
 import type { DatagridState } from './datagrid/DatagridState';
+import { Messages } from './messages';
 
 export interface IRowMeta<T = any> {
   id: string;
@@ -90,7 +91,7 @@ export type CellRenderFunction =
  */
 export type CellRenderAdvanced = {
   render: CellRenderFunction,
-  createEl: ()=>Element | undefined,
+  createEl: () => Element | undefined,
 };
 
 export type HeaderCellRenderFunction =
@@ -103,19 +104,40 @@ export type HeaderCellRenderFunction =
 
 export type HeaderCellRenderAdvanced = {
   render: HeaderCellRenderFunction,
-  createEl: ()=>Element | undefined,
+  createEl: () => Element | undefined,
 };
 
 export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
 
 export type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
 
-export type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => {outer: Element, inner: Element} | undefined);
-export type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
-export type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export type IHeaderWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>,
+) => { outer: Element, inner: Element } | undefined);
+export type ITableWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions) => Element);
+export type IBodyWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>) => Element | undefined);
+export type IFooterWrapperRenderer = ((
+  parent: Element,
+  options:
+  IGridRenderOptions,
+  state: DatagridState,
+  messages: Messages<IDataGridMessages>
+) => Element | undefined);
 
-export type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
+export type IRowWrapperRenderer = ((
+  parent: Element,
+  options: IGridRenderOptions,
+  state: DatagridState,
+  index: number) => Element);
 
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
@@ -137,6 +159,7 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
    * Add default paginator
    */
   paginator?: boolean;
+  paginatorMessages?: Partial<IPaginatorMessages>;
   ui: Partial<IDataGridUIOptions<Item>>;
   dontRenderError?: boolean;
   /**
@@ -153,6 +176,24 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   actions?: {
     [action: string]: IActionDescriptor,
   }
+
+  messages?: Partial<IDataGridMessages>,
+}
+
+export interface IDataGridMessages extends Object {
+  noData: string;
+  noResults: string;
+  error: string;
+}
+
+export interface IPaginatorMessages extends Object {
+  limitLabel: string;
+  currentPage: string;
+  currentPageNoTotal: string;
+  ellipsis: string;
+  error: string;
+  prevPage: string;
+  nextPage: string;
 }
 
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
@@ -179,6 +220,8 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * By default error is displayed inside table, define errorMessageTarget to target specific form that will be responsible for displaying error message
    */
   errorMessageTarget?: string;
+
+  messages?: Partial<IDataGridMessages>,
 
   /**
    * Data url to grab data from
@@ -226,6 +269,8 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    */
   paginator: boolean;
 
+  paginatorMessages?: Partial<IPaginatorMessages>;
+
   /**
    * Mark column as selectable
    * Define 'multiple' or 'single' to enable multiple items selection or single row selection
@@ -261,6 +306,7 @@ export interface IPaginatorOptions {
   onPageChange?: (params: IPaginatorParams) => void,
   lockType: string,
   className?: string,
+  messages?: Partial<IPaginatorMessages>,
   limitOptions: Array<number>,
 }
 
