@@ -159,6 +159,7 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
    * Add default paginator
    */
   paginator?: boolean;
+  paginatorMessages?: Partial<IPaginatorMessages>;
   ui: Partial<IDataGridUIOptions<Item>>;
   dontRenderError?: boolean;
   /**

@@ -5,6 +5,7 @@ import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DEFAULT_LIMIT, defaultGridMessages, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
+import { extractOptions } from '../extractOptions';
 import { Messages } from '../messages';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
@@ -71,23 +72,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.options = {
       ...Datagrid.defaultOptions,
       ...this.options,
+      ...extractOptions(node),
     };
-    const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
-    if (additionalOptionsEl) {
-      try {
-        // eslint-disable-next-line
-        const one = Function(`"use strict";return ${additionalOptionsEl.innerHTML.trim()}`);
-        // console.log('"use strict";return ' + additionalOptionsEl.innerHTML.trim() + '');
-        const overrides = one()();
-        this.options = {
-          ...this.options,
-          ...overrides,
-        };
-      } catch (e) {
-        console.error('Could not parse options inside script, ensure script inside is an anonymous function returning IDataGridOptions object');
-        throw e;
-      }
-    }
     assert.notEqual(this.options.id, '', 'id should be not empty');
     assert.notEqual(this.options.url, '', 'url should be not empty');
 
@@ -379,6 +365,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         dontRenderError: !!this.options.errorMessageTarget,
         selectable: renderOption.selectable || this.options.selectable,
         messages: {...this.options.messages, ...renderOption.messages},
+        paginatorMessages: {...this.options.paginatorMessages, ...renderOption.paginatorMessages},
       }, this));
     });
   }

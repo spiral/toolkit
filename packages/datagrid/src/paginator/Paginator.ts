@@ -1,6 +1,7 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { stringifyUrl } from 'query-string';
 import { DEFAULT_LIMIT, defaultPaginatorMessages, PaginatorType } from '../constants';
+import { extractOptions } from '../extractOptions';
 import { Messages } from '../messages';
 import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
 
@@ -56,23 +57,8 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     this.options = {
       ...Paginator.defaultOptions,
       ...this.options,
+      ...extractOptions(node),
     };
-
-    const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
-    if (additionalOptionsEl) {
-      try {
-        // eslint-disable-next-line
-        const one = Function(`"use strict";return ${additionalOptionsEl.innerHTML.trim()}`);
-        const overrides = one()();
-        this.options = {
-          ...this.options,
-          ...overrides,
-        };
-      } catch (e) {
-        console.error('Could not parse options inside script, ensure script inside is an anonymous function returning IDataGridOptions object');
-        throw e;
-      }
-    }
     this.messages = new Messages<IPaginatorMessages>(this.options.messages || {}, defaultPaginatorMessages);
     this.render();
   }

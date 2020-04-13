@@ -34,8 +34,8 @@ export const defaultGridMessages: IDataGridMessages = {
 }
 
 export const defaultPaginatorMessages: IPaginatorMessages = {
-  currentPage: `Showing {{from}} to {{to}} of {{total}} entries`,
-  currentPageNoTotal: `Showing {{from}} to {{to}}`,
+  currentPage: `Showing {from} to {to} of {total} entries`,
+  currentPageNoTotal: `Showing {from} to {to}`,
   error: 'Showing no entries',
   limitLabel: 'Show',
   nextPage: '»',

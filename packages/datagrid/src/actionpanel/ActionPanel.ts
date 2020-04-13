@@ -1,5 +1,6 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { SelectionType } from '../constants';
+import { extractOptions } from '../extractOptions';
 import type { IActionDescriptor, IActionPanelOptions, IActionPanelState } from '../types';
 
 export type FlexibleRenderDefinition = string | Element | ((state: IActionPanelState) => string | Element);
@@ -53,22 +54,8 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
     this.options = {
       ...ActionPanel.defaultOptions,
       ...this.options,
+      ...extractOptions(node),
     };
-    const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
-    if (additionalOptionsEl) {
-      try {
-        // eslint-disable-next-line
-        const one = Function(`"use strict";return ${additionalOptionsEl.innerHTML.trim()}`);
-        const overrides = one()();
-        this.options = {
-          ...this.options,
-          ...overrides,
-        };
-      } catch (e) {
-        console.error('Could not parse options inside script, ensure script inside is an anonymous function returning IDataGridOptions object');
-        throw e;
-      }
-    }
     this.render();
   }
 
