@@ -2,13 +2,14 @@ import sf from '@spiral-toolkit/core';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CHECK_SELECT_ALL_ATTR,
-  DATAGRID_CHECK_SELECT_ATTR, defaultGridMessages,
+  DATAGRID_CHECK_SELECT_ATTR, defaultGridMessages, defaultPaginatorMessages,
   PAGINATOR_CLASS_NAME,
   SelectionType,
 } from '../constants';
 import type { Datagrid } from '../datagrid/Datagrid';
 import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
+import Paginator from '../paginator/Paginator';
 import { ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor } from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
@@ -75,9 +76,13 @@ export class GridRenderer {
     const id = `${Date.now()}${this.instance}`;
     this.root.options.captureForms.push(id);
     this.paginatorEl = document.createElement('div');
-    this.paginatorEl.className = PAGINATOR_CLASS_NAME;
-    this.paginatorEl.id = id;
     this.root.node.appendChild(this.paginatorEl);
+    const paginator = new Paginator(sf, this.paginatorEl, {
+      ...Paginator.defaultOptions,
+      id,
+      messages: this.root.options.paginatorMessages,
+    });
+    this.root.registerPaginatorInstance(paginator);
   }
 
   private createDefaultActions() {

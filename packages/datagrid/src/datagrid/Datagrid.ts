@@ -134,7 +134,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
   }
 
-  private registerPaginatorInstance(formInstance: any) {
+  public registerPaginatorInstance(formInstance: any) {
     if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.id) >= 0) {
       this.capturedPaginators.push(formInstance);
       // eslint-disable-next-line
