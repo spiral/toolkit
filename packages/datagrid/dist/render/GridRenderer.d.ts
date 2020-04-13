@@ -13,6 +13,7 @@ export declare class GridRenderer {
     private actionPanelEl?;
     private columnInfo;
     private options;
+    private messages;
     constructor(partialOptions: Partial<IGridRenderOptions>, root: Datagrid);
     private create;
     private createDefaultPaginator;
