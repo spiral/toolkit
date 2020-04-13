@@ -64,7 +64,6 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
           ...this.options,
           ...overrides,
         };
-        console.log(overrides);
       } catch (e) {
         console.error('Could not parse options inside script, ensure script inside is an anonymous function returning IDataGridOptions object');
         throw e;

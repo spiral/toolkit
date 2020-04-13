@@ -185,6 +185,16 @@ export interface IDataGridMessages extends Object {
   error: string;
 }
 
+export interface IPaginatorMessages extends Object {
+  limitLabel: string;
+  currentPage: string;
+  currentPageNoTotal: string;
+  ellipsis: string;
+  error: string;
+  prevPage: string;
+  nextPage: string;
+}
+
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   id: string;
   /**
@@ -258,6 +268,8 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    */
   paginator: boolean;
 
+  paginatorMessages?: Partial<IPaginatorMessages>;
+
   /**
    * Mark column as selectable
    * Define 'multiple' or 'single' to enable multiple items selection or single row selection
@@ -293,6 +305,7 @@ export interface IPaginatorOptions {
   onPageChange?: (params: IPaginatorParams) => void,
   lockType: string,
   className?: string,
+  messages?: Partial<IPaginatorMessages>,
   limitOptions: Array<number>,
 }
 

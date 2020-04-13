@@ -1,4 +1,4 @@
-import { IDataGridMessages } from './types';
+import { IDataGridMessages, IPaginatorMessages } from './types';
 export declare enum SortDirection {
     ASC = "asc",
     DESC = "desc"
@@ -22,6 +22,7 @@ export declare const pageParams: string[];
 export declare const sortParams: string[];
 export declare const DEFAULT_LIMIT = 25;
 export declare const defaultGridMessages: IDataGridMessages;
+export declare const defaultPaginatorMessages: IPaginatorMessages;
 export declare enum PaginatorType {
     pages = "pages",
     infinite = "infinite"

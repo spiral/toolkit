@@ -1,5 +1,7 @@
-import { PaginatorType, RequestMethod, SortDirection } from './constants';
-import type { DatagridState } from './DatagridState';
+import type { ActionPanel, FlexibleRenderDefinition } from './actionpanel/ActionPanel';
+import { PaginatorType, RequestMethod, SelectionType, SortDirection } from './constants';
+import type { DatagridState } from './datagrid/DatagridState';
+import { Messages } from './messages';
 export interface IRowMeta<T = any> {
     id: string;
     index: number;
@@ -98,10 +100,13 @@ export declare type HeaderCellRenderAdvanced = {
 };
 export declare type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
 export declare type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
-export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type IHeaderWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, messages: Messages<IDataGridMessages>) => {
+    outer: Element;
+    inner: Element;
+} | undefined);
 export declare type ITableWrapperRenderer = ((parent: Element, options: IGridRenderOptions) => Element);
-export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
-export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState) => Element | undefined);
+export declare type IBodyWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, messages: Messages<IDataGridMessages>) => Element | undefined);
+export declare type IFooterWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, messages: Messages<IDataGridMessages>) => Element | undefined);
 export declare type IRowWrapperRenderer = ((parent: Element, options: IGridRenderOptions, state: DatagridState, index: number) => Element);
 export interface ITableMeta<Item = any> {
     columns: IColumnDescriptor[];
@@ -127,13 +132,47 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
      */
     paginator?: boolean;
     ui: Partial<IDataGridUIOptions<Item>>;
+    dontRenderError?: boolean;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
+    /**
+     * Render default action bar, expected to work with selections only
+     */
+    actions?: {
+        [action: string]: IActionDescriptor;
+    };
+    messages?: Partial<IDataGridMessages>;
+}
+export interface IDataGridMessages extends Object {
+    noData: string;
+    noResults: string;
+    error: string;
+}
+export interface IPaginatorMessages extends Object {
+    limitLabel: string;
+    currentPage: string;
+    currentPageNoTotal: string;
+    ellipsis: string;
+    error: string;
+    prevPage: string;
+    nextPage: string;
 }
 export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     id: string;
     /**
-     * Id of forms or paginators to attach to and use their data in requests
+     * Url(for legacy compatibility) forms or paginators ids to attach to and use their data in requests
      */
     captureForms: string[];
+    /**
+     * Ids of actions panels to connect to
+     */
+    captureActionPanels?: string[];
     /**
      * lock type to use on grids
      */
@@ -147,6 +186,7 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      * By default error is displayed inside table, define errorMessageTarget to target specific form that will be responsible for displaying error message
      */
     errorMessageTarget?: string;
+    messages?: Partial<IDataGridMessages>;
     /**
      * Data url to grab data from
      */
@@ -174,6 +214,11 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      */
     serialize: boolean;
     /**
+     * If to fetch count of items on this table
+     * @default true
+     */
+    fetchCount: boolean;
+    /**
      * When using several datagrids that you want to be serialized in URL specify namespace that will be used as a prefix for URL params
      * Not non-namespaced datagrids will consume ALL url query params.
      */
@@ -183,6 +228,15 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
      * @default true
      */
     paginator: boolean;
+    paginatorMessages?: Partial<IPaginatorMessages>;
+    /**
+     * Mark column as selectable
+     * Define 'multiple' or 'single' to enable multiple items selection or single row selection
+     */
+    selectable?: {
+        type: SelectionType;
+        id: string;
+    };
     ui?: Partial<IDataGridUIOptions<Item>>;
 }
 export interface IDatagridResponse<Item = any> {
@@ -203,18 +257,17 @@ export interface IDatagridErrorResponse {
 export interface IPaginatorOptions {
     id: string;
     type: PaginatorType;
-    fetchCount: boolean;
-    fetchCountOnce: boolean;
+    willFetchCount: boolean;
     serialize: string | boolean;
     onPageChange?: (params: IPaginatorParams) => void;
     lockType: string;
     className?: string;
+    messages?: Partial<IPaginatorMessages>;
     limitOptions: Array<number>;
 }
 export interface IPaginatorParams {
     page?: number;
     limit?: number;
-    fetchCount?: boolean;
     /**
      * Optional 'last id' parameter
      */
@@ -232,5 +285,31 @@ export interface IDatagridRequest {
     };
     sort: {
         [sortField: string]: SortDirection;
+    };
+}
+export interface IActionPanelState<Item = any> {
+    hasSelection: boolean;
+    selectedCount: number;
+    selectionType: SelectionType;
+    selectedItems: Array<Item>;
+    selectedKeys: Set<string>;
+}
+export interface IActionDescriptor {
+    renderAs: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    onClick: (state: IActionPanelState, root: ActionPanel, e: MouseEvent) => any;
+}
+export interface IActionPanelOptions {
+    id: string;
+    lockType: string;
+    noSelection?: string | Element;
+    selectionLabel?: FlexibleRenderDefinition;
+    className?: string | ((state: IActionPanelState) => string);
+    actionClassName?: string | ((actionId: string, state: IActionPanelState) => string) | {
+        [actionId: string]: string;
+    };
+    selectionType: SelectionType;
+    actions: {
+        [action: string]: IActionDescriptor;
     };
 }

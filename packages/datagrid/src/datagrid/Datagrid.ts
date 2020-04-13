@@ -378,6 +378,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
         dontRenderError: !!this.options.errorMessageTarget,
         selectable: renderOption.selectable || this.options.selectable,
+        messages: {...this.options.messages, ...renderOption.messages},
       }, this));
     });
   }
