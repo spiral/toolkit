@@ -152,6 +152,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       this.capturedPaginators.push(formInstance);
       // eslint-disable-next-line
       formInstance.options.willFetchCount = this.options.fetchCount;
+      // eslint-disable-next-line
       formInstance.options.onPageChange = (options: IPaginatorParams) => {
         this.state.updatePaginator(options);
         this.request();
@@ -292,7 +293,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   private handleSuccess({ data }: { data: IDatagridResponse<Item> }) {
     this.state.setSuccess(data.data, data.pagination);
-    if(typeof data.pagination.count !== 'undefined') {
+    if (typeof data.pagination.count !== 'undefined') {
       this.state.onCountFetched();
     }
     this.render();

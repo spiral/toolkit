@@ -188,8 +188,8 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         counterDiv.innerHTML = `Showing ${(this.state.page! - 1) * this.state.limit! + 1} to ${this.state.page! * this.state.limit!} entries`;
       }
     }
-    if(this.state.error) {
-      counterDiv.innerHTML = `Showing no entries`;
+    if (this.state.error) {
+      counterDiv.innerHTML = 'Showing no entries';
     }
 
     const limitDiv = document.createElement('div');
