@@ -50,15 +50,16 @@ export class DatagridState<Item = any> {
 
   // eslint-disable-next-line
   get isCustomSearch() {
-    return !Object.keys(this.state.formData).reduce((isDefault: boolean, formKey: string)=>{
+    return !Object.keys(this.state.formData).reduce((isDefault: boolean, formKey: string) => {
       const formData = this.state.formData[formKey];
-      const isFDefault = Object.keys(formData).reduce((isD: boolean, field: string)=>{
+      const isFDefault = Object.keys(formData).reduce((isD: boolean, field: string) => {
         const fieldValue = formData[field];
         const defaultValue = this.state.defaultData[field];
-        if(fieldValue && defaultValue) {
+        if (fieldValue && defaultValue) {
+          // eslint-disable-next-line eqeqeq
           return isD && (fieldValue == defaultValue);
         }
-        if((!fieldValue && defaultValue) || (fieldValue && !defaultValue)) {
+        if ((!fieldValue && defaultValue) || (fieldValue && !defaultValue)) {
           return false;
         }
         return isD;
@@ -201,7 +202,7 @@ export class DatagridState<Item = any> {
     this.state.defaultData = {
       ...this.state.defaultData,
       ...data,
-    }
+    };
   }
 
   get defaultData() {
