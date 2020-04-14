@@ -95,11 +95,15 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.createRenderers();
     this.initFromUrl();
     this.captureForms();
-    this.request();
+    if(this.allFormsAttached()) {
+      this.request();
+    }
   }
 
   private registerFormInstance(formInstance: any) {
-    if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
+    if (formInstance.options
+      && formInstance.options.id
+      && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
       const { id } = formInstance.options;
       const fields = formInstance.enumerateFieldNames();
 
@@ -125,14 +129,21 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         return false;
       };
 
-      const urlDataForForm = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
+      const urlDataForForm: {[key: string]: any} | undefined = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
         ...map,
         [key]: this.state.urlData[key],
       }), {}) : undefined;
 
       if (urlDataForForm) {
-        formInstance.setFieldValues(urlDataForForm);
+        const formSpecificData = Object.keys(urlDataForForm).filter((k)=>fields.includes(k)).reduce((map, key)=>{
+          return {...map, [key]: urlDataForForm[key]};
+        }, {});
+        formInstance.setFieldValues(formSpecificData);
+        this.state.setFormData(id, formSpecificData);
       }
+
+      this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.url);
+      this.request();
     }
   }
 
@@ -147,6 +158,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.request();
         return false;
       };
+
+      this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.id);
+      this.request();
     }
   }
 
@@ -316,8 +330,12 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   async request() {
+    if(!this.allFormsAttached()) {
+      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms);
+      return;
+    }
     if (this.state.isLoading) {
-      console.warn('Cant start new request');
+      console.warn('Cant start new request, old one is running');
       return;
     }
     this.state.startLoading();
@@ -523,6 +541,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       ...this.defaults,
       ...this.state.defaultData,
     }
+  }
+
+  private allFormsAttached() {
+    return this.options.captureForms.length === 0;
   }
 }
 
