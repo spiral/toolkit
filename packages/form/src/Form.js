@@ -318,7 +318,7 @@ Form.prototype.setFieldValues = function (values) {
     if (typeof el.sfSetValue === 'function') {
       el.sfSetValue(value);
     } else {
-      if (el.type === 'checkbox') {
+      if (el.type === 'checkbox' || el.type === 'radio') {
         if (!el.value) { // single checkbox
           el.checked = !!value;
         } else {

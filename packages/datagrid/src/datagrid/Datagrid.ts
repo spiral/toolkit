@@ -23,19 +23,19 @@ import { normalizeColumns } from '../utils';
 
 function makeGetUrl(url: string, data: IDatagridRequest) {
   const result: {[field: string]: any} = {};
-  if(data.fetchCount) {
+  if (data.fetchCount) {
     result.fetchCount = true;
   }
-  Object.keys(data.filter).forEach((field)=>{
+  Object.keys(data.filter).forEach((field) => {
     result[`filter[${field}]`] = data.filter[field];
   });
-  Object.keys(data.paginate).forEach((field)=>{
+  Object.keys(data.paginate).forEach((field) => {
     result[`paginate[${field}]`] = (data.paginate as any)[field];
   });
-  Object.keys(data.sort).forEach((field)=>{
+  Object.keys(data.sort).forEach((field) => {
     result[`sort[${field}]`] = data.sort[field];
   });
-  return stringifyUrl({url, query: result});
+  return stringifyUrl({ url, query: result });
 }
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
@@ -477,7 +477,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     } = values;
     const paginatorUpdate: {page?: number, limit?: number, cid?: string, lid?: string} = {
       page: this.defaults.page,
-      limit: this.defaults.limit
+      limit: this.defaults.limit,
     };
 
     if (page) { paginatorUpdate.page = +page; }
