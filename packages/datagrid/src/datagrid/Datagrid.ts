@@ -21,6 +21,23 @@ import {
 } from '../types';
 import { normalizeColumns } from '../utils';
 
+function makeGetUrl(url: string, data: IDatagridRequest) {
+  const result: {[field: string]: any} = {};
+  if (data.fetchCount) {
+    result.fetchCount = true;
+  }
+  Object.keys(data.filter).forEach((field) => {
+    result[`filter[${field}]`] = data.filter[field];
+  });
+  Object.keys(data.paginate).forEach((field) => {
+    result[`paginate[${field}]`] = (data.paginate as any)[field];
+  });
+  Object.keys(data.sort).forEach((field) => {
+    result[`sort[${field}]`] = data.sort[field];
+  });
+  return stringifyUrl({ url, query: result });
+}
+
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid';
 
@@ -95,11 +112,15 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.createRenderers();
     this.initFromUrl();
     this.captureForms();
-    this.request();
+    if (this.allFormsAttached()) {
+      this.request();
+    }
   }
 
   private registerFormInstance(formInstance: any) {
-    if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
+    if (formInstance.options
+      && formInstance.options.id
+      && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
       const { id } = formInstance.options;
       const fields = formInstance.enumerateFieldNames();
 
@@ -108,25 +129,41 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         fields,
       };
 
-      const urlDataForForm = this.state.urlData ? Object.keys(this.state.urlData).filter((key) => fields.indexOf(key) >= 0).reduce((map, key) => ({
-        ...map,
-        [key]: this.state.urlData[key],
-      }), {}) : undefined;
-
-      if (urlDataForForm) {
-        formInstance.setFieldValues(urlDataForForm);
-      }
-
       // eslint-disable-next-line
       formInstance.options.jsonOnly = true;
+
+      if (formInstance.getFormData) {
+        const data = formInstance.getFormData();
+        this.state.mergeDefaultData(data);
+        this.state.setFormData(id, data);
+      }
       // eslint-disable-next-line
       formInstance.options.beforeSubmitCallback = (options: any) => {
         this.resetPaginator();
-        this.state.setFormData(id, options.data);
-        this.capturedForms[id].fields = [...new Set([...Object.keys(options.data), ...this.capturedForms[id].fields])]; // Merge new fields if any
+        this.applyFormChange(id, options.data);
         this.request();
         return false;
       };
+
+      const urlDataForForm: { [key: string]: any } | undefined = this.state.urlData
+        ? Object.keys(this.state.urlData)
+          .filter((key) => fields.indexOf(key) >= 0)
+          .reduce((map, key) => ({
+            ...map,
+            [key]: this.state.urlData[key],
+          }), {})
+        : undefined;
+
+      if (urlDataForForm) {
+        const formSpecificData = Object.keys(urlDataForForm)
+          .filter((k) => fields.indexOf(k) >= 0)
+          .reduce((map, key) => ({ ...map, [key]: urlDataForForm[key] }), {});
+        formInstance.setFieldValues(formSpecificData);
+        this.state.setFormData(id, formSpecificData);
+      }
+
+      this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.url);
+      this.request();
     }
   }
 
@@ -141,6 +178,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         this.request();
         return false;
       };
+
+      this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.id);
+      this.request();
     }
   }
 
@@ -292,7 +332,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     });
   }
 
-  private handleError({ data, status, statusText }: { data: IDatagridErrorResponse, status: number, statusText: string }) {
+  private handleError(response: { data: IDatagridErrorResponse, status: number, statusText: string }) {
+    const { data, status, statusText } = this.processResponse(response);
     this.state.setError(data.error, data.errors, this.options.resetOnError);
     Object.keys(this.capturedForms).forEach((fKey) => {
       const f = this.capturedForms[fKey].instance;
@@ -310,24 +351,29 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   async request() {
+    if (!this.allFormsAttached()) {
+      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms);
+      return;
+    }
     if (this.state.isLoading) {
-      console.warn('Cant start new request');
+      console.warn('Cant start new request, old one is running');
       return;
     }
     this.state.startLoading();
     this.beforeSubmit();
     this.lock();
     this.updateUrl();
-    const isGet = this.options.method === RequestMethod.GET;
+    const isGet = this.options.method.toUpperCase() === RequestMethod.GET;
     const data = this.formRequest();
+
     const request = this.sf.ajax.send<IDatagridResponse>({
-      url: isGet ? stringifyUrl({ url: this.options.url, query: data as any }) : this.options.url, // TODO: need to verify GET api is same
+      url: isGet ? makeGetUrl(this.options.url, data) : this.options.url, // TODO: need to verify GET api is same
       method: this.options.method,
       headers: this.options.headers,
       data: isGet ? undefined : data,
     });
     try {
-      const response: { data: IDatagridResponse } = await request;
+      const response: { data: IDatagridResponse } = this.processResponse(await request);
       this.handleSuccess(response);
     } catch (e) {
       if (e.isSFAjaxError) {
@@ -429,9 +475,17 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       page, limit, cid, lid,
       ...rest
     } = values;
-    this.state.updatePaginator({
-      page: +page, limit: +limit, cid, lid,
-    }); // TODO: skip invalid page/limit values
+    const paginatorUpdate: {page?: number, limit?: number, cid?: string, lid?: string} = {
+      page: this.defaults.page,
+      limit: this.defaults.limit,
+    };
+
+    if (page) { paginatorUpdate.page = +page; }
+    if (limit) { paginatorUpdate.limit = +limit; }
+    if (cid) { paginatorUpdate.cid = cid; }
+    if (lid) { paginatorUpdate.lid = lid; }
+
+    this.state.updatePaginator(paginatorUpdate);
 
     const { sortBy, sortDir, ...rest2 } = rest;
     if (sortBy) {
@@ -453,7 +507,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private initFromUrl() {
     if (this.options.serialize) {
       if (window.location.search) {
-        const urlData = this.getObjectFromUrl(this.defaults, this.getPrefix());
+        const urlData = this.getObjectFromUrl(this.getDefaults(), this.getPrefix());
         if (Object.keys(urlData).length) {
           this.deserialize(urlData);
         }
@@ -464,7 +518,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private updateUrl() {
     if (this.options.serialize) {
       const data = this.serialize();
-      this.putObjectToUrl(data, this.defaults, this.getPrefix());
+      this.putObjectToUrl(data, this.getDefaults(), this.getPrefix());
     }
   }
 
@@ -510,6 +564,48 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       url: `${window.location.protocol}//${window.location.host}${window.location.pathname}`,
       query,
     }));
+  }
+
+  private getDefaults() {
+    return {
+      ...this.defaults,
+      ...this.state.defaultData,
+    };
+  }
+
+  private allFormsAttached() {
+    return this.options.captureForms.length === 0;
+  }
+
+  private applyFormChange(id: string, data: any) {
+    this.capturedForms[id].fields = [...new Set([...Object.keys(data), ...this.capturedForms[id].fields])]; // Merge new fields if any
+    this.state.setFormData(id, data); // set data for specific form
+    Object.keys(this.capturedForms).filter((formId) => formId !== id).forEach((formId) => {
+      const formInstance = this.capturedForms[formId];
+      const { fields } = formInstance;
+      const formSpecificData = Object.keys(data).filter((k) => fields.indexOf(k) >= 0).reduce((map, key) => ({ ...map, [key]: data[key] }), {});
+      formInstance.instance.setFieldValues(formSpecificData);
+    });
+  }
+
+  private processResponse(axiosResponse: any) {
+    if (this.options.responseProcessor) {
+      return this.options.responseProcessor(axiosResponse);
+    }
+    if (this.options.dataField) {
+      const key = this.options.dataField;
+      if (axiosResponse.data && axiosResponse.data[key]) {
+        // A success answer it seems, put
+        return {
+          ...axiosResponse,
+          data: {
+            ...axiosResponse.data,
+            data: axiosResponse.data[key],
+          },
+        };
+      }
+    }
+    return axiosResponse;
   }
 }
 

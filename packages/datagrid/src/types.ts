@@ -281,6 +281,18 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   },
 
   ui?: Partial<IDataGridUIOptions<Item>>;
+
+  /**
+   * Specify what response field to use for data array
+   */
+  dataField?: string;
+
+  /**
+   * Specify custom response processor to be used for both success and error responses
+   */
+  responseProcessor?: (response: any) => {
+    data: IDatagridResponse | IDatagridErrorResponse, status: number, statusText: string
+  }
 }
 
 export interface IDatagridResponse<Item = any> {

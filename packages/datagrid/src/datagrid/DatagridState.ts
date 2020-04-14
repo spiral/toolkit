@@ -11,8 +11,9 @@ export class DatagridState<Item = any> {
     data: Array<Item>,
     error?: string;
     errors?: { [field: string]: string };
-    formData: {[formId: string]: any};
-    urlData?: any;
+    formData: {[formId: string]: { [field: string]: any }};
+    urlData?: { [field: string]: any };
+    defaultData: { [field: string]: any };
     selection: Set<string>;
     fetchCount: boolean,
   } = {
@@ -21,6 +22,7 @@ export class DatagridState<Item = any> {
       page: 1,
       limit: DEFAULT_LIMIT,
     },
+    defaultData: {},
     fetchCount: false,
     sortDir: SortDirection.ASC,
     data: [],
@@ -48,7 +50,22 @@ export class DatagridState<Item = any> {
 
   // eslint-disable-next-line
   get isCustomSearch() {
-    return false; // TODO: Detect when search is filled
+    return !Object.keys(this.state.formData).reduce((isDefault: boolean, formKey: string) => {
+      const formData = this.state.formData[formKey];
+      const isFDefault = Object.keys(formData).reduce((isD: boolean, field: string) => {
+        const fieldValue = formData[field];
+        const defaultValue = this.state.defaultData[field];
+        if (fieldValue && defaultValue) {
+          // eslint-disable-next-line eqeqeq
+          return isD && (fieldValue == defaultValue);
+        }
+        if ((!fieldValue && defaultValue) || (fieldValue && !defaultValue)) {
+          return false;
+        }
+        return isD;
+      }, true);
+      return isDefault && isFDefault;
+    }, true);
   }
 
   get selectedItems() {
@@ -179,5 +196,16 @@ export class DatagridState<Item = any> {
     if (this.parent.options.selectable) {
       this.state.selection = new Set(this.data.map((item: any) => String(item[this.parent.options.selectable!.id])));
     }
+  }
+
+  mergeDefaultData(data: { [field: string]: any } = {}) {
+    this.state.defaultData = {
+      ...this.state.defaultData,
+      ...data,
+    };
+  }
+
+  get defaultData() {
+    return this.state.defaultData;
   }
 }
