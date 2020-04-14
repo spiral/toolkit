@@ -457,7 +457,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       page, limit, cid, lid,
       ...rest
     } = values;
-    const paginatorUpdate: {page?: number, limit?: number, cid?: string, lid?: string} = {};
+    const paginatorUpdate: {page?: number, limit?: number, cid?: string, lid?: string} = {
+      page: this.defaults.page,
+      limit: this.defaults.limit
+    };
 
     if (page) { paginatorUpdate.page = +page; }
     if (limit) { paginatorUpdate.limit = +limit; }
