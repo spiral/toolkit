@@ -48,3 +48,5 @@ sfWrapper.resolveKeyPath = tools.resolveKeyPath;
 export default (sfWrapper as ISpiralFramework);
 
 export * from './types';
+
+export * from './formInput';

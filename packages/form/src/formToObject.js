@@ -7,6 +7,9 @@
  */
 // Constructor.
 
+
+const { CUSTOM_INPUT_TARGET_ATTR, isNodeInsideCustomSFInput } = require('@spiral-toolkit/core');
+
 const FormToObject = function (formRef) {
   if (!formRef) {
     return false;
@@ -50,7 +53,7 @@ FormToObject.prototype.setForm = function () {
 
 // Set the elements we need to parse.
 FormToObject.prototype.setFormElements = function () {
-  this.$formElements = this.$form.querySelectorAll('input, textarea, select');
+  this.$formElements = this.$form.querySelectorAll(`input, textarea, select, [${CUSTOM_INPUT_TARGET_ATTR}]`);
   return this.$formElements.length;
 };
 
@@ -80,6 +83,15 @@ FormToObject.prototype.forEach = function (arr, callback) {
 FormToObject.prototype.addChild = function (result, domNode, keys, value) {
   // #1 - Single dimensional array.
   if (keys.length === 1) {
+    if (isNodeInsideCustomSFInput(domNode)) {
+      // Don't parse inputs that are used as helpers
+      return;
+    }
+    if (domNode.hasAttribute(CUSTOM_INPUT_TARGET_ATTR)) {
+      // That is sf custom component specific input
+      result[keys] = value;
+      return;
+    }
     // We're only interested in the radio that is checked.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'radio') {
       if (domNode.checked) {
