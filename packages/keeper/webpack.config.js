@@ -38,9 +38,12 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
+        loader: 'ts-loader',
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        options: {
+          transpileOnly: true,
+        },
       },
       {
         test: /\.css$/,
