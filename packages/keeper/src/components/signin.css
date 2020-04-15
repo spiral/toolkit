@@ -1,10 +1,14 @@
 .signin {
-  margin: auto;
+  display: flex;
+  width: 100%;
+  flex: 1;
+  background-color: var(--light);
 }
 
 .signin .card {
   width: 70%;
   min-width: 300px;
+  margin: auto;
 }
 
 .signin h2,
@@ -34,6 +38,6 @@
   }
 
   .signin__logo {
-    width: 300px;
+    width: 250px;
   }
 }

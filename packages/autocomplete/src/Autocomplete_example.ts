@@ -43,59 +43,47 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   textInput: HTMLInputElement;
   hiddenInput: HTMLInputElement;
-  dropdown: HTMLDivElement;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
     super();
-
     assert.ok(node.hasAttribute(CUSTOM_INPUT_ATTR), 'Node has custom form attribute');
-    assert.ok(node.querySelector('input[data-sf="autocomplete-input"]'), 'Node has input for inputting text');
-    assert.ok(!(node.querySelector('input[data-sf="autocomplete-input"]')?.getAttribute('name')), 'Node has input for inputting text without name');
-    assert.ok(node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
-
-    this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!
-    this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
-
-    this.dropdown = document.createElement('div');
-    this.dropdown.classList.add('dropdown-menu');
-    node.appendChild(this.dropdown);
+    assert.ok(node.querySelector('input[type="date"]'), 'Node has input for inputting text');
+    assert.ok(!(node.querySelector('input[type="date"]')?.getAttribute('name')), 'Node has input for inputting text without name');
+    assert.ok(node.querySelector(`input[type="hidden"][${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
+    this.textInput = (node.querySelector('input[type="date"]') as HTMLInputElement)!
+    this.hiddenInput = (node.querySelector(`input[type="hidden"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
 
     this.init(ssf, node, options);
     this.options = {
       ...Autocomplete.defaultOptions,
       ...this.options,
     };
-
     this.bind();
   }
 
   @autobind
-  onKeyUp(event: KeyboardEvent) {
-    // const value = (event.target as HTMLInputElement).value;
-    this.hiddenInput.value = this.textInput.value ?? '';
+  onInput() {
+    this.hiddenInput.value = this.textInput.valueAsDate?(this.textInput.valueAsDate).getTime().toString():'';
     console.log('Update hidden input value to', this.hiddenInput.value);
-
-    this.dropdown.innerHTML = `<div class="dropdown-item">${this.textInput.value}</div>`;
-    this.dropdown.classList.add('show');
   }
 
   @autobind
   setValue(val: string) {
     console.log('Set input value to', val);
-    this.hiddenInput.value = val ?? '';
-    if (val) {
-      this.textInput.value = val;
+    this.hiddenInput.value = val;
+    if(val) {
+      this.textInput.valueAsDate = new Date(+val);
     }
   }
 
   bind() {
     (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setValue;
-    this.textInput.addEventListener('keyup', this.onKeyUp);
+    this.textInput.addEventListener('change', this.onInput);
     this.setValue(this.hiddenInput.value);
   }
 
   die() {
-    this.textInput.removeEventListener('keyup', this.onKeyUp);
+    this.textInput.removeEventListener('change', this.onInput);
   }
 }
 

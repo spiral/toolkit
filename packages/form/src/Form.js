@@ -368,7 +368,8 @@ Form.prototype.send = function (sendOptions) {
       return error;
     },
   ).then((answer) => {
-    that.lock(true);
+    // that.lock(true); <-- it was broken
+    that.unlock();
     that.processAnswer(answer);
     this.optCallback(sendOptions, 'afterSubmitCallback');
     that.events.trigger('always', sendOptions);
