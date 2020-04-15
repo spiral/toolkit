@@ -13,6 +13,7 @@ import './styles.css';
 
 let idCounter = 1;
 
+const { CUSTOM_INPUT_TARGET_ATTR } = require('@spiral-toolkit/core');
 
 /**
  * Spiral Forms
@@ -315,7 +316,7 @@ Form.prototype.processAnswer = function (answer, showUnknown = true) {
 
 Form.prototype.setFieldValues = function (values) {
   this.sf.iterateInputs(this.node, values, (el, value) => {
-    if (typeof el.sfSetValue === 'function') {
+    if (el.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && typeof el.sfSetValue === 'function') {
       el.sfSetValue(value);
     } else {
       if (el.type === 'checkbox' || el.type === 'radio') {
@@ -367,7 +368,8 @@ Form.prototype.send = function (sendOptions) {
       return error;
     },
   ).then((answer) => {
-    that.lock(true);
+    // that.lock(true); <-- it was broken
+    that.unlock();
     that.processAnswer(answer);
     this.optCallback(sendOptions, 'afterSubmitCallback');
     that.events.trigger('always', sendOptions);

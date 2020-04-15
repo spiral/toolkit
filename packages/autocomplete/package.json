@@ -1,0 +1,59 @@
+{
+  "name": "@spiral-toolkit/autocomplete",
+  "version": "0.3.7",
+  "description": "Spiral Scout Frontend Framework",
+  "main": "dist/autocomplete.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "npm run test && npm run build:prod",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "watch": "cross-env NODE_ENV=development webpack --watch",
+    "clean": "rimraf /resources/index.js",
+    "prepublish": "npm run build",
+    "clean-after-deploy": "rimraf node_modules/",
+    "lint": "yarn lint:js",
+    "lint:fix": "eslint \"src/**/*.js\" \"src/**/*.ts\" --fix",
+    "lint:js": "eslint \"src/**/*.js\" \"src/**/*.ts\""
+  },
+  "author": {
+    "name": "Spiral Scout",
+    "email": "info@spiralscout.com",
+    "url": "http://spiralscout.com"
+  },
+  "contributors": [
+    {
+      "name": "Andrey Logunov",
+      "email": "systerr@gmail.com",
+      "url": "http://spiralscout.com"
+    },
+    {
+      "name": "Alex Chepura",
+      "email": "a.chepura@gmail.com",
+      "url": "http://spiralscout.com"
+    },
+    {
+      "name": "Anna Selezniova",
+      "email": "ask.dev@gmail.com",
+      "url": "http://spiralscout.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spiral/toolkit/issues"
+  },
+  "homepage": "https://github.com/spiral/toolkit#readme",
+  "devDependencies": {
+    "@types/assert": "^1.4.6",
+    "@types/node": "^13.9.3",
+    "fork-ts-checker-webpack-plugin": "^4.1.1",
+    "ts-loader": "^6.2.2",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0"
+  }
+}

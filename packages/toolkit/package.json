@@ -53,6 +53,7 @@
   "devDependencies": {},
   "dependencies": {
     "@spiral-toolkit/core": "^0.3.6",
+    "@spiral-toolkit/autocomplete": "^0.3.6",
     "@spiral-toolkit/datagrid": "^0.1.0",
     "@spiral-toolkit/form": "^0.1.0",
     "@spiral-toolkit/locker": "^0.1.0",
