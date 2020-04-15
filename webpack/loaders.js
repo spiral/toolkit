@@ -24,12 +24,30 @@ exports.css = {
   ],
 };
 
-exports.js = {
+/* exports.js = {
   test: /\.js$/,
   use: [
     'babel-loader',
   ],
   exclude: /node_modules/,
+}; */
+
+exports.js = {
+  test: /\.jsx?$/,
+  loader: 'ts-loader',
+  exclude: /node_modules/,
+  options: {
+    transpileOnly: true,
+  },
+};
+
+exports.ts = {
+  test: /\.tsx?$/,
+  loader: 'ts-loader',
+  exclude: /node_modules/,
+  options: {
+    transpileOnly: false,
+  },
 };
 
 exports.svg = makeUrlLoader(/\.svg$/);

@@ -36,6 +36,7 @@ module.exports = {
     rules: [
       loaders.jsmap,
       loaders.js,
+      loaders.ts,
       loaders.css,
     ],
   },
