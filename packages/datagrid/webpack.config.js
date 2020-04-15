@@ -22,15 +22,6 @@ const config = {
   externals: {
     '@spiral-toolkit/core': '@spiral-toolkit/core',
   },
-
-  plugins: [
-    /* new CheckerPlugin(
-          {
-            tsconfig: path.resolve('tsconfig.json'),
-            diagnosticFormatter: 'ts-loader',
-          },
-        ), */
-  ],
   module: {
     rules: [
       {
