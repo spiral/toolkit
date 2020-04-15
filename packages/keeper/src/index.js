@@ -3,9 +3,10 @@ import './global.css';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
-import './components/main.css';
+import './components/breadcrumb.css';
 import './components/header.css';
 import './components/heading.css';
+import './components/main.css';
 import './components/signin.css';
 import './components/statpanel.css';
 import './components/table.css';

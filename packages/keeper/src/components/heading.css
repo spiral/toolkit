@@ -1,5 +1,6 @@
 .sf-heading {
   display: flex;
+  flex-wrap: wrap;
   padding: 1.25rem;
   justify-content: space-between;
   align-items: center;
