@@ -3,7 +3,7 @@ import sf, {
   CUSTOM_INPUT_TARGET_ATTR,
   ICustomInput,
   IOptionToGrab,
-  ISpiralFramework
+  ISpiralFramework,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
 import { autobind } from './autobind';
@@ -18,8 +18,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     id: '',
     name: '',
     options: [
-      {value: "1", label: 'New York'},
-      {value: "2", label: 'Minsk'}
+      { value: '1', label: 'New York' },
+      { value: '2', label: 'Minsk' },
     ],
     url: '',
   };
@@ -42,6 +42,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   sf!: ISpiralFramework;
 
   textInput: HTMLInputElement;
+
   hiddenInput: HTMLInputElement;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
@@ -50,8 +51,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     assert.ok(node.querySelector('input[type="date"]'), 'Node has input for inputting text');
     assert.ok(!(node.querySelector('input[type="date"]')?.getAttribute('name')), 'Node has input for inputting text without name');
     assert.ok(node.querySelector(`input[type="hidden"][${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
-    this.textInput = (node.querySelector('input[type="date"]') as HTMLInputElement)!
-    this.hiddenInput = (node.querySelector(`input[type="hidden"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
+    this.textInput = (node.querySelector('input[type="date"]') as HTMLInputElement)!;
+    this.hiddenInput = (node.querySelector(`input[type="hidden"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
     this.init(ssf, node, options);
     this.options = {
@@ -63,7 +64,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   onInput() {
-    this.hiddenInput.value = this.textInput.valueAsDate?(this.textInput.valueAsDate).getTime().toString():'';
+    this.hiddenInput.value = this.textInput.valueAsDate ? (this.textInput.valueAsDate).getTime().toString() : '';
     console.log('Update hidden input value to', this.hiddenInput.value);
   }
 
@@ -71,7 +72,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   setValue(val: string) {
     console.log('Set input value to', val);
     this.hiddenInput.value = val;
-    if(val) {
+    if (val) {
       this.textInput.valueAsDate = new Date(+val);
     }
   }

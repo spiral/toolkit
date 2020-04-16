@@ -4,7 +4,9 @@ import { QRCodeR } from './vendor/qrcode';
 
 export class QRCode extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'qrcode';
+
   static readonly spiralFrameworkCssName: string = 'js-sf-qrcode';
+
   static readonly defaultOptions: IQRCodeOptions = {
     size: 200,
     type: 'svg',
@@ -18,9 +20,9 @@ export class QRCode extends sf.core.BaseDOMConstructor {
     logoX: 0,
     logoY: 0,
     logoMargin: -1,
-  }
+  };
 
-  public options: IQRCodeOptions = {...QRCode.defaultOptions};
+  public options: IQRCodeOptions = { ...QRCode.defaultOptions };
 
   public readonly name = QRCode.spiralFrameworkName;
 
@@ -86,7 +88,7 @@ export class QRCode extends sf.core.BaseDOMConstructor {
   }
 
   render() {
-    const {value, ...options} = this.options;
+    const { value, ...options } = this.options;
     QRCodeR(this.node, {
       size: options.size,
       imageSettings: options.logoUrl ? {

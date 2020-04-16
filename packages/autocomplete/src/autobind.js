@@ -19,8 +19,8 @@ export function autobind(target, key, descriptor) {
     configurable: true,
     get() {
       // eslint-disable-next-line no-prototype-builtins
-      if (definingProperty || this === target.prototype || this.hasOwnProperty(key) ||
-        typeof fn !== 'function') {
+      if (definingProperty || this === target.prototype || this.hasOwnProperty(key)
+        || typeof fn !== 'function') {
         return fn;
       }
 
@@ -34,13 +34,13 @@ export function autobind(target, key, descriptor) {
         set(value) {
           fn = value;
           delete this[key];
-        }
+        },
       });
       definingProperty = false;
       return boundFn;
     },
     set(value) {
       fn = value;
-    }
+    },
   };
 }

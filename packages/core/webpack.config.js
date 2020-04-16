@@ -1,5 +1,4 @@
 const baseConfig = require('../../webpack/config');
-const path = require('path');
 
 const config = {
   ...baseConfig,
@@ -15,17 +14,6 @@ const config = {
       commonjs: '@spiral-toolkit/core',
       root: 'sf',
     },
-  },
-  resolve: {
-    modules: [path.resolve(__dirname, './src'), 'node_modules'],
-    extensions: [
-      '.ts',
-      '.js',
-      '.json',
-      '.web.js',
-      '.less',
-      '.css',
-    ],
   },
 };
 
