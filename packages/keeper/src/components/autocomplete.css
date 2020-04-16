@@ -7,5 +7,11 @@
 }
 
 .sf-autocomplete__dropdown {
-  width: 100%;
+  /* width: 100%; */
+  left: -1px;
+  right: -1px;
+}
+
+.sf-autocomplete__dropdown .dropdown-item:focus {
+  outline: 0;
 }

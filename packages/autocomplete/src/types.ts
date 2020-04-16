@@ -1,10 +1,10 @@
-export interface IOption {
-  value: string | number;
+export interface IDataOption {
+  value: string;
   label?: string;
 }
 export interface IAutoCompleteOptions {
   id: string;
   name: string;
-  options: IOption[];
+  options: Array<string | IDataOption>;
   url: string;
 }
