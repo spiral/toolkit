@@ -22,17 +22,17 @@ export interface ISFHelpers {
 
 export interface IInstancesController {
   /**
-     * Register new instance type
-     * @param {Function} constructorFunction - constructor function of instance
-     * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-     * controlled by DomMutation. But you still can use it from JS.
-     * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-     */
+   * Register new instance type
+   * @param {Function} constructorFunction - constructor function of instance
+   * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
+   * controlled by DomMutation. But you still can use it from JS.
+   * @param {boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
+   */
   registerInstanceType: (constructorFunction: ISFInstanceConstructor, cssClassName?: string, isSkipInitialization?: boolean) => void;
   addInstance: (instanceType: string, node: Element, options: any) => ISFInstance | undefined;
   removeInstance: (instanceType: string, node: Element) => boolean;
   getInstances: (instanceType: string) => Array<{ node: Element, instance: ISFInstance }>;
-  getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => {node: Element, instance: ISFInstance} | undefined;
+  getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => { node: Element, instance: ISFInstance } | undefined;
 }
 
 export interface ISpiralFramework extends IInstancesController {
@@ -40,6 +40,7 @@ export interface ISpiralFramework extends IInstancesController {
   core: ISFCore,
   helpers: ISFHelpers,
   tools: typeof tools;
+  registerTool: (toolName: string, tool: any) => void;
   events: Events,
   createModulePrototype: Function,
   instancesController: InstancesController;
@@ -60,11 +61,12 @@ export interface ISFInstanceClass<Options = any> {
   sf: ISpiralFramework;
   node: Element;
   options: Options;
-  die?: ()=>void,
+  die?: () => void,
 }
 
 export interface ISFInstanceConstructor {
   spiralFrameworkName?: string,
+
   new(sf: ISpiralFramework, node: Element, options?: any): ISFInstanceClass,
 }
 

@@ -31,7 +31,7 @@ export class GridRenderer {
 
   private tableEl!: Element;
 
-  private headerEl?: {outer: Element, inner: Element};
+  private headerEl?: { outer: Element, inner: Element };
 
   private footerEl?: Element;
 
@@ -48,7 +48,7 @@ export class GridRenderer {
   private messages: Messages<IDataGridMessages>;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
     this.messages = new Messages<IDataGridMessages>(this.options.messages || {}, defaultGridMessages);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
@@ -78,10 +78,11 @@ export class GridRenderer {
     this.root.options.captureForms.push(id);
     this.paginatorEl = document.createElement('div');
     this.root.node.appendChild(this.paginatorEl);
+    const extension = (typeof this.options.paginator === 'boolean') ? {} : this.options.paginator;
     const paginator = new Paginator(sf, this.paginatorEl, {
       ...Paginator.defaultOptions,
       id,
-      messages: this.root.options.paginatorMessages,
+      ...extension,
     });
     this.root.registerPaginatorInstance(paginator);
   }

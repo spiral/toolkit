@@ -28,4 +28,13 @@ export const helpers: ISFHelpers = {
   domTools,
 };
 
-export const tools = { resolveKeyPath };
+export const tools: {
+  [toolName: string]: any
+} = { resolveKeyPath };
+
+export const registerTool = (toolName: string, object: any) => {
+  if (tools[`_${toolName}`]) {
+    throw new Error(`Private tool named ${toolName} already registered`);
+  }
+  tools[`_${toolName}`] = object;
+};
