@@ -29,6 +29,4 @@ export interface ICustomInput {
  * This method allows to check if specific node is not serializable input
  * @param node
  */
-export const isNodeInsideCustomSFInput = (node: Element) => {
-  return !node.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && !!closest(node, `[${CUSTOM_INPUT_ATTR}]`);
-}
+export const isNodeInsideCustomSFInput = (node: Element) => !node.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && !!closest(node, `[${CUSTOM_INPUT_ATTR}]`);

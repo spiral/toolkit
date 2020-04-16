@@ -3,7 +3,7 @@ import sf, {
   CUSTOM_INPUT_TARGET_ATTR,
   ICustomInput,
   IOptionToGrab,
-  ISpiralFramework
+  ISpiralFramework,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
 import { autobind } from './autobind';
@@ -18,8 +18,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     id: '',
     name: '',
     options: [
-      {value: "1", label: 'New York'},
-      {value: "2", label: 'Minsk'}
+      { value: '1', label: 'New York' },
+      { value: '2', label: 'Minsk' },
     ],
     url: '',
   };
@@ -42,7 +42,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   sf!: ISpiralFramework;
 
   textInput: HTMLInputElement;
+
   hiddenInput: HTMLInputElement;
+
   dropdown: HTMLDivElement;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
@@ -53,8 +55,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     assert.ok(!(node.querySelector('input[data-sf="autocomplete-input"]')?.getAttribute('name')), 'Node has input for inputting text without name');
     assert.ok(node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
 
-    this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!
-    this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
+    this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!;
+    this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
     this.dropdown = document.createElement('div');
     this.dropdown.classList.add('dropdown-menu');
@@ -70,7 +72,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  onKeyUp(event: KeyboardEvent) {
+  onKeyUp() {
     // const value = (event.target as HTMLInputElement).value;
     this.hiddenInput.value = this.textInput.value ?? '';
     console.log('Update hidden input value to', this.hiddenInput.value);

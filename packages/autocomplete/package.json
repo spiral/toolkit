@@ -45,6 +45,9 @@
     "url": "https://github.com/spiral/toolkit/issues"
   },
   "homepage": "https://github.com/spiral/toolkit#readme",
+  "peerDependencies": {
+    "@spiral-toolkit/core": "^0.3.6"
+  },
   "devDependencies": {
     "@types/assert": "^1.4.6",
     "@types/node": "^13.9.3",
