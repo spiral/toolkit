@@ -1,6 +1,6 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { IQRCodeOptions } from './types';
-import { QRCodeR } from './vendor/qrcode';
+import { QRCodeR } from './tool/qrcode';
 
 export class QRCode extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'qrcode';
