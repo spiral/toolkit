@@ -7,7 +7,7 @@ import sf, {
 } from '@spiral-toolkit/core';
 import assert from 'assert';
 import { autobind } from './autobind';
-import { IAutoCompleteOptions } from './types';
+import { IAutoCompleteOptions, IOption } from './types';
 
 export class Autocomplete extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'autocomplete';
@@ -18,8 +18,16 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     id: '',
     name: '',
     options: [
-      {value: "1", label: 'New York'},
-      {value: "2", label: 'Minsk'}
+      { value: 1, label: 'Aspen, CO' },
+      { value: 2, label: 'Boston, MA' },
+      { value: 3, label: 'Chicago, IL' },
+      { value: 4, label: 'Dallas, TX' },
+      { value: 5, label: 'Houston, TX' },
+      { value: 6, label: 'Los Angeles, CA' },
+      { value: 7, label: 'Miami, FL' },
+      { value: 8, label: 'Nashville, TN' },
+      { value: 9, label: 'New York, NY' },
+      { value: 10, label: 'San Francisco, CA' },
     ],
     url: '',
   };
@@ -42,8 +50,12 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   sf!: ISpiralFramework;
 
   textInput: HTMLInputElement;
+
   hiddenInput: HTMLInputElement;
-  dropdown: HTMLDivElement;
+
+  dropdown?: HTMLDivElement;
+
+  isInnerClick?: boolean;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
     super();
@@ -56,46 +68,107 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!
     this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
 
-    this.dropdown = document.createElement('div');
-    this.dropdown.classList.add('dropdown-menu');
-    node.appendChild(this.dropdown);
-
     this.init(ssf, node, options);
     this.options = {
       ...Autocomplete.defaultOptions,
       ...this.options,
     };
 
+    this.initDropdown();
+
     this.bind();
+    this.setValue(this.hiddenInput.value);
+  }
+
+  initDropdown() {
+    if (this.dropdown) return;
+
+    console.log('HERE');
+
+    this.node.classList.add('dropdown'); // just in case
+    this.dropdown = document.createElement('div');
+    this.dropdown.classList.add('sf-autocomplete__dropdown', 'dropdown-menu');
+    this.node.appendChild(this.dropdown);
+  }
+
+  showDropdown() {
+    this.dropdown?.classList.add('show');
+  }
+
+  hideDropdown() {
+    this.dropdown?.classList.remove('show');
+  }
+
+  static renderDropdownItem({ value, label }: IOption): string {
+    // TODO: template
+    return `<div class="dropdown-item">${label ?? value}</div>`;
+  }
+
+  showSuggestions(query: string) {
+    const results = this.options.options.filter(({ value, label }: IOption) => ((label ?? value.toString()).startsWith(query)));
+
+    const items: string[] = results.map((option: IOption) => Autocomplete.renderDropdownItem((option)));
+
+    if (this.dropdown) this.dropdown.innerHTML = items.join('');
+    this.showDropdown();
   }
 
   @autobind
-  onKeyUp(event: KeyboardEvent) {
-    // const value = (event.target as HTMLInputElement).value;
-    this.hiddenInput.value = this.textInput.value ?? '';
-    console.log('Update hidden input value to', this.hiddenInput.value);
+  handleFocus() {
+    // temp
+    if (this.textInput.value) {
+      this.showDropdown();
+    }
+  }
 
-    this.dropdown.innerHTML = `<div class="dropdown-item">${this.textInput.value}</div>`;
-    this.dropdown.classList.add('show');
+  @autobind
+  handleKeyUp(/* event: KeyboardEvent */) {
+    // const value = (event.target as HTMLInputElement).value;
+    const value = this.textInput.value ?? '';
+    this.hiddenInput.value = value;
+
+    if (!value) {
+      this.hideDropdown();
+      return;
+    }
+
+    this.showSuggestions(value);
   }
 
   @autobind
   setValue(val: string) {
-    console.log('Set input value to', val);
     this.hiddenInput.value = val ?? '';
     if (val) {
       this.textInput.value = val;
     }
   }
 
+  @autobind
+  handleInsideClick() {
+    this.isInnerClick = true;
+  }
+
+  @autobind
+  handleOutsideClick() {
+    if (!this.isInnerClick) {
+      this.hideDropdown();
+    }
+    this.isInnerClick = false;
+  }
+
   bind() {
     (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setValue;
-    this.textInput.addEventListener('keyup', this.onKeyUp);
-    this.setValue(this.hiddenInput.value);
+
+    this.textInput.addEventListener('focus', this.handleFocus);
+    this.textInput.addEventListener('keyup', this.handleKeyUp);
+
+    this.dropdown?.addEventListener('click', this.handleInsideClick);
+    this.textInput.addEventListener('click', this.handleInsideClick);
+    document.addEventListener('click', this.handleOutsideClick);
   }
 
   die() {
-    this.textInput.removeEventListener('keyup', this.onKeyUp);
+    this.textInput.removeEventListener('keyup', this.handleKeyUp);
   }
 }
 

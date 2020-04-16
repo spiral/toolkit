@@ -1,0 +1,11 @@
+.sf-autocomplete {
+  position: relative;
+}
+
+.sf-autocomplete__input {
+  min-width: 100px;
+}
+
+.sf-autocomplete__dropdown {
+  width: 100%;
+}

@@ -3,6 +3,7 @@ import './global.css';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
+import './components/autocomplete.css';
 import './components/breadcrumb.css';
 import './components/header.css';
 import './components/heading.css';
