@@ -7,7 +7,7 @@ const config = {
   entry: {
     ie11: ['./src/ie11.js'],
     toolkit: ['./src/index.js'],
-    // toolkit_full: ['./src/index_full.js'],
+    toolkit_full: ['./src/index_full.js'],
   },
 
   output: {

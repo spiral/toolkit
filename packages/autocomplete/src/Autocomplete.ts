@@ -3,7 +3,7 @@ import sf, {
   CUSTOM_INPUT_TARGET_ATTR,
   ICustomInput,
   IOptionToGrab,
-  ISpiralFramework
+  ISpiralFramework,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
 import { autobind } from './autobind';
@@ -65,8 +65,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     assert.ok(!(node.querySelector('input[data-sf="autocomplete-input"]')?.getAttribute('name')), 'Node has input for inputting text without name');
     assert.ok(node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
 
-    this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!
-    this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!
+    this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!;
+    this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
     this.init(ssf, node, options);
     this.options = {

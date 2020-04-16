@@ -6,7 +6,7 @@ const plugins = require('./plugins');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
-  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'inline-source-map',
+  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map',
 
   entry: {},
 
@@ -23,6 +23,7 @@ module.exports = {
   resolve: {
     extensions: [
       '.js',
+      '.ts',
       '.json',
       '.web.js',
       '.less',
