@@ -6,6 +6,7 @@
     "declarationMap": false,
     "allowJs": true,
     "composite": true,
+    "experimentalDecorators": true,
     "pretty": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

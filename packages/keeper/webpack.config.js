@@ -125,7 +125,7 @@ module.exports = {
   },
   plugins: isDevelopment
     ? [
-      new LiveReloadPlugin({ port: 35729 }),
+      
       new StyleLintPlugin({
         configFile: './.stylelintrc.json',
         files: [path.join(srcPath, '**/*.css')],
