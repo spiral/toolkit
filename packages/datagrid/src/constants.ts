@@ -18,8 +18,8 @@ export enum RequestMethod {
   PATCH = 'PATCH',
 }
 
-export const PAGINATOR_CLASS_NAME = 'sf-js-datagrid-paginator';
-export const ACTION_PANEL_CLASS_NAME = 'sf-js-datagrid-actionpanel';
+export const PAGINATOR_CLASS_NAME = 'js-sf-datagrid-paginator';
+export const ACTION_PANEL_CLASS_NAME = 'js-sf-datagrid-actionpanel';
 export const CURSOR_ID_FIELD = 'cid';
 export const LAST_ID_FIELD = 'lid';
 

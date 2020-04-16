@@ -16,18 +16,6 @@ const config = {
       root: 'sf',
     },
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          transpileOnly: false,
-        },
-      },
-    ],
-  },
   resolve: {
     modules: [path.resolve(__dirname, './src'), 'node_modules'],
     extensions: [

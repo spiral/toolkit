@@ -1,29 +1,19 @@
-// const CheckerPlugin = require('fork-ts-checker-webpack-plugin');
-// const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const path = require('path');
 const baseConfig = require('../../webpack/config');
+const path = require('path');
 
 const config = {
   ...baseConfig,
 
   entry: {
-    datagrid: ['./src/index.ts'],
+    autocomplete: ['./src/index.ts'],
   },
 
   output: {
     ...baseConfig.output,
     library: {
-      amd: '@spiral-toolkit/datagrid',
-      commonjs: '@spiral-toolkit/datagrid',
-      root: 'SFDataGrid',
-    },
-  },
-
-  externals: {
-    '@spiral-toolkit/core': {
-      root: 'SFToolkit',
-      commonjs2: '@spiral-toolkit/core',
-      commonjs: '@spiral-toolkit/core',
+      amd: '@spiral-toolkit/autocomplete',
+      commonjs: '@spiral-toolkit/autocomplete',
+      root: 'SFAutocomplete',
     },
   },
   module: {
@@ -38,7 +28,6 @@ const config = {
       },
     ],
   },
-
   resolve: {
     modules: [path.resolve(__dirname, './src'), 'node_modules'],
     extensions: [
