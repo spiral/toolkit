@@ -2,7 +2,6 @@
 const baseConfig = require('../../webpack/config');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 const config = {
   ...baseConfig,
@@ -22,9 +21,5 @@ const config = {
     },
   },
 };
-
-if (isDevelopment) {
-  config.plugins.push(new LiveReloadPlugin({ port: 35730 }));
-}
 
 module.exports = config;

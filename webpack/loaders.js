@@ -24,14 +24,6 @@ exports.css = {
   ],
 };
 
-/* exports.js = {
-  test: /\.js$/,
-  use: [
-    'babel-loader',
-  ],
-  exclude: /node_modules/,
-}; */
-
 exports.js = {
   test: /\.jsx?$/,
   loader: 'ts-loader',
@@ -39,7 +31,7 @@ exports.js = {
   options: {
     transpileOnly: true,
   },
-};
+}; 
 
 exports.ts = {
   test: /\.tsx?$/,

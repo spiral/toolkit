@@ -16,28 +16,15 @@ const config = {
       root: 'SFAutocomplete',
     },
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          transpileOnly: false,
-        },
-      },
-    ],
-  },
-  resolve: {
-    modules: [path.resolve(__dirname, './src'), 'node_modules'],
-    extensions: [
-      '.ts',
-      '.js',
-      '.json',
-      '.web.js',
-      '.less',
-      '.css',
-    ],
+
+
+  externals: {
+    '@spiral-toolkit/core': {
+      root: 'SFToolkit',
+      commonjs: '@spiral-toolkit/core',
+      amd: '@spiral-toolkit/core',
+      commonjs2: '@spiral-toolkit/core',
+    },
   },
 };
 
