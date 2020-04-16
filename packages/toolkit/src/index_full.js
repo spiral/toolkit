@@ -8,3 +8,4 @@ require('./date');
 require('@spiral-toolkit/locker');
 require('@spiral-toolkit/form');
 require('@spiral-toolkit/datagrid');
+require('@spiral-toolkit/qrcode');
