@@ -1,3 +1,5 @@
+import * as luxon from 'luxon';
+
 import DOMEvents from './helpers/DOMEvents';
 
 import domTools from './helpers/domTools';
@@ -12,7 +14,7 @@ import { Events } from './core/Events';
 
 import InstancesController from './core/InstancesController';
 
-import { isNodeInsideCustomSFInput, resolveKeyPath } from './helpers/tools';
+import { extractOptions, isNodeInsideCustomSFInput, resolveKeyPath } from './helpers/tools';
 import type { ISFCore, ISFHelpers, ISFTools } from './types';
 
 export const core: ISFCore = {
@@ -26,9 +28,10 @@ export const core: ISFCore = {
 export const helpers: ISFHelpers = {
   DOMEvents,
   domTools,
+  luxon,
 };
 
-export const tools: ISFTools = { resolveKeyPath, isNodeInsideCustomSFInput };
+export const tools: ISFTools = { resolveKeyPath, isNodeInsideCustomSFInput, extractOptions };
 
 export const registerTool = (toolName: string, object: any) => {
   if (tools[`_${toolName}`]) {

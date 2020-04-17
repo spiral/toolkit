@@ -2,13 +2,13 @@ import sf, {
   ICustomInput,
   IOptionToGrab,
   ISpiralFramework,
-  // AxiosResponse,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
+import type { AxiosResponse } from 'axios';
 import { autobind } from './autobind';
-import { extractOptions } from './extractOptions';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
 import { IAutocompleteOptions, IDataOption } from './types';
+
 
 const { CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
 
@@ -69,12 +69,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!;
     this.hiddenInput = (node.querySelector(`input[data-sf="autocomplete-value"][${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
-    this.init(ssf, node, options);
-    this.options = {
-      ...Autocomplete.defaultOptions,
-      ...this.options,
-      ...extractOptions(node),
-    };
+    this.init(ssf, node, options, Autocomplete.defaultOptions);
 
     this.data = Autocomplete.parseData(this.options.options);
     this.suggestions = [];
@@ -132,7 +127,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
         Accept: 'application/json',
       },
       data: {},
-    }).then((response: any/* AxiosResponse<any> */) => {
+    }).then((response: AxiosResponse<any>) => {
       this.suggestions = response.data.data.map((item: any) => ({
         value: item.id,
         label: `${item.firstName} ${item.lastName}`,

@@ -8,3 +8,4 @@ export function resolveKeyPath(path: string, obj: any, safe?: boolean) {
 }
 
 export { isNodeInsideCustomSFInput } from './formInput';
+export { extractOptions } from '../core/extractOptions';
