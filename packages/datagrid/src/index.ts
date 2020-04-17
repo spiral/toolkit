@@ -1,5 +1,4 @@
 import sf from '@spiral-toolkit/core';
-import { DateTime } from 'luxon';
 import ActionPanel from './actionpanel/ActionPanel';
 import { ACTION_PANEL_CLASS_NAME, PAGINATOR_CLASS_NAME } from './constants';
 import DataGrid from './datagrid/Datagrid';
@@ -13,9 +12,9 @@ export const tools = {
     }
     try {
       if (sourceFormat) {
-        return DateTime.fromFormat(value, sourceFormat).toFormat(format);
+        return sf.helpers.luxon.DateTime.fromFormat(value, sourceFormat).toFormat(format);
       }
-      return DateTime.fromJSDate(new Date(value)).toFormat(format);
+      return sf.helpers.luxon.DateTime.fromJSDate(new Date(value)).toFormat(format);
     } catch (e) {
       return '';
     }

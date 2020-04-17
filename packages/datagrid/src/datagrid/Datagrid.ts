@@ -5,7 +5,6 @@ import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
-import { extractOptions } from '../extractOptions';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
 import { defaultGridOptions } from '../render/defaultRenderer';
@@ -81,12 +80,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   constructor(ssf: ISpiralFramework, node: Element, options: IDataGridOptions<Item>) {
     super();
-    this.init(ssf, node, options);
-    this.options = {
-      ...Datagrid.defaultOptions,
-      ...this.options,
-      ...extractOptions(node),
-    };
+    this.init(ssf, node, options, Datagrid.defaultOptions);
     assert.notEqual(this.options.id, '', 'id should be not empty');
     assert.notEqual(this.options.url, '', 'url should be not empty');
 

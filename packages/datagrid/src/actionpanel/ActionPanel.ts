@@ -1,6 +1,5 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { SelectionType } from '../constants';
-import { extractOptions } from '../extractOptions';
 import type { IActionDescriptor, IActionPanelOptions, IActionPanelState } from '../types';
 
 export type FlexibleRenderDefinition = string | Element | ((state: IActionPanelState) => string | Element);
@@ -50,12 +49,7 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
 
   constructor(ssf: ISpiralFramework, node: Element, options: IActionPanelOptions) {
     super();
-    this.init(ssf, node, options);
-    this.options = {
-      ...ActionPanel.defaultOptions,
-      ...this.options,
-      ...extractOptions(node),
-    };
+    this.init(ssf, node, options, ActionPanel.defaultOptions);
     this.render();
   }
 
