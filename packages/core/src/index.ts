@@ -1,7 +1,10 @@
 import { attachDefaultActions } from './core/ajax/baseActions';
 import { registerBaseEvents } from './core/events/baseEvents';
-import { core, tools, helpers, registerTool } from './sf';
+import {
+  core, tools, helpers, registerTool,
+} from './sf';
 import type { ISpiralFramework } from './types';
+import * as constants from './constants';
 
 const options = { instances: {} };
 
@@ -9,6 +12,7 @@ const sfWrapper: Partial<ISpiralFramework> = {
   core,
   helpers,
   registerTool,
+  constants,
   tools,
   options,
 };
@@ -49,5 +53,3 @@ sfWrapper.resolveKeyPath = tools.resolveKeyPath;
 export default (sfWrapper as ISpiralFramework);
 
 export * from './types';
-
-export * from './formInput';

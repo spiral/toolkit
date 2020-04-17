@@ -1,7 +1,6 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { stringifyUrl } from 'query-string';
 import { DEFAULT_LIMIT, defaultPaginatorMessages, PaginatorType } from '../constants';
-import { extractOptions } from '../extractOptions';
 import { Messages } from '../messages';
 import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
 
@@ -53,12 +52,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
   constructor(ssf: ISpiralFramework, node: Element, options: IPaginatorOptions) {
     super();
-    this.init(ssf, node, options);
-    this.options = {
-      ...Paginator.defaultOptions,
-      ...this.options,
-      ...extractOptions(node),
-    };
+    this.init(ssf, node, options, Paginator.defaultOptions);
     this.messages = new Messages<IPaginatorMessages>(this.options.messages || {}, defaultPaginatorMessages);
     this.render();
   }

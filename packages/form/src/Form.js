@@ -13,7 +13,8 @@ import './styles.css';
 
 let idCounter = 1;
 
-const { isNodeInsideCustomSFInput, CUSTOM_INPUT_TARGET_ATTR } = require('@spiral-toolkit/core');
+const { CUSTOM_INPUT_TARGET_ATTR } = core.constants;
+const { isNodeInsideCustomSFInput } = core.tools;
 
 /**
  * Spiral Forms

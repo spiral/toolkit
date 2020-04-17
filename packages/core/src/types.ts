@@ -1,3 +1,4 @@
+import type * as luxon from 'luxon';
 import type DomMutations from './core/DomMutations';
 import type { Events } from './core/Events';
 import type { Ajax } from './core/Ajax';
@@ -18,6 +19,7 @@ export interface ISFCore {
 export interface ISFHelpers {
   DOMEvents: typeof DOMEvents,
   domTools: typeof domTools,
+  luxon: typeof luxon,
 }
 
 export interface IInstancesController {
@@ -35,11 +37,21 @@ export interface IInstancesController {
   getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => { node: Element, instance: ISFInstance } | undefined;
 }
 
+export interface ISFTools {
+  resolveKeyPath: (path: string, obj: any, safe?: boolean) => string,
+  isNodeInsideCustomSFInput: (node: Element) => boolean,
+  extractOptions: (node: Element) => any,
+  [otherMethod: string]: any,
+}
+
 export interface ISpiralFramework extends IInstancesController {
   ajax: Ajax,
   core: ISFCore,
   helpers: ISFHelpers,
-  tools: typeof tools;
+  tools: ISFTools;
+  constants: {
+    CUSTOM_INPUT_TARGET_ATTR: string, CUSTOM_INPUT_ATTR: string
+  },
   registerTool: (toolName: string, tool: any) => void;
   events: Events,
   createModulePrototype: Function,
@@ -71,3 +83,5 @@ export interface ISFInstanceConstructor {
 }
 
 export type ISFInstance = ISFInstanceClass;
+
+export type { ICustomInput } from './helpers/formInput';
