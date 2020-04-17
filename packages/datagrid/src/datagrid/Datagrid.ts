@@ -407,7 +407,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         dontRenderError: !!this.options.errorMessageTarget,
         selectable: renderOption.selectable || this.options.selectable,
         messages: { ...this.options.messages, ...renderOption.messages },
-        paginatorMessages: { ...this.options.paginatorMessages, ...renderOption.paginatorMessages },
       }, this));
     });
   }

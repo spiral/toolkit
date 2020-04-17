@@ -158,8 +158,7 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   /**
    * Add default paginator
    */
-  paginator?: boolean;
-  paginatorMessages?: Partial<IPaginatorMessages>;
+  paginator?: Partial<IPaginatorOptions> | true;
   ui: Partial<IDataGridUIOptions<Item>>;
   dontRenderError?: boolean;
   /**
@@ -267,9 +266,7 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * Add default paginator below the table
    * @default true
    */
-  paginator: boolean;
-
-  paginatorMessages?: Partial<IPaginatorMessages>;
+  paginator?: Partial<IPaginatorOptions> | true;
 
   /**
    * Mark column as selectable
