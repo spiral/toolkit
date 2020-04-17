@@ -35,11 +35,20 @@ export interface IInstancesController {
   getInstance: (instanceName: string, node: Element | string, isReturnObject?: boolean) => { node: Element, instance: ISFInstance } | undefined;
 }
 
+export interface ISFTools {
+  resolveKeyPath: (path: string, obj: any, safe?: boolean) => string,
+  isNodeInsideCustomSFInput: (node: Element) => boolean,
+  [otherMethod: string]: any,
+}
+
 export interface ISpiralFramework extends IInstancesController {
   ajax: Ajax,
   core: ISFCore,
   helpers: ISFHelpers,
-  tools: typeof tools;
+  tools: ISFTools;
+  constants: {
+    CUSTOM_INPUT_TARGET_ATTR: string, CUSTOM_INPUT_ATTR: string
+  },
   registerTool: (toolName: string, tool: any) => void;
   events: Events,
   createModulePrototype: Function,
@@ -71,3 +80,5 @@ export interface ISFInstanceConstructor {
 }
 
 export type ISFInstance = ISFInstanceClass;
+
+export type { ICustomInput } from './helpers/formInput';

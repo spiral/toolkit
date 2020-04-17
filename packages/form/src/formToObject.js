@@ -7,8 +7,11 @@
  */
 // Constructor.
 
+// @ts-ignore
+const core = require('@spiral-toolkit/core').default;
 
-const { CUSTOM_INPUT_TARGET_ATTR, isNodeInsideCustomSFInput } = require('@spiral-toolkit/core');
+const { CUSTOM_INPUT_TARGET_ATTR } = core.constants;
+const { isNodeInsideCustomSFInput } = core.tools;
 
 const FormToObject = function (formRef) {
   if (!formRef) {

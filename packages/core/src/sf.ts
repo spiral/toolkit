@@ -12,8 +12,8 @@ import { Events } from './core/Events';
 
 import InstancesController from './core/InstancesController';
 
-import { resolveKeyPath } from './helpers/tools';
-import type { ISFCore, ISFHelpers } from './types';
+import { isNodeInsideCustomSFInput, resolveKeyPath } from './helpers/tools';
+import type { ISFCore, ISFHelpers, ISFTools } from './types';
 
 export const core: ISFCore = {
   Ajax,
@@ -28,9 +28,7 @@ export const helpers: ISFHelpers = {
   domTools,
 };
 
-export const tools: {
-  [toolName: string]: any
-} = { resolveKeyPath };
+export const tools: ISFTools = { resolveKeyPath, isNodeInsideCustomSFInput };
 
 export const registerTool = (toolName: string, object: any) => {
   if (tools[`_${toolName}`]) {
