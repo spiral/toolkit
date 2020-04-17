@@ -12,6 +12,18 @@
   right: -1px;
 }
 
+/*
+.sf-autocomplete__dropdown .dropdown-item:focus {
+  background-color: var(--primary-lighten);
+  color: var(--gray-900);
+  outline: 0;
+}
+.sf-autocomplete__dropdown .dropdown-item.active:focus {
+  background-color: var(--primary);
+  color: var(--white);
+}
+*/
+
 .sf-autocomplete__dropdown .dropdown-item:focus {
   outline: 0;
 }

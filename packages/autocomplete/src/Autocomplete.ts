@@ -2,10 +2,13 @@ import sf, {
   ICustomInput,
   IOptionToGrab,
   ISpiralFramework,
+  // AxiosResponse,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
 import { autobind } from './autobind';
-import { IAutoCompleteOptions, IDataOption } from './types';
+import { extractOptions } from './extractOptions';
+import { AutocompleteDropdown } from './AutocompleteDropdown';
+import { IAutocompleteOptions, IDataOption } from './types';
 
 const { CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
 
@@ -14,7 +17,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   public readonly name = Autocomplete.spiralFrameworkName;
 
-  static defaultOptions: IAutoCompleteOptions = {
+  static defaultOptions: IAutocompleteOptions = {
     id: '',
     name: '',
     options: [],
@@ -32,13 +35,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       value: Autocomplete.defaultOptions.name,
       domAttr: 'data-name',
     },
-    options: {
-      value: Autocomplete.defaultOptions.options,
-      domAttr: 'data-options',
-    },
   };
 
-  options: IAutoCompleteOptions = { ...Autocomplete.defaultOptions };
+  options: IAutocompleteOptions = { ...Autocomplete.defaultOptions };
 
   sf!: ISpiralFramework;
 
@@ -47,26 +46,20 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   hiddenInput: HTMLInputElement;
 
-  dropdown?: HTMLDivElement;
-
-  dropdownItems?: HTMLDivElement[];
+  dropdown: AutocompleteDropdown;
 
   /* Data */
   data: IDataOption[];
 
   suggestions: IDataOption[];
 
-  selectedIndex: number;
-
   currentValue?: IDataOption;
 
   /* Misc */
   isInnerClick?: boolean;
 
-  constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
+  constructor(ssf: ISpiralFramework, node: Element, options: IAutocompleteOptions) {
     super();
-
-    console.log(CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR)
 
     assert.ok(node.hasAttribute(CUSTOM_INPUT_ATTR), 'Node has custom form attribute');
     assert.ok(node.querySelector('input[data-sf="autocomplete-input"]'), 'Node has input for inputting text');
@@ -80,12 +73,17 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.options = {
       ...Autocomplete.defaultOptions,
       ...this.options,
+      ...extractOptions(node),
     };
 
     this.data = Autocomplete.parseData(this.options.options);
     this.suggestions = [];
-    this.selectedIndex = -1;
 
+    this.dropdown = new AutocompleteDropdown({
+      onClickItem: this.handleClickDropdownItem,
+      onFocusItem: this.handleFocusDropdownItem,
+      onBlur: this.handleBlurDropdown,
+    });
     this.initDropdown();
 
     this.bind();
@@ -94,8 +92,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     console.log('Autocomplete is ready');
   }
 
-  static parseData(rawData: Array<string | IDataOption>) {
-    return rawData.map((item: string | IDataOption) => {
+  static parseData(data: Array<string | IDataOption>) {
+    return data.map((item: string | IDataOption) => {
       if (typeof item !== 'string') {
         const { value, label } = item;
         return { value, label };
@@ -107,67 +105,54 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   initDropdown() {
-    if (this.dropdown) return;
+    if (this.node.classList.contains('dropdown')) return;
 
-    this.node.classList.add('dropdown'); // just in case
-    this.dropdown = document.createElement('div');
-    this.dropdown.classList.add('sf-autocomplete__dropdown', 'dropdown-menu');
-    this.node.appendChild(this.dropdown);
-  }
-
-  showDropdown() {
-    this.dropdown?.classList.add('show');
-  }
-
-  hideDropdown() {
-    this.dropdown?.classList.remove('show');
-  }
-
-  clearDropdown() {
-    if (!this.dropdown) return;
-
-    const clone: Node = this.dropdown.cloneNode(false);
-    this.node.replaceChild(clone, this.dropdown);
-    this.dropdown = clone as HTMLDivElement;
-  }
-
-  renderDropdownItem({ value, label }: IDataOption): HTMLDivElement {
-    // TODO: template
-    // return `<div class="dropdown-item">${label ?? value}</div>`;
-    const item: HTMLDivElement = document.createElement('div');
-    item.classList.add('dropdown-item');
-    item.tabIndex = 0;
-    item.dataset.value = value;
-    item.innerHTML = label ?? value;
-    item.addEventListener('click', this.handleClickItem);
-    item.addEventListener('focus', this.handleFocusItem);
-    item.addEventListener('keyup', this.handleKeyUpItem);
-    return item;
+    this.node.classList.add('dropdown');
+    this.node.appendChild(this.dropdown!.node);
   }
 
   getSuggestions(query: string) {
     const lcQuery = query.toLocaleLowerCase();
-    this.suggestions = this.data.filter(({ value, label }: IDataOption) => (
-      (label ?? value).toLocaleLowerCase().startsWith(lcQuery)
-    ));
+
+    if (!this.options.url) {
+      this.suggestions = this.data.filter(({ value, label }: IDataOption) => (
+        (label ?? value).toLocaleLowerCase().startsWith(lcQuery)
+      ));
+
+      this.showSuggestions();
+
+      return;
+    }
+
+    sf.ajax.send({
+      method: 'GET',
+      url: `${this.options.url}${lcQuery}`,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      data: {},
+    }).then((response: any/* AxiosResponse<any> */) => {
+      this.suggestions = response.data.data.map((item: any) => ({
+        value: item.id,
+        label: `${item.firstName} ${item.lastName}`,
+      }));
+
+      this.showSuggestions();
+    });
   }
 
   showSuggestions() {
     if (!this.dropdown) return;
 
     if (!this.suggestions.length) {
-      this.hideDropdown();
+      this.dropdown.hide();
       return;
     }
 
-    this.clearDropdown();
+    this.dropdown.render(this.suggestions);
 
-    this.dropdownItems = this.suggestions.map((option: IDataOption) => this.renderDropdownItem((option)));
-
-    // this.dropdown.innerHTML = items.join('');
-    this.dropdownItems.forEach((item: HTMLDivElement) => this.dropdown!.appendChild(item));
-
-    this.showDropdown();
+    this.dropdown.show();
   }
 
   setValue(value: string, label?: string, isSave?: boolean) {
@@ -182,33 +167,17 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     }
   }
 
-  moveToInput() {
-    this.selectedIndex = -1;
-
+  resetValue() {
     if (this.currentValue) {
       const { value, label } = this.currentValue;
       this.setValue(value, label);
     }
+  }
+
+  focusInput() {
+    this.resetValue();
 
     this.textInput.focus();
-  }
-
-  moveToSuggestion(index: number) {
-    const len = this.suggestions.length;
-    if (!len) return;
-
-    this.selectedIndex = (index > len - 1 || index < 0) ? len - 1 : index;
-
-    this.selectSuggestion();
-  }
-
-  selectSuggestion(isReset?: boolean) {
-    const { value, label } = this.suggestions[this.selectedIndex];
-
-    this.dropdownItems!.forEach((item: HTMLDivElement, i: number) => item.classList.toggle('active', i === this.selectedIndex));
-    this.dropdownItems![this.selectedIndex].focus();
-
-    this.setValue(value, label, isReset);
   }
 
   @autobind
@@ -223,70 +192,23 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  handleClickItem(event: MouseEvent) {
-    const item = event.target as HTMLDivElement;
-    const { value } = item.dataset;
-
-    this.selectedIndex = this.suggestions.findIndex((o: IDataOption) => o.value === value);
-
-    this.selectSuggestion(true);
-  }
-
-  @autobind
-  handleFocusItem(event: FocusEvent) {
-    const item = event.target as HTMLDivElement;
-    const { value } = item.dataset;
-
-    this.selectedIndex = this.suggestions.findIndex((o: IDataOption) => o.value === value);
-
-    this.selectSuggestion();
-  }
-
-  @autobind
-  handleKeyUpItem(event: KeyboardEvent) {
-    const len = this.suggestions.length;
-    if (!len) return;
-
-    if (event.key === 'ArrowUp') {
-      if (this.selectedIndex === 0) {
-        this.moveToInput();
-        return;
-      }
-      this.moveToSuggestion(this.selectedIndex - 1);
-      return;
-    }
-    if (event.key === 'ArrowDown') {
-      if (this.selectedIndex === len - 1) {
-        this.moveToInput();
-        return;
-      }
-      this.moveToSuggestion(this.selectedIndex + 1);
-    }
-  }
-
-  @autobind
   handleFocus() {
-    this.selectedIndex = -1;
-
-    if (this.currentValue) {
-      const { value, label } = this.currentValue;
-      this.setValue(value, label);
-    }
+    this.resetValue();
 
     // TODO?
     if (this.textInput.value) {
-      this.showDropdown();
+      this.dropdown.show();
     }
   }
 
   @autobind
   handleKeyUp(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
-      this.moveToSuggestion(-1);
+      this.dropdown.selectItem(-1);
       return;
     }
     if (event.key === 'ArrowDown') {
-      this.moveToSuggestion(0);
+      this.dropdown.selectItem(0);
       // return;
     }
   }
@@ -305,13 +227,35 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.setValue(value, query, true);
 
     if (!query) {
-      this.hideDropdown();
+      this.dropdown.hide();
       return;
     }
 
     this.getSuggestions(query);
+  }
 
-    this.showSuggestions();
+  @autobind
+  handleClickDropdownItem(index: number) {
+    const { value, label } = this.suggestions[index];
+
+    this.setValue(value, label, true);
+
+    this.isInnerClick = true;
+
+    // ?
+    this.dropdown.hide();
+  }
+
+  @autobind
+  handleFocusDropdownItem(index: number) {
+    const { value, label } = this.suggestions[index];
+
+    this.setValue(value, label);
+  }
+
+  @autobind
+  handleBlurDropdown() {
+    this.focusInput();
   }
 
   @autobind
@@ -322,7 +266,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   @autobind
   handleOutsideClick() {
     if (!this.isInnerClick) {
-      this.hideDropdown();
+      this.dropdown.hide();
     }
     this.isInnerClick = false;
   }
@@ -334,13 +278,19 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.textInput.addEventListener('keyup', this.handleKeyUp);
     this.textInput.addEventListener('input', this.handleInput);
 
-    this.dropdown?.addEventListener('click', this.handleInsideClick);
+    this.dropdown.node.addEventListener('click', this.handleInsideClick);
     this.textInput.addEventListener('click', this.handleInsideClick);
     document.addEventListener('click', this.handleOutsideClick);
   }
 
   die() {
+    this.textInput.removeEventListener('focus', this.handleFocus);
     this.textInput.removeEventListener('keyup', this.handleKeyUp);
+    this.textInput.removeEventListener('input', this.handleInput);
+
+    this.dropdown.node.removeEventListener('click', this.handleInsideClick);
+    this.textInput.removeEventListener('click', this.handleInsideClick);
+    document.removeEventListener('click', this.handleOutsideClick);
   }
 }
 
