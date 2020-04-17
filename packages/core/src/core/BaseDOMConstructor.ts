@@ -1,4 +1,5 @@
 import type { IOptionToGrab, ISFInstanceClass, ISpiralFramework } from '../types';
+import { extractOptions } from './extractOptions';
 
 /**
  * This a base constructor (class) for any DOM based instance.
@@ -115,10 +116,16 @@ export class BaseDOMConstructor implements ISFInstanceClass {
      * @param {Object} node  DomNode of form
      * @param {Object} [options] all options to override default
      */
-  public init(sf: ISpiralFramework, node: Element, options: any) {
+  public init(sf: ISpiralFramework, node: Element, options: any, defaultOptions: any = {}) {
     this.sf = sf;
     this.node = node;
-    this.options = Object.assign(this.grabOptions(node), options);
+    this.options = {
+      ...defaultOptions,
+      ...this.grabOptions(node),
+      ...options,
+      ...extractOptions(node),
+    };
+    return this.options;
   }
 
   /**

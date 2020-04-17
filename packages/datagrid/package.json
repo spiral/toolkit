@@ -37,9 +37,11 @@
     "@spiral-toolkit/core": "^0.3.6"
   },
   "devDependencies": {
+    "@types/luxon": "^1.22.0"
   },
   "dependencies": {
     "assert": "^2.0.0",
+    "luxon": "^1.23.0",
     "query-string": "^6.12.0"
   }
 }
