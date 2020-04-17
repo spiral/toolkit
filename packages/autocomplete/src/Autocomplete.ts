@@ -32,6 +32,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       value: Autocomplete.defaultOptions.name,
       domAttr: 'data-name',
     },
+    options: {
+      value: Autocomplete.defaultOptions.options,
+      domAttr: 'data-options',
+    },
   };
 
   options: IAutoCompleteOptions = { ...Autocomplete.defaultOptions };
@@ -62,6 +66,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   constructor(ssf: ISpiralFramework, node: Element, options: IAutoCompleteOptions) {
     super();
 
+    console.log(CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR)
+
     assert.ok(node.hasAttribute(CUSTOM_INPUT_ATTR), 'Node has custom form attribute');
     assert.ok(node.querySelector('input[data-sf="autocomplete-input"]'), 'Node has input for inputting text');
     assert.ok(!(node.querySelector('input[data-sf="autocomplete-input"]')?.getAttribute('name')), 'Node has input for inputting text without name');
@@ -89,21 +95,6 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   static parseData(rawData: Array<string | IDataOption>) {
-    if (!rawData.length) {
-      return [
-        { value: '1', label: 'Aspen, CO' },
-        { value: '2', label: 'Boston, MA' },
-        { value: '3', label: 'Chicago, IL' },
-        { value: '4', label: 'Dallas, TX' },
-        { value: '5', label: 'Houston, TX' },
-        { value: '6', label: 'Los Angeles, CA' },
-        { value: '7', label: 'Miami, FL' },
-        { value: '8', label: 'Nashville, TN' },
-        { value: '9', label: 'New York, NY' },
-        { value: '10', label: 'San Francisco, CA' },
-      ];
-    }
-
     return rawData.map((item: string | IDataOption) => {
       if (typeof item !== 'string') {
         const { value, label } = item;
