@@ -1,4 +1,4 @@
-import { closest } from './helpers/domTools';
+import { closest } from './domTools';
 
 /**
  * Custom input components are expected to have a wrapper with CUSTOM_INPUT_ATTR

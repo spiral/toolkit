@@ -1,6 +1,4 @@
 import sf, {
-  CUSTOM_INPUT_ATTR,
-  CUSTOM_INPUT_TARGET_ATTR,
   ICustomInput,
   IOptionToGrab,
   ISpiralFramework,
@@ -8,6 +6,8 @@ import sf, {
 import assert from 'assert';
 import { autobind } from './autobind';
 import { IAutoCompleteOptions } from './types';
+
+const { CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
 
 export class Autocomplete extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'autocomplete';
@@ -26,7 +26,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   el?: HTMLDivElement;
 
-  public readonly optionsToGrab: {[option: string]: IOptionToGrab} = {
+  public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     id: {
       value: Autocomplete.defaultOptions.id,
       domAttr: 'id',
