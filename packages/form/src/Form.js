@@ -13,7 +13,7 @@ import './styles.css';
 
 let idCounter = 1;
 
-const { CUSTOM_INPUT_TARGET_ATTR } = require('@spiral-toolkit/core');
+const { isNodeInsideCustomSFInput, CUSTOM_INPUT_TARGET_ATTR } = require('@spiral-toolkit/core');
 
 /**
  * Spiral Forms
@@ -25,6 +25,7 @@ const { CUSTOM_INPUT_TARGET_ATTR } = require('@spiral-toolkit/core');
  */
 const Form = function (sf, node, options) {
   this._construct(sf, node, options);
+  this._prevValues = {};
 };
 
 
@@ -223,6 +224,20 @@ Form.prototype.mixMessagesOptions = function () {
 };
 
 Form.prototype.onDebouncedSubmit = function (e) {
+  if (isNodeInsideCustomSFInput(e.target)) {
+    // Don't parse inputs that are used as helpers
+    return false;
+  }
+  if (e.target.getAttribute('name')) {
+    const name = e.target.getAttribute('name');
+    const data = this.getFormData();
+    // eslint-disable-next-line eqeqeq
+    if (this._prevValues[name] != data[name]) {
+      this._prevValues[name] = data[name];
+    } else {
+      return false;
+    }
+  }
   if (this.sf.getInstance('lock', this.node)) {
     // On lock we should'n do any actions
     e.preventDefault();

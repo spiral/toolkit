@@ -1,6 +1,6 @@
 import { attachDefaultActions } from './core/ajax/baseActions';
 import { registerBaseEvents } from './core/events/baseEvents';
-import { core, tools, helpers } from './sf';
+import { core, tools, helpers, registerTool } from './sf';
 import type { ISpiralFramework } from './types';
 
 const options = { instances: {} };
@@ -8,6 +8,7 @@ const options = { instances: {} };
 const sfWrapper: Partial<ISpiralFramework> = {
   core,
   helpers,
+  registerTool,
   tools,
   options,
 };
