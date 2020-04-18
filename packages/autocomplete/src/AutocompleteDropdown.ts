@@ -1,22 +1,25 @@
 import { autobind } from './autobind';
-import { IAutocompleteDropdownOptions, IDataOption } from './types';
+import { IAutocompleteDropdownOptions, IAutocompleteData, IAutocompleteDataItem } from './types';
 
 export class AutocompleteDropdown {
   public node: HTMLDivElement;
 
   options: IAutocompleteDropdownOptions;
 
-  selectedIndex: number;
-
   items?: HTMLDivElement[];
 
-  constructor(options: IAutocompleteDropdownOptions) {
-    const node: HTMLDivElement = document.createElement('div');
-    node.classList.add('sf-autocomplete__dropdown', 'dropdown-menu');
+  data?: IAutocompleteData;
 
-    this.node = node;
+  selectedIndex: number;
+
+  isInnerFocus?: boolean;
+
+  constructor(options: IAutocompleteDropdownOptions) {
+    this.node = document.createElement('div');
+    this.node.classList.add('sf-autocomplete__dropdown', 'dropdown-menu');
 
     this.options = options;
+
     this.selectedIndex = -1;
   }
 
@@ -25,22 +28,49 @@ export class AutocompleteDropdown {
   }
 
   public hide() {
+    if (!this.node.classList.contains('show')) return false;
     this.node.classList.remove('show');
+    this.clearIndex();
+
+    return true;
   }
 
   public clear() {
-    // const clone: Node = this.node.cloneNode(false);
-    // this.node.parentNode!.replaceChild(clone, this.node);
-    // this.node = clone as HTMLDivElement;
-    this.node.innerHTML = '';
+    const clone: Node = this.node.cloneNode(false);
+    this.node.parentNode!.replaceChild(clone, this.node);
+    this.node = clone as HTMLDivElement;
+    // this.node.innerHTML = '';
   }
 
-  public render(options: IDataOption[]) {
+  public setData(data: IAutocompleteData) {
+    this.data = data;
+
     this.clear();
 
-    this.items = options.map((option: IDataOption, index: number) => this.renderItem(index, option));
+    this.render();
+  }
 
-    // this.dropdown.innerHTML = items.join('');
+  public suggest(query: string) {
+    if (this.data && query) {
+      const index = this.data.findIndex((item: IAutocompleteDataItem) => (
+        query === this.options.inputTemplate(item)
+      ));
+      if (index !== -1) {
+        this.selectedIndex = index;
+        this.redrawItems();
+        this.options.onSelectItem(this.data[index], true);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  render() {
+    if (!this.data) return;
+
+    this.items = this.data.map((option: IAutocompleteDataItem, index: number) => this.renderItem(index, option));
+
     this.items.forEach((item: HTMLDivElement) => this.node.appendChild(item));
   }
 
@@ -48,35 +78,43 @@ export class AutocompleteDropdown {
     this.items!.forEach((item: HTMLDivElement, i: number) => item.classList.toggle('active', i === this.selectedIndex));
   }
 
-  renderItem(index: number, { value, label }: IDataOption): HTMLDivElement {
-    // TODO: template
-    // return `<div class="dropdown-item">${label ?? value}</div>`;
+  renderItem(index: number, dataItem: IAutocompleteDataItem): HTMLDivElement {
     const item: HTMLDivElement = document.createElement('div');
     item.classList.add('dropdown-item');
     item.tabIndex = 0;
     item.dataset.index = index.toString();
-    item.innerHTML = label ?? value;
+    item.innerHTML = this.options.suggestTemplate(dataItem);
     item.addEventListener('click', this.handleClickItem);
     item.addEventListener('focus', this.handleFocusItem);
     item.addEventListener('keyup', this.handleKeyUpItem);
     return item;
   }
 
-  public selectItem(index: number) {
-    const len = this.items?.length;
+  focusSelectedItem() {
+    if (this.selectedIndex === -1) return;
+    this.isInnerFocus = true;
+    this.items![this.selectedIndex].focus();
+  }
+
+  public selectIndex(index: number) {
+    const len = this.data?.length;
     if (!len) return;
 
-    this.selectedIndex = (index > len - 1 || index < 0) ? len - 1 : index;
-    this.focusItem(this.selectedIndex);
+    this.selectedIndex = (index > len || index < 0) ? len - 1 : index;
 
     this.redrawItems();
 
-    this.options.onFocusItem(this.selectedIndex);
+    if (this.selectedIndex === -1) return;
+
+    this.focusSelectedItem();
+
+    this.options.onSelectItem(this.data![this.selectedIndex]);
   }
 
-  focusItem(index: number) {
-    if (index === -1) return;
-    this.items![index].focus();
+  clearIndex() {
+    this.selectedIndex = -1;
+
+    this.redrawItems();
   }
 
   @autobind
@@ -87,14 +125,20 @@ export class AutocompleteDropdown {
     this.selectedIndex = index === undefined ? -1 : parseInt(index, 10);
 
     this.redrawItems();
+    this.focusSelectedItem();
 
-    this.focusItem(this.selectedIndex);
+    this.options.onSelectItem(this.data![this.selectedIndex], true);
 
-    this.options.onClickItem(this.selectedIndex);
+    this.options.onClickItem();
   }
 
   @autobind
   handleFocusItem(event: FocusEvent) {
+    if (this.isInnerFocus) {
+      this.isInnerFocus = false;
+      return;
+    }
+
     const item = event.target as HTMLDivElement;
     const { index } = item.dataset;
 
@@ -102,7 +146,7 @@ export class AutocompleteDropdown {
 
     this.redrawItems();
 
-    this.options.onFocusItem(this.selectedIndex);
+    this.options.onSelectItem(this.data![this.selectedIndex]);
   }
 
   @autobind
@@ -112,22 +156,31 @@ export class AutocompleteDropdown {
 
     if (event.key === 'ArrowUp') {
       if (this.selectedIndex === 0) {
+        this.clearIndex();
         this.options.onBlur();
         return;
       }
-      this.selectItem(this.selectedIndex - 1);
+      this.selectIndex(this.selectedIndex - 1);
       return;
     }
     if (event.key === 'ArrowDown') {
       if (this.selectedIndex === len - 1) {
+        this.clearIndex();
         this.options.onBlur();
         return;
       }
-      this.selectItem(this.selectedIndex + 1);
+      this.selectIndex(this.selectedIndex + 1);
       return;
     }
     if (event.key === 'Enter') {
-      this.options.onClickItem(this.selectedIndex);
+      this.options.onSelectItem(this.data![this.selectedIndex], true);
+      this.options.onClickItem();
+      return;
+    }
+    if (event.key === 'Escape') {
+      this.clearIndex();
+      this.hide();
+      this.options.onBlur();
     }
   }
 }
