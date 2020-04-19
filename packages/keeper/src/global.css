@@ -1,5 +1,5 @@
 /* @import url("//hello.myfonts.net/count/3a73cd"); */
-
+/*
 @font-face {
   font-family: 'Proxima Nova';
   src: url('./fonts/3A73CD_0_0.woff2') format('woff2'), url('./fonts/3A73CD_0_0.woff') format('woff');
@@ -27,6 +27,7 @@
   font-style: italic;
   font-weight: 400;
 }
+*/
 
 html {
   width: 100%;

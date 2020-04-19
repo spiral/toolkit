@@ -67,11 +67,15 @@ export class AutocompleteDropdown {
   }
 
   render() {
-    if (!this.data) return;
+    if (!this.data || !this.data.length) return;
 
     this.items = this.data.map((option: IAutocompleteDataItem, index: number) => this.renderItem(index, option));
 
-    this.items.forEach((item: HTMLDivElement) => this.node.appendChild(item));
+    const fragment = document.createDocumentFragment();
+
+    this.items.forEach((item: HTMLDivElement) => fragment.appendChild(item));
+
+    this.node.appendChild(fragment);
   }
 
   redrawItems() {

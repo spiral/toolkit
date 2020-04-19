@@ -16,8 +16,9 @@ export interface IAutocompleteOptions {
   valueKey?: string;
   searchKey?: string;
   url?: string;
-  method?: 'GET' | 'POST',
-  headers?: { [key: string]: string },
+  dataField?: string;
+  method?: 'GET' | 'POST';
+  headers?: { [key: string]: string };
 }
 
 export interface IAutocompleteDropdownOptions {
@@ -28,9 +29,21 @@ export interface IAutocompleteDropdownOptions {
   onBlur: () => void;
 }
 
+export interface IAutocompleteDataSourceOptions {
+  data?: IAutocompleteStaticDataItem[] | string[];
+  url?: string;
+  valueKey: string;
+  dataField: string;
+  method?: 'GET' | 'POST';
+  headers?: { [key: string]: string };
+  onRestoreDataItem: (dataItem?: IAutocompleteDataItem) => void;
+  onSuccessResponse: (search: string, results: IAutocompleteData) => void;
+  onErrorResponse: (search: string) => void;
+}
+
 export interface IDatagridRequest {
   fetchCount?: boolean;
-  paginate?: { limit?: number },
-  filter?: { [filterField: string]: string },
-  sort?: { [sortField: string]: 'asc' | 'desc' },
+  paginate?: { limit?: number };
+  filter?: { [filterField: string]: string };
+  sort?: { [sortField: string]: 'asc' | 'desc' };
 }

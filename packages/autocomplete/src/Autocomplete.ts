@@ -4,15 +4,13 @@ import sf, {
   ISpiralFramework,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
-import type { AxiosResponse } from 'axios';
 import Handlebars from 'handlebars';
 import { autobind } from './autobind';
+import { AutocompleteDataSource } from './AutocompleteDataSource';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
-import { makeUrl } from './makeUrl';
 import {
   IAutocompleteOptions,
   IAutocompleteData,
-  IAutocompleteStaticDataItem,
   IAutocompleteDataItem,
 } from './types';
 
@@ -26,15 +24,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   static defaultOptions: IAutocompleteOptions = {
     id: '',
     name: '',
-    data: [],
     valueKey: 'id',
     searchKey: 'name',
-    url: '',
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
   };
 
   el?: HTMLDivElement;
@@ -60,6 +51,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   textInputWrapper: HTMLDivElement;
 
   hiddenInput: HTMLInputElement;
+
+  dataSource?: AutocompleteDataSource;
 
   dropdown?: AutocompleteDropdown;
 
@@ -92,6 +85,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.init(ssf, node, options, Autocomplete.defaultOptions);
 
+    this.initDataSource();
+
     this.initDropdown();
 
     this.setExternalValue(this.hiddenInput.value);
@@ -101,11 +96,42 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     console.log('Autocomplete is ready');
   }
 
+  initDataSource() {
+    const {
+      data,
+      valueKey,
+      url,
+      dataField,
+      method,
+      headers,
+    } = this.options;
+
+    assert.ok(data || url, 'Data or URL provided');
+
+    this.dataSource = new AutocompleteDataSource({
+      data,
+      url,
+      valueKey: valueKey as string,
+      dataField: dataField as string,
+      method,
+      headers,
+      onRestoreDataItem: this.handleRestoreDataItem,
+      onSuccessResponse: this.handleSuccessDataSourceResponse,
+      onErrorResponse: this.handleErrorDataSourceResponse,
+    });
+  }
+
   initDropdown() {
     if (this.node.classList.contains('dropdown')) return; // TODO: do we need a flag?
 
-    this.options.suggestTemplate = this.options.suggestTemplate || `{{${this.options.searchKey}}}`;
-    this.options.inputTemplate = this.options.inputTemplate || `{{${this.options.searchKey}}}`;
+    const {
+      searchKey,
+      suggestTemplate,
+      inputTemplate,
+    } = this.options;
+
+    this.options.suggestTemplate = suggestTemplate || `{{${searchKey}}}`;
+    this.options.inputTemplate = inputTemplate || `{{${searchKey}}}`;
 
     this.suggestTemplate = Handlebars.compile(this.options.suggestTemplate);
     this.inputTemplate = Handlebars.compile(this.options.inputTemplate);
@@ -120,78 +146,6 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.node.classList.add('dropdown');
     this.node.appendChild(this.dropdown!.node);
-  }
-
-  getSuggestions(search: string) {
-    this.clearSuggestions();
-
-    if (this.options.url) {
-      this.getSuggestionsByURL(search);
-      return;
-    }
-
-    if (this.options.data) {
-      this.getSuggestionsFromData(search);
-    }
-  }
-
-  getSuggestionsFromData(search: string) {
-    const searchLC = search.toLocaleLowerCase();
-
-    const suggestions: IAutocompleteData = [];
-
-    this.options.data!.forEach((item: string | IAutocompleteStaticDataItem) => {
-      let id: string | undefined;
-      let name: string | undefined = '';
-      if (typeof item !== 'string') {
-        id = item.id;
-        name = item.name;
-      } else {
-        id = item;
-        name = item;
-      }
-
-      if (name.toLocaleLowerCase().startsWith(searchLC)) {
-        suggestions.push({ id, name });
-      }
-    });
-
-    this.showSuggestions(suggestions, search);
-  }
-
-  getSuggestionsByURL(search: string) {
-    const {
-      method = 'GET',
-      headers,
-      url,
-    } = this.options;
-
-    sf.ajax.send({
-      method,
-      headers,
-      url: makeUrl(url!, { paginate: { limit: 10 }, filter: { search } }),
-    }).then((response: AxiosResponse<any>) => {
-      const suggestions: IAutocompleteData = response.data.data;
-
-      this.showSuggestions(suggestions, search);
-    });
-  }
-
-  showSuggestions(suggestions: IAutocompleteData, search: string) {
-    if (!suggestions.length) {
-      // TODO: show 'no entries found' ?
-      this.dropdown!.hide();
-      return;
-    }
-
-    this.dropdown!.setData(suggestions);
-    this.dropdown!.suggest(search);
-
-    this.dropdown!.show();
-  }
-
-  clearSuggestions() {
-    this.dropdown!.setData([]);
   }
 
   setDataItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
@@ -225,13 +179,67 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.textInput.focus();
   }
 
+  clearSuggestions() {
+    this.dropdown!.setData([]);
+  }
+
+  getSuggestions(value: string) {
+    if (!this.dataSource) {
+      return;
+    }
+    this.dataSource.getData(value);
+    // TODO: loading
+  }
+
+  @autobind
+  handleSuccessDataSourceResponse(search: string, suggestions: IAutocompleteData) {
+    if (!suggestions.length) {
+      // TODO: show 'no entries found' ?
+      this.dropdown!.hide();
+      return;
+    }
+
+    this.dropdown!.show();
+    this.dropdown!.setData(suggestions);
+    this.dropdown!.suggest(search);
+  }
+
+  @autobind
+  handleErrorDataSourceResponse(/* search: string */) {
+    // TODO
+    this.dropdown!.hide();
+  }
+
+  @autobind handleRestoreDataItem(dataItem?: IAutocompleteDataItem) {
+    // this.clearSuggestions();
+
+    if (!dataItem) {
+      this.hiddenInput.value = '';
+      return;
+    }
+
+    this.setDataItem(dataItem, true);
+    this.currentTextValue = this.textInput.value;
+
+    this.dropdown!.setData([dataItem]);
+  }
+
   @autobind
   setExternalValue(value?: string) {
+    if (!this.dataSource) {
+      this.hiddenInput.value = ''; // ?
+      return;
+    }
+
+    this.hiddenInput.value = value ?? '';
+
+    this.clearSuggestions();
+
     if (!value) {
       return;
     }
 
-    this.getSuggestions(value);
+    this.dataSource.restoreDataItem(value);
   }
 
   @autobind
@@ -279,9 +287,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   handleInput(/* event: KeyboardEvent */) {
     // const value = (event.target as HTMLInputElement).value;
     const value = this.textInput.value ?? '';
-    console.log(this.options.name, value);
 
     this.currentTextValue = value;
+
+    // this.clearSuggestions();
 
     if (!value) {
       this.dropdown!.hide();
