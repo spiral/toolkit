@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 /* const sourceMap = process.env.TEST || process.env.NODE_ENV !== 'production'
   ? [new webpack.SourceMapDevToolPlugin({
-    exclude: ['luxon', '@types/luxon'],
+    exclude: [/luxon/],
     filename: '[name].js.map',
   })]
   : [new webpack.SourceMapDevToolPlugin({
