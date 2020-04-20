@@ -21,7 +21,7 @@ const execute = ((packages && packages.length) ? packages.filter((p) => (allPack
 });
 
 // eslint-disable-next-line no-console
-console.log(`\x1b[30m\x1b[47m ${isDebug?'Debug build':'Production build'} in following order \x1b[31m`, execute.join('->'), '\x1b[0m');
+console.log(`\x1b[30m\x1b[47m ${isDebug ? 'Debug build' : 'Production build'} in following order \x1b[31m`, execute.join('->'), '\x1b[0m');
 
 if (execute && execute.length) {
   execute.forEach((module) => {

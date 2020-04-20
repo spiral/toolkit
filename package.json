@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "node ./webpack/build",
+    "build": "cross-env NODE_ENV=production && node ./webpack/build",
     "watch": "node ./webpack/watch",
     "build:dev": "cross-env NODE_ENV=development && node ./webpack/build"
   },
