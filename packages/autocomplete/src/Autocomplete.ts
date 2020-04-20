@@ -85,6 +85,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.init(ssf, node, options, Autocomplete.defaultOptions);
 
+    this.initWrapper();
+
     this.initDataSource();
 
     this.initDropdown();
@@ -94,6 +96,13 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.bind();
 
     console.log('Autocomplete is ready');
+  }
+
+  initWrapper() {
+    if (!this.options.isMultiple) return;
+
+    const tagWrapper = document.createElement('div');
+    this.textInputWrapper.insertBefore(tagWrapper, this.textInput);
   }
 
   initDataSource() {

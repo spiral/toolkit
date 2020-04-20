@@ -10,6 +10,7 @@ export type IAutocompleteData = IAutocompleteDataItem[];
 export interface IAutocompleteOptions {
   id: string;
   name: string;
+  isMultiple?: boolean;
   data?: IAutocompleteStaticDataItem[] | string[];
   inputTemplate?: string;
   suggestTemplate?: string;
