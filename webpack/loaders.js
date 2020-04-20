@@ -1,3 +1,14 @@
+const path = require('path');
+const { readdirSync } = require('fs');
+
+const makeIncludeFunction = () => {
+  // console.log(path.join(__dirname,'..', '/packages'));
+  const allPackages = readdirSync(path.join(__dirname, '..', '/packages'));
+  // console.log(allPackages);
+  return (p) => p.indexOf('@spiral-toolkit') >= 0
+        || !!allPackages.find((pack) => p.indexOf(`packages${path.sep}${pack}`) >= 0);
+};
+
 function makeUrlLoader(pattern) {
   return {
     test: pattern,
@@ -13,6 +24,7 @@ exports.jsmap = {
   use: [
     'source-map-loader',
   ],
+  include: makeIncludeFunction(),
   enforce: 'pre',
 };
 
@@ -31,7 +43,7 @@ exports.js = {
   options: {
     transpileOnly: true,
   },
-}; 
+};
 
 exports.ts = {
   test: /\.tsx?$/,

@@ -5,6 +5,7 @@ const { argv } = process;
 // eslint-disable-next-line no-unused-vars
 const [node, path, ...packages] = argv;
 const isDebug = process.env.NODE_ENV !== 'production';
+console.log(process.env.NODE_ENV, isDebug);
 const cmd = isDebug ? 'build:dev' : 'build';
 const allPackages = readdirSync('./packages');
 const firstToGo = ['core'];
