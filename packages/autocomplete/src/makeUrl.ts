@@ -21,5 +21,5 @@ export function makeUrl(url: string, data: IDatagridRequest) {
       result[`sort[${field}]`] = data.sort![field];
     });
   }
-  return stringifyUrl({ url, query: result });
+  return stringifyUrl({ url, query: result }, { arrayFormat: 'bracket' });
 }

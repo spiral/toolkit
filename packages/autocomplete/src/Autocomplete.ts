@@ -173,6 +173,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   focusInput() {
+    // only for single value
     this.resetDataItem();
 
     this.isInnerFocus = true;
@@ -218,6 +219,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       return;
     }
 
+    // for single value
     this.setDataItem(dataItem, true);
     this.currentTextValue = this.textInput.value;
 
@@ -249,9 +251,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       return;
     }
 
+    // for single value
     this.resetDataItem();
 
-    // TODO?
+    // for single value
     if (this.textInput.value) {
       if (!this.dropdown!.suggest(this.textInput.value)) {
         this.clearDataItem();
@@ -302,7 +305,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleSelectDropdownItem(option: IAutocompleteDataItem, isSave?: boolean) {
+    // single value
     this.setDataItem(option, isSave);
+    // multiple value: add to array
   }
 
   @autobind
@@ -312,6 +317,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleFocusDropdownItem(option: IAutocompleteDataItem) {
+    // only for single value
     this.setDataItem(option);
   }
 
@@ -329,6 +335,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   handleOutsideClick() {
     if (!this.isInnerClick) {
       if (this.dropdown!.hide()) {
+        // only for single value
         this.resetDataItem();
       }
     }

@@ -60,13 +60,14 @@ export class AutocompleteDataSource {
     this.options.onRestoreDataItem(result);
   }
 
+  // TODO: use array to support multiple value in future
   restoreDataItemByUrl(value: string) {
     const {
       valueKey,
     } = this.options;
 
     sf.ajax
-      .send(this.getRequestParams({ paginate: { limit: 1 }, filter: { [valueKey]: value } }))
+      .send(this.getRequestParams({ paginate: { limit: 1 }, filter: { [valueKey]: [value] } }))
       .then((response: AxiosResponse<any>) => {
         const results: IAutocompleteData = response.data[this.options.dataField || 'data'];
 

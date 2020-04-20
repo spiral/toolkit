@@ -44,6 +44,6 @@ export interface IAutocompleteDataSourceOptions {
 export interface IDatagridRequest {
   fetchCount?: boolean;
   paginate?: { limit?: number };
-  filter?: { [filterField: string]: string };
+  filter?: { [filterField: string]: string | string[] };
   sort?: { [sortField: string]: 'asc' | 'desc' };
 }
