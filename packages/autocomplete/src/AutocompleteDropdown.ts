@@ -84,7 +84,7 @@ export class AutocompleteDropdown {
 
   renderItem(index: number, dataItem: IAutocompleteDataItem): HTMLDivElement {
     const item: HTMLDivElement = document.createElement('div');
-    item.classList.add('dropdown-item');
+    item.classList.add('dropdown-item', 'js-sf-dropdown-item');
     item.tabIndex = 0;
     item.dataset.index = index.toString();
     item.innerHTML = this.options.suggestTemplate(dataItem);
@@ -123,7 +123,14 @@ export class AutocompleteDropdown {
 
   @autobind
   handleClickItem(event: MouseEvent) {
-    const item = event.target as HTMLDivElement;
+    let item: HTMLDivElement | null = event.target as HTMLDivElement;
+
+    if (!item.classList.contains('js-sf-dropdown-item')) {
+      item = item.closest('.js-sf-dropdown-item');
+    }
+
+    if (!item) return;
+
     const { index } = item.dataset;
 
     this.selectedIndex = index === undefined ? -1 : parseInt(index, 10);
