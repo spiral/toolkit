@@ -5,9 +5,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "cross-env NODE_ENV=production && node ./webpack/build",
+    "build": "cross-env NODE_ENV=production node ./webpack/build",
     "watch": "node ./webpack/watch",
-    "build:dev": "cross-env NODE_ENV=development && node ./webpack/build"
+    "build:dev": "cross-env NODE_ENV=development node ./webpack/build"
   },
   "devDependencies": {
     "@types/assert": "^1.4.6",

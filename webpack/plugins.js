@@ -1,9 +1,16 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack');
 
-const sourceMap = process.env.TEST || process.env.NODE_ENV !== 'production'
-  ? [new webpack.SourceMapDevToolPlugin({ filename: null, test: /\.js$/ })]
-  : [];
+/* const sourceMap = process.env.TEST || process.env.NODE_ENV !== 'production'
+  ? [new webpack.SourceMapDevToolPlugin({
+    exclude: [/luxon/],
+    filename: '[name].js.map',
+  })]
+  : [new webpack.SourceMapDevToolPlugin({
+    exclude: ['luxon', '@types/luxon'],
+    filename: '[name].js.map',
+  })]; */
+
 
 const basePlugins = [
   new webpack.DefinePlugin({
@@ -16,7 +23,7 @@ const basePlugins = [
   }),
   // eslint-disable-next-line no-useless-escape
   new webpack.ContextReplacementPlugin(/moment[\/\\]locale/, /en/),
-].concat(sourceMap);
+];// .concat(sourceMap);
 
 const devPlugins = [];
 
