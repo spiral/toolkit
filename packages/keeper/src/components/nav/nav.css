@@ -84,10 +84,10 @@ body.loaded .sf-nav__item-content {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   color: var(--white);
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 .sf-subnav__item {

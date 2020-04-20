@@ -2,10 +2,10 @@ $primary: #497cb1;
 $primary-darken: darken($primary, 15%);
 $focus: lighten($primary, 25%);
 
-$font-family-sans-serif: 'Proxima Nova','Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+$font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
 
 $font-size-base: 0.875rem;
-$font-weight-bold: 600;
+$font-weight-bold: 500;
 $font-weight-bolder: 700;
 
 $h1-font-size: $font-size-base * 2;
