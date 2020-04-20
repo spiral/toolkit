@@ -1,7 +1,7 @@
 const core = require('@spiral-toolkit/core').default;
 
-require('./input');
-require('./localdate/LocalDate');
+require('./form/input');
+require('./ui/localdate/LocalDate');
 
 require('@spiral-toolkit/autocomplete');
 require('@spiral-toolkit/locker');
