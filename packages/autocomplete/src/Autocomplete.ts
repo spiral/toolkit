@@ -8,6 +8,7 @@ import Handlebars from 'handlebars';
 import { autobind } from './autobind';
 import { AutocompleteDataSource } from './AutocompleteDataSource';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
+import { AutocompleteTags } from './AutocompleteTags';
 import {
   IAutocompleteOptions,
   IAutocompleteData,
@@ -56,6 +57,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   dropdown?: AutocompleteDropdown;
 
+  tags?: AutocompleteTags;
+
   /* Data */
   currentTextValue?: string;
 
@@ -85,24 +88,14 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.init(ssf, node, options, Autocomplete.defaultOptions);
 
-    this.initWrapper();
-
     this.initDataSource();
-
+    this.initTemplates();
     this.initDropdown();
+    this.initTags();
 
     this.setExternalValue(this.hiddenInput.value);
 
     this.bind();
-
-    console.log('Autocomplete is ready');
-  }
-
-  initWrapper() {
-    if (!this.options.isMultiple) return;
-
-    const tagWrapper = document.createElement('div');
-    this.textInputWrapper.insertBefore(tagWrapper, this.textInput);
   }
 
   initDataSource() {
@@ -130,9 +123,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     });
   }
 
-  initDropdown() {
-    if (this.node.classList.contains('dropdown')) return; // TODO: do we need a flag?
-
+  initTemplates() {
     const {
       searchKey,
       suggestTemplate,
@@ -144,17 +135,31 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.suggestTemplate = Handlebars.compile(this.options.suggestTemplate);
     this.inputTemplate = Handlebars.compile(this.options.inputTemplate);
+  }
+
+  initDropdown() {
+    if (this.node.classList.contains('dropdown')) return; // TODO: do we need a flag?
 
     this.dropdown = new AutocompleteDropdown({
       suggestTemplate: this.suggestTemplate!,
       inputTemplate: this.inputTemplate!,
       onSelectItem: this.handleSelectDropdownItem,
-      onClickItem: this.handleClickDropdownItem,
       onBlur: this.handleBlurDropdown,
     });
 
     this.node.classList.add('dropdown');
     this.node.appendChild(this.dropdown!.node);
+  }
+
+  initTags() {
+    if (!this.options.isMultiple) return;
+
+    this.tags = new AutocompleteTags({
+      valueKey: this.options.valueKey as string,
+      inputTemplate: this.inputTemplate!,
+      onRemoveTag: this.handleRemoveTag,
+    });
+    this.textInputWrapper.insertBefore(this.tags.node, this.textInput);
   }
 
   setDataItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
@@ -313,26 +318,36 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  handleSelectDropdownItem(option: IAutocompleteDataItem, isSave?: boolean) {
-    // single value
-    this.setDataItem(option, isSave);
+  handleSelectDropdownItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
+    console.log('Select', dataItem.id)
+    if (!this.options.isMultiple) {
+      // single value
+      this.setDataItem(dataItem, isSave);
+      return;
+    }
+
     // multiple value: add to array
+    if (isSave) {
+      this.tags!.addTag(dataItem);
+      this.textInput.value = '';
+      this.currentTextValue = '';
+    }
   }
 
   @autobind
-  handleClickDropdownItem() {
-    this.dropdown!.hide();
-  }
-
-  @autobind
-  handleFocusDropdownItem(option: IAutocompleteDataItem) {
+  handleFocusDropdownItem(dataItem: IAutocompleteDataItem) {
     // only for single value
-    this.setDataItem(option);
+    this.setDataItem(dataItem);
   }
 
   @autobind
   handleBlurDropdown() {
     this.focusInput();
+  }
+
+  @autobind
+  handleRemoveTag(dataItem: IAutocompleteDataItem) {
+
   }
 
   @autobind

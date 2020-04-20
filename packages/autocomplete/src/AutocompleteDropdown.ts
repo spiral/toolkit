@@ -69,7 +69,7 @@ export class AutocompleteDropdown {
   render() {
     if (!this.data || !this.data.length) return;
 
-    this.items = this.data.map((option: IAutocompleteDataItem, index: number) => this.renderItem(index, option));
+    this.items = this.data.map((dataItem: IAutocompleteDataItem, index: number) => this.renderItem(index, dataItem));
 
     const fragment = document.createDocumentFragment();
 
@@ -136,11 +136,13 @@ export class AutocompleteDropdown {
     this.selectedIndex = index === undefined ? -1 : parseInt(index, 10);
 
     this.redrawItems();
+
+    this.isInnerFocus = true;
     this.focusSelectedItem();
 
     this.options.onSelectItem(this.data![this.selectedIndex], true);
 
-    this.options.onClickItem();
+    this.hide();
   }
 
   @autobind
@@ -185,7 +187,7 @@ export class AutocompleteDropdown {
     }
     if (event.key === 'Enter') {
       this.options.onSelectItem(this.data![this.selectedIndex], true);
-      this.options.onClickItem();
+      this.hide();
       return;
     }
     if (event.key === 'Escape') {

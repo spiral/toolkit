@@ -1,0 +1,23 @@
+.sf-tag.badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.25rem;
+  padding: 0.1em 0.4em 0.1em 0.6em;
+  min-height: 1.635rem;
+  font-size: 0.675rem;
+}
+
+.sf-tag > .close {
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  color: inherit;
+  text-shadow: none;
+}
+
+.sf-tag > .close:focus {
+  outline: 0;
+}
+
+.sf-tag > .close > span {
+  pointer-events: none;
+}

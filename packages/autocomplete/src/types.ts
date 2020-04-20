@@ -22,14 +22,6 @@ export interface IAutocompleteOptions {
   headers?: { [key: string]: string };
 }
 
-export interface IAutocompleteDropdownOptions {
-  inputTemplate: Function;
-  suggestTemplate: Function;
-  onSelectItem: (value: IAutocompleteDataItem, isSave?: boolean) => void;
-  onClickItem: () => void;
-  onBlur: () => void;
-}
-
 export interface IAutocompleteDataSourceOptions {
   data?: IAutocompleteStaticDataItem[] | string[];
   url?: string;
@@ -40,6 +32,19 @@ export interface IAutocompleteDataSourceOptions {
   onRestoreDataItem: (dataItem?: IAutocompleteDataItem) => void;
   onSuccessResponse: (search: string, results: IAutocompleteData) => void;
   onErrorResponse: (search: string) => void;
+}
+
+export interface IAutocompleteDropdownOptions {
+  inputTemplate: Function;
+  suggestTemplate: Function;
+  onSelectItem: (dataItem: IAutocompleteDataItem, isSave?: boolean) => void;
+  onBlur: () => void;
+}
+
+export interface IAutocompleteTagsOptions {
+  valueKey: string;
+  inputTemplate: Function;
+  onRemoveTag: (dataItem: IAutocompleteDataItem) => void;
 }
 
 export interface IDatagridRequest {
