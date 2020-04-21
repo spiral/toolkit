@@ -94,6 +94,8 @@ export type CellRenderAdvanced = {
   createEl: () => Element | undefined,
 };
 
+export type CellRenderWithTool = { name: string, arguments: any[] };
+
 export type HeaderCellRenderFunction =
   ((
     column: INormalizedColumnDescriptor, // Column meta
@@ -109,7 +111,7 @@ export type HeaderCellRenderAdvanced = {
 
 export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
 
-export type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced;
+export type IRowCellRenderer = CellRenderFunction | CellRenderAdvanced | CellRenderWithTool;
 
 export type IHeaderWrapperRenderer = ((
   parent: Element,
