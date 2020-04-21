@@ -19,7 +19,7 @@ export const tools = {
       return '';
     }
   }),
-  concat: (fields: string[], separator = ' ') => ((value: string, item: any) => fields.map(f => item[f]).join(separator)),
+  concat: (fields: string[], separator = ' ') => ((value: string, item: any) => fields.map((f) => item[f]).join(separator)),
   serialize: (value: string, item: any) => JSON.stringify(item),
 };
 
@@ -29,7 +29,7 @@ sf.registerTool('datagrid', tools);
 // Currently its needed for use cases when this module is required in bundle used, so SFToolkit is not fully initialized in window by time this code is executed
 // NOTE: Potentially this will be just deprecated as we plan to use webpack build, not JS bundles based
 if ((window as any).SFToolkit && !(window as any).SFToolkit.tools) {
-  (window as any).SFToolkit.tools = {_datagrid: tools};
+  (window as any).SFToolkit.tools = { _datagrid: tools };
 }
 
 sf.registerInstanceType(DataGrid, 'js-sf-datagrid');
