@@ -59,7 +59,7 @@ export class GridRenderer {
     this.wrapper.setAttribute('role', 'sf-datagrid-wrapper');
     this.wrapper.setAttribute('class', this.options.ui.wrapperClassName || '');
 
-    this.root.node.innerHTML = '';
+    // this.root.node.innerHTML = '';
     this.root.node.appendChild(this.wrapper);
 
     if (this.options.actions) {

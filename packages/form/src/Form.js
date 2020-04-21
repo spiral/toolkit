@@ -50,6 +50,10 @@ Form.prototype.name = 'form';
  */
 Form.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options);
+  if (!this.options.id) {
+    // eslint-disable-next-line no-plusplus
+    this.options.id = `form:${idCounter++}`;
+  }
   this.options.jsonOnly = this.options.jsonOnly && !!window.FormData;
   this.mixMessagesOptions();
   // this.options.fillFrom && this.fillFieldsFrom(); // id required to fill form
@@ -90,8 +94,7 @@ Form.prototype.optionsToGrab = {
     },
   },
   id: {
-    // eslint-disable-next-line no-plusplus
-    value: `form:${idCounter++}`,
+    value: '',
     domAttr: 'id',
   },
   /**
@@ -349,7 +352,7 @@ Form.prototype.setFieldValues = function (values) {
 };
 
 Form.prototype.enumerateFieldNames = function () {
-  console.log(this.node.querySelectorAll('input,select,textarea'));
+  // console.log(this.node.querySelectorAll('input,select,textarea'));
   return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
 };
 

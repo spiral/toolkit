@@ -1,11 +1,12 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
-import { SelectionType } from '../constants';
+import { ACTION_PANEL_CLASS_NAME, SelectionType } from '../constants';
 import type { IActionDescriptor, IActionPanelOptions, IActionPanelState } from '../types';
 
 export type FlexibleRenderDefinition = string | Element | ((state: IActionPanelState) => string | Element);
 
 export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid-actions';
+  static readonly spiralFrameworkCss: string = ACTION_PANEL_CLASS_NAME;
 
   public readonly name = ActionPanel.spiralFrameworkName;
 

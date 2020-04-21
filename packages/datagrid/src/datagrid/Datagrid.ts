@@ -3,6 +3,7 @@ import * as assert from 'assert';
 import { parse, stringifyUrl } from 'query-string';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
+  DATAGRID_CLASS_NAME,
   DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
 import { DatagridState } from './DatagridState';
@@ -21,7 +22,7 @@ import {
 import { normalizeColumns } from '../utils';
 
 function makeGetUrl(url: string, data: IDatagridRequest) {
-  const result: {[field: string]: any} = {};
+  const result: { [field: string]: any } = {};
   if (data.fetchCount) {
     result.fetchCount = true;
   }
@@ -39,6 +40,8 @@ function makeGetUrl(url: string, data: IDatagridRequest) {
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid';
+
+  static readonly spiralFrameworkCss: string = DATAGRID_CLASS_NAME;
 
   public readonly name = Datagrid.spiralFrameworkName;
 
@@ -115,6 +118,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (formInstance.options
       && formInstance.options.id
       && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
+      // console.log('Regging', this.options.id, formInstance.options.url);
       const { id } = formInstance.options;
       const fields = formInstance.enumerateFieldNames();
 
@@ -346,11 +350,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   async request() {
     if (!this.allFormsAttached()) {
-      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms);
+      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
       return;
     }
     if (this.state.isLoading) {
-      console.warn('Cant start new request, old one is running');
+      console.warn('Cant start new request, old one is running', this.options.id);
       return;
     }
     this.state.startLoading();
@@ -468,15 +472,23 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       page, limit, cid, lid,
       ...rest
     } = values;
-    const paginatorUpdate: {page?: number, limit?: number, cid?: string, lid?: string} = {
+    const paginatorUpdate: { page?: number, limit?: number, cid?: string, lid?: string } = {
       page: this.defaults.page,
       limit: this.defaults.limit,
     };
 
-    if (page) { paginatorUpdate.page = +page; }
-    if (limit) { paginatorUpdate.limit = +limit; }
-    if (cid) { paginatorUpdate.cid = cid; }
-    if (lid) { paginatorUpdate.lid = lid; }
+    if (page) {
+      paginatorUpdate.page = +page;
+    }
+    if (limit) {
+      paginatorUpdate.limit = +limit;
+    }
+    if (cid) {
+      paginatorUpdate.cid = cid;
+    }
+    if (lid) {
+      paginatorUpdate.lid = lid;
+    }
 
     this.state.updatePaginator(paginatorUpdate);
 
@@ -576,7 +588,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     Object.keys(this.capturedForms).filter((formId) => formId !== id).forEach((formId) => {
       const formInstance = this.capturedForms[formId];
       const { fields } = formInstance;
-      const formSpecificData = Object.keys(data).filter((k) => fields.indexOf(k) >= 0).reduce((map, key) => ({ ...map, [key]: data[key] }), {});
+      const formSpecificData = Object.keys(data).filter((k) => fields.indexOf(k) >= 0).reduce((map, key) => ({
+        ...map,
+        [key]: data[key],
+      }), {});
       formInstance.instance.setFieldValues(formSpecificData);
     });
   }
