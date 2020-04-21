@@ -1,4 +1,5 @@
 import { autobind } from './autobind';
+import { getValue } from './getValue';
 import { IAutocompleteTagsOptions, IAutocompleteData, IAutocompleteDataItem } from './types';
 
 export class AutocompleteTags {
@@ -20,11 +21,6 @@ export class AutocompleteTags {
     this.items = [];
   }
 
-  getValue(dataItem: IAutocompleteDataItem) {
-    const { valueKey } = this.options;
-    return dataItem[valueKey! as keyof IAutocompleteDataItem];
-  }
-
   public addTag(dataItem: IAutocompleteDataItem) {
     this.data.push(dataItem);
 
@@ -34,9 +30,10 @@ export class AutocompleteTags {
   }
 
   public removeTag(dataItem: IAutocompleteDataItem) {
-    const value = this.getValue(dataItem);
+    const { valueKey } = this.options;
+    const value = getValue(dataItem, valueKey);
 
-    const index = this.data.findIndex((item: IAutocompleteDataItem) => this.getValue(item) === value);
+    const index = this.data.findIndex((item: IAutocompleteDataItem) => getValue(item, valueKey) === value);
 
     if (index !== -1) {
       const node = this.items[index];
@@ -48,6 +45,7 @@ export class AutocompleteTags {
 
   public setTags(data: IAutocompleteData) {
     this.data = data.slice();
+    this.renderTags();
   }
 
   renderTags() {
@@ -61,6 +59,8 @@ export class AutocompleteTags {
   }
 
   renderTag(dataItem: IAutocompleteDataItem): HTMLDivElement {
+    const { valueKey } = this.options;
+
     const item: HTMLDivElement = document.createElement('div');
     item.classList.add('badge', 'badge-primary', 'sf-tag');
 
@@ -73,7 +73,7 @@ export class AutocompleteTags {
     deleteButton.setAttribute('aria-label', 'Close');
     deleteButton.classList.add('close');
     deleteButton.innerHTML = '<span aria-hidden="true">×</span>';
-    deleteButton.dataset.value = this.getValue(dataItem);
+    deleteButton.dataset.value = getValue(dataItem, valueKey);
     item.appendChild(deleteButton);
 
     deleteButton.addEventListener('click', this.handleClickTag);
@@ -89,7 +89,8 @@ export class AutocompleteTags {
 
     if (value === undefined) return;
 
-    const dataItem: IAutocompleteDataItem | undefined = this.data.find((item: IAutocompleteDataItem) => this.getValue(item) === value);
+    const { valueKey } = this.options;
+    const dataItem: IAutocompleteDataItem | undefined = this.data.find((item: IAutocompleteDataItem) => getValue(item, valueKey) === value);
 
     if (!dataItem) return;
 

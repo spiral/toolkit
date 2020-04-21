@@ -6,6 +6,7 @@ import sf, {
 import assert from 'assert';
 import Handlebars from 'handlebars';
 import { autobind } from './autobind';
+import { getValue } from './getValue';
 import { AutocompleteDataSource } from './AutocompleteDataSource';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
 import { AutocompleteTags } from './AutocompleteTags';
@@ -27,6 +28,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     name: '',
     valueKey: 'id',
     searchKey: 'name',
+    separator: ',',
   };
 
   el?: HTMLDivElement;
@@ -62,7 +64,11 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   /* Data */
   currentTextValue?: string;
 
+  // single
   currentDataItem?: IAutocompleteDataItem;
+
+  // multiple
+  currentDataItems?: IAutocompleteDataItem[];
 
   suggestTemplate?: Function;
 
@@ -160,10 +166,12 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       onRemoveTag: this.handleRemoveTag,
     });
     this.textInputWrapper.insertBefore(this.tags.node, this.textInput);
+
+    this.currentDataItems = [];
   }
 
   setDataItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
-    const value = dataItem[this.options.valueKey! as keyof IAutocompleteDataItem]!;
+    const value = getValue(dataItem, this.options.valueKey);
     this.textInput.value = this.inputTemplate!(dataItem);
     this.hiddenInput.value = value;
 
@@ -187,8 +195,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   focusInput() {
-    // only for single value
-    this.resetDataItem();
+    if (!this.options.isMultiple) {
+      this.resetDataItem();
+    }
 
     this.isInnerFocus = true;
     this.textInput.focus();
@@ -204,6 +213,18 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     }
     this.dataSource.getData(value);
     // TODO: loading
+  }
+
+  resetHiddenInputValue() {
+    // only for multiple
+    if (!this.options.isMultiple) {
+      return;
+    }
+
+    const { valueKey, separator } = this.options;
+
+    const values: string[] = this.currentDataItems!.map((item: IAutocompleteDataItem) => getValue(item, valueKey));
+    this.hiddenInput.value = values.filter((v: string) => v !== '').join(separator);
   }
 
   @autobind
@@ -225,19 +246,28 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.dropdown!.hide();
   }
 
-  @autobind handleRestoreDataItem(dataItem?: IAutocompleteDataItem) {
+  @autobind
+  handleRestoreDataItem(dataItems: IAutocompleteDataItem[]) {
     // this.clearSuggestions();
 
-    if (!dataItem) {
+    if (!dataItems || !dataItems.length) {
       this.hiddenInput.value = '';
       return;
     }
 
-    // for single value
-    this.setDataItem(dataItem, true);
-    this.currentTextValue = this.textInput.value;
+    if (!this.options.isMultiple) {
+      // for single value
+      const dataItem: IAutocompleteDataItem = dataItems[0];
 
-    this.dropdown!.setData([dataItem]);
+      this.setDataItem(dataItem, true);
+      this.currentTextValue = this.textInput.value;
+
+      this.dropdown!.setData([dataItem]);
+    } else {
+      // for multiple
+      this.tags!.setTags(dataItems);
+      this.currentDataItems = dataItems.slice();
+    }
   }
 
   @autobind
@@ -255,7 +285,16 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       return;
     }
 
-    this.dataSource.restoreDataItem(value);
+    const { isMultiple, separator } = this.options;
+    let values: string[] = [];
+
+    if (isMultiple) {
+      values = value.split(separator!);
+    } else {
+      values.push(value);
+    }
+
+    this.dataSource.restoreDataItem(values);
   }
 
   @autobind
@@ -265,15 +304,15 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       return;
     }
 
-    // for single value
-    this.resetDataItem();
+    if (!this.options.isMultiple) {
+      this.resetDataItem();
 
-    // for single value
-    if (this.textInput.value) {
-      if (!this.dropdown!.suggest(this.textInput.value)) {
-        this.clearDataItem();
+      if (this.textInput.value) {
+        if (!this.dropdown!.suggest(this.textInput.value)) {
+          this.clearDataItem();
+        }
+        this.dropdown!.show();
       }
-      this.dropdown!.show();
     }
 
     this.textInputWrapper.classList.add('focus');
@@ -285,16 +324,19 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  handleKeyUp(event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
+      event.preventDefault();
       this.dropdown!.selectIndex(-1);
       return;
     }
     if (event.key === 'ArrowDown') {
+      event.preventDefault();
       this.dropdown!.selectIndex(0);
       return;
     }
     if (event.key === 'Escape') {
+      event.preventDefault();
       this.dropdown!.hide();
       this.textInput.blur();
     }
@@ -311,6 +353,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     if (!value) {
       this.dropdown!.hide();
+      this.clearDataItem();
       return;
     }
 
@@ -319,7 +362,6 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleSelectDropdownItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
-    console.log('Select', dataItem.id)
     if (!this.options.isMultiple) {
       // single value
       this.setDataItem(dataItem, isSave);
@@ -329,15 +371,16 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     // multiple value: add to array
     if (isSave) {
       this.tags!.addTag(dataItem);
-      this.textInput.value = '';
-      this.currentTextValue = '';
+      this.handleAddTag(dataItem);
     }
   }
 
   @autobind
   handleFocusDropdownItem(dataItem: IAutocompleteDataItem) {
     // only for single value
-    this.setDataItem(dataItem);
+    if (!this.options.isMultiple) {
+      this.setDataItem(dataItem);
+    }
   }
 
   @autobind
@@ -346,8 +389,20 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  handleRemoveTag(dataItem: IAutocompleteDataItem) {
+  handleAddTag(dataItem: IAutocompleteDataItem) {
+    this.textInput.value = '';
+    this.currentTextValue = '';
+    this.currentDataItems!.push(dataItem);
+    this.resetHiddenInputValue();
+  }
 
+  @autobind
+  handleRemoveTag(dataItem: IAutocompleteDataItem) {
+    const { valueKey } = this.options;
+    const value = getValue(dataItem, valueKey);
+
+    this.currentDataItems = this.currentDataItems?.filter((item: IAutocompleteDataItem) => getValue(item, valueKey) !== value);
+    this.resetHiddenInputValue();
   }
 
   @autobind
@@ -359,8 +414,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   handleOutsideClick() {
     if (!this.isInnerClick) {
       if (this.dropdown!.hide()) {
-        // only for single value
-        this.resetDataItem();
+        if (!this.options.isMultiple) {
+          // only for single value
+          this.resetDataItem();
+        }
       }
     }
     this.isInnerClick = false;
@@ -371,7 +428,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.textInput.addEventListener('focus', this.handleFocus);
     this.textInput.addEventListener('blur', this.handleBlur);
-    this.textInput.addEventListener('keyup', this.handleKeyUp);
+    this.textInput.addEventListener('keydown', this.handleKeyDown);
     this.textInput.addEventListener('input', this.handleInput);
 
     this.node.addEventListener('click', this.handleInsideClick);
@@ -381,7 +438,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   die() {
     this.textInput.removeEventListener('focus', this.handleFocus);
     this.textInput.removeEventListener('blur', this.handleBlur);
-    this.textInput.removeEventListener('keyup', this.handleKeyUp);
+    this.textInput.removeEventListener('keydown', this.handleKeyDown);
     this.textInput.removeEventListener('input', this.handleInput);
 
     this.node.removeEventListener('click', this.handleInsideClick);

@@ -16,6 +16,7 @@ export interface IAutocompleteOptions {
   suggestTemplate?: string;
   valueKey?: string;
   searchKey?: string;
+  separator?: string;
   url?: string;
   dataField?: string;
   method?: 'GET' | 'POST';
@@ -29,7 +30,7 @@ export interface IAutocompleteDataSourceOptions {
   dataField: string;
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
-  onRestoreDataItem: (dataItem?: IAutocompleteDataItem) => void;
+  onRestoreDataItem: (dataItems: IAutocompleteDataItem[]) => void;
   onSuccessResponse: (search: string, results: IAutocompleteData) => void;
   onErrorResponse: (search: string) => void;
 }

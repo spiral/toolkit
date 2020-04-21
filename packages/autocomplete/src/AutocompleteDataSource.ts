@@ -1,5 +1,6 @@
 import sf from '@spiral-toolkit/core';
 import type { AxiosResponse } from 'axios';
+import { getValue } from './getValue';
 import { makeUrl } from './makeUrl';
 import {
   IAutocompleteDataSourceOptions,
@@ -30,17 +31,17 @@ export class AutocompleteDataSource {
     this.getResultsFromData(search);
   }
 
-  public restoreDataItem(value: string) {
+  public restoreDataItem(values: string[]) {
     if (this.isDynamic) {
-      this.restoreDataItemByUrl(value);
+      this.restoreDataItemByUrl(values);
       return;
     }
 
-    this.restoreDataItemFromData(value);
+    this.restoreDataItemFromData(values);
   }
 
-  restoreDataItemFromData(value: string) {
-    let result: IAutocompleteDataItem | undefined;
+  restoreDataItemFromData(values: string[]) {
+    const results: IAutocompleteDataItem[] = [];
     this.options.data!.forEach((item: string | IAutocompleteStaticDataItem) => {
       let id: string | undefined;
       let name: string | undefined = '';
@@ -52,32 +53,46 @@ export class AutocompleteDataSource {
         name = item;
       }
 
-      if (id === value) {
-        result = { id, name };
+      if (values.includes(id!)) {
+        results.push({ id, name });
       }
     });
 
-    this.options.onRestoreDataItem(result);
+    this.handleRestoreSuccess(values, results);
   }
 
   // TODO: use array to support multiple value in future
-  restoreDataItemByUrl(value: string) {
-    const {
-      valueKey,
-    } = this.options;
+  restoreDataItemByUrl(values: string[]) {
+    const { valueKey } = this.options;
 
     sf.ajax
-      .send(this.getRequestParams({ paginate: { limit: 1 }, filter: { [valueKey]: [value] } }))
+      .send(this.getRequestParams({ paginate: { limit: 1 }, filter: { [valueKey]: values } }))
       .then((response: AxiosResponse<any>) => {
-        const results: IAutocompleteData = response.data[this.options.dataField || 'data'];
+        const rawData = response.data[this.options.dataField || 'data'];
 
-        const result: IAutocompleteCustomDataItem | undefined = (!results || !results.length) ? undefined : results[0] as IAutocompleteCustomDataItem;
+        const results: IAutocompleteDataItem[] = rawData.map((item: IAutocompleteCustomDataItem) => ({
+          ...item,
+          [valueKey]: item[valueKey].toString(),
+        }));
 
-        this.options.onRestoreDataItem(result);
+        this.handleRestoreSuccess(values, results);
       })
-      .catch(() => {
-        //
+      .catch((error: Error) => {
+        console.error(error);
       });
+  }
+
+  handleRestoreSuccess(values: string[], results: IAutocompleteDataItem[]) {
+    // sort
+    const { valueKey } = this.options;
+    const hash: { [key: string]: IAutocompleteDataItem } = {};
+    results.forEach((dataItem: IAutocompleteDataItem) => {
+      hash[getValue(dataItem, valueKey)] = dataItem;
+    });
+
+    const sortedResults: IAutocompleteDataItem[] = values.map((value: string) => hash[value]);
+
+    this.options.onRestoreDataItem(sortedResults);
   }
 
   getResultsFromData(search: string) {
@@ -105,10 +120,17 @@ export class AutocompleteDataSource {
   }
 
   getResultsByURL(search: string) {
+    const { valueKey } = this.options;
+
     sf.ajax
       .send(this.getRequestParams({ paginate: { limit: 10 }, filter: { search } }))
       .then((response: AxiosResponse<any>) => {
-        const results: IAutocompleteData = response.data[this.options.dataField || 'data'];
+        const rawData = response.data[this.options.dataField || 'data'];
+
+        const results: IAutocompleteData = rawData.map((item: IAutocompleteCustomDataItem) => ({
+          ...item,
+          [valueKey]: item[valueKey].toString(),
+        }));
 
         this.options.onSuccessResponse(search, results);
       })

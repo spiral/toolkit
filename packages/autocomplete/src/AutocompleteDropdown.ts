@@ -90,7 +90,7 @@ export class AutocompleteDropdown {
     item.innerHTML = this.options.suggestTemplate(dataItem);
     item.addEventListener('click', this.handleClickItem);
     item.addEventListener('focus', this.handleFocusItem);
-    item.addEventListener('keyup', this.handleKeyUpItem);
+    item.addEventListener('keydown', this.handleKeyDownItem);
     return item;
   }
 
@@ -163,11 +163,12 @@ export class AutocompleteDropdown {
   }
 
   @autobind
-  handleKeyUpItem(event: KeyboardEvent) {
+  handleKeyDownItem(event: KeyboardEvent) {
     const len = this.items?.length;
     if (!len) return;
 
     if (event.key === 'ArrowUp') {
+      event.preventDefault();
       if (this.selectedIndex === 0) {
         this.clearIndex();
         this.options.onBlur();
@@ -177,6 +178,7 @@ export class AutocompleteDropdown {
       return;
     }
     if (event.key === 'ArrowDown') {
+      event.preventDefault();
       if (this.selectedIndex === len - 1) {
         this.clearIndex();
         this.options.onBlur();
@@ -186,11 +188,13 @@ export class AutocompleteDropdown {
       return;
     }
     if (event.key === 'Enter') {
+      event.preventDefault();
       this.options.onSelectItem(this.data![this.selectedIndex], true);
       this.hide();
       return;
     }
     if (event.key === 'Escape') {
+      event.preventDefault();
       this.clearIndex();
       this.hide();
       this.options.onBlur();
