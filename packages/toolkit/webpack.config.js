@@ -1,8 +1,6 @@
 // @ts-ignore
 const baseConfig = require('../../webpack/config');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
 const config = {
   ...baseConfig,
 

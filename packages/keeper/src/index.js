@@ -3,6 +3,7 @@ import './global.css';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
+import './components/autocomplete.css';
 import './components/breadcrumb.css';
 import './components/header.css';
 import './components/heading.css';
@@ -10,6 +11,7 @@ import './components/main.css';
 import './components/signin.css';
 import './components/statpanel.css';
 import './components/table.css';
+import './components/tag.css';
 import './components/user.css';
 import './components/pattern/input.css';
 

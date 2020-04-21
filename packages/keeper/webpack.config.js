@@ -1,5 +1,4 @@
 const path = require('path');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
@@ -125,7 +124,6 @@ module.exports = {
   },
   plugins: isDevelopment
     ? [
-      
       new StyleLintPlugin({
         configFile: './.stylelintrc.json',
         files: [path.join(srcPath, '**/*.css')],

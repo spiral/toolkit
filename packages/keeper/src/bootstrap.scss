@@ -1,6 +1,8 @@
 $primary: #497cb1;
 $primary-darken: darken($primary, 15%);
+$primary-lighten: lighten($primary, 25%);
 $focus: lighten($primary, 25%);
+$focus-semitransparent: rgba($primary, .25);
 
 $font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
 
@@ -27,6 +29,9 @@ $custom-select-border-radius: .125rem;
 
 :root {
   --primary-darken: #{$primary-darken};
+  --primary-lighten: #{$primary-lighten};
+  --focus: #{$focus};
+  --focus-semitransparent: #{$focus-semitransparent};
 }
 
 a:focus, button:focus {
