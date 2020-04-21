@@ -35,7 +35,7 @@ function makeGetUrl(url: string, data: IDatagridRequest) {
   Object.keys(data.sort).forEach((field) => {
     result[`sort[${field}]`] = data.sort[field];
   });
-  return stringifyUrl({url, query: result});
+  return stringifyUrl({ url, query: result });
 }
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
@@ -58,7 +58,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     },
   };
 
-  public readonly options: IDataGridOptions<Item> = {...Datagrid.defaultOptions};
+  public readonly options: IDataGridOptions<Item> = { ...Datagrid.defaultOptions };
 
   public readonly sf!: ISpiralFramework;
 
@@ -118,7 +118,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (formInstance.options
       && formInstance.options.id
       && this.options.captureForms.indexOf(formInstance.options.url) >= 0) {
-      const {id} = formInstance.options;
+      // console.log('Regging', this.options.id, formInstance.options.url);
+      const { id } = formInstance.options;
       const fields = formInstance.enumerateFieldNames();
 
       this.capturedForms[id] = {
@@ -154,7 +155,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       if (urlDataForForm) {
         const formSpecificData = Object.keys(urlDataForForm)
           .filter((k) => fields.indexOf(k) >= 0)
-          .reduce((map, key) => ({...map, [key]: urlDataForForm[key]}), {});
+          .reduce((map, key) => ({ ...map, [key]: urlDataForForm[key] }), {});
         formInstance.setFieldValues(formSpecificData);
         this.state.setFormData(id, formSpecificData);
       }
@@ -188,7 +189,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       && this.options.captureActionPanels.indexOf(formInstance.options.id) >= 0) {
       this.capturedActionPanels.push(formInstance);
       if (this.options.selectable) {
-        (formInstance as ActionPanel).reconfigure({selectionType: this.options.selectable!.type});
+        (formInstance as ActionPanel).reconfigure({ selectionType: this.options.selectable!.type });
         (formInstance as ActionPanel).setSelection(this.state.selection, this.state.selectedItems);
       }
     }
@@ -210,7 +211,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       this.registerActionPanelInstance(f.instance);
     });
 
-    this.sf.instancesController.events.on('onAddInstance', ({instance, type}: { instance: any, type: string }) => {
+    this.sf.instancesController.events.on('onAddInstance', ({ instance, type }: { instance: any, type: string }) => {
       if (type === 'form') {
         this.registerFormInstance(instance);
       }
@@ -257,7 +258,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   private resetPaginator() {
     // TODO: depending on paginator type perform different reset type
     this.state.resetFetchCount();
-    this.state.updatePaginator({page: 1});
+    this.state.updatePaginator({ page: 1 });
     this.setAllPaginators(this.state.paginate);
   }
 
@@ -266,7 +267,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       fetchCount: this.state.needFetchCount,
       filter: this.state.getFilter(),
       paginate: this.state.paginate,
-      sort: this.state.sortBy ? {[this.state.sortBy]: this.state.sortDir} : {},
+      sort: this.state.sortBy ? { [this.state.sortBy]: this.state.sortDir } : {},
     };
 
     return request;
@@ -293,7 +294,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (!this.options.lockType || this.options.lockType === 'none') {
       return;
     }
-    const lock = this.sf.addInstance('lock', this.node, {type: this.options.lockType});
+    const lock = this.sf.addInstance('lock', this.node, { type: this.options.lockType });
     if (!lock) {
       console.warn('You try to add \'lock\' instance, but it is not available or already started');
       return;
@@ -311,13 +312,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     });
   }
 
-  private handleSuccess({data}: { data: IDatagridResponse<Item> }) {
+  private handleSuccess({ data }: { data: IDatagridResponse<Item> }) {
     this.state.setSuccess(data.data, data.pagination);
     if (typeof data.pagination.count !== 'undefined') {
       this.state.onCountFetched();
     }
     this.render();
-    this.setAllPaginators({...this.state.paginate, error: false});
+    this.setAllPaginators({ ...this.state.paginate, error: false });
   }
 
   private beforeSubmit() {
@@ -330,18 +331,18 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   private handleError(response: { data: IDatagridErrorResponse, status: number, statusText: string }) {
-    const {data, status, statusText} = this.processResponse(response);
+    const { data, status, statusText } = this.processResponse(response);
     this.state.setError(data.error, data.errors, this.options.resetOnError);
     Object.keys(this.capturedForms).forEach((fKey) => {
       const f = this.capturedForms[fKey].instance;
       if (f.processAnswer) {
         const id = f.options.url;
-        const {error, ...rest} = data;
-        const filteredData = id === this.options.errorMessageTarget ? {...data} : rest;
-        f.processAnswer({data: filteredData, status, statusText}, false); // false stands for 'dont display errors unrelated to form inputs'
+        const { error, ...rest } = data;
+        const filteredData = id === this.options.errorMessageTarget ? { ...data } : rest;
+        f.processAnswer({ data: filteredData, status, statusText }, false); // false stands for 'dont display errors unrelated to form inputs'
       }
     });
-    this.setAllPaginators({error: true});
+    this.setAllPaginators({ error: true });
     this.render();
     // TODO: remove data and display error
     // TODO: send validation errors to other forms
@@ -349,11 +350,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   async request() {
     if (!this.allFormsAttached()) {
-      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms);
+      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
       return;
     }
     if (this.state.isLoading) {
-      console.warn('Cant start new request, old one is running');
+      console.warn('Cant start new request, old one is running', this.options.id);
       return;
     }
     this.state.startLoading();
@@ -397,13 +398,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     renderList.forEach((renderOption: IGridRenderOptions) => {
       this.grids.push(new GridRenderer({
         ...renderOption,
-        ui: {...this.options.ui, ...renderOption.ui},
+        ui: { ...this.options.ui, ...renderOption.ui },
         columns: (renderOption.columns && renderOption.columns.length) ? renderOption.columns : this.options.columns,
         sortable: (renderOption.sortable && renderOption.sortable.length) ? renderOption.sortable : this.options.sortable,
         paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
         dontRenderError: !!this.options.errorMessageTarget,
         selectable: renderOption.selectable || this.options.selectable,
-        messages: {...this.options.messages, ...renderOption.messages},
+        messages: { ...this.options.messages, ...renderOption.messages },
       }, this));
     });
   }
@@ -457,7 +458,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         ...map,
         [key]: (this.state.paginate as any)[key],
       }), {});
-    const sortOptions = this.state.sortBy ? {sortBy: this.state.sortBy, sortDir: this.state.sortDir} : {};
+    const sortOptions = this.state.sortBy ? { sortBy: this.state.sortBy, sortDir: this.state.sortDir } : {};
 
     return {
       ...custom,
@@ -491,7 +492,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
     this.state.updatePaginator(paginatorUpdate);
 
-    const {sortBy, sortDir, ...rest2} = rest;
+    const { sortBy, sortDir, ...rest2 } = rest;
     if (sortBy) {
       this.state.setSort(sortBy, sortDir as any || SortDirection.ASC); // TODO: skip
     }
@@ -528,7 +529,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   // eslint-disable-next-line class-methods-use-this
   private getObjectFromUrl(defaults: any, prefix = '') {
-    const obj = parse(window.location.search, {parseNumbers: true, parseBooleans: true});
+    const obj = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
     const result = Object.keys(obj).reduce((map, oK) => {
       if (!prefix || oK.indexOf(prefix) === 0) {
         return {
@@ -549,11 +550,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     const queryRaw = Object.keys(obj1).reduce((map, oK) => {
       // eslint-disable-next-line eqeqeq
       if (obj1[oK] && obj1[oK] != defaults[oK]) {
-        return {...map, [`${prefix}${oK}`]: obj1[oK]};
+        return { ...map, [`${prefix}${oK}`]: obj1[oK] };
       }
       return map;
     }, {});
-    let obj2 = parse(window.location.search, {parseNumbers: true, parseBooleans: true});
+    let obj2 = parse(window.location.search, { parseNumbers: true, parseBooleans: true });
     if (this.usePrefix()) {
       Object.keys(obj2).forEach((k: string) => { // Remove params belonging to this table
         if (k.indexOf(this.getPrefix()) === 0) {
@@ -563,7 +564,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     } else {
       obj2 = {}; // If table is not using prefixes, all params are that table params
     }
-    const query = {...obj2, ...queryRaw};
+    const query = { ...obj2, ...queryRaw };
     window.history.pushState({}, document.title, stringifyUrl({
       url: `${window.location.protocol}//${window.location.host}${window.location.pathname}`,
       query,
@@ -586,10 +587,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.state.setFormData(id, data); // set data for specific form
     Object.keys(this.capturedForms).filter((formId) => formId !== id).forEach((formId) => {
       const formInstance = this.capturedForms[formId];
-      const {fields} = formInstance;
+      const { fields } = formInstance;
       const formSpecificData = Object.keys(data).filter((k) => fields.indexOf(k) >= 0).reduce((map, key) => ({
         ...map,
-        [key]: data[key]
+        [key]: data[key],
       }), {});
       formInstance.instance.setFieldValues(formSpecificData);
     });
