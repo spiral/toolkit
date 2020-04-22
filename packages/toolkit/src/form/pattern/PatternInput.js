@@ -60,6 +60,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
             value += el.value;
         });
         this.serialInput.value = value;
+        this.serialInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     setValue(target, value) {
