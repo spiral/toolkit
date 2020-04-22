@@ -54,7 +54,7 @@ export class AutocompleteTags {
     const fragment = document.createDocumentFragment();
 
     this.items.forEach((item: HTMLDivElement) => fragment.appendChild(item));
-
+    this.node.querySelectorAll('.sf-tag').forEach((oldTag) => this.node.removeChild(oldTag));
     this.node.appendChild(fragment);
   }
 
