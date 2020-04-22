@@ -9,6 +9,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
     name = PatternInput.spiralFrameworkName;
     static defaultOptions = {
         value: '',
+        autosubmit: false,
     }
 
     optionsToGrab = {
@@ -19,6 +20,10 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
         name: {
             value: PatternInput.defaultOptions.name,
             domAttr: 'data-name',
+        },
+        autosubmit: {
+            value: PatternInput.defaultOptions.autosubmit,
+            domAttr: 'data-autosubmit',
         },
     };
 
@@ -81,6 +86,18 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
                 }
             } else {
                 target.blur();
+                if(this.options.autosubmit) {
+                    const form = this.sf.helpers.domTools.closest(this.node, 'form');
+                    if(form) {
+                        const data = this.sf.getInstance('form', form);
+                        if(data) {
+                            data.instance.onSubmit();
+                        } else {
+                            form.submit();
+                        }
+                    }
+
+                }
             }
             this.calcValue();
         }
