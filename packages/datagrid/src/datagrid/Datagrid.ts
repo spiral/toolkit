@@ -1,6 +1,4 @@
 import sf, { IOptionToGrab, ISFInstance, ISpiralFramework } from '@spiral-toolkit/core';
-import * as assert from 'assert';
-import { parse, stringifyUrl } from 'query-string';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CLASS_NAME,
@@ -21,22 +19,9 @@ import {
 } from '../types';
 import { normalizeColumns } from '../utils';
 
-function makeGetUrl(url: string, data: IDatagridRequest) {
-  const result: { [field: string]: any } = {};
-  if (data.fetchCount) {
-    result.fetchCount = true;
-  }
-  Object.keys(data.filter).forEach((field) => {
-    result[`filter[${field}]`] = data.filter[field];
-  });
-  Object.keys(data.paginate).forEach((field) => {
-    result[`paginate[${field}]`] = (data.paginate as any)[field];
-  });
-  Object.keys(data.sort).forEach((field) => {
-    result[`sort[${field}]`] = data.sort[field];
-  });
-  return stringifyUrl({ url, query: result });
-}
+const { assert } = sf.helpers;
+const { makeUrl } = sf.tools;
+const { parse, stringifyUrl } = sf.helpers.queryString;
 
 export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid';
@@ -365,7 +350,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     const data = this.formRequest();
 
     const request = this.sf.ajax.send<IDatagridResponse>({
-      url: isGet ? makeGetUrl(this.options.url, data) : this.options.url, // TODO: need to verify GET api is same
+      url: isGet ? makeUrl(this.options.url, data) : this.options.url, // TODO: need to verify GET api is same
       method: this.options.method,
       headers: this.options.headers,
       data: isGet ? undefined : data,
