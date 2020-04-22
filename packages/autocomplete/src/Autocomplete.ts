@@ -173,7 +173,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   changeHiddenInput(value: string) {
     if (this.hiddenInput.value !== value) {
       this.hiddenInput.value = value;
-      this.hiddenInput.dispatchEvent(new Event('change'));
+      this.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
   }
 
