@@ -73,6 +73,9 @@ export default class NotificationCenter {
   }
 
   appendNotification(position, notification) {
+    if (!this.cornerElems[position]) {
+      this.createCorner(position, []);
+    }
     this.cornerElems[position].appendChild(notification.getElem());
   }
 }

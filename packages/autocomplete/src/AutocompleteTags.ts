@@ -3,29 +3,41 @@ import { getValue } from './getValue';
 import { IAutocompleteTagsOptions, IAutocompleteData, IAutocompleteDataItem } from './types';
 
 export class AutocompleteTags {
-  public node: HTMLDivElement;
-
   options: IAutocompleteTagsOptions;
 
   data: IAutocompleteData;
 
   items: HTMLDivElement[];
 
+  parentNode: Element;
+
+  innerClick?: boolean;
+
   constructor(options: IAutocompleteTagsOptions) {
-    this.node = document.createElement('div');
-    this.node.classList.add('sf-autocomplete__tags');
+    // this.node = document.createElement('div');
+    // this.node.classList.add('sf-autocomplete__tags');
 
     this.options = options;
 
     this.data = [];
     this.items = [];
+
+    this.parentNode = this.options.inputNode.parentNode as Element;
+
+    // this.bind();
+  }
+
+  appendTag(item: HTMLDivElement | DocumentFragment) {
+    // this.node.appendChild(item);
+
+    this.parentNode.insertBefore(item, this.options.inputNode);
   }
 
   public addTag(dataItem: IAutocompleteDataItem) {
     this.data.push(dataItem);
 
     const item = this.renderTag(dataItem);
-    this.node.appendChild(item);
+    this.appendTag(item);
     this.items.push(item);
   }
 
@@ -37,7 +49,7 @@ export class AutocompleteTags {
 
     if (index !== -1) {
       const node = this.items[index];
-      this.node.removeChild(node);
+      this.parentNode.removeChild(node);
       this.data.splice(index, 1);
       this.items.splice(index, 1);
     }
@@ -48,14 +60,24 @@ export class AutocompleteTags {
     this.renderTags();
   }
 
+  // bind() {
+  //   this.node.addEventListener('click', this.handleClickNode);
+  // }
+
+  clearTags() {
+    this.items.forEach((item: HTMLDivElement) => this.parentNode.removeChild(item));
+  }
+
   renderTags() {
+    this.clearTags();
+
     this.items = this.data.map((dataItem: IAutocompleteDataItem) => this.renderTag(dataItem));
 
     const fragment = document.createDocumentFragment();
 
     this.items.forEach((item: HTMLDivElement) => fragment.appendChild(item));
-    this.node.querySelectorAll('.sf-tag').forEach((oldTag) => this.node.removeChild(oldTag));
-    this.node.appendChild(fragment);
+
+    this.appendTag(fragment);
   }
 
   renderTag(dataItem: IAutocompleteDataItem): HTMLDivElement {
@@ -80,9 +102,20 @@ export class AutocompleteTags {
     return item;
   }
 
+  // @autobind
+  // handleClickNode() {
+  //   if (this.innerClick) {
+  //     this.innerClick = false;
+  //     return;
+  //   }
+  //   this.options.onFocus();
+  // }
+
   @autobind
   handleClickTag(event: MouseEvent) {
     event.preventDefault();
+
+    this.innerClick = true;
 
     const button = event.target as HTMLButtonElement;
     const { value } = button.dataset;

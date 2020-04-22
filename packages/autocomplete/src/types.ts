@@ -43,6 +43,7 @@ export interface IAutocompleteDropdownOptions {
 }
 
 export interface IAutocompleteTagsOptions {
+  inputNode: Element;
   valueKey: string;
   inputTemplate: Function;
   onRemoveTag: (dataItem: IAutocompleteDataItem) => void;
