@@ -1,5 +1,10 @@
 export const extractOptions = (node: Element) => {
-  const additionalOptionsEl = node.querySelector('script[role="sf-options"]');
+  let additionalOptionsEl: Element | undefined;
+  node.querySelectorAll('script[role="sf-options"]').forEach((n) => {
+    if (n.parentElement === node) {
+      additionalOptionsEl = n;
+    }
+  });
   if (additionalOptionsEl) {
     if (additionalOptionsEl.getAttribute('type') === 'text/javascript') {
       try {
