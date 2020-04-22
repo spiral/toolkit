@@ -43,11 +43,10 @@ export interface IAutocompleteDropdownOptions {
 }
 
 export interface IAutocompleteTagsOptions {
-  parentNode: Element;
+  inputNode: Element;
   valueKey: string;
   inputTemplate: Function;
   onRemoveTag: (dataItem: IAutocompleteDataItem) => void;
-  // onFocus: () => void;
 }
 
 export interface IDatagridRequest {

@@ -3,35 +3,34 @@ import { getValue } from './getValue';
 import { IAutocompleteTagsOptions, IAutocompleteData, IAutocompleteDataItem } from './types';
 
 export class AutocompleteTags {
-  public node: Element;
-
   options: IAutocompleteTagsOptions;
 
   data: IAutocompleteData;
 
   items: HTMLDivElement[];
 
+  parentNode: Element;
+
   innerClick?: boolean;
 
   constructor(options: IAutocompleteTagsOptions) {
     // this.node = document.createElement('div');
     // this.node.classList.add('sf-autocomplete__tags');
-    this.node = options.parentNode;
-    console.log(this.node)
 
     this.options = options;
 
     this.data = [];
     this.items = [];
 
+    this.parentNode = this.options.inputNode.parentNode as Element;
+
     // this.bind();
   }
 
   appendTag(item: HTMLDivElement | DocumentFragment) {
     // this.node.appendChild(item);
-    const lastItem: HTMLDivElement = this.items[this.items.length - 1];
-    console.log(lastItem?.nextSibling)
-    this.node.insertBefore(item, lastItem?.nextSibling || null);
+
+    this.parentNode.insertBefore(item, this.options.inputNode);
   }
 
   public addTag(dataItem: IAutocompleteDataItem) {
@@ -50,7 +49,7 @@ export class AutocompleteTags {
 
     if (index !== -1) {
       const node = this.items[index];
-      this.node.removeChild(node);
+      this.parentNode.removeChild(node);
       this.data.splice(index, 1);
       this.items.splice(index, 1);
     }
@@ -65,7 +64,13 @@ export class AutocompleteTags {
   //   this.node.addEventListener('click', this.handleClickNode);
   // }
 
+  clearTags() {
+    this.items.forEach((item: HTMLDivElement) => this.parentNode.removeChild(item));
+  }
+
   renderTags() {
+    this.clearTags();
+
     this.items = this.data.map((dataItem: IAutocompleteDataItem) => this.renderTag(dataItem));
 
     const fragment = document.createDocumentFragment();
