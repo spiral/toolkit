@@ -3,7 +3,7 @@ import { getValue } from './getValue';
 import { IAutocompleteTagsOptions, IAutocompleteData, IAutocompleteDataItem } from './types';
 
 export class AutocompleteTags {
-  public node: HTMLDivElement;
+  public node: Element;
 
   options: IAutocompleteTagsOptions;
 
@@ -11,21 +11,34 @@ export class AutocompleteTags {
 
   items: HTMLDivElement[];
 
+  innerClick?: boolean;
+
   constructor(options: IAutocompleteTagsOptions) {
-    this.node = document.createElement('div');
-    this.node.classList.add('sf-autocomplete__tags');
+    // this.node = document.createElement('div');
+    // this.node.classList.add('sf-autocomplete__tags');
+    this.node = options.parentNode;
+    console.log(this.node)
 
     this.options = options;
 
     this.data = [];
     this.items = [];
+
+    // this.bind();
+  }
+
+  appendTag(item: HTMLDivElement | DocumentFragment) {
+    // this.node.appendChild(item);
+    const lastItem: HTMLDivElement = this.items[this.items.length - 1];
+    console.log(lastItem?.nextSibling)
+    this.node.insertBefore(item, lastItem?.nextSibling || null);
   }
 
   public addTag(dataItem: IAutocompleteDataItem) {
     this.data.push(dataItem);
 
     const item = this.renderTag(dataItem);
-    this.node.appendChild(item);
+    this.appendTag(item);
     this.items.push(item);
   }
 
@@ -48,6 +61,10 @@ export class AutocompleteTags {
     this.renderTags();
   }
 
+  // bind() {
+  //   this.node.addEventListener('click', this.handleClickNode);
+  // }
+
   renderTags() {
     this.items = this.data.map((dataItem: IAutocompleteDataItem) => this.renderTag(dataItem));
 
@@ -55,7 +72,7 @@ export class AutocompleteTags {
 
     this.items.forEach((item: HTMLDivElement) => fragment.appendChild(item));
 
-    this.node.appendChild(fragment);
+    this.appendTag(fragment);
   }
 
   renderTag(dataItem: IAutocompleteDataItem): HTMLDivElement {
@@ -80,9 +97,20 @@ export class AutocompleteTags {
     return item;
   }
 
+  // @autobind
+  // handleClickNode() {
+  //   if (this.innerClick) {
+  //     this.innerClick = false;
+  //     return;
+  //   }
+  //   this.options.onFocus();
+  // }
+
   @autobind
   handleClickTag(event: MouseEvent) {
     event.preventDefault();
+
+    this.innerClick = true;
 
     const button = event.target as HTMLButtonElement;
     const { value } = button.dataset;

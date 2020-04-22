@@ -161,11 +161,13 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     if (!this.options.isMultiple) return;
 
     this.tags = new AutocompleteTags({
+      parentNode: this.textInputWrapper,
       valueKey: this.options.valueKey as string,
       inputTemplate: this.inputTemplate!,
       onRemoveTag: this.handleRemoveTag,
+      // onFocus: this.handleFocusTags,
     });
-    this.textInputWrapper.insertBefore(this.tags.node, this.textInput);
+    // this.textInputWrapper.insertBefore(this.tags.node, this.textInput);
 
     this.currentDataItems = [];
   }
@@ -306,6 +308,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleFocus() {
+    this.textInputWrapper.classList.add('focus');
     if (this.isInnerFocus) {
       this.isInnerFocus = false;
       return;
@@ -321,8 +324,6 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
         this.dropdown!.show();
       }
     }
-
-    this.textInputWrapper.classList.add('focus');
   }
 
   @autobind
@@ -411,6 +412,11 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.currentDataItems = this.currentDataItems?.filter((item: IAutocompleteDataItem) => getValue(item, valueKey) !== value);
     this.resetHiddenInputValue();
   }
+
+  // @autobind
+  // handleFocusTags() {
+  //   this.focusInput();
+  // }
 
   @autobind
   handleInsideClick() {
