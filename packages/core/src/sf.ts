@@ -1,6 +1,6 @@
 import * as luxon from 'luxon';
 import * as queryString from 'query-string';
-import * as axios from 'axios';
+import axios from 'axios';
 import * as assert from 'assert';
 import * as handlebars from 'handlebars';
 

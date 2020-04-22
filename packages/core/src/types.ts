@@ -1,6 +1,6 @@
 import type * as luxon from 'luxon';
 import type * as queryString from 'query-string';
-import type * as axios from 'axios';
+import type axios from 'axios';
 import type * as assert from 'assert';
 import type * as handlebars from 'handlebars';
 
@@ -26,7 +26,7 @@ export interface ISFHelpers {
   domTools: typeof domTools,
   luxon: typeof luxon,
   handlebars: typeof handlebars,
-  axios: typeof axios,
+  axios: Readonly<typeof axios>,
   assert: typeof assert,
   queryString: typeof queryString,
 }
