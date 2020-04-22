@@ -170,10 +170,17 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.currentDataItems = [];
   }
 
+  changeHiddenInput(value: string) {
+    if (this.hiddenInput.value !== value) {
+      this.hiddenInput.value = value;
+      this.hiddenInput.dispatchEvent(new Event('change'));
+    }
+  }
+
   setDataItem(dataItem: IAutocompleteDataItem, isSave?: boolean) {
     const value = getValue(dataItem, this.options.valueKey);
     this.textInput.value = this.inputTemplate!(dataItem);
-    this.hiddenInput.value = value;
+    this.changeHiddenInput(value);
 
     if (isSave) {
       this.currentDataItem = dataItem;
@@ -183,7 +190,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   clearDataItem() {
     this.currentDataItem = undefined;
     this.textInput.value = this.currentTextValue || '';
-    this.hiddenInput.value = '';
+    this.changeHiddenInput('');
   }
 
   resetDataItem() {
@@ -224,7 +231,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     const { valueKey, separator } = this.options;
 
     const values: string[] = this.currentDataItems!.map((item: IAutocompleteDataItem) => getValue(item, valueKey));
-    this.hiddenInput.value = values.filter((v: string) => v !== '').join(separator);
+    this.changeHiddenInput(values.filter((v: string) => v !== '').join(separator));
   }
 
   @autobind
@@ -251,7 +258,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     // this.clearSuggestions();
 
     if (!dataItems || !dataItems.length) {
-      this.hiddenInput.value = '';
+      this.changeHiddenInput('');
       return;
     }
 
