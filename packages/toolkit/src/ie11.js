@@ -18,22 +18,24 @@ try {
     throw new Error('Could not prevent default');
   }
 } catch (e) {
+  // eslint-disable-next-line func-names
   const CustomEvent = function (event, params) {
-    let evt;
-    let
-      origPrevent;
+    // eslint-disable-next-line no-param-reassign
     params = params || {};
+    // eslint-disable-next-line no-param-reassign
     params.bubbles = !!params.bubbles;
+    // eslint-disable-next-line no-param-reassign
     params.cancelable = !!params.cancelable;
 
-    evt = document.createEvent('CustomEvent');
+    const evt = document.createEvent('CustomEvent');
     evt.initCustomEvent(
       event,
       params.bubbles,
       params.cancelable,
       params.detail,
     );
-    origPrevent = evt.preventDefault;
+    const origPrevent = evt.preventDefault;
+    // eslint-disable-next-line func-names
     evt.preventDefault = function () {
       origPrevent.call(this);
       try {
@@ -42,7 +44,7 @@ try {
             return true;
           },
         });
-      } catch (e) {
+      } catch (ex) {
         this.defaultPrevented = true;
       }
     };
