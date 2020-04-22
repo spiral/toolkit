@@ -91,7 +91,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
                     if(form) {
                         const data = this.sf.getInstance('form', form);
                         if(data) {
-                            data.instance.onSubmit();
+                            data.instance.onSubmit({preventDefault: () => false});
                         } else {
                             form.submit();
                         }

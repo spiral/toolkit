@@ -1,11 +1,15 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
-import { DEFAULT_LIMIT, defaultPaginatorMessages, PAGINATOR_CLASS_NAME, PaginatorType } from '../constants';
+import {
+  DEFAULT_LIMIT, defaultPaginatorMessages, PAGINATOR_CLASS_NAME, PaginatorType,
+} from '../constants';
 import { Messages } from '../messages';
 import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
+
 const { stringifyUrl } = sf.helpers.queryString;
 
 export class Paginator extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid-paginator';
+
   static readonly spiralFrameworkCss: string = PAGINATOR_CLASS_NAME;
 
   public readonly name = Paginator.spiralFrameworkName;

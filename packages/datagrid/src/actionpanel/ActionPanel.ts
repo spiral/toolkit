@@ -6,6 +6,7 @@ export type FlexibleRenderDefinition = string | Element | ((state: IActionPanelS
 
 export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'datagrid-actions';
+
   static readonly spiralFrameworkCss: string = ACTION_PANEL_CLASS_NAME;
 
   public readonly name = ActionPanel.spiralFrameworkName;

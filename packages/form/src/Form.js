@@ -229,7 +229,6 @@ Form.prototype.mixMessagesOptions = function () {
 };
 
 Form.prototype.onDebouncedSubmit = function (e) {
-  console.log(e, e.target);
   if (isNodeInsideCustomSFInput(e.target)) {
     // Don't parse inputs that are used as helpers
     return false;
