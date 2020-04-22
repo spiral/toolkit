@@ -54,6 +54,7 @@ Form.prototype._construct = function (sf, node, options) {
     // eslint-disable-next-line no-plusplus
     this.options.id = `form:${idCounter++}`;
   }
+  console.log('Created form ', this.options.url);
   this.options.jsonOnly = this.options.jsonOnly && !!window.FormData;
   this.mixMessagesOptions();
   // this.options.fillFrom && this.fillFieldsFrom(); // id required to fill form
@@ -228,6 +229,7 @@ Form.prototype.mixMessagesOptions = function () {
 };
 
 Form.prototype.onDebouncedSubmit = function (e) {
+  console.log(e, e.target);
   if (isNodeInsideCustomSFInput(e.target)) {
     // Don't parse inputs that are used as helpers
     return false;
@@ -387,10 +389,9 @@ Form.prototype.send = function (sendOptions) {
       return error;
     },
   ).then((answer) => {
-    // that.lock(true); <-- it was broken
     that.unlock();
     that.processAnswer(answer);
-    this.optCallback(sendOptions, 'afterSubmitCallback');
+    this.optCallback({ ...sendOptions, response: answer }, 'afterSubmitCallback');
     that.events.trigger('always', sendOptions);
   });
 
