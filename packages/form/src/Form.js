@@ -404,7 +404,24 @@ Form.prototype.send = function (sendOptions) {
  */
 Form.prototype.getFormData = function () {
   if (!this.options.jsonOnly) {
-    return new FormData(this.options.context);
+    // IE11 will try sending unnamed inputs and will ruin everything, so disable them
+    this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
+      if (!input.name) {
+        input.setAttribute('data-sf-temp-disabled-old', input.getAttribute('disabled'));
+        input.setAttribute('disabled', true);
+      }
+    });
+    const result = new FormData(this.options.context);
+    // Recover inputs that were not intended to be disabled
+    this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
+      if (!input.name) {
+        if (!input.getAttribute('data-sf-temp-disabled-old')) {
+          input.removeAttribute('disabled');
+        }
+        input.removeAttribute('data-sf-temp-disabled-old');
+      }
+    });
+    return result;
   }
   // console.log(`Form \`${this.options.context}\` were processed without FormData.`);
   return new FormToObject(this.options.context);
