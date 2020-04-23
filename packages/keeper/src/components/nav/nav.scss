@@ -1,3 +1,5 @@
+@import "../../vars";
+
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 
 .sf-nav {
@@ -19,17 +21,17 @@
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: var(--white);
+  color: $white;
   cursor: pointer;
 }
 
 a.sf-nav__item-heading:hover {
-  color: var(--white);
+  color: $white;
   text-decoration: none;
 }
 
 a.sf-nav__item-heading.active {
-  background-color: var(--primary);
+  background-color: $primary;
 }
 
 .sf-nav__item-heading[data-sf]::after {
@@ -68,7 +70,7 @@ a.sf-nav__item-heading.active {
 .sf-nav__item-content {
   max-height: 0;
   overflow: hidden;
-  background-color: var(--dark);
+  background-color: $dark;
 }
 
 body.loaded .sf-nav__item-content {
@@ -86,7 +88,7 @@ body.loaded .sf-nav__item-content {
   font-size: 0.6875rem;
   font-weight: 500;
   text-transform: uppercase;
-  color: var(--white);
+  color: $white;
   opacity: 0.5;
 }
 
@@ -94,7 +96,7 @@ body.loaded .sf-nav__item-content {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
-  color: var(--white);
+  color: $white;
 }
 
 a.sf-subnav__item:hover {
@@ -102,11 +104,11 @@ a.sf-subnav__item:hover {
 }
 
 .sf-subnav__item.active {
-  background-color: var(--primary);
+  background-color: $primary;
 }
 
 .sf-subnav__item:hover {
-  color: var(--white);
+  color: $white;
 }
 
 .sf-subnav__item > .fa {

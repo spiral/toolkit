@@ -1,4 +1,4 @@
-import './modal.css';
+import './modal.scss';
 
 export default class Modal {
   static init(elem) {

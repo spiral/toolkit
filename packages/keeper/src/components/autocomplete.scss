@@ -1,3 +1,5 @@
+@import "../vars";
+
 .sf-autocomplete {
   position: relative;
 }
@@ -10,8 +12,8 @@
 }
 
 .sf-autocomplete__input.focus {
-  border-color: var(--focus);
-  box-shadow: 0 0 0 0.2rem var(--focus-semitransparent);
+  border-color: $focus;
+  box-shadow: 0 0 0 0.2rem $focus-semitransparent;
 }
 
 .sf-autocomplete__input-field {
@@ -39,13 +41,13 @@
 
 /*
 .sf-autocomplete__dropdown .dropdown-item:focus {
-  background-color: var(--primary-lighten);
-  color: var(--gray-900);
+  background-color: $primary-lighten;
+  color: $gray-900;
   outline: 0;
 }
 .sf-autocomplete__dropdown .dropdown-item.active:focus {
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: $primary;
+  color: $white;
 }
 */
 

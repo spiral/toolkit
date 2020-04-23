@@ -1,7 +1,7 @@
 import 'core-js';
-import cssVars from 'css-vars-ponyfill';
+// import cssVars from 'css-vars-ponyfill';
 
-cssVars();
+// cssVars();
 
 // Polyfill for creating CustomEvents on IE9/10/11
 

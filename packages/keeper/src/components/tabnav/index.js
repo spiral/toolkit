@@ -1,5 +1,5 @@
 import TabnavTab from './tab';
-import './tabnav.css';
+import './tabnav.scss';
 
 export default class Tabnav {
   static init(elem) {

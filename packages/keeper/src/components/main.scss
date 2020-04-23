@@ -1,7 +1,9 @@
+@import "../vars";
+
 .sf-main {
   flex: 1;
   min-width: 32rem;
-  background-color: var(--light);
+  background-color: $light;
 }
 
 .sf-main__wrapper {
