@@ -229,28 +229,32 @@ Form.prototype.mixMessagesOptions = function () {
 };
 
 Form.prototype.onDebouncedSubmit = function (e) {
-  if (isNodeInsideCustomSFInput(e.target)) {
-    // Don't parse inputs that are used as helpers
-    return false;
-  }
-  if (e.target.getAttribute('name')) {
-    const name = e.target.getAttribute('name');
-    const data = this.getFormData();
-    // eslint-disable-next-line eqeqeq
-    if (this._prevValues[name] != data[name]) {
-      this._prevValues[name] = data[name];
-    } else {
+  if (this.options.immediate) {
+    if (!this.options.jsonOnly) {
+      console.error('Should not used immediate forms on non json forms');
       return false;
     }
-  }
-  if (this.sf.getInstance('lock', this.node)) {
-    // On lock we should'n do any actions
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
+    if (isNodeInsideCustomSFInput(e.target)) {
+      // Don't parse inputs that are used as helpers
+      return false;
+    }
+    if (e.target.getAttribute('name')) {
+      const name = e.target.getAttribute('name');
+      const data = this.getFormData();
+      // eslint-disable-next-line eqeqeq
+      if (this._prevValues[name] != data[name]) {
+        this._prevValues[name] = data[name];
+      } else {
+        return false;
+      }
+    }
+    if (this.sf.getInstance('lock', this.node)) {
+      // On lock we should'n do any actions
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
 
-  if (this.options.immediate) {
     clearTimeout(this._submitTimeout);
     this._submitTimeout = setTimeout(() => {
       this.onSubmit(e);
@@ -407,15 +411,18 @@ Form.prototype.getFormData = function () {
     // IE11 will try sending unnamed inputs and will ruin everything, so disable them
     this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
       if (!input.name) {
-        input.setAttribute('data-sf-temp-disabled-old', input.getAttribute('disabled'));
-        input.setAttribute('disabled', true);
+        if (!input.hasAttribute('disabled')) {
+          input.setAttribute('data-sf-temp-disabled-old', 'yes');
+          input.setAttribute('disabled', true);
+        }
       }
     });
     const result = new FormData(this.options.context);
     // Recover inputs that were not intended to be disabled
     this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
       if (!input.name) {
-        if (!input.getAttribute('data-sf-temp-disabled-old')) {
+        const shouldRemoveDisabled = input.getAttribute('data-sf-temp-disabled-old');
+        if (shouldRemoveDisabled) {
           input.removeAttribute('disabled');
         }
         input.removeAttribute('data-sf-temp-disabled-old');
