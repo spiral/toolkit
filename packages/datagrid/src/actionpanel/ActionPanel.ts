@@ -1,5 +1,6 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { ACTION_PANEL_CLASS_NAME, SelectionType } from '../constants';
+import type Datagrid from '../datagrid/Datagrid';
 import type { IActionDescriptor, IActionPanelOptions, IActionPanelState } from '../types';
 
 export type FlexibleRenderDefinition = string | Element | ((state: IActionPanelState) => string | Element);
@@ -21,6 +22,8 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
   };
 
   el?: HTMLDivElement;
+
+  datagrid?: Datagrid;
 
   public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     id: {
@@ -55,7 +58,9 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
     this.render();
   }
 
-  public reconfigure(options: Partial<IActionPanelOptions>) {
+  public reconfigure(options: Partial<IActionPanelOptions>, datagrid: Datagrid) {
+    console.log('reconfigure', datagrid);
+    this.datagrid = datagrid;
     this.options = {
       ...this.options,
       ...options,
@@ -135,7 +140,7 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
         el.classList.add(...action.className(this.state).split(' '));
       }
     }
-    el.addEventListener('click', (e) => action.onClick(this.state, this, e));
+    el.addEventListener('click', (e) => action.onClick(this.state, this.datagrid, this, e));
     this.renderAs(el, action.renderAs);
     return el;
   }

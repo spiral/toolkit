@@ -2,6 +2,7 @@ import type { ActionPanel, FlexibleRenderDefinition } from './actionpanel/Action
 import {
   PaginatorType, RequestMethod, SelectionType, SortDirection,
 } from './constants';
+import type Datagrid from './datagrid/Datagrid';
 import type { DatagridState } from './datagrid/DatagridState';
 import { Messages } from './messages';
 
@@ -352,7 +353,7 @@ export interface IActionPanelState<Item = any> {
 export interface IActionDescriptor {
   renderAs: FlexibleRenderDefinition,
   className?: string | ((state: IActionPanelState) => string),
-  onClick: (state: IActionPanelState, root: ActionPanel, e: MouseEvent) => any,
+  onClick: (state: IActionPanelState, grid: Datagrid | undefined, root: ActionPanel, e: MouseEvent) => any,
 }
 
 export interface IActionPanelOptions {
