@@ -10,7 +10,7 @@ import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
 import Paginator from '../paginator/Paginator';
 import {
-  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor,
+  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
@@ -48,7 +48,7 @@ export class GridRenderer {
   private messages: Messages<IDataGridMessages>;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
     this.messages = new Messages<IDataGridMessages>(this.options.messages || {}, defaultGridMessages);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
@@ -150,6 +150,37 @@ export class GridRenderer {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  private applyAdditionalRowAttributes(el: Element, options: IGridRenderOptions, state: DatagridState, index: number) {
+    const item = state.data[index];
+    const rowMeta: IRowMeta = {
+      index,
+      item,
+      selected: this.options.selectable ? state.isSelected(item[this.options.selectable.id]) : false,
+      state,
+      id: this.options.selectable ? item[this.options.selectable.id] : undefined,
+    };
+    if (this.options.ui.rowClassName) {
+      let classNames: string[] = [];
+      if (typeof this.options.ui.rowClassName === 'string') {
+        classNames = this.options.ui.rowClassName.split(' ');
+      } else {
+        classNames = this.options.ui.rowClassName(rowMeta).split(' ');
+      }
+      if (classNames.length) {
+        el.classList.add(...classNames);
+      }
+    }
+    if (options.ui.rowAttributes) {
+      if (typeof options.ui.rowAttributes === 'function') {
+        applyAttrributes(el, options.ui.rowAttributes(rowMeta));
+      } else {
+        const specific = options.ui.rowAttributes;
+        applyAttrributes(el, specific);
+      }
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   private applyAdditionalHeaderCellAttributes(el: Element, column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) {
     const cellMeta = {
       id: column.id,
@@ -230,6 +261,7 @@ export class GridRenderer {
       const row = this.options.rowWrapper || defaultRowWrapper;
       state.data.forEach((item: any, index) => {
         const rowEl = row(this.bodyEl!, this.options, state, index);
+        this.applyAdditionalRowAttributes(rowEl, this.options, state, index);
         this.columnInfo.forEach((cI) => {
           const value = item[cI.id];
           const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
