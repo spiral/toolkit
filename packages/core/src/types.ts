@@ -1,4 +1,9 @@
 import type * as luxon from 'luxon';
+import type * as queryString from 'query-string';
+import type axios from 'axios';
+import type * as assert from 'assert';
+import type * as handlebars from 'handlebars';
+
 import type DomMutations from './core/DomMutations';
 import type { Events } from './core/Events';
 import type { Ajax } from './core/Ajax';
@@ -20,6 +25,10 @@ export interface ISFHelpers {
   DOMEvents: typeof DOMEvents,
   domTools: typeof domTools,
   luxon: typeof luxon,
+  handlebars: typeof handlebars,
+  axios: Readonly<typeof axios>,
+  assert: typeof assert,
+  queryString: typeof queryString,
 }
 
 export interface IInstancesController {
@@ -41,6 +50,7 @@ export interface ISFTools {
   resolveKeyPath: (path: string, obj: any, safe?: boolean) => string,
   isNodeInsideCustomSFInput: (node: Element) => boolean,
   extractOptions: (node: Element) => any,
+  makeUrl: (url: string, data: IDatagridRequest) => string,
   [otherMethod: string]: any,
 }
 
@@ -85,3 +95,10 @@ export interface ISFInstanceConstructor {
 export type ISFInstance = ISFInstanceClass;
 
 export type { ICustomInput } from './helpers/formInput';
+
+export interface IDatagridRequest {
+  fetchCount?: boolean;
+  paginate?: { limit?: number };
+  filter?: { [filterField: string]: string | string[] };
+  sort?: { [sortField: string]: 'asc' | 'desc' };
+}

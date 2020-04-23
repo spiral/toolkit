@@ -5,6 +5,7 @@ const {CUSTOM_INPUT_TARGET_ATTR} = sf.constants;
 export class PatternInput extends sf.core.BaseDOMConstructor {
     static spiralFrameworkName = 'pattern-input';
     static spiralFrameworkCssClass = 'js-sf-pattern-input';
+    focusTimer = null;
 
     name = PatternInput.spiralFrameworkName;
     static defaultOptions = {
@@ -65,7 +66,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
             value += el.value;
         });
         this.serialInput.value = value;
-        this.serialInput.dispatchEvent(new Event('change', { bubbles: true }));
+        this.serialInput.dispatchEvent(new Event('change', {bubbles: true}));
     }
 
     setValue(target, value) {
@@ -76,22 +77,25 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
         }
         const rest = value.substr(1);
         target.value = char.toUpperCase();
-
+        clearTimeout(this.focusTimer);
         if (char) {
             const next = this.nextInput(target);
             if (next) {
-                next.focus();
+                this.focusTimer = setTimeout(() => {
+                        next.focus();
+                    }
+                    , 10);
                 if (rest.length) {
                     this.setValue(next, rest);
                 }
             } else {
                 target.blur();
-                if(this.options.autosubmit) {
+                if (this.options.autosubmit) {
                     const form = this.sf.helpers.domTools.closest(this.node, 'form');
-                    if(form) {
+                    if (form) {
                         const data = this.sf.getInstance('form', form);
-                        if(data) {
-                            data.instance.onSubmit();
+                        if (data) {
+                            data.instance.onSubmit({preventDefault: () => false});
                         } else {
                             form.submit();
                         }

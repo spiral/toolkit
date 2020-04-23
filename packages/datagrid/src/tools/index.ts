@@ -1,7 +1,8 @@
 import sf from '@spiral-toolkit/core';
-import assert from 'assert';
 import { INormalizedColumnDescriptor } from '../types';
 import type { CellRenderFunction } from '../types';
+
+const { assert } = sf.helpers;
 
 export const REGISTER_CMD_NAME = 'register';
 
