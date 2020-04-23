@@ -6,6 +6,10 @@
   background-color: $light;
 }
 
+[data-theme=dark] .sf-main {
+  background-color: $bg-for-dark;
+}
+
 .sf-main__wrapper {
   margin: 0 1.25rem;
   padding-bottom: 1.25rem;

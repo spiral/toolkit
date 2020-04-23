@@ -1,4 +1,5 @@
 import './bootstrap.scss';
+import './bootstrap-dark.scss';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -14,11 +15,12 @@ import './components/table.scss';
 import './components/tag.scss';
 import './components/user.scss';
 
-import Nav from './components/nav';
+import DarkTheme from './components/darkTheme';
 import Dropdown from './components/dropdown';
-import Sidebar from './components/sidebar';
 import Modal from './components/modal';
+import Nav from './components/nav';
 import NotificationCenter from './components/notificationCenter';
+import Sidebar from './components/sidebar';
 import Tabnav from './components/tabnav';
 
 import { on, dispatch } from './utils/events';
@@ -33,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Nav.init();
   Sidebar.init();
+
+  DarkTheme.init();
 
   setTimeout(() => document.body.classList.add('loaded'), 1);
 });

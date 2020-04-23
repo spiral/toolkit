@@ -30,6 +30,11 @@ a.sf-nav__item-heading:hover {
   text-decoration: none;
 }
 
+a.sf-nav__item-heading:focus {
+  outline: 0;
+  background-color: rgba(lighten($primary, 25%), 0.5);
+}
+
 a.sf-nav__item-heading.active {
   background-color: $primary;
 }
@@ -109,6 +114,15 @@ a.sf-subnav__item:hover {
 
 .sf-subnav__item:hover {
   color: $white;
+}
+
+.sf-subnav__item:focus {
+  outline: 0;
+  background-color: rgba(lighten($primary, 25%), 0.5);
+}
+
+.sf-subnav__item.active:focus {
+  background-color: $primary;
 }
 
 .sf-subnav__item > .fa {

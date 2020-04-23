@@ -13,12 +13,13 @@
     "start": "yarn clean & yarn watch",
     "lint:fix": "yarn lint:js --fix && yarn lint:css --fix",
     "lint:js": "eslint \"src/**/*.js\"",
-    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "yarn lint:js && yarn lint:css"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@forevolve/bootstrap-dark": "^1.0.0-alpha.981",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "bootstrap": "^4.3.1"
   },

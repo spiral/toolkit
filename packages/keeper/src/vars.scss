@@ -1,5 +1,4 @@
 $primary: #497cb1;
-$sidebar: #49545f;
 
 $font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
 
@@ -26,7 +25,9 @@ $custom-select-border-radius: .125rem;
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-$primary-darken: darken($primary, 15%);
-$primary-lighten: lighten($primary, 25%);
-$focus: lighten($primary, 25%);
-$focus-semitransparent: rgba($primary, .25);
+$text-for-dark: #bfbfbf;
+$bg-for-dark: #1a1a1a; /* 222 */
+$bg-alt-for-dark: #0d0d0d; /* 181818 */
+$bg-overlay-for-dark: rgba($white, .03);
+
+$border-for-dark: rgba($white, .15); /* 404040 */

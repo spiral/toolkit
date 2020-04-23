@@ -3,7 +3,7 @@
 .sf-sidebar {
   width: 0;
   transition: width 0.25s ease-in-out;
-  background-color: $sidebar;
+  background-color: $gray-700;
 }
 
 .sf-sidebar.active {
@@ -63,6 +63,10 @@
   background-color: transparent;
   color: $black;
   font-size: 1.5rem;
+}
+
+[data-theme=dark] .sf-sidebar__toggle {
+  color: $white;
 }
 
 .sf-sidebar__toggle:hover {

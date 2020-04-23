@@ -12,8 +12,8 @@
 }
 
 .sf-autocomplete__input.focus {
-  border-color: $focus;
-  box-shadow: 0 0 0 0.2rem $focus-semitransparent;
+  border-color: $input-focus-border-color;
+  box-shadow: $input-focus-box-shadow;
 }
 
 .sf-autocomplete__input-field {
@@ -21,6 +21,7 @@
   flex: 1;
   padding: 0.375rem 0.75rem;
   min-width: 10rem;
+  background-color: transparent;
   border: none;
   box-shadow: none;
   font-size: inherit;
@@ -38,18 +39,6 @@
   left: -1px;
   right: -1px;
 }
-
-/*
-.sf-autocomplete__dropdown .dropdown-item:focus {
-  background-color: $primary-lighten;
-  color: $gray-900;
-  outline: 0;
-}
-.sf-autocomplete__dropdown .dropdown-item.active:focus {
-  background-color: $primary;
-  color: $white;
-}
-*/
 
 .sf-autocomplete__dropdown .dropdown-item:focus {
   outline: 0;
