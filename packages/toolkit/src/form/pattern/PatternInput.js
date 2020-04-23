@@ -78,6 +78,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
         const rest = value.substr(1);
         target.value = char.toUpperCase();
         clearTimeout(this.focusTimer);
+        let finished = false;
         if (char) {
             const next = this.nextInput(target);
             if (next) {
@@ -90,20 +91,21 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
                 }
             } else {
                 target.blur();
-                if (this.options.autosubmit) {
-                    const form = this.sf.helpers.domTools.closest(this.node, 'form');
-                    if (form) {
-                        const data = this.sf.getInstance('form', form);
-                        if (data) {
-                            data.instance.onSubmit({preventDefault: () => false});
-                        } else {
-                            form.submit();
-                        }
-                    }
-
-                }
+                finished = true;
             }
             this.calcValue();
+
+            if (this.options.autosubmit && finished) {
+                const form = this.sf.helpers.domTools.closest(this.node, 'form');
+                if (form) {
+                    const data = this.sf.getInstance('form', form);
+                    if (data) {
+                        data.instance.onSubmit({preventDefault: () => false});
+                    } else {
+                        form.submit();
+                    }
+                }
+            }
         }
     }
 
