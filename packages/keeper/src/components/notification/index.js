@@ -1,4 +1,4 @@
-import './notification.css';
+import './notification.scss';
 
 export default class Notification {
   static init(elem) {

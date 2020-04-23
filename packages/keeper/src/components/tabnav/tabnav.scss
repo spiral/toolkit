@@ -1,3 +1,5 @@
+@import "../../vars";
+
 .sf-tabnav {
   margin: 0 1.25rem 1.25rem;
   border-bottom: 2px solid rgba(0, 0, 0, 0.075);
@@ -17,7 +19,7 @@
 
 .sf-tabnav .nav-link.active {
   background: none;
-  border-color: transparent transparent var(--primary);
+  border-color: transparent transparent $primary;
 }
 
 .sf-tabnav__content {

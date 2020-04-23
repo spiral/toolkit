@@ -15,7 +15,6 @@ export class AutocompleteTags {
 
   constructor(options: IAutocompleteTagsOptions) {
     // this.node = document.createElement('div');
-    // this.node.classList.add('sf-autocomplete__tags');
 
     this.options = options;
 
@@ -23,8 +22,6 @@ export class AutocompleteTags {
     this.items = [];
 
     this.parentNode = this.options.inputNode.parentNode as Element;
-
-    // this.bind();
   }
 
   appendTag(item: HTMLDivElement | DocumentFragment) {

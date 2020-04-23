@@ -1,19 +1,18 @@
 import './bootstrap.scss';
-import './global.css';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 
-import './components/autocomplete.css';
-import './components/breadcrumb.css';
-import './components/header.css';
-import './components/heading.css';
-import './components/main.css';
-import './components/signin.css';
-import './components/statpanel.css';
-import './components/table.css';
-import './components/tag.css';
-import './components/user.css';
-import './components/pattern/input.css';
+import './components/autocomplete.scss';
+import './components/breadcrumb.scss';
+import './components/header.scss';
+import './components/heading.scss';
+import './components/main.scss';
+import './components/pattern-input.scss';
+import './components/signin.scss';
+import './components/statpanel.scss';
+import './components/table.scss';
+import './components/tag.scss';
+import './components/user.scss';
 
 import Nav from './components/nav';
 import Dropdown from './components/dropdown';

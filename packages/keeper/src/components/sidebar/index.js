@@ -1,4 +1,4 @@
-import './sidebar.css';
+import './sidebar.scss';
 
 import { disableBodyScroll, enableBodyScroll } from '../../utils/bodyScroll';
 

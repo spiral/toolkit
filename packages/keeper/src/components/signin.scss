@@ -1,8 +1,12 @@
+@import "../vars";
+
 .signin {
   display: flex;
+  flex-direction: column;
   width: 100%;
+  min-height: 100vh;
   flex: 1;
-  background-color: var(--light);
+  background-color: $light;
 }
 
 .signin .card {
