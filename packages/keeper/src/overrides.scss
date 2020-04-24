@@ -59,5 +59,9 @@ a.card:hover {
 }
 
 select.form-control:not([multiple]) {
-  background: $custom-select-background;
+  /* background: $custom-select-background; */
+  background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'><path fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>"));
+  background-repeat: no-repeat;
+  background-position: right $custom-select-padding-x center;
+  background-size: $custom-select-bg-size;
 }

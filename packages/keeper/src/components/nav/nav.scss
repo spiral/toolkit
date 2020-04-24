@@ -21,12 +21,12 @@
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: $white;
+  color: $light;
   cursor: pointer;
 }
 
 a.sf-nav__item-heading:hover {
-  color: $white;
+  color: $light;
   text-decoration: none;
 }
 
@@ -75,7 +75,7 @@ a.sf-nav__item-heading.active {
 .sf-nav__item-content {
   max-height: 0;
   overflow: hidden;
-  background-color: $dark;
+  background-color: $gray-800;
 }
 
 body.loaded .sf-nav__item-content {
@@ -93,7 +93,7 @@ body.loaded .sf-nav__item-content {
   font-size: 0.6875rem;
   font-weight: 500;
   text-transform: uppercase;
-  color: $white;
+  color: $light;
   opacity: 0.5;
 }
 
@@ -101,7 +101,7 @@ body.loaded .sf-nav__item-content {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
-  color: $white;
+  color: $light;
 }
 
 a.sf-subnav__item:hover {
@@ -113,7 +113,7 @@ a.sf-subnav__item:hover {
 }
 
 .sf-subnav__item:hover {
-  color: $white;
+  color: $light;
 }
 
 .sf-subnav__item:focus {

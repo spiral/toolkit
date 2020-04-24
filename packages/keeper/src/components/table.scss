@@ -2,7 +2,7 @@
 
 .sf-table {
   margin: 1.25rem 0;
-  border: 1px solid rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba($black, 0.075);
   border-bottom-width: 2px;
   font-size: 0.875rem;
   background-color: $white;
@@ -10,16 +10,27 @@
   border-radius: 0.25rem;
 }
 
+[data-theme=dark] .sf-table {
+  border: 1px solid rgba($white, .125);
+  border-bottom-width: 1px;
+  background-color: $gray-900;
+}
+
 .sf-table .table {
   margin-bottom: 0;
 }
 
-.sf-table thead th {
+.sf-table thead th,
+[data-theme=dark] .sf-table thead th {
   border-top: 0;
 }
 
 .sf-table .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba($black, .03);
+}
+
+[data-theme=dark] .sf-table .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba($white, .05);
 }
 
 .sf-table__select {
@@ -30,8 +41,13 @@
 .sf-table__empty {
   padding: 30px;
   text-align: center;
-  color: $dark;
+  color: $gray-800;
   background-color: $white;
+}
+
+[data-theme=dark] .sf-table__empty {
+  color: $gray-600;
+  background-color: $gray-900;
 }
 
 .sf-table__error {

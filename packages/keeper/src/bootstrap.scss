@@ -1,7 +1,5 @@
 @import './vars';
 
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
 
 html {
@@ -53,10 +51,5 @@ body {
 // @import '~bootstrap/scss/carousel';
 @import '~bootstrap/scss/spinners';
 @import '~bootstrap/scss/utilities';
-
-/* .navbar-themed {
-  @extend .bg-light;
-  @extend .navbar-light;
-} */
 
 @import './overrides';

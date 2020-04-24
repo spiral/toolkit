@@ -2,7 +2,11 @@
 
 .sf-tabnav {
   margin: 0 1.25rem 1.25rem;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.075);
+  border-bottom: 2px solid rgba($black, 0.075);
+}
+
+[data-theme=dark] .sf-tabnav {
+  border-bottom: 2px solid rgba($white, 0.15);
 }
 
 .sf-tabnav .nav-link {
@@ -12,13 +16,26 @@
   margin-bottom: -1px;
 }
 
-/* .sf-tabnav .nav-link:hover,
+[data-theme=dark] .sf-tabnav .nav-link {
+  border-bottom: 2px solid transparent;
+}
+
+.sf-tabnav .nav-link:hover,
 .sf-tabnav .nav-link:focus {
   border-color: transparent;
-} */
+}
+
+[data-theme=dark] .sf-tabnav .nav-link:hover,
+[data-theme=dark] .sf-tabnav .nav-link:focus {
+  border-color: transparent;
+}
 
 .sf-tabnav .nav-link.active {
   background: none;
+  border-color: transparent transparent $primary;
+}
+
+[data-theme=dark] .sf-tabnav .nav-link.active {
   border-color: transparent transparent $primary;
 }
 
