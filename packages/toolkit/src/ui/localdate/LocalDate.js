@@ -11,9 +11,11 @@ import sf from '@spiral-toolkit/core';
 
 export class LocalDate extends sf.core.BaseDOMConstructor {
   static spiralFrameworkName = 'localdate';
+
   static spiralFrameworkCssClass = 'js-sf-localdate';
 
   name = LocalDate.spiralFrameworkName;
+
   static defaultOptions = {
     value: '',
     format: '',
@@ -42,22 +44,24 @@ export class LocalDate extends sf.core.BaseDOMConstructor {
     },
   };
 
-  options = {...LocalDate.defaultOptions};
+  options = { ...LocalDate.defaultOptions };
 
   constructor(ssf, node, options) {
     super();
     this.init(ssf, node, options);
     const date = this.options.sourceFormat
-      ? sf.helpers.luxon.DateTime.fromFormat(this.options.value, this.options.sourceFormat) :
-      sf.helpers.luxon.DateTime.fromJSDate(new Date(this.options.value));
-    if(date.isValid) {
+      ? sf.helpers.luxon.DateTime.fromFormat(this.options.value, this.options.sourceFormat)
+      : sf.helpers.luxon.DateTime.fromJSDate(new Date(this.options.value));
+    if (date.isValid) {
+      // eslint-disable-next-line no-param-reassign
       node.innerHTML = date.toFormat(this.options.format);
       if (this.options.titleFormat) {
         node.setAttribute('title', date.toFormat(this.options.titleFormat));
       }
     } else {
       console.error(date.invalidExplanation, this.options);
-      node.innerHTML = this.options.errorValue || ''
+      // eslint-disable-next-line no-param-reassign
+      node.innerHTML = this.options.errorValue || '';
       node.setAttribute('title', this.options.errorValue || '');
     }
   }
