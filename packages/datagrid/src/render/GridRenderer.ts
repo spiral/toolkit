@@ -10,7 +10,7 @@ import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
 import Paginator from '../paginator/Paginator';
 import {
-  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
+  ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
@@ -45,11 +45,11 @@ export class GridRenderer {
 
   private options: IGridRenderOptions;
 
-  private messages: Messages<IDataGridMessages>;
+  private messages: Messages;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
-    this.messages = new Messages<IDataGridMessages>(this.options.messages || {}, defaultGridMessages);
+    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.messages = new Messages((this.options.messages || {}) as any, defaultGridMessages as any);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
   }

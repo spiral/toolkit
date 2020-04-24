@@ -55,7 +55,7 @@ Form.prototype._construct = function (sf, node, options) {
     // eslint-disable-next-line no-plusplus
     this.options.id = `form:${idCounter++}`;
   }
-  console.log('Created form ', this.options.url);
+  // console.log('Created form ', this.options.url);
   this.options.jsonOnly = this.options.jsonOnly && !!window.FormData;
   this.mixMessagesOptions();
   // this.options.fillFrom && this.fillFieldsFrom(); // id required to fill form

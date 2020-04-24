@@ -1,13 +1,21 @@
-export class Messages<T extends Object> {
-  constructor(public definitions: Partial<T>, public defaultDefinitions: T) {
+import sf from '@spiral-toolkit/core';
+
+const { handlebars } = sf.helpers;
+
+export class Messages {
+  public templates: { [key: string]: (data: any) => string } = {};
+
+  constructor(public definitions: { [key: string]: string }, public defaultDefinitions: { [key: string]: string }) {
+    const defs = {
+      ...defaultDefinitions,
+      ...definitions,
+    };
+    Object.keys(defs).forEach((k) => {
+      this.templates[k] = handlebars.compile(defs[k]);
+    });
   }
 
-  getMessage(messageKey: keyof T, values: { [key: string]: any } = {}) {
-    return Object
-      .keys(values)
-      .reduce(
-        (prev: string, key) => prev.split(`{${key}}`).join((typeof values[key] === 'undefined') ? '' : String(values[key])),
-        (this.definitions[messageKey] || this.defaultDefinitions[messageKey] || '') as string,
-      );
+  getMessage(messageKey: string, values: { [key: string]: any } = {}) {
+    return this.templates[messageKey](values);
   }
 }

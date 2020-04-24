@@ -13,7 +13,7 @@
     "start": "yarn clean & yarn watch",
     "lint:fix": "yarn lint:js --fix && yarn lint:css --fix",
     "lint:js": "eslint \"src/**/*.js\"",
-    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "yarn lint:js && yarn lint:css"
   },
   "author": "",

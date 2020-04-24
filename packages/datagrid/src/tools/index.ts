@@ -2,15 +2,13 @@ import sf from '@spiral-toolkit/core';
 import { INormalizedColumnDescriptor } from '../types';
 import type { CellRenderFunction } from '../types';
 
-const { assert } = sf.helpers;
+const { assert, handlebars } = sf.helpers;
 
 export const REGISTER_CMD_NAME = 'register';
 
 export type RenderFuncGenerator = (...data: any[]) => CellRenderFunction;
 export type RegisterFunction = (toolName: string, func: RenderFuncGenerator) => void;
 
-export const applyValues = (template: string, obj: { [key: string]: any }) => Object.keys(obj)
-  .reduce((prevStr, key: string) => prevStr.split(`{${key}}`).join(obj[key]), template);
 
 export const tools: {
   register: (toolName: string, func: RenderFuncGenerator) => void,
@@ -43,14 +41,14 @@ export const tools: {
     href, title, body, className,
   }: { href: string, body?: string, title?: string, className?: string }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
-      href,
-      title: title || colDef.title,
-      body: body || colDef.title,
+      href: handlebars.compile(href || ''),
+      title: handlebars.compile(title || colDef.title),
+      body: handlebars.compile(body || colDef.title),
     };
     const values = {
-      href: applyValues(templates.href, item),
-      title: applyValues(templates.title, item),
-      body: applyValues(templates.body, item),
+      href: templates.href(item),
+      title: templates.title(item),
+      body: templates.body(item),
     };
     return `<a href="${values.href}" title="${values.title}" class="${className || ''}">${values.body}</a>`;
   }),
@@ -58,12 +56,12 @@ export const tools: {
     href, title, className,
   }: { href: string, title?: string, className?: string }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
-      href,
-      title: title || colDef.title,
+      href: handlebars.compile(href || ''),
+      title: handlebars.compile(title || colDef.title),
     };
     const values = {
-      href: applyValues(templates.href, item),
-      title: applyValues(templates.title, item),
+      href: templates.href(item),
+      title: templates.title(item),
     };
     return `<img src="${values.href}" title="${values.title}"  alt="${values.title}" class="${className || ''}"/>`;
   }),
