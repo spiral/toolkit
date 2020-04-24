@@ -59,7 +59,7 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   public reconfigure(options: Partial<IActionPanelOptions>, datagrid: Datagrid) {
-    console.log('reconfigure', datagrid);
+    // console.log('reconfigure', datagrid);
     this.datagrid = datagrid;
     this.options = {
       ...this.options,
