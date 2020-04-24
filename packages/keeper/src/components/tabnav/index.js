@@ -18,6 +18,16 @@ export default class Tabnav {
 
     this.handleShowListener = this.handleShow.bind(this);
     this.bind();
+
+    this.check();
+  }
+
+  check() {
+    const { hash } = document.location;
+    if (hash) {
+      const selectedTab = this.tabs.find((tab) => tab.href === hash);
+      if (selectedTab) selectedTab.show();
+    }
   }
 
   bind() {
