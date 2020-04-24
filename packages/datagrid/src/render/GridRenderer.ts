@@ -10,7 +10,7 @@ import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
 import Paginator from '../paginator/Paginator';
 import {
-  ICellMeta, IDataGridMessages, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
+  ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
 import { applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';

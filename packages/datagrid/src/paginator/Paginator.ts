@@ -3,7 +3,7 @@ import {
   DEFAULT_LIMIT, defaultPaginatorMessages, PAGINATOR_CLASS_NAME, PaginatorType,
 } from '../constants';
 import { Messages } from '../messages';
-import { IPaginatorMessages, IPaginatorOptions, IPaginatorParams } from '../types';
+import { IPaginatorOptions, IPaginatorParams } from '../types';
 
 const { stringifyUrl } = sf.helpers.queryString;
 

@@ -10,6 +10,6 @@
   "rules":  {
     "import/prefer-default-export": 0,
     "import/no-named-as-default": 0,
-    "max-len": ["error", 120]
+    "max-len": ["error", 160]
   }
 }
