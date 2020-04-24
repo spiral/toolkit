@@ -18,6 +18,10 @@
   border-top: 0;
 }
 
+.sf-table tr.row-align-middle > td {
+  vertical-align: middle;
+}
+
 .sf-table .table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.03);
 }

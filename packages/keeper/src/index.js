@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('[data-sf="dropdown"]').forEach((elem) => Dropdown.init(elem));
   document.querySelectorAll('[data-sf="modal"]').forEach((elem) => Modal.init(elem));
-
   document.querySelectorAll('[data-sf="tabnav"]').forEach((elem) => Tabnav.init(elem));
 
   Nav.init();
@@ -40,4 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 export {
   on,
   dispatch,
+  Dropdown,
+  Modal,
+  Tabnav,
 };

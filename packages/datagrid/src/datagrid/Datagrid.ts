@@ -174,7 +174,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       && this.options.captureActionPanels.indexOf(formInstance.options.id) >= 0) {
       this.capturedActionPanels.push(formInstance);
       if (this.options.selectable) {
-        (formInstance as ActionPanel).reconfigure({ selectionType: this.options.selectable!.type });
+        (formInstance as ActionPanel).reconfigure({ selectionType: this.options.selectable!.type }, this);
         (formInstance as ActionPanel).setSelection(this.state.selection, this.state.selectedItems);
       }
     }
@@ -418,6 +418,12 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       }
     }
     this.updateCheckboxes();
+  }
+
+  public resetSelectionAndReload() {
+    this.state.resetSelection();
+    this.updateCheckboxes();
+    this.request();
   }
 
   public toggleSelection(value: string, checked: boolean) {

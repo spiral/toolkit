@@ -26,6 +26,7 @@ const { isNodeInsideCustomSFInput } = core.tools;
  */
 const Form = function (sf, node, options) {
   this._construct(sf, node, options);
+  this._defaultValues = this.getFormData();
   this._prevValues = {};
 };
 
@@ -452,6 +453,15 @@ Form.prototype.addEvents = function () {
       eventType: 'submit',
       eventFunction: (e) => {
         this.onSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'reset',
+      eventFunction: (e) => {
+        setTimeout(() => {
+          this.onSubmit(e);
+        });
       },
     },
     {
