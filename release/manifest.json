@@ -1,0 +1,22 @@
+{
+  "toolkit": {
+    "path": "packages/toolkit/dist",
+    "label": "Toolkit",
+    "descr": "Toolkit bundle with default functionality"
+  },
+  "keeper": {
+    "descr": "Keeper bundle, based on bootstrap 4 that implements typical Spiral-Framework specific admin panel",
+    "label": "Keeper",
+    "path": "packages/keeper/dist"
+  },
+  "autocomplete": {
+    "descr": "Module for autocomplete input, included in toolkit_full",
+    "label": "Autocomplete",
+    "path": "packages/autocomplete/dist"
+  },
+  "qrcode": {
+    "descr": "Module to generate QR codes, included in toolkit_full",
+    "label": "QR code",
+    "path": "packages/qrcode/dist"
+  }
+}

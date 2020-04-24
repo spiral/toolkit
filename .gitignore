@@ -1,5 +1,7 @@
 .idea/
+github_token
 vendor
+release/versions
 composer.lock
 node_modules
 npm-debug.log
