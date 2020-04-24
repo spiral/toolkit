@@ -100,7 +100,7 @@ export class DomMutations {
 
     [].forEach.call(nodesList, (val: Element) => { // loop over mutation nodes
       // do not process other nodes then ELEMENT_NODE https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType also ignore SCRIPT and LINK tag
-      if (val.nodeType !== 1 || val.nodeName === 'SCRIPT' || val.nodeName === 'LINK') {
+      if (val.nodeType !== 1 || val.nodeName === 'LINK') {
         return false;
       }
       checkNode(val);// check mutation node
