@@ -25,7 +25,6 @@ export class Template extends sf.core.BaseDOMConstructor {
      */
     constructor(ssf, node, options) {
       super();
-      console.log(ssf, node, options);
       const id = node.getAttribute('data-id');
       assert.ok(id, 'Template node should have id');
       assert.strictEqual(node.tagName.toUpperCase(), 'SCRIPT', 'Template node should be script');
