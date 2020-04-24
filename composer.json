@@ -20,9 +20,9 @@
   },
   "extra": {
     "publish": {
-      "packages/qrcode/dist/*:@public/scripts/qrcode/": "replace:readonly",
-      "packages/toolkit/dist/*:@public/scripts/": "replace:readonly",
-      "packages/keeper/dist/*:@public/keeper/": "replace:readonly"
+      "release(toolkit.zip):@public/toolkit/": "replace:readonly",
+      "release(qrcode.zip):@public/toolkit/qrcode/": "replace:readonly",
+      "release(keeper.zip):@public/keeper/": "replace:readonly"
     }
   }
 }
