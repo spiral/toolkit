@@ -1,17 +1,25 @@
-<div inputID:define class="form-group col-${col|12} ${field-class}" data-field="true" attr:aggregate="prefix:field-">
-    <label inputID:consume for="${id}" attr:aggregate="prefix:label-">${label}</label>
+<div class="form-group col-sm-12 col-md-${size|12 }@if(injected('wrapper-class')) ${wrapper-class} @endif" data-field="true" @if(injected('wrapper-id')) id="${wrapper-id}" @endif >
 
-    <block:element/>
+  @if(injected('label'))
+  <label for="${id}">${label}</label> @if(injected('required'))<span class="text-danger">*</span>@endif
+  @endif
 
-    @if(inject('error'))
-        <div class="invalid-feedback" data-form-message>${error}</div>
-    @endif
+  <block:element />
 
-    @if(inject('success'))
-        <div class="valid-feedback" data-form-message>${success}</div>
-    @endif
+  @if(injected('error'))
+  <div class="invalid-feedback" data-form-message>
+    ${error}
+  </div>
+  @endif
+  @if(injected('success'))
+  <div class="valid-feedback" data-form-message>
+    ${success}
+  </div>
+  @endif
+  @if(injected('help') && !injected('error') && !injected('success'))
+  <small class="form-text text-muted" data-form-hint>
+    ${help}
+  </small>
+  @endif
 
-    @if(inject('help') && !inject('error') && !inject('success'))
-        <small class="form-text text-muted" data-form-hint>${help}</small>
-    @endif
 </div>

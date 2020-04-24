@@ -1,11 +1,14 @@
-<extends path="toolkit:form/field"/>
+<extends:toolkit:form.field />
 
 <block:element>
-    <input inputID:consume
-           id="${id}"
-           data-input="true"
-           class="form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif ${class}"
-           value="${value}${context}"
-           attr:aggregate="exclude:path,context"
-    >
+  <input
+    id="${id}"
+    data-input="true"
+    class="form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+    type="${type|text}"
+    name="${name}"
+    placeholder="${placeholder}"
+    value="${value}${context}"
+    @if(inject('disabled'))disabled@endif
+  >
 </block:element>
