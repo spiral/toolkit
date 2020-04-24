@@ -126,7 +126,7 @@ module.exports = {
     ? [
       new StyleLintPlugin({
         configFile: './.stylelintrc.json',
-        files: [path.join(srcPath, '**/*.css')],
+        files: [path.join(srcPath, '**/*.scss')],
         failOnError: false,
       }),
       new MiniCssExtractPlugin({

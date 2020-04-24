@@ -3,6 +3,7 @@ export default class TabnavTab {
     this.elem = elem;
     if (!this.elem) return;
 
+    this.href = this.elem.getAttribute('href');
     this.contentId = this.elem.getAttribute('aria-controls');
 
     this.contentElem = document.getElementById(this.contentId);
