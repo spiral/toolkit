@@ -24,12 +24,12 @@
 <use:element path="toolkit:form/date" as="form:date"/>
 
 {{--autocomplete--}}
-<use:element path="toolkit:form/autocomplete" as="form:autocomplete" />
+<use:element path="toolkit:form/autocomplete" as="form:autocomplete"/>
 
 {{--pattern inputs--}}
-<use:element path="toolkit:form/pattern/field" as="form:pattern.field" />
-<use:element path="toolkit:form/pattern/input" as="form:pattern" />
-<use:element path="toolkit:form/pattern/digit" as="form:pattern.digit" />
-<use:element path="toolkit:form/pattern/char" as="form:pattern.char" />
-<use:element path="toolkit:form/pattern/separator" as="form:pattern.separator" />
-<use:element path="toolkit:form/pattern/group" as="form:pattern.group" />
+<use:element path="toolkit:form/pattern/field" as="form:pattern.field"/>
+<use:element path="toolkit:form/pattern/input" as="form:pattern"/>
+<use:element path="toolkit:form/pattern/digit" as="form:pattern.digit"/>
+<use:element path="toolkit:form/pattern/char" as="form:pattern.char"/>
+<use:element path="toolkit:form/pattern/separator" as="form:pattern.separator"/>
+<use:element path="toolkit:form/pattern/group" as="form:pattern.group"/>
