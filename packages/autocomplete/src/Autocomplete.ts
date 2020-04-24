@@ -75,6 +75,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   inputTemplate?: Function;
 
   /* Misc */
+  observer: MutationObserver;
+
+  isDisabled: boolean;
+
   isInnerClick?: boolean;
 
   isInnerFocus?: boolean;
@@ -94,12 +98,18 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.init(ssf, node, options, Autocomplete.defaultOptions);
 
+    this.isDisabled = this.textInput.disabled;
+
     this.initDataSource();
     this.initTemplates();
     this.initDropdown();
     this.initTags();
 
     this.setExternalValue(this.hiddenInput.value);
+
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach(this.handleMutation);
+    });
 
     this.bind();
   }
@@ -147,6 +157,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     if (this.node.classList.contains('dropdown')) return; // TODO: do we need a flag?
 
     this.dropdown = new AutocompleteDropdown({
+      isDisabled: this.isDisabled,
       suggestTemplate: this.suggestTemplate!,
       inputTemplate: this.inputTemplate!,
       onSelectItem: this.handleSelectDropdownItem,
@@ -161,6 +172,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     if (!this.options.isMultiple) return;
 
     this.tags = new AutocompleteTags({
+      isDisabled: this.isDisabled,
       inputNode: this.textInput,
       valueKey: this.options.valueKey as string,
       inputTemplate: this.inputTemplate!,
@@ -434,6 +446,20 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.isInnerClick = false;
   }
 
+  @autobind
+  handleMutation(mutation: MutationRecord) {
+    if (mutation.type === 'attributes') {
+      this.isDisabled = this.textInput.disabled;
+      if (this.isDisabled) {
+        this.dropdown?.disable();
+        this.tags?.disable();
+      } else {
+        this.dropdown?.enable();
+        this.tags?.enable();
+      }
+    }
+  }
+
   bind() {
     (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setExternalValue;
 
@@ -444,6 +470,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.node.addEventListener('click', this.handleInsideClick);
     document.addEventListener('click', this.handleOutsideClick);
+
+    this.observer.observe(this.textInput, {
+      attributes: true,
+    });
   }
 
   die() {
@@ -454,6 +484,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.node.removeEventListener('click', this.handleInsideClick);
     document.removeEventListener('click', this.handleOutsideClick);
+
+    this.observer.disconnect();
   }
 }
 
