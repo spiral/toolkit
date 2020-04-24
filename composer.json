@@ -21,8 +21,8 @@
   "extra": {
     "publish": {
       "release(toolkit.zip):@public/toolkit/": "replace:readonly",
-      "release(qrcode.zip):@public/toolkit/qrcode/": "replace:readonly",
       "release(autocomplete.zip):@public/toolkit/autocomplete/": "replace:readonly",
+      "release(qrcode.zip):@public/toolkit/qrcode/": "replace:readonly",
       "release(keeper.zip):@public/keeper/": "replace:readonly"
     }
   }
