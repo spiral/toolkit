@@ -1,10 +1,9 @@
 <extends:toolkit:form.field />
 
 <block:element>
-  <stack:push name="styles">
+  <stack:push name="styles" unique-id="date-js">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css" />
   </stack:push>
-
   <input
     id="${id}"
     data-input="true"

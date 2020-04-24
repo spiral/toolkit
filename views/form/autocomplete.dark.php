@@ -2,7 +2,7 @@
 
 <block:element>
   <stack:push name="scripts" unique-id="autocomplete">
-    <script type="text/javascript" src="/scripts/autocomplete/autocomplete.js"></script>
+      <script type="text/javascript" src="/toolkit/autocomplete/autocomplete.js"></script>
   </stack:push>
   <div
     class="sf-autocomplete js-sf-autocomplete"
