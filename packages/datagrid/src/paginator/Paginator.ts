@@ -53,12 +53,12 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     limit: DEFAULT_LIMIT,
   };
 
-  messages: Messages<IPaginatorMessages>;
+  messages: Messages;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IPaginatorOptions) {
     super();
     this.init(ssf, node, options, Paginator.defaultOptions);
-    this.messages = new Messages<IPaginatorMessages>(this.options.messages || {}, defaultPaginatorMessages);
+    this.messages = new Messages((this.options.messages || {}) as any, defaultPaginatorMessages as any);
     this.render();
   }
 

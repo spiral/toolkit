@@ -118,7 +118,7 @@ export type IHeaderWrapperRenderer = ((
   parent: Element,
   options: IGridRenderOptions,
   state: DatagridState,
-  messages: Messages<IDataGridMessages>,
+  messages: Messages,
 ) => { outer: Element, inner: Element } | undefined);
 export type ITableWrapperRenderer = ((
   parent: Element,
@@ -127,13 +127,13 @@ export type IBodyWrapperRenderer = ((
   parent: Element,
   options: IGridRenderOptions,
   state: DatagridState,
-  messages: Messages<IDataGridMessages>) => Element | undefined);
+  messages: Messages) => Element | undefined);
 export type IFooterWrapperRenderer = ((
   parent: Element,
   options:
   IGridRenderOptions,
   state: DatagridState,
-  messages: Messages<IDataGridMessages>
+  messages: Messages
 ) => Element | undefined);
 
 export type IRowWrapperRenderer = ((

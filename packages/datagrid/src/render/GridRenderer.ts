@@ -45,11 +45,11 @@ export class GridRenderer {
 
   private options: IGridRenderOptions;
 
-  private messages: Messages<IDataGridMessages>;
+  private messages: Messages;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
     this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
-    this.messages = new Messages<IDataGridMessages>(this.options.messages || {}, defaultGridMessages);
+    this.messages = new Messages((this.options.messages || {}) as any, defaultGridMessages as any);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
   }
