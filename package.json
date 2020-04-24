@@ -8,6 +8,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production node ./webpack/build",
     "watch": "node ./webpack/watch",
+    "gitrelease": "node ./release/index",
     "build:dev": "cross-env NODE_ENV=development node ./webpack/build"
   },
   "devDependencies": {
