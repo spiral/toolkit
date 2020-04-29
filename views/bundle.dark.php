@@ -1,6 +1,6 @@
 {{--form wrapper--}}
-<use:element path="toolkit:form" as="form:wrapper"/>
-<use:element path="toolkit:form" as="form:form"/>
+<use:element path="toolkit:form/wrapper" as="form:wrapper"/>
+<use:element path="toolkit:form/wrapper" as="form:form"/>
 <use:element path="toolkit:form" as="form:ajax"/>
 
 {{--default, non typed input--}}
