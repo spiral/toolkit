@@ -4,6 +4,7 @@ import {
   DATAGRID_CLASS_NAME,
   DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
+import FilterToggle from '../filter-toggle/FilterToggle';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
 import { defaultGridOptions } from '../render/defaultRenderer';
@@ -55,9 +56,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   capturedForms: { [id: string]: { instance: any, fields: Array<string> } } = {}; // TODO: type as sf.Form instance array
 
-  capturedPaginators: Array<Paginator> = []; // TODO: type as sf.Paginator instance array
+  capturedPaginators: Array<Paginator> = [];
 
-  capturedActionPanels: Array<ActionPanel> = []; // TODO: type as sf.Paginator instance array
+  capturedActionPanels: Array<ActionPanel> = [];
+
+  capturedFilters: Array<FilterToggle> = [];
 
   private defaults: IPaginatorParams & { sortBy?: string, sortDir?: SortDirection } = {
     page: 1, // TODO: different defaults depending on paginator type
@@ -180,6 +183,16 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
   }
 
+  public registerFilterToggleInstance(formInstance: any) {
+    if (formInstance.options
+      && formInstance.options.id
+      && this.options.captureFilters
+      && this.options.captureFilters.indexOf(formInstance.options.id) >= 0) {
+      this.capturedFilters.push(formInstance);
+      // (formInstance as FilterToggle).setHasFilter({ selectionType: this.options.selectable!.type }, this);
+    }
+  }
+
   captureForms() {
     const forms = this.sf.getInstances('form') || [];
     forms.forEach((f: { instance: ISFInstance }) => {
@@ -196,6 +209,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       this.registerActionPanelInstance(f.instance);
     });
 
+    const filters = this.sf.getInstances(FilterToggle.spiralFrameworkName) || [];
+    filters.forEach((f: { instance: ISFInstance }) => {
+      this.registerFilterToggleInstance(f.instance);
+    });
+
     this.sf.instancesController.events.on('onAddInstance', ({ instance, type }: { instance: any, type: string }) => {
       if (type === 'form') {
         this.registerFormInstance(instance);
@@ -205,6 +223,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       }
       if (type === ActionPanel.spiralFrameworkName) {
         this.registerActionPanelInstance(instance);
+      }
+      if (type === FilterToggle.spiralFrameworkName) {
+        this.registerFilterToggleInstance(instance);
       }
     });
   }
@@ -312,6 +333,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       if (f.removeMessages) {
         f.removeMessages();
       }
+    });
+    this.capturedFilters.forEach((fToggle) => {
+      fToggle.closePanel();
+      fToggle.setHasFilter(this.state.isCustomSearch);
     });
   }
 

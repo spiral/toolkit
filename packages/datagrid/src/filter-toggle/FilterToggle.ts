@@ -53,7 +53,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     id: {
       value: FilterToggle.defaultOptions.id,
-      domAttr: 'id',
+      domAttr: 'data-id',
     },
   };
 
@@ -179,6 +179,11 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
 
   public openPanel() {
     this.state.isOpen = true;
+    this.update();
+  }
+
+  setHasFilter(isCustomSearch: boolean) {
+    this.state.hasFilter = isCustomSearch;
     this.update();
   }
 }

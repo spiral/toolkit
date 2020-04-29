@@ -209,6 +209,10 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    */
   captureActionPanels?: string[];
   /**
+   * Ids of filter panels to connect to
+   */
+  captureFilters?: string[];
+  /**
    * lock type to use on grids
    */
   lockType: string;
