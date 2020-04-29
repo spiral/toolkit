@@ -11,7 +11,7 @@ export class AutocompleteTags {
 
   parentNode: Element;
 
-  innerClick?: boolean;
+  isDisabled: boolean;
 
   constructor(options: IAutocompleteTagsOptions) {
     // this.node = document.createElement('div');
@@ -22,12 +22,26 @@ export class AutocompleteTags {
     this.items = [];
 
     this.parentNode = this.options.inputNode.parentNode as Element;
+
+    this.isDisabled = this.options.isDisabled;
   }
 
   appendTag(item: HTMLDivElement | DocumentFragment) {
     // this.node.appendChild(item);
 
     this.parentNode.insertBefore(item, this.options.inputNode);
+  }
+
+  public enable() {
+    if (!this.isDisabled) return;
+    this.isDisabled = false;
+    this.renderTags();
+  }
+
+  public disable() {
+    if (this.isDisabled) return;
+    this.isDisabled = true;
+    this.renderTags();
   }
 
   public addTag(dataItem: IAutocompleteDataItem) {
@@ -87,32 +101,25 @@ export class AutocompleteTags {
     itemText.innerHTML = this.options.inputTemplate(dataItem);
     item.appendChild(itemText);
 
-    const deleteButton = document.createElement('button');
-    deleteButton.type = 'button';
-    deleteButton.setAttribute('aria-label', 'Close');
-    deleteButton.classList.add('close');
-    deleteButton.innerHTML = '<span aria-hidden="true">×</span>';
-    deleteButton.dataset.value = getValue(dataItem, valueKey);
-    item.appendChild(deleteButton);
+    if (!this.isDisabled) {
+      const deleteButton = document.createElement('button');
+      deleteButton.type = 'button';
+      deleteButton.setAttribute('aria-label', 'Close');
+      deleteButton.classList.add('close');
+      deleteButton.innerHTML = '<span aria-hidden="true">×</span>';
+      deleteButton.dataset.value = getValue(dataItem, valueKey);
+      item.appendChild(deleteButton);
 
-    deleteButton.addEventListener('click', this.handleClickTag);
+      deleteButton.addEventListener('click', this.handleRemoveTag);
+    }
     return item;
   }
 
-  // @autobind
-  // handleClickNode() {
-  //   if (this.innerClick) {
-  //     this.innerClick = false;
-  //     return;
-  //   }
-  //   this.options.onFocus();
-  // }
-
   @autobind
-  handleClickTag(event: MouseEvent) {
-    event.preventDefault();
+  handleRemoveTag(event: MouseEvent) {
+    if (this.isDisabled) return;
 
-    this.innerClick = true;
+    event.preventDefault();
 
     const button = event.target as HTMLButtonElement;
     const { value } = button.dataset;

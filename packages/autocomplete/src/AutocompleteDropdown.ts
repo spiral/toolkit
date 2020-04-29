@@ -12,6 +12,8 @@ export class AutocompleteDropdown {
 
   selectedIndex: number;
 
+  isDisabled: boolean;
+
   isInnerFocus?: boolean;
 
   constructor(options: IAutocompleteDropdownOptions) {
@@ -21,9 +23,13 @@ export class AutocompleteDropdown {
     this.options = options;
 
     this.selectedIndex = -1;
+
+    this.isDisabled = this.options.isDisabled;
   }
 
   public show() {
+    if (this.isDisabled) return;
+
     this.node.classList.add('show');
   }
 
@@ -40,6 +46,14 @@ export class AutocompleteDropdown {
     this.node.parentNode!.replaceChild(clone, this.node);
     this.node = clone as HTMLDivElement;
     // this.node.innerHTML = '';
+  }
+
+  public enable() {
+    this.isDisabled = false;
+  }
+
+  public disable() {
+    this.isDisabled = true;
   }
 
   public setData(data: IAutocompleteData) {

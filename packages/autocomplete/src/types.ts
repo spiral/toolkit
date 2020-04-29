@@ -36,6 +36,7 @@ export interface IAutocompleteDataSourceOptions {
 }
 
 export interface IAutocompleteDropdownOptions {
+  isDisabled: boolean;
   inputTemplate: Function;
   suggestTemplate: Function;
   onSelectItem: (dataItem: IAutocompleteDataItem, isSave?: boolean) => void;
@@ -43,6 +44,7 @@ export interface IAutocompleteDropdownOptions {
 }
 
 export interface IAutocompleteTagsOptions {
+  isDisabled: boolean;
   inputNode: Element;
   valueKey: string;
   inputTemplate: Function;
