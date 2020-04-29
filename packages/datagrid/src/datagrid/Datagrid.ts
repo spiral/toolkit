@@ -97,7 +97,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.createRenderers();
     this.initFromUrl();
     this.captureForms();
-    if (this.allFormsAttached()) {
+    this.setFilterStatuses();
+    if (this.allFormsAttached() && !this.state.isLoading) {
       this.request();
     }
   }
@@ -189,7 +190,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       && this.options.captureFilters
       && this.options.captureFilters.indexOf(formInstance.options.id) >= 0) {
       this.capturedFilters.push(formInstance);
-      // (formInstance as FilterToggle).setHasFilter({ selectionType: this.options.selectable!.type }, this);
+      formInstance.setHasFilter(this.state.listCustomFields);
     }
   }
 
@@ -336,7 +337,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     });
     this.capturedFilters.forEach((fToggle) => {
       fToggle.closePanel();
-      fToggle.setHasFilter(this.state.isCustomSearch);
+    });
+    this.setFilterStatuses();
+  }
+
+  private setFilterStatuses() {
+    this.capturedFilters.forEach((fToggle) => {
+      fToggle.setHasFilter(this.state.listCustomFields);
     });
   }
 
@@ -360,7 +367,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   async request() {
     if (!this.allFormsAttached()) {
-      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
+      console.debug('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
       return;
     }
     if (this.state.isLoading) {
@@ -371,6 +378,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.beforeSubmit();
     this.lock();
     this.updateUrl();
+    console.log(this.state.isCustomSearch, this.getDefaults(), this.formRequest());
     const isGet = this.options.method.toUpperCase() === RequestMethod.GET;
     const data = this.formRequest();
 

@@ -68,6 +68,28 @@ export class DatagridState<Item = any> {
     }, true);
   }
 
+  // eslint-disable-next-line
+  get listCustomFields() {
+    const customFields = new Set<string>();
+    Object.keys(this.state.formData).forEach((formKey: string) => {
+      const formData = this.state.formData[formKey];
+      Object.keys(formData).forEach((field: string) => {
+        const fieldValue = formData[field];
+        const defaultValue = this.state.defaultData[field];
+        if (fieldValue && defaultValue) {
+          // eslint-disable-next-line eqeqeq
+          if(fieldValue != defaultValue) {
+            customFields.add(field);
+          }
+        }
+        if ((!fieldValue && defaultValue) || (fieldValue && !defaultValue)) {
+          customFields.add(field);
+        }
+      });
+    });
+    return customFields;
+  }
+
   get selectedItems() {
     return this.data.filter((item: any) => !!this.parent.options.selectable && this.isSelected(String(item[this.parent.options.selectable.id])));
   }

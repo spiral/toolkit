@@ -3,13 +3,14 @@ import { autobind } from '../autobind';
 import { FILTER_TOGGLE_CLASS_NAME } from '../constants';
 import type Datagrid from '../datagrid/Datagrid';
 
-const {handlebars, assert} = sf.helpers;
+const { handlebars, assert } = sf.helpers;
 
 const BUTTON_CLASS = '.sf-filter-toggle-button';
 const PANEL_CLASS = '.sf-filter-toggle-panel';
 
 export interface IFilterToggleOptions {
   id: string;
+  trackFields?: string[];
 }
 
 export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
@@ -55,9 +56,17 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
       value: FilterToggle.defaultOptions.id,
       domAttr: 'data-id',
     },
+    trackFields: {
+      value: FilterToggle.defaultOptions.trackFields,
+      domAttr: 'data-track-fields',
+      processor(node: Element, val: any) {
+        if (val === undefined || val == null) return this.value;
+        return val.split(',');
+      },
+    },
   };
 
-  options: IFilterToggleOptions = {...FilterToggle.defaultOptions};
+  options: IFilterToggleOptions = { ...FilterToggle.defaultOptions };
 
   sf!: ISpiralFramework;
 
@@ -96,8 +105,6 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
       this.panelOptions.closedClass = this.togglePanel.getAttribute('data-class-closed') || '';
     }
 
-    console.log(this.panelOptions, this.toggleOptions);
-
     this.bind();
     this.update();
   }
@@ -134,7 +141,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
       }
     }
     if (this.toggleOptions.template) {
-      this.toggleButton.innerHTML = this.toggleOptions.template({isEmpty: !this.state.hasFilter});
+      this.toggleButton.innerHTML = this.toggleOptions.template({ isEmpty: !this.state.hasFilter });
     }
   }
 
@@ -161,7 +168,6 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
     const node = e.target as Element;
     const isInsidePanel: boolean = !!sf.helpers.domTools.closest(node, PANEL_CLASS);
     const isInsideButton: boolean = node === this.toggleButton || !!sf.helpers.domTools.closest(node, BUTTON_CLASS);
-    console.log(node, isInsideButton, isInsidePanel);
 
     if (this.state.isOpen) {
       if (!isInsidePanel) {
@@ -182,8 +188,18 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
     this.update();
   }
 
-  setHasFilter(isCustomSearch: boolean) {
-    this.state.hasFilter = isCustomSearch;
+  setHasFilter(fields: Set<string>) {
+    console.log(fields, this.options.trackFields);
+    if (!this.options.trackFields) {
+      this.state.hasFilter = !!fields.size;
+    } else {
+      this.state.hasFilter = false;
+      this.options.trackFields.forEach((f) => {
+        if (fields.has(f)) {
+          this.state.hasFilter = true;
+        }
+      });
+    }
     this.update();
   }
 }
