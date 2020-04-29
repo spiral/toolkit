@@ -4,12 +4,16 @@ const config = {
   ...baseConfig,
 
   entry: {
-    core: ['./src/index.js'],
+    core: ['./src/index.ts'],
   },
 
   output: {
     ...baseConfig.output,
-    library: '@spiral-toolkit/core',
+    library: {
+      amd: '@spiral-toolkit/core',
+      commonjs: '@spiral-toolkit/core',
+      root: 'sf',
+    },
   },
 };
 

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "incremental": true,
+    "downlevelIteration": true,
+    "declaration": true,
+    "declarationMap": false,
+    "allowJs": true,
+    "composite": true,
+    "experimentalDecorators": true,
+    "pretty": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "typeRoots": [ "./typings", "./node_modules/@types" ]
+  }
+}

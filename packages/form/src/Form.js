@@ -11,6 +11,10 @@ import iterateInputs from './iterateInputs';
 
 import './styles.css';
 
+let idCounter = 1;
+
+const { CUSTOM_INPUT_TARGET_ATTR } = core.constants;
+const { isNodeInsideCustomSFInput } = core.tools;
 
 /**
  * Spiral Forms
@@ -22,6 +26,8 @@ import './styles.css';
  */
 const Form = function (sf, node, options) {
   this._construct(sf, node, options);
+  this._defaultValues = this.getFormData();
+  this._prevValues = {};
 };
 
 
@@ -45,6 +51,12 @@ Form.prototype.name = 'form';
  */
 Form.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options);
+  if (!this.options.id) {
+    // eslint-disable-next-line no-plusplus
+    this.options.id = `form:${idCounter++}`;
+  }
+  // console.log('Created form ', this.options.url);
+  this.options.jsonOnly = this.options.jsonOnly && !!window.FormData;
   this.mixMessagesOptions();
   // this.options.fillFrom && this.fillFieldsFrom(); // id required to fill form
 
@@ -83,6 +95,10 @@ Form.prototype.optionsToGrab = {
       return this;
     },
   },
+  id: {
+    value: '',
+    domAttr: 'id',
+  },
   /**
      * URL to send form (if ajax form) <b>Default: "/"</b>
      */
@@ -98,11 +114,30 @@ Form.prototype.optionsToGrab = {
     value: 'POST',
   },
   /**
+     * If any input changes should trigger form submit
+     * Value is debounce value
+     */
+  immediate: {
+    domAttr: 'data-immediate',
+    value: false,
+    processor(node, val) {
+      if (!val) return false;
+      return +val;
+    },
+  },
+  /**
      * Lock type when form sending <b>Default: "default"</b> @see sf.lock
      */
   lockType: {
     value: 'default',
     domAttr: 'data-lock-type',
+  },
+  /**
+     * Force to not use FormData even if it's available
+     */
+  jsonOnly: {
+    value: false,
+    domAttr: 'data-json-only',
   },
   /**
      *
@@ -194,6 +229,42 @@ Form.prototype.mixMessagesOptions = function () {
   };
 };
 
+Form.prototype.onDebouncedSubmit = function (e) {
+  if (this.options.immediate) {
+    if (!this.options.jsonOnly) {
+      console.error('Should not used immediate forms on non json forms');
+      return false;
+    }
+    if (isNodeInsideCustomSFInput(e.target)) {
+      // Don't parse inputs that are used as helpers
+      return false;
+    }
+    if (e.target.getAttribute('name')) {
+      const name = e.target.getAttribute('name');
+      const data = this.getFormData();
+      // eslint-disable-next-line eqeqeq
+      if (this._prevValues[name] != data[name]) {
+        this._prevValues[name] = data[name];
+      } else {
+        return false;
+      }
+    }
+    if (this.sf.getInstance('lock', this.node)) {
+      // On lock we should'n do any actions
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+
+    clearTimeout(this._submitTimeout);
+    this._submitTimeout = setTimeout(() => {
+      this.onSubmit(e);
+    }, this.options.immediate);
+  }
+
+  return true;
+};
+
 /**
  * Call on form submit
  * @param {Event} e submit event
@@ -212,7 +283,7 @@ Form.prototype.onSubmit = function (e) {
 
   // We can send files only with FormData
   // If form contain files and no FormData than disable ajax
-  if (!window.FormData && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
+  if (!this.options.jsonOnly && this.options.context.querySelectorAll("input[type='file']").length !== 0) {
     this.options.useAjax = false;
   }
   this.events.trigger('beforeSend', this.options);
@@ -229,16 +300,9 @@ Form.prototype.onSubmit = function (e) {
 
 /**
  * Locker. Add or remove.
- * @param {Boolean} [remove]
  */
-Form.prototype.lock = function (remove) {
+Form.prototype.lock = function () {
   if (!this.options.lockType || this.options.lockType === 'none') {
-    return;
-  }
-  if (remove) {
-    if (!this.sf.removeInstance('lock', this.node)) {
-      console.warn("You try to remove 'lock' instance, but it is not available or not started");
-    }
     return;
   }
   const lock = this.sf.addInstance('lock', this.node, { type: this.options.lockType });
@@ -249,6 +313,18 @@ Form.prototype.lock = function (remove) {
   this.options.onProgress = lock.progress;
 };
 
+/**
+ * Locker. Add or remove.
+ */
+Form.prototype.unlock = function () {
+  if (!this.options.lockType || this.options.lockType === 'none') {
+    return;
+  }
+  if (!this.sf.removeInstance('lock', this.node)) {
+    console.warn("You try to remove 'lock' instance, but it is not available or not started");
+  }
+};
+
 // Form messages
 Form.prototype.showFormMessage = formMessages.showFormMessage;
 Form.prototype.showFieldMessage = formMessages.showFieldMessage;
@@ -257,10 +333,33 @@ Form.prototype.showMessages = formMessages.showMessages;
 Form.prototype.removeMessages = formMessages.removeMessages;
 Form.prototype.removeMessage = formMessages.removeMessage;
 
-Form.prototype.processAnswer = function (answer) {
+Form.prototype.processAnswer = function (answer, showUnknown = true) {
   if (this.options.messagesType) {
-    this.showMessages(answer);
+    this.showMessages(answer, showUnknown);
   }
+};
+
+Form.prototype.setFieldValues = function (values) {
+  this.sf.iterateInputs(this.node, values, (el, value) => {
+    if (el.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && typeof el.sfSetValue === 'function') {
+      el.sfSetValue(value);
+    } else {
+      if (el.type === 'checkbox' || el.type === 'radio') {
+        if (!el.value) { // single checkbox
+          el.checked = !!value;
+        } else {
+          // eslint-disable-next-line eqeqeq,max-len
+          el.checked = Array.isArray(value) ? (value.indexOf(el.value) >= 0) : (el.value == value);
+        }
+      }
+      el.value = value; // TODO: That wont work for radiogroups, etc.
+    }
+  });
+};
+
+Form.prototype.enumerateFieldNames = function () {
+  // console.log(this.node.querySelectorAll('input,select,textarea'));
+  return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
 };
 
 Form.prototype.optCallback = function (options, type) {
@@ -268,9 +367,10 @@ Form.prototype.optCallback = function (options, type) {
     // eslint-disable-next-line no-eval
     const fn = eval(options[type]);
     if (typeof (fn) === 'function') {
-      fn.call(options);
+      return fn.call(this, options);
     }
   }
+  return undefined;
 };
 
 /**
@@ -279,8 +379,10 @@ Form.prototype.optCallback = function (options, type) {
  */
 Form.prototype.send = function (sendOptions) {
   const that = this;
+  if (this.optCallback(sendOptions, 'beforeSubmitCallback') === false) {
+    return;
+  }
   this.lock();
-  this.optCallback(sendOptions, 'beforeSubmitCallback');
   this.sf.ajax.send(sendOptions).then(
     (answer) => {
       that.events.trigger('success', sendOptions);
@@ -291,9 +393,9 @@ Form.prototype.send = function (sendOptions) {
       return error;
     },
   ).then((answer) => {
-    that.lock(true);
+    that.unlock();
     that.processAnswer(answer);
-    this.optCallback(sendOptions, 'afterSubmitCallback');
+    this.optCallback({ ...sendOptions, response: answer }, 'afterSubmitCallback');
     that.events.trigger('always', sendOptions);
   });
 
@@ -306,10 +408,30 @@ Form.prototype.send = function (sendOptions) {
  * @return {Object}
  */
 Form.prototype.getFormData = function () {
-  if (window.FormData) {
-    return new FormData(this.options.context);
+  if (!this.options.jsonOnly) {
+    // IE11 will try sending unnamed inputs and will ruin everything, so disable them
+    this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
+      if (!input.name) {
+        if (!input.hasAttribute('disabled')) {
+          input.setAttribute('data-sf-temp-disabled-old', 'yes');
+          input.setAttribute('disabled', true);
+        }
+      }
+    });
+    const result = new FormData(this.options.context);
+    // Recover inputs that were not intended to be disabled
+    this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
+      if (!input.name) {
+        const shouldRemoveDisabled = input.getAttribute('data-sf-temp-disabled-old');
+        if (shouldRemoveDisabled) {
+          input.removeAttribute('disabled');
+        }
+        input.removeAttribute('data-sf-temp-disabled-old');
+      }
+    });
+    return result;
   }
-  console.log(`Form \`${this.options.context}\` were processed without FormData.`);
+  // console.log(`Form \`${this.options.context}\` were processed without FormData.`);
   return new FormToObject(this.options.context);
 };
 
@@ -325,13 +447,35 @@ Form.prototype.setOptions = function (opt) {
  * Add all events for forms
  */
 Form.prototype.addEvents = function () {
-  const that = this;
   this.DOMEvents.add([
     {
       DOMNode: this.options.context,
       eventType: 'submit',
-      eventFunction(e) {
-        that.onSubmit.call(that, e);
+      eventFunction: (e) => {
+        this.onSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'reset',
+      eventFunction: (e) => {
+        setTimeout(() => {
+          this.onSubmit(e);
+        });
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'change',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
+      },
+    },
+    {
+      DOMNode: this.options.context,
+      eventType: 'input',
+      eventFunction: (e) => {
+        this.onDebouncedSubmit(e);
       },
     },
   ]);

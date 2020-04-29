@@ -1,0 +1,85 @@
+@import "../vars";
+
+.sf-table {
+  margin: 1.25rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  border-bottom-width: 2px;
+  font-size: 0.875rem;
+  background-color: $white;
+
+  border-radius: 0.25rem;
+}
+
+.sf-table .table {
+  margin-bottom: 0;
+}
+
+.sf-table thead th {
+  border-top: 0;
+}
+
+.sf-table tr.row-align-middle > td {
+  vertical-align: middle;
+}
+
+.sf-table .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sf-table__select {
+  padding-left: 1rem !important; /* TODO: should work without that */
+  width: 40px;
+}
+
+.sf-table__empty {
+  padding: 30px;
+  text-align: center;
+  color: $dark;
+  background-color: $white;
+}
+
+.sf-table__error {
+  padding: 30px;
+  text-align: center;
+  color: $danger;
+}
+
+.sf-table__sort {
+  position: relative;
+  padding: 0 1.5rem;
+  cursor: pointer;
+}
+.sf-table__sort::before,
+.sf-table__sort::after {
+  position: absolute;
+  opacity: 0.3;
+  font-family: monospace;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.sf-table__sort::before {
+  content: '\2191';
+  left: 0;
+}
+.sf-table__sort::after {
+  content: '\2193';
+  left: 0.5rem;
+}
+
+.sf-table__sort_asc::before,
+.sf-table__sort_desc::after {
+  opacity: 1;
+}
+
+.sf-table__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sf-table__actions > a {
+  flex-shrink: 0;
+}
+
+.sf-table__actions > a:not(:first-of-type) {
+  margin-left: 0.75rem;
+}

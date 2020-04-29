@@ -1,0 +1,38 @@
+{
+  "name": "@spiral-toolkit/keeper",
+  "version": "0.1.1",
+  "private": true,
+  "description": "",
+  "main": "dist/keeper.js",
+  "scripts": {
+    "clean": "rimraf \"./dist\"",
+    "prebuild": "yarn clean",
+    "build:dev": "cross-env NODE_ENV=development webpack --mode development",
+    "watch": "cross-env NODE_ENV=development webpack --watch --mode development",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "start": "yarn clean & yarn watch",
+    "lint:fix": "yarn lint:js --fix && yarn lint:css --fix",
+    "lint:js": "eslint \"src/**/*.js\"",
+    "lint:css": "stylelint \"src/**/*.scss\"",
+    "lint": "yarn lint:js && yarn lint:css"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "bootstrap": "^4.3.1"
+  },
+  "devDependencies": {
+    "file-loader": "^6.0.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "node-sass": "^4.12.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "sass-loader": "^8.0.0",
+    "stylelint": "^13.3.3",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-webpack-plugin": "^1.0.2",
+    "svg-url-loader": "^5.0.0"
+  }
+}

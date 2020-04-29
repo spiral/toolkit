@@ -1,5 +1,5 @@
 
-const sf = require('@spiral-toolkit/core');
+const sf = require('@spiral-toolkit/core').default;
 const Lock = require('./Lock').default;
 
 sf.registerInstanceType(Lock);

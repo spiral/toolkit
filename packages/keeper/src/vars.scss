@@ -1,0 +1,32 @@
+$primary: #497cb1;
+$sidebar: #49545f;
+
+$font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+
+$font-size-base: 0.875rem;
+$font-weight-bold: 500;
+$font-weight-bolder: 700;
+
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.75;
+$h3-font-size: $font-size-base * 1.5;
+$h4-font-size: $font-size-base * 1.325;
+$h5-font-size: $font-size-base * 1.25;
+$h6-font-size: $font-size-base;
+
+$grid-gutter-width: 1.25rem;
+
+$card-border-color: rgba(0, 0, 0, 0.075);
+$dropdown-border-color: rgba(0, 0, 0, 0.075);
+$pagination-border-color: rgba(0, 0, 0, 0.075);
+
+$custom-select-border-radius: .125rem;
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+$primary-darken: darken($primary, 15%);
+$primary-lighten: lighten($primary, 25%);
+$focus: lighten($primary, 25%);
+$focus-semitransparent: rgba($primary, .25);

@@ -3,6 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-template-curly-in-string */
+const sf = require('@spiral-toolkit/core').default;
 
 const defaults = {
   // template: '<div class="alert form-msg ${type}"><button class="btn-close">×</button><p class="msg">${text}</p></div>',
@@ -53,7 +54,7 @@ function prepareMessageObject(message, type) {
 
 module.exports = {
   defaults,
-  showMessages(answer) {
+  showMessages(answer, showUnknown = true) {
     if (!answer) return;
 
     let isMsg = false;
@@ -69,15 +70,15 @@ module.exports = {
       });
 
       if (answer.data.messages) {
-        this.showFieldsMessages(answer.data.messages, 'success');
+        this.showFieldsMessages(answer.data.messages, 'success', showUnknown);
         isMsg = true;
       }
       if (answer.data.errors) {
-        this.showFieldsMessages(answer.data.errors, 'error');
+        this.showFieldsMessages(answer.data.errors, 'error', showUnknown);
         isMsg = true;
       }
       if (answer.data.warnings) {
-        this.showFieldsMessages(answer.data.warnings, 'warning');
+        this.showFieldsMessages(answer.data.warnings, 'warning', showUnknown);
         isMsg = true;
       }
     }
@@ -166,7 +167,7 @@ module.exports = {
      * @param {Boolean} [isContainer]
      */
   showFieldMessage(el, message, type, isContainer) {
-    let field = isContainer ? el : window.sf.helpers.domTools.closest(el, this.options.messages.field);
+    let field = isContainer ? el : sf.helpers.domTools.closest(el, this.options.messages.field);
     let tpl = this.options.messages.fieldTemplate;
 
     if (!field) {
@@ -216,20 +217,22 @@ module.exports = {
     });
   },
 
-  showFieldsMessages(messages, type) {
+  showFieldsMessages(messages, type, showUnknown = true) {
     const that = this;
-    const notFound = window.sf.iterateInputs(this.node, messages, (el, message) => {
+    const notFound = sf.iterateInputs(this.node, messages, (el, message) => {
       that.showFieldMessage(el, message, type);
     });
 
-    notFound.forEach((msgObj) => {
-      Object.keys(msgObj).forEach((name) => {
-        const container = that.node.querySelector(`[data-message-placeholder="${name}"]`);
-        if (container) {
-          // TODO check container.dataset.messageVariant? variants are "field" and "form"
-          that.showFieldMessage(container, msgObj[name], type, true);
-        }
+    if (showUnknown) {
+      notFound.forEach((msgObj) => {
+        Object.keys(msgObj).forEach((name) => {
+          const container = that.node.querySelector(`[data-message-placeholder="${name}"]`);
+          if (container) {
+            // TODO check container.dataset.messageVariant? variants are "field" and "form"
+            that.showFieldMessage(container, msgObj[name], type, true);
+          }
+        });
       });
-    });
+    }
   },
 };

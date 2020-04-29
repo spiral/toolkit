@@ -13,7 +13,11 @@ const config = {
   },
 
   externals: {
-    '@spiral-toolkit/core': '@spiral-toolkit/core',
+    '@spiral-toolkit/core': {
+      root: 'SFToolkit',
+      commonjs2: '@spiral-toolkit/core',
+      commonjs: '@spiral-toolkit/core',
+    },
   },
 };
 

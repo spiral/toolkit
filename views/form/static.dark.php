@@ -1,13 +1,13 @@
-<extends path="toolkit:form/field"/>
+<extends:toolkit:form.field />
 
 <block:element>
-    <input inputID:consume
-           id="${id}"
-           data-input="true"
-           type="text"
-           readonly="true"
-           class="form-control-plaintext@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif ${class}"
-           value="${value}${context}"
-           attr:aggregate="exclude:path,context"
-    >
+  <input
+    id="${id}"
+    data-input="true"
+    readonly="true"
+    class="form-control-plaintext@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+    type="text"
+    name="${name}"
+    value="${value}${context}"
+  >
 </block:element>

@@ -1,6 +1,12 @@
 # Spiral Toolkit
 AJAX and form serialization toolkit for Spiral Framework.
 
+Repository consists of 2 main components: *Toolkit* and *Keeper*
+
+Toolkit is set of modules implementing a simple front-end framework, capable of serializing forms, showing loaders and datagrids
+
+Keeper is set of scripts that demonstrate typical toolkit usage with Spiral Frameworks, including default styles based on bootstrap 4.
+
 ## Prerequisites
 * [node 11.15.0+](https://nodejs.org/en/download/) use recent LTS version
 * [yarn 1.17.0+](https://yarnpkg.com/en/docs/install) use recent stable version
@@ -17,6 +23,8 @@ When developing both in co-dependent packages use separate commands like so:
 - `yarn build:form` to build form package. 
 - `yarn build:lock` to build lock package. 
 - `yarn build:toolkit` to build toolkit package. 
+- `yarn build:datagrid` to build datagrid package. 
+- `yarn build:keeper` to build keeper package. 
 
 Alternatively execute `yarn build` from package folder.
 
@@ -29,6 +37,11 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 - `packages/form` - form module for the toolkit
 - `packages/lock` - lock module for the toolkit
 - `packages/core` - main toolkit package
+
+Windows
+------
+
+On windows execute `git config core.autocrlf false` to disable automatic line ending conversion.
 
 --------
 MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).

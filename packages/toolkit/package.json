@@ -9,12 +9,13 @@
     "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:dev": "cross-env NODE_ENV=development webpack",
+    "watch": "cross-env NODE_ENV=development webpack --watch",
     "clean": "rimraf dist",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js --fix",
-    "lint:js": "eslint \"src/**/**.js\""
+    "lint:js": "eslint \"src/**/*.js\""
   },
   "keywords": [
     "input",
@@ -52,8 +53,13 @@
   "devDependencies": {},
   "dependencies": {
     "@spiral-toolkit/core": "^0.3.6",
+    "@spiral-toolkit/autocomplete": "^0.3.6",
+    "@spiral-toolkit/datagrid": "^0.1.0",
     "@spiral-toolkit/form": "^0.1.0",
     "@spiral-toolkit/locker": "^0.1.0",
+    "@spiral-toolkit/qrcode": "^0.1.0",
+    "core-js": "^3.6.5",
+    "css-vars-ponyfill": "^2.2.1",
     "date-fns": "^2.2.1",
     "moment": "^2.24.0",
     "pikaday": "^1.8.0"

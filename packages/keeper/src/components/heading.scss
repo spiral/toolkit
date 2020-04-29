@@ -1,0 +1,17 @@
+@import "../vars";
+
+.sf-heading {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1.25rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sf-heading h1 {
+  margin: 0 0.5rem 0 0;
+}
+
+.sf-heading .btn {
+  flex-shrink: 0;
+}

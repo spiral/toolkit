@@ -1,0 +1,32 @@
+@import "../vars";
+
+.sf-breadcrumb {
+  width: 100%;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.sf-breadcrumb__list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sf-breadcrumb__item {
+  color: $gray-600;
+}
+
+.sf-breadcrumb__item:not(:first-child)::before {
+  content: '/';
+  margin: 0 0.5rem;
+}
+
+.sf-breadcrumb__item > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sf-breadcrumb__item > a:hover {
+  color: $primary-darken;
+}

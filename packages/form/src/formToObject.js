@@ -7,6 +7,12 @@
  */
 // Constructor.
 
+// @ts-ignore
+const core = require('@spiral-toolkit/core').default;
+
+const { CUSTOM_INPUT_TARGET_ATTR } = core.constants;
+const { isNodeInsideCustomSFInput } = core.tools;
+
 const FormToObject = function (formRef) {
   if (!formRef) {
     return false;
@@ -50,7 +56,7 @@ FormToObject.prototype.setForm = function () {
 
 // Set the elements we need to parse.
 FormToObject.prototype.setFormElements = function () {
-  this.$formElements = this.$form.querySelectorAll('input, textarea, select');
+  this.$formElements = this.$form.querySelectorAll(`input, textarea, select, [${CUSTOM_INPUT_TARGET_ATTR}]`);
   return this.$formElements.length;
 };
 
@@ -80,6 +86,15 @@ FormToObject.prototype.forEach = function (arr, callback) {
 FormToObject.prototype.addChild = function (result, domNode, keys, value) {
   // #1 - Single dimensional array.
   if (keys.length === 1) {
+    if (isNodeInsideCustomSFInput(domNode)) {
+      // Don't parse inputs that are used as helpers
+      return;
+    }
+    if (domNode.hasAttribute(CUSTOM_INPUT_TARGET_ATTR)) {
+      // That is sf custom component specific input
+      result[keys] = value;
+      return;
+    }
     // We're only interested in the radio that is checked.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'radio') {
       if (domNode.checked) {
@@ -92,25 +107,34 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     // Checkboxes are a special case. We have to grab each checked values
     // and put them into an array.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'checkbox') {
-      if (domNode.checked) {
+      if (value) { // Looks like checkbox array
         if (!result[keys]) {
           result[keys] = [];
         }
-        result[keys].push(value);
-        return;
+        if (domNode.checked) {
+          result[keys].push(value);
+        }
+      } else {
+        result[keys] = domNode.checked ? 1 : 0; // Single checkbox
       }
       return;
     }
 
+
     // Multiple select is a special case.
     // We have to grab each selected option and put them into an array.
-    if (domNode.nodeName === 'SELECT' && domNode.type === 'select-multiple') {
-      result[keys] = [];
-      const DOMchilds = domNode.querySelectorAll('option[selected]');
-      if (DOMchilds) {
-        this.forEach(DOMchilds, (child) => {
-          result[keys].push(child.value);
-        });
+    if (domNode.nodeName === 'SELECT') {
+      if (domNode.type === 'select-multiple') {
+        result[keys] = [];
+        const DOMchilds = domNode.querySelectorAll('option[selected]'); // TODO: that wont work
+        if (DOMchilds) {
+          this.forEach(DOMchilds, (child) => {
+            result[keys].push(child.value);
+          });
+        }
+      } else {
+        // const selected = domNode.querySelector('option[selected]');
+        result[keys] = value; // select.value isn't getting proper value for value-less options
       }
       return;
     }
@@ -128,9 +152,8 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     this.addChild(result[keys[0]], domNode, keys.splice(1, keys.length), value);
   }
 
-  // return result; // ?
+// return result; // ?
 };
-
 FormToObject.prototype.setFormObj = function () {
   let test;
   let i = 0;

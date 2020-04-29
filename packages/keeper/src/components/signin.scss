@@ -1,0 +1,47 @@
+@import "../vars";
+
+.signin {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  flex: 1;
+  background-color: $light;
+}
+
+.signin .card {
+  width: 70%;
+  min-width: 300px;
+  margin: auto;
+}
+
+.signin h2,
+.signin .form-group {
+  margin-bottom: 1rem;
+}
+
+.signin__logo {
+  width: 150px;
+}
+
+@media (min-width: 576px) {
+  .signin .card {
+    width: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .signin__logo {
+    width: 200px;
+  }
+}
+
+@media (min-width: 992px) {
+  .signin .card {
+    width: 800px;
+  }
+
+  .signin__logo {
+    width: 250px;
+  }
+}

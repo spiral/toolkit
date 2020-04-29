@@ -19,8 +19,12 @@
     }
   },
   "extra": {
+    "release-url": "https://github.com/spiral/toolkit/releases/download/{tag}/{file}",
     "publish": {
-      "packages/toolkit/dist/*:@public/scripts/": "replace:readonly"
+      "release(toolkit.zip):@public/toolkit/": "replace:readonly",
+      "release(autocomplete.zip):@public/toolkit/autocomplete/": "replace:readonly",
+      "release(qrcode.zip):@public/toolkit/qrcode/": "replace:readonly",
+      "release(keeper.zip):@public/keeper/": "replace:readonly"
     }
   }
 }
