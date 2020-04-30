@@ -1,6 +1,7 @@
 import sf from '@spiral-toolkit/core';
 import ActionPanel from './actionpanel/ActionPanel';
 import DataGrid from './datagrid/Datagrid';
+import FilterToggle from './filter-toggle/FilterToggle';
 import Paginator from './paginator/Paginator';
 import { tools } from './tools';
 
@@ -17,5 +18,6 @@ if ((window as any).SFToolkit && !(window as any).SFToolkit.tools) {
 sf.registerInstanceType(DataGrid, DataGrid.spiralFrameworkCss);
 sf.registerInstanceType(Paginator, Paginator.spiralFrameworkCss);
 sf.registerInstanceType(ActionPanel, ActionPanel.spiralFrameworkCss);
+sf.registerInstanceType(FilterToggle, FilterToggle.spiralFrameworkCss);
 
 export default DataGrid; // ES6 default export will not expose us as global

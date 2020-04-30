@@ -4,6 +4,7 @@ import {
   DATAGRID_CLASS_NAME,
   DEFAULT_LIMIT, pageParams, RequestMethod, SelectionType, SortDirection, sortParams,
 } from '../constants';
+import FilterToggle from '../filter-toggle/FilterToggle';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
 import { defaultGridOptions } from '../render/defaultRenderer';
@@ -55,9 +56,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   capturedForms: { [id: string]: { instance: any, fields: Array<string> } } = {}; // TODO: type as sf.Form instance array
 
-  capturedPaginators: Array<Paginator> = []; // TODO: type as sf.Paginator instance array
+  capturedPaginators: Array<Paginator> = [];
 
-  capturedActionPanels: Array<ActionPanel> = []; // TODO: type as sf.Paginator instance array
+  capturedActionPanels: Array<ActionPanel> = [];
+
+  capturedFilters: Array<FilterToggle> = [];
 
   private defaults: IPaginatorParams & { sortBy?: string, sortDir?: SortDirection } = {
     page: 1, // TODO: different defaults depending on paginator type
@@ -94,7 +97,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.createRenderers();
     this.initFromUrl();
     this.captureForms();
-    if (this.allFormsAttached()) {
+    this.setFilterStatuses();
+    if (this.allFormsAttached() && !this.state.isLoading) {
       this.request();
     }
   }
@@ -180,6 +184,16 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
   }
 
+  public registerFilterToggleInstance(formInstance: any) {
+    if (formInstance.options
+      && formInstance.options.id
+      && this.options.captureFilters
+      && this.options.captureFilters.indexOf(formInstance.options.id) >= 0) {
+      this.capturedFilters.push(formInstance);
+      formInstance.setHasFilter(this.state.listCustomFields);
+    }
+  }
+
   captureForms() {
     const forms = this.sf.getInstances('form') || [];
     forms.forEach((f: { instance: ISFInstance }) => {
@@ -196,6 +210,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       this.registerActionPanelInstance(f.instance);
     });
 
+    const filters = this.sf.getInstances(FilterToggle.spiralFrameworkName) || [];
+    filters.forEach((f: { instance: ISFInstance }) => {
+      this.registerFilterToggleInstance(f.instance);
+    });
+
     this.sf.instancesController.events.on('onAddInstance', ({ instance, type }: { instance: any, type: string }) => {
       if (type === 'form') {
         this.registerFormInstance(instance);
@@ -205,6 +224,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       }
       if (type === ActionPanel.spiralFrameworkName) {
         this.registerActionPanelInstance(instance);
+      }
+      if (type === FilterToggle.spiralFrameworkName) {
+        this.registerFilterToggleInstance(instance);
       }
     });
   }
@@ -313,6 +335,16 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         f.removeMessages();
       }
     });
+    this.capturedFilters.forEach((fToggle) => {
+      fToggle.closePanel();
+    });
+    this.setFilterStatuses();
+  }
+
+  private setFilterStatuses() {
+    this.capturedFilters.forEach((fToggle) => {
+      fToggle.setHasFilter(this.state.listCustomFields);
+    });
   }
 
   private handleError(response: { data: IDatagridErrorResponse, status: number, statusText: string }) {
@@ -335,7 +367,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   async request() {
     if (!this.allFormsAttached()) {
-      console.warn('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
+      console.debug('Cant start new request, not all forms are yet attached', this.options.captureForms, this.options.id);
       return;
     }
     if (this.state.isLoading) {
@@ -346,6 +378,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.beforeSubmit();
     this.lock();
     this.updateUrl();
+    // console.log(this.state.isCustomSearch, this.getDefaults(), this.formRequest());
     const isGet = this.options.method.toUpperCase() === RequestMethod.GET;
     const data = this.formRequest();
 

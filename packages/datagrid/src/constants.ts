@@ -20,6 +20,7 @@ export enum RequestMethod {
 
 export const PAGINATOR_CLASS_NAME = 'js-sf-datagrid-paginator';
 export const ACTION_PANEL_CLASS_NAME = 'js-sf-datagrid-actionpanel';
+export const FILTER_TOGGLE_CLASS_NAME = 'js-sf-filter-toggle';
 export const DATAGRID_CLASS_NAME = 'js-sf-datagrid';
 export const CURSOR_ID_FIELD = 'cid';
 export const LAST_ID_FIELD = 'lid';
@@ -35,8 +36,8 @@ export const defaultGridMessages: IDataGridMessages = {
 };
 
 export const defaultPaginatorMessages: IPaginatorMessages = {
-  currentPage: 'Showing {from} to {to} of {total} entries',
-  currentPageNoTotal: 'Showing {from} to {to}',
+  currentPage: 'Showing {{from}} to {{to}} of {{total}} entries',
+  currentPageNoTotal: 'Showing {{from}} to {{to}}',
   error: 'Showing no entries',
   limitLabel: 'Show',
   nextPage: '»',
