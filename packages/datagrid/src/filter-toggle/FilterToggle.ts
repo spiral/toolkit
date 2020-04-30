@@ -168,7 +168,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  public onForm(e: Event) {
+  public onForm() {
     this.closePanel();
   }
 

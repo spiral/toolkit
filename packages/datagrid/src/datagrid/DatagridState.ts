@@ -78,7 +78,7 @@ export class DatagridState<Item = any> {
         const defaultValue = this.state.defaultData[field];
         if (fieldValue && defaultValue) {
           // eslint-disable-next-line eqeqeq
-          if(fieldValue != defaultValue) {
+          if (fieldValue != defaultValue) {
             customFields.add(field);
           }
         }
