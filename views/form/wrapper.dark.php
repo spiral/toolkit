@@ -1,6 +1,7 @@
 <form
-  @if(inject('id')) id="${id}" @endif
-  action="${action}"
+  @if(injected('id')) id="${id}" @endif
+  @if(injected('data-id')) data-id="${data-id}" @endif
+  action="${action | '#noaction'}"
   method="${method|post}"
   enctype="multipart/form-data"
   accept-charset="UTF-8"

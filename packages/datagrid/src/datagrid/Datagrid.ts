@@ -378,7 +378,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.beforeSubmit();
     this.lock();
     this.updateUrl();
-    console.log(this.state.isCustomSearch, this.getDefaults(), this.formRequest());
+    // console.log(this.state.isCustomSearch, this.getDefaults(), this.formRequest());
     const isGet = this.options.method.toUpperCase() === RequestMethod.GET;
     const data = this.formRequest();
 

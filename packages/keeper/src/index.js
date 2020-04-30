@@ -13,6 +13,7 @@ import './components/statpanel.scss';
 import './components/table.scss';
 import './components/tag.scss';
 import './components/user.scss';
+import './components/filter.scss';
 
 import Nav from './components/nav';
 import Dropdown from './components/dropdown';

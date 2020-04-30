@@ -71,10 +71,10 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   sf!: ISpiralFramework;
 
   state: {
-    hasFilter: boolean,
+    hasFilter: number,
     isOpen: boolean,
   } = {
-    hasFilter: false,
+    hasFilter: 0,
     isOpen: false,
   };
 
@@ -141,7 +141,17 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
       }
     }
     if (this.toggleOptions.template) {
-      this.toggleButton.innerHTML = this.toggleOptions.template({ isEmpty: !this.state.hasFilter });
+      if (this.options.trackFields) {
+        this.toggleButton.innerHTML = this.toggleOptions.template({
+          isEmpty: !this.state.hasFilter,
+          changes: this.state.hasFilter,
+        });
+      } else {
+        this.toggleButton.innerHTML = this.toggleOptions.template({
+          isEmpty: !this.state.hasFilter,
+          changes: '*',
+        });
+      }
     }
   }
 
@@ -159,7 +169,6 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
 
   @autobind
   public onForm(e: Event) {
-    console.log(e, e.type);
     this.closePanel();
   }
 
@@ -189,16 +198,18 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   setHasFilter(fields: Set<string>) {
-    console.log(fields, this.options.trackFields);
+    // console.log(fields, this.options.trackFields);
     if (!this.options.trackFields) {
-      this.state.hasFilter = !!fields.size;
+      this.state.hasFilter = fields.size;
     } else {
-      this.state.hasFilter = false;
+      this.state.hasFilter = 0;
       this.options.trackFields.forEach((f) => {
         if (fields.has(f)) {
-          this.state.hasFilter = true;
+          // eslint-disable-next-line no-plusplus
+          this.state.hasFilter++;
         }
       });
+      // console.log(this.state.hasFilter);
     }
     this.update();
   }
