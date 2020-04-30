@@ -12,7 +12,7 @@ export default class Modal {
     this.id = this.elem.id;
 
     this.toggleElems = document.querySelectorAll(`[data-sf="modal-toggle"][data-target="${this.id}"]`);
-    if (!this.toggleElems || !this.toggleElems.length) return;
+    // if (!this.toggleElems || !this.toggleElems.length) return;
 
     this.contentElem = elem.querySelector('[data-sf="modal-content"]');
     this.closeElem = elem.querySelector('[data-sf="modal-close"]');

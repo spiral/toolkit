@@ -178,9 +178,13 @@ export class Action extends sf.core.BaseDOMConstructor {
         headers: this.options.headers,
         method: this.options.method,
       };
-      console.log(sendOptions.headers);
       if (typeof this.options.beforeSubmitCallback === 'function') {
-        await this.options.beforeSubmitCallback(sendOptions);
+        try {
+          await this.options.beforeSubmitCallback(sendOptions);
+        } catch (e) {
+          this.unlock();
+          return;
+        }
       }
       ajax.send(sendOptions).then(
         (answer) => answer,
