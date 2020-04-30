@@ -23,7 +23,7 @@ export class Template extends sf.core.BaseDOMConstructor {
      * @param node HTMLElement
      * @param options
      */
-    constructor(ssf, node, options) {
+    constructor(ssf, node) {
       super();
       const id = node.getAttribute('data-id');
       assert.ok(id, 'Template node should have id');
