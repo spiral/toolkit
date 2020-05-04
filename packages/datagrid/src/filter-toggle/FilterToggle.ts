@@ -24,6 +24,10 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
     id: '',
   };
 
+  static registerInSf = () => {
+    sf.registerInstanceType(FilterToggle, FilterToggle.spiralFrameworkCss);
+  };
+
   el?: HTMLDivElement;
 
   toggleButton: HTMLElement;

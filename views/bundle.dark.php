@@ -15,6 +15,7 @@
 <use:element path="toolkit:form/static" as="form:static"/>
 <use:element path="toolkit:form/textarea" as="form:textarea"/>
 <use:element path="toolkit:form/checkbox" as="form:checkbox"/>
+<use:element path="toolkit:form/actionbutton" as="form:actionbutton"/>
 
 {{--multivalue--}}
 <use:element path="toolkit:form/select" as="form:select"/>

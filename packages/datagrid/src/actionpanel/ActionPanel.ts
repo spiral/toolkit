@@ -21,6 +21,10 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
     actions: {},
   };
 
+  static registerInSf = () => {
+    sf.registerInstanceType(ActionPanel, ActionPanel.spiralFrameworkCss);
+  };
+
   el?: HTMLDivElement;
 
   datagrid?: Datagrid;
