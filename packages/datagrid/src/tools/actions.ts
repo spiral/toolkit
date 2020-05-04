@@ -157,7 +157,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
                 const event = new CustomEvent('sf:notification-show', {
                   bubbles: true,
                   detail: {
-                    message: action.toastSuccess(item), type: 'success', position: 'tr',
+                    message: action.toastSuccess(item), type: 'success', position: 'tr', timeout: 2000,
                   },
                 });
                 document.dispatchEvent(event);
@@ -166,7 +166,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
               const event = new CustomEvent('sf:notification-show', {
                 bubbles: true,
                 detail: {
-                  message: action.toastError(item), type: 'danger', position: 'tr',
+                  message: action.toastError(item), type: 'danger', position: 'tr', timeout: 2000,
                 },
               });
               document.dispatchEvent(event);
