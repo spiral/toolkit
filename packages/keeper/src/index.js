@@ -45,4 +45,5 @@ export {
   Dropdown,
   Modal,
   Tabnav,
+  NotificationCenter,
 };
