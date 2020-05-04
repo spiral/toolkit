@@ -33,6 +33,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   static defaultOptions: IDataGridOptions = defaultGridOptions;
 
+  static registerInSf = () => {
+    sf.registerInstanceType(Datagrid, Datagrid.spiralFrameworkCss);
+  };
+
   public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     id: {
       value: Datagrid.defaultOptions.id,

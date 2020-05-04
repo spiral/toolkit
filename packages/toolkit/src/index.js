@@ -2,7 +2,6 @@ const core = require('@spiral-toolkit/core').default;
 
 require('./template');
 require('./form/input');
-require('./action/action');
 require('./ui/localdate/LocalDate');
 require('./form/pattern/PatternInput');
 

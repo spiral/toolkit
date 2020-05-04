@@ -2,7 +2,6 @@ require('@spiral-toolkit/core');
 
 require('./template');
 require('./form/input');
-require('./action/action');
 require('./ui/localdate/LocalDate');
 require('./form/pattern/PatternInput');
 // require('./fileinput'); // no need because of native element
