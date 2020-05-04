@@ -133,8 +133,11 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
    * @param node HTMLElement
    * @param options
    */
-  constructor(ssf: ISpiralFramework, node: Element, options: IActionButtonOptions) {
+  constructor(ssf: ISpiralFramework, node: Element, options: Partial<IActionButtonOptions>) {
     super();
+    if (ssf.getInstance(ActionButton.spiralFrameworkName, node)) {
+      return;
+    }
     this.init(ssf, node, options);
     this.onClick = this.onClick.bind(this);
     (this.node as HTMLElement).addEventListener('click', this.onClick);
