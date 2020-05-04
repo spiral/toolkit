@@ -12,6 +12,10 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
   static readonly spiralFrameworkCss: string = PAGINATOR_CLASS_NAME;
 
+  static registerInSf = () => {
+    sf.registerInstanceType(Paginator, Paginator.spiralFrameworkCss);
+  };
+
   public readonly name = Paginator.spiralFrameworkName;
 
   static defaultOptions: IPaginatorOptions = {

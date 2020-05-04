@@ -15,6 +15,7 @@ import './components/tag.scss';
 import './components/user.scss';
 import './components/filter.scss';
 
+import { confirmModal } from './utils/confirm';
 import Nav from './components/nav';
 import Dropdown from './components/dropdown';
 import Sidebar from './components/sidebar';
@@ -40,7 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
 export {
   on,
   dispatch,
+  confirmModal,
   Dropdown,
   Modal,
   Tabnav,
+  NotificationCenter,
 };

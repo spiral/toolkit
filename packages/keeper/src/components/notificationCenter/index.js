@@ -55,12 +55,20 @@ export default class NotificationCenter {
   }
 
   handleShowNotification(event) {
-    const { message, type, position } = event.detail;
+    const {
+      message, type, position, timeout,
+    } = event.detail;
 
     const elem = createNotificationElem(message, type);
     const notification = new Notification(elem);
 
     this.appendNotification(position, notification);
+
+    if (timeout) {
+      setTimeout(() => {
+        notification.close();
+      }, +timeout);
+    }
   }
 
   createCorner(position, notifications) {

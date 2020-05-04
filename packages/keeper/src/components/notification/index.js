@@ -36,12 +36,15 @@ export default class Notification {
   }
 
   close() {
-    if (this.closeTimeout) clearTimeout(this.closeTimeout);
+    if (this.elem) {
+      if (this.closeTimeout) clearTimeout(this.closeTimeout);
 
-    this.elem.classList.add('closing');
+      this.elem.classList.add('closing');
 
-    this.closeTimeout = setTimeout(() => {
-      this.elem.remove();
-    }, 300);
+      this.closeTimeout = setTimeout(() => {
+        this.elem.remove();
+        this.elem = undefined;
+      }, 300);
+    }
   }
 }
