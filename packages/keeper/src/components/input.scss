@@ -1,0 +1,12 @@
+.sf-icon-overlay-wrapper {
+  position: relative;
+  .sf-icon-overlay {
+    pointer-events: none !important;
+    position: absolute;
+    z-index: 1;
+    .form-control {
+      border: none;
+      background: transparent;
+    }
+  }
+}

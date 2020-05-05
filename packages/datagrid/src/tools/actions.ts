@@ -188,10 +188,6 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
             beforeSubmitCallback,
             afterSubmitCallback,
           });
-          // new ActionButton(sf, link, );
-          setTimeout(() => {
-            link.classList.add(ActionButton.spiralFrameworkCssClass); // Ensure it self destroys. TODO: This is hacky
-          });
         }
         dropdownMenu.appendChild(link);
       }
