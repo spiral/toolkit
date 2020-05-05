@@ -44,6 +44,7 @@ export interface IActionDeclarationCompiled {
 
 export interface IActionDropdownDeclatations {
   kind: string;
+  size: string;
   className: string;
   template?: string;
   label?: string;
@@ -113,6 +114,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
     const dropdownButton = document.createElement('button');
     dropdownButton.className = 'btn dropdown-toggle';
     dropdownButton.classList.add(`btn-${actionsDeclaration.kind || 'secondary'}`);
+    dropdownButton.classList.add(`btn-${actionsDeclaration.size || 'sm'}`);
     dropdownButton.setAttribute('data-sf', 'dropdown-toggle');
     dropdownButton.setAttribute('type', 'button');
     dropdownButton.setAttribute('data-toggle', 'dropdown');
@@ -123,6 +125,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
     const dropdownMenu = document.createElement('div');
     dropdownMenu.className = 'dropdown-menu';
     dropdownMenu.setAttribute('data-sf', 'dropdown-menu');
+    dropdownMenu.setAttribute('data-sf-use-portal', 'true');
 
     dropdownDiv.appendChild(dropdownButton);
     dropdownDiv.appendChild(dropdownMenu);

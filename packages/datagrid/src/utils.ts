@@ -50,3 +50,10 @@ export const applyAttrributes = (node: Element, attrs: {[name: string]: string})
 export function isString(something: any): something is string {
   return typeof something === 'string';
 }
+
+export function addClasses(el: Element, classes: string | undefined) {
+  const classNames = ((classes || '').split(' ')).map((c) => c.trim()).filter((c) => !!c);
+  if (classNames.length) {
+    el.classList.add(...classNames);
+  }
+}
