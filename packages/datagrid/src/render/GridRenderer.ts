@@ -12,7 +12,7 @@ import Paginator from '../paginator/Paginator';
 import {
   ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
-import { applyAttrributes, normalizeColumns } from '../utils';
+import { addClasses, applyAttrributes, normalizeColumns } from '../utils';
 import { defaultBodyWrapper } from './defaultBodyWrapper';
 import { defaultFooterWrapper } from './defaultFooterWrapper';
 import { defaultHeaderWrapper } from './defaultHeaderWrapper';
@@ -48,7 +48,7 @@ export class GridRenderer {
   private messages: Messages;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.options = {...defaultRenderer, ...partialOptions, ui: {...defaultGridUiOptions, ...partialOptions.ui}};
     this.messages = new Messages((this.options.messages || {}) as any, defaultGridMessages as any);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
@@ -121,14 +121,14 @@ export class GridRenderer {
 
     if (options.ui.cellClassName) {
       if (typeof options.ui.cellClassName === 'function') {
-        el.classList.add(...options.ui.cellClassName(cellMeta).split(' '));
+        addClasses(el, options.ui.cellClassName(cellMeta));
       } else {
         const specific = options.ui.cellClassName[column.id];
         if (specific) {
           if (typeof specific === 'string') {
-            el.classList.add(...specific.split(' '));
+            addClasses(el, specific);
           } else {
-            el.classList.add(...specific(cellMeta).split(' '));
+            addClasses(el, specific(cellMeta));
           }
         }
       }
@@ -160,14 +160,10 @@ export class GridRenderer {
       id: this.options.selectable ? item[this.options.selectable.id] : undefined,
     };
     if (this.options.ui.rowClassName) {
-      let classNames: string[] = [];
       if (typeof this.options.ui.rowClassName === 'string') {
-        classNames = this.options.ui.rowClassName.split(' ');
+        addClasses(el, this.options.ui.rowClassName);
       } else {
-        classNames = this.options.ui.rowClassName(rowMeta).split(' ');
-      }
-      if (classNames.length) {
-        el.classList.add(...classNames);
+        addClasses(el, this.options.ui.rowClassName(rowMeta));
       }
     }
     if (options.ui.rowAttributes) {
@@ -193,14 +189,14 @@ export class GridRenderer {
 
     if (options.ui.headerCellClassName) {
       if (typeof options.ui.headerCellClassName === 'function') {
-        el.classList.add(...options.ui.headerCellClassName(cellMeta).split(' '));
+        addClasses(el, options.ui.headerCellClassName(cellMeta));
       } else {
         const specific = options.ui.headerCellClassName[column.id];
         if (specific) {
           if (typeof specific === 'string') {
-            el.classList.add(...specific.split(' '));
+            addClasses(el, specific);
           } else {
-            el.classList.add(...specific(cellMeta).split(' '));
+            addClasses(el, specific(cellMeta));
           }
         }
       }
