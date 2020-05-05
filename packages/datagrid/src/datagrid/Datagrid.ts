@@ -125,6 +125,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
       if (formInstance.getFormData) {
         const data = formInstance.getFormData();
+        console.log(data);
         this.state.mergeDefaultData(data);
         this.state.setFormData(id, data);
       }
