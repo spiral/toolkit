@@ -108,7 +108,7 @@ export class InstancesController implements IInstancesController {
       instance,
     });
 
-    this.events.trigger('onAddInstance', {instance, type: instanceName});
+    this.events.trigger('onAddInstance', { instance, type: instanceName });
 
     return instance;
   }
@@ -133,7 +133,7 @@ export class InstancesController implements IInstancesController {
     if (key !== -1) { // remove key
       this.storage.instances[instanceName].splice(key, 1);
     }
-    this.events.trigger('onRemoveInstance', {instance: instanceObj, type: instanceName});
+    this.events.trigger('onRemoveInstance', { instance: instanceObj, type: instanceName });
     return true;
   }
 

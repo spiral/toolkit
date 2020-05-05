@@ -8,7 +8,6 @@
  */
 import type { InstancesController } from './InstancesController';
 import { SF_UNIVERSAL_CLASS } from './constants';
-let eventId = 1;
 
 export class DomMutations {
   observer: MutationObserver;
