@@ -14,6 +14,7 @@ import './components/table.scss';
 import './components/tag.scss';
 import './components/user.scss';
 import './components/filter.scss';
+import './components/input.scss';
 
 import { confirmModal } from './utils/confirm';
 import Nav from './components/nav';
