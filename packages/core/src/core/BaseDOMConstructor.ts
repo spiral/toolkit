@@ -1,4 +1,5 @@
 import type { IOptionToGrab, ISFInstanceClass, ISpiralFramework } from '../types';
+import { SF_UNIVERSAL_CLASS } from './constants';
 import { extractOptions } from './extractOptions';
 
 /**
@@ -125,6 +126,7 @@ export class BaseDOMConstructor implements ISFInstanceClass {
       ...options,
       ...extractOptions(node),
     };
+    this.node.classList.add(SF_UNIVERSAL_CLASS);
     return this.options;
   }
 

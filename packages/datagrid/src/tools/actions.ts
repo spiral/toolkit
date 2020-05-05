@@ -137,11 +137,14 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
         const link = document.createElement('a');
         link.setAttribute('href', action.url(item));
         link.className = 'dropdown-item';
+
         if (action.type === 'href') {
           link.setAttribute('target', '_blank');
           link.innerHTML = action.template(item);
         } else {
           link.setAttribute('href', '');
+          link.setAttribute('data-href', action.url(item));
+
           const beforeSubmitCallback = async (data: any) => {
             dropdown.hide();
             if (action.confirm) {
@@ -178,7 +181,6 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
               state.parent.request();
             }
           };
-
           sf.instancesController.addInstance(ActionButton.spiralFrameworkName, link, {
             data: action.data(item),
             url: action.url(item),
