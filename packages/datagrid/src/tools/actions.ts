@@ -125,6 +125,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
     const dropdownMenu = document.createElement('div');
     dropdownMenu.className = 'dropdown-menu';
     dropdownMenu.setAttribute('data-sf', 'dropdown-menu');
+    dropdownMenu.setAttribute('data-sf-use-portal', 'true');
 
     dropdownDiv.appendChild(dropdownButton);
     dropdownDiv.appendChild(dropdownMenu);

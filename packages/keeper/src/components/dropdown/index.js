@@ -10,8 +10,14 @@ export default class Dropdown {
     this.toggleElem = elem.querySelector('[data-sf="dropdown-toggle"]');
     this.menuElem = elem.querySelector('[data-sf="dropdown-menu"]');
 
-    if (!this.toggleElem || !this.menuElem) return;
+    if (!this.toggleElem || !this.menuElem) {
+      // eslint-disable-next-line no-console
+      console.error('Dropdown missing toggle button or menu');
+      return;
+    }
 
+
+    this.usePortal = this.menuElem.hasAttribute('data-sf-use-portal');
     this.isExpanded = this.toggleElem.getAttribute('aria-expanded') === 'true';
     if (this.isExpanded) this.redraw();
 
@@ -66,5 +72,28 @@ export default class Dropdown {
   redraw() {
     this.toggleElem.setAttribute('aria-expanded', this.isExpanded);
     this.menuElem.classList.toggle('show', this.isExpanded);
+    if (this.usePortal) {
+      if (this.isExpanded) {
+        if (this.elem.querySelector('[data-sf="dropdown-menu"]')) {
+          document.body.append(this.menuElem); // put to document
+          const {
+            top, left, right, height,
+          } = this.toggleElem.getBoundingClientRect();
+          const pos = { top: top + window.scrollY + height, left: left + window.scrollX };
+          this.menuElem.style.top = `${pos.top}px`;
+          this.menuElem.style.left = `${pos.left}px`;
+          const rect = this.menuElem.getBoundingClientRect();
+          if (rect.left + rect.width > document.body.clientWidth) {
+            pos.left = (right - rect.width + window.scrollX);
+          }
+          this.menuElem.style.top = `${pos.top}px`;
+          this.menuElem.style.left = `${pos.left}px`;
+        }
+      } else {
+        this.elem.appendChild(this.menuElem); // put back
+        this.menuElem.style.top = '';
+        this.menuElem.style.left = '';
+      }
+    }
   }
 }
