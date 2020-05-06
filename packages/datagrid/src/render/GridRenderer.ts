@@ -84,7 +84,7 @@ export class GridRenderer {
       id,
       ...extension,
     });
-    this.root.registerPaginatorInstance(paginator);
+    this.root.registerPaginatorInstance(paginator, false);
   }
 
   private createDefaultActions() {

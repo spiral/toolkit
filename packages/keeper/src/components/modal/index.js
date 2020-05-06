@@ -112,11 +112,17 @@ export default class Modal {
 
     if (this.isOpened) {
       this.openTimeout = setTimeout(() => {
-        document.body.classList.add('modal-open');
+        const hasScrollbar = document.body.scrollHeight > window.innerHeight;
+        if (hasScrollbar) {
+          document.body.classList.add('modal-open-scroll');
+        } else {
+          document.body.classList.add('modal-open');
+        }
         this.dispatch('sf:modal-shown');
       }, 300);
     } else {
       document.body.classList.remove('modal-open');
+      document.body.classList.remove('modal-open-scroll');
       this.closeTimeout = setTimeout(() => {
         this.dispatch('sf:modal-hidden');
       }, 300);

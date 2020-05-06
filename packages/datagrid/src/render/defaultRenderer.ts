@@ -37,5 +37,6 @@ export const defaultGridOptions: IDataGridOptions = {
   serialize: true,
   paginator: true,
   ui: defaultGridUiOptions,
+  errorMessageTarget: '@self',
   renderers: defaultRenderer,
 };
