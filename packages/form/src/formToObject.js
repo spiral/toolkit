@@ -62,8 +62,8 @@ FormToObject.prototype.setFormElements = function () {
 
 // Set the elements we need to parse.
 FormToObject.prototype.hasMultipleOfName = function (name) {
-  const $formElements =
-      this.$form.querySelectorAll(`input[name="${name}"], textarea[name="${name}"], select[name="${name}"], [${CUSTOM_INPUT_TARGET_ATTR}][name="${name}"]`);
+  // eslint-disable-next-line max-len
+  const $formElements = this.$form.querySelectorAll(`input[name="${name}"], textarea[name="${name}"], select[name="${name}"], [${CUSTOM_INPUT_TARGET_ATTR}][name="${name}"]`);
   return $formElements.length > 1;
 };
 
