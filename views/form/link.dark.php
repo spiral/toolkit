@@ -1,5 +1,5 @@
-<extends:toolkit:form.field />
+<extends:toolkit:form.field/>
 
 <block:element>
-  <a href="${href}">${title}</a>
+  <a href="${href}" attr:aggregate>${title}</a>
 </block:element>
