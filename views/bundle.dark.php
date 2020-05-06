@@ -15,7 +15,7 @@
 <use:element path="toolkit:form/static" as="form:static"/>
 <use:element path="toolkit:form/textarea" as="form:textarea"/>
 <use:element path="toolkit:form/checkbox" as="form:checkbox"/>
-<use:element path="toolkit:form/actionbutton" as="form:actionbutton"/>
+<use:element path="toolkit:form/autocomplete" as="form:autocomplete"/>
 
 {{--multivalue--}}
 <use:element path="toolkit:form/select" as="form:select"/>
@@ -25,9 +25,6 @@
 <use:element path="toolkit:form/date" as="form:date"/>
 <use:element path="toolkit:form/date-js" as="form:date-js"/>
 
-{{--autocomplete--}}
-<use:element path="toolkit:form/autocomplete" as="form:autocomplete"/>
-
 {{--pattern inputs--}}
 <use:element path="toolkit:form/pattern/field" as="form:pattern.field"/>
 <use:element path="toolkit:form/pattern/input" as="form:pattern"/>
@@ -35,3 +32,6 @@
 <use:element path="toolkit:form/pattern/char" as="form:pattern.char"/>
 <use:element path="toolkit:form/pattern/separator" as="form:pattern.separator"/>
 <use:element path="toolkit:form/pattern/group" as="form:pattern.group"/>
+
+{{--action buttons and links--}}
+<use:element path="toolkit:action-button" as="action:button"/>

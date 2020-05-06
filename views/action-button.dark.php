@@ -7,6 +7,7 @@
   data-before-submit="${before-submit}"
   data-after-submit="${after-submit}"
   class="js-sf-action ${class}"
+  attr:aggregate
 >
-${context}
+  ${context}
 </button>
