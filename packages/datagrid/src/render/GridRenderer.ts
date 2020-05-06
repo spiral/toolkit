@@ -49,7 +49,6 @@ export class GridRenderer {
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
     this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
-    console.log(this.options);
     this.messages = new Messages((this.options.messages || {}) as any, defaultGridMessages as any);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
@@ -85,7 +84,7 @@ export class GridRenderer {
       id,
       ...extension,
     });
-    this.root.registerPaginatorInstance(paginator);
+    this.root.registerPaginatorInstance(paginator, false);
   }
 
   private createDefaultActions() {
