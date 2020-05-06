@@ -1,5 +1,6 @@
 <button
   data-url="${url}"
+  @if(injected('method')) data-method="${method}" @endif
   data-data='${data}'
   @if(injected('template')) data-template="${template}" @endif
   @if(injected('template-name')) data-template-name="${template-name}" @endif
