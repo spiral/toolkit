@@ -30,7 +30,7 @@ DateInput.prototype._construct = function (sf, node, options) {
     noCalendar: !!this.options.noCalendar,
     altInput: true,
     altFormat: this.options.displayFormat || 'Y-m-d',
-    dateFormat: this.options.dateFormat || 'Y-m-d',
+    dateFormat: this.options.dateFormat || 'Z',
     onChange: () => {
 
     },
@@ -53,7 +53,7 @@ DateInput.prototype.optionsToGrab = {
     domAttr: 'data-no-calendar',
   },
   dateFormat: {
-    value: 'Y-m-d',
+    value: 'Z',
     domAttr: 'data-format',
   },
   displayFormat: {
