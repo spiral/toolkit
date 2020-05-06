@@ -32,12 +32,12 @@ export class InstancesController implements IInstancesController {
 
 
   /**
-     * Register new instance type
-     * @param {Function} constructorFunction - constructor function of instance
-     * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
-     * controlled by DomMutation. But you still can use it from JS.
-     * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
-     */
+   * Register new instance type
+   * @param {Function} constructorFunction - constructor function of instance
+   * @param {String} [cssClassName] - css class name of instance. If class not provided that it can't be automatically
+   * controlled by DomMutation. But you still can use it from JS.
+   * @param {Boolean} [isSkipInitialization=false]  - skip component initialization, just adding, no init nodes.
+   */
   registerInstanceType(constructorFunction: ISFInstanceConstructor, cssClassName?: string, isSkipInitialization?: boolean) {
     const instanceName = constructorFunction.spiralFrameworkName || constructorFunction.prototype.name;
 
@@ -75,25 +75,25 @@ export class InstancesController implements IInstancesController {
 
 
   /**
-     * Old method to register instance type
-     * @param {*} className
-     * @param {*} constructorFunction
-     * @param {*} isSkipInitialization
-     * @return {*}
-     * @deprecated
-     */
+   * Old method to register instance type
+   * @param {*} className
+   * @param {*} constructorFunction
+   * @param {*} isSkipInitialization
+   * @return {*}
+   * @deprecated
+   */
   addInstanceType(className: string, constructorFunction: ISFInstanceConstructor, isSkipInitialization?: boolean) {
     console.warn('addInstanceType is deprecated. Please use registerInstanceType instead');
     return this.registerInstanceType(constructorFunction, className, isSkipInitialization);
   }
 
   /**
-     * Add instance
-     * @param {String} instanceName - name of instance
-     * @param {Object} node - dom node
-     * @param {Object} [options] all options for send to the constructor
-     * @return {boolean}
-     */
+   * Add instance
+   * @param {String} instanceName - name of instance
+   * @param {Object} node - dom node
+   * @param {Object} [options] all options for send to the constructor
+   * @return {boolean}
+   */
   addInstance(instanceName: string, node: Element, options: any = undefined) {
     const InstanceConstructor = this.storage.instancesConstructors.jsConstructors[instanceName];
     const isAlreadyAdded: boolean = !!this.getInstance(instanceName, node);
@@ -115,13 +115,13 @@ export class InstancesController implements IInstancesController {
 
 
   /**
-     * Remove instance.
-     * @param {String} instanceName - name of instance class
-     * @param {Object|String} node - dom node ID
-     * @return {boolean}
-     */
+   * Remove instance.
+   * @param {String} instanceName - name of instance class
+   * @param {Object|String} node - dom node ID
+   * @return {boolean}
+   */
   removeInstance(instanceName: string, node: Element) {
-    const instanceObj: {node: Element, instance: ISFInstance} | undefined = this.getInstance(instanceName, node);
+    const instanceObj: { node: Element, instance: ISFInstance } | undefined = this.getInstance(instanceName, node);
 
     if (!instanceObj) {
       return false;
@@ -137,6 +137,40 @@ export class InstancesController implements IInstancesController {
     return true;
   }
 
+  /**
+   * Remove instance.
+   * @param {Object|String} node - dom node ID
+   * @return {boolean}
+   */
+  removeInstancesFromNode(node: Element) {
+    this.cancelRemoveInstancesFromNode(node);
+    const timeout = setTimeout(() => {
+      node.setAttribute('data-sf-destroy-warning', 'BaseDOMConstructor nodes self destruct when removed from DOM');
+      Object.keys(this.storage.instancesConstructors.jsConstructors).forEach((instanceName) => {
+        if (this.getInstance(instanceName, node)) {
+          // eslint-disable-next-line no-console
+          // console.log('Removing non tracked node', instanceName, node, document.body.contains(node));
+          this.removeInstance(instanceName, node);
+        }
+      });
+    }, 1000);
+    node.setAttribute('data-sf-destroy-timeout', timeout.toString());
+  }
+
+  /**
+   * Remove instance.
+   * @param {Object|String} node - dom node ID
+   * @return {boolean}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  cancelRemoveInstancesFromNode(node: Element) {
+    const timeout = node.getAttribute('data-sf-destroy-timeout');
+    if (timeout) {
+      clearTimeout(+timeout);
+      node.removeAttribute('data-sf-destroy-timeout');
+    }
+  }
+
 
   /**
    * Get instance. Return instance object of this dom node
@@ -146,7 +180,7 @@ export class InstancesController implements IInstancesController {
    */
   getInstance(instanceName: string, node: Element | string) {
     const typeArr = this.storage.instances[instanceName];
-    let ret: {node: Element, instance: ISFInstance} | undefined;
+    let ret: { node: Element, instance: ISFInstance } | undefined;
     if (!typeArr) {
       return undefined;
     }
@@ -203,8 +237,8 @@ export class InstancesController implements IInstancesController {
    */
   getInstanceAddon(instanceName: string, addonType: string, addonName: string) {
     if (!this.storage.addons[instanceName]
-        || !this.storage.addons[instanceName][addonType]
-        || !this.storage.addons[instanceName][addonType][addonName]) {
+      || !this.storage.addons[instanceName][addonType]
+      || !this.storage.addons[instanceName][addonType][addonName]) {
       return false;
     }
     return this.storage.addons[instanceName][addonType][addonName];

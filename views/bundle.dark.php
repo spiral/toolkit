@@ -23,6 +23,7 @@
 
 {{--dates--}}
 <use:element path="toolkit:form/date" as="form:date"/>
+<use:element path="toolkit:form/date-js" as="form:date-js"/>
 
 {{--autocomplete--}}
 <use:element path="toolkit:form/autocomplete" as="form:autocomplete"/>
