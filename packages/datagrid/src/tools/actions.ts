@@ -160,19 +160,21 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
           const afterSubmitCallback = async (data: any) => {
             if (data.status && data.status < 400) {
               if (action.toastSuccess) {
+                const message = data?.data?.message || '';
                 const event = new CustomEvent('sf:notification-show', {
                   bubbles: true,
                   detail: {
-                    message: action.toastSuccess(item), type: 'success', position: 'tr', timeout: 2000,
+                    message: action.toastSuccess({ message, ...item }), type: 'success', position: 'tr', timeout: 2000,
                   },
                 });
                 document.dispatchEvent(event);
               }
             } else if (action.toastError) {
+              const error = data?.data?.error || '';
               const event = new CustomEvent('sf:notification-show', {
                 bubbles: true,
                 detail: {
-                  message: action.toastError(item), type: 'danger', position: 'tr', timeout: 2000,
+                  message: action.toastError({ error, ...item }), type: 'danger', position: 'tr', timeout: 2000,
                 },
               });
               document.dispatchEvent(event);

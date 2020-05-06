@@ -90,10 +90,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (this.options.sort) {
       if (typeof this.options.sort === 'string') {
         this.defaults.sortBy = this.options.sort;
-        this.defaults.sortDir = SortDirection.ASC;
+        const col = this.columnInfo.find((cI) => cI.id === this.defaults.sortBy);
+        this.defaults.sortDir = col ? col.direction : SortDirection.ASC;
       } else {
         this.defaults.sortBy = this.options.sort.field;
-        this.defaults.sortDir = this.options.sort.direction || SortDirection.ASC;
+        const col = this.columnInfo.find((cI) => cI.id === this.defaults.sortBy);
+        this.defaults.sortDir = col ? col.direction : SortDirection.ASC;
+        this.defaults.sortDir = this.options.sort.direction || this.defaults.sortDir;
       }
       this.state.setSort(this.defaults.sortBy, this.defaults.sortDir);
     }
@@ -125,7 +128,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
       if (formInstance.getFormData) {
         const data = formInstance.getFormData();
-        console.log(data);
         this.state.mergeDefaultData(data);
         this.state.setFormData(id, data);
       }
@@ -522,8 +524,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.state.updatePaginator(paginatorUpdate);
 
     const { sortBy, sortDir, ...rest2 } = rest;
-    if (sortBy) {
-      this.state.setSort(sortBy, sortDir as any || SortDirection.ASC); // TODO: skip
+    const sortField = sortBy || this.defaults.sortBy;
+    const sortFDir = sortDir || this.defaults.sortDir;
+    if (sortField && sortDir) {
+      this.state.setSort(sortField, sortFDir as any);
     }
 
     [...pageParams, ...sortParams].forEach((p) => delete rest2[p]);
