@@ -52,8 +52,8 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "devDependencies": {},
   "dependencies": {
-    "@spiral-toolkit/core": "^0.3.6",
     "@spiral-toolkit/autocomplete": "^0.3.6",
+    "@spiral-toolkit/core": "^0.3.6",
     "@spiral-toolkit/datagrid": "^0.1.0",
     "@spiral-toolkit/form": "^0.1.0",
     "@spiral-toolkit/locker": "^0.1.0",
@@ -61,7 +61,6 @@
     "core-js": "^3.6.5",
     "css-vars-ponyfill": "^2.2.1",
     "date-fns": "^2.2.1",
-    "moment": "^2.24.0",
-    "pikaday": "^1.8.0"
+    "flatpickr": "^4.6.3"
   }
 }

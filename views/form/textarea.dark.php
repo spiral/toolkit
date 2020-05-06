@@ -1,13 +1,14 @@
-<extends:toolkit:form.field />
+<extends:toolkit:form.field/>
 
 <block:element>
   <textarea
+    inputID:consume
     id="${id}"
     data-input="true"
-    class="form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+    class="form-control@if(injected('error')) is-invalid@endif@if(injected('success')) is-valid@endif"
     name="${name}"
     placeholder="${placeholder}"
-    @if(inject('disabled'))disabled@endif
+    @if(injected('disabled'))disabled@endif
   >
     ${value}${context}
   </textarea>

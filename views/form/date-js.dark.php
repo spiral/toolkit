@@ -1,19 +1,26 @@
-<extends:toolkit:form.field />
+<extends:toolkit:form.field/>
 
 <block:element>
+  @if(injected('default-styles'))
   <stack:push name="styles" unique-id="date-js-css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css" />
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   </stack:push>
-  <stack:push name="scripts" unique-id="date-js">
-     <script type="text/javascript" src="/toolkit/plugin_date.js"></script>
-  </stack:push>
-  <input
-    id="${id}"
-    data-input="true"
-    class="form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif js-sf-date"
-    type="date"
-    name="${name}"
-    value="${value}${context}"
-    @if(inject('disabled'))disabled@endif
+  @endif
+  <div class="js-sf-date input-group"
+       data-enable-time="${enable-time}"
+       data-no-calendar="${no-calendar}"
+       data-format="${format}"
+       data-display-format="${display-format}"
   >
+      <input
+        inputID:consume
+        id="${id}"
+        data-input="true"
+        class="bg-white form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+        type="date"
+        name="${name}"
+        value="${value}${context}"
+        @if(injected('disabled'))disabled@endif
+      >
+  </div>
 </block:element>

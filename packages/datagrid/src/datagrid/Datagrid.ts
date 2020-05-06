@@ -90,10 +90,13 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (this.options.sort) {
       if (typeof this.options.sort === 'string') {
         this.defaults.sortBy = this.options.sort;
-        this.defaults.sortDir = SortDirection.ASC;
+        const col = this.columnInfo.find((cI) => cI.id === this.defaults.sortBy);
+        this.defaults.sortDir = col ? col.direction : SortDirection.ASC;
       } else {
         this.defaults.sortBy = this.options.sort.field;
-        this.defaults.sortDir = this.options.sort.direction || SortDirection.ASC;
+        const col = this.columnInfo.find((cI) => cI.id === this.defaults.sortBy);
+        this.defaults.sortDir = col ? col.direction : SortDirection.ASC;
+        this.defaults.sortDir = this.options.sort.direction || this.defaults.sortDir;
       }
       this.state.setSort(this.defaults.sortBy, this.defaults.sortDir);
     }
@@ -125,7 +128,6 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
       if (formInstance.getFormData) {
         const data = formInstance.getFormData();
-        console.log(data);
         this.state.mergeDefaultData(data);
         this.state.setFormData(id, data);
       }
@@ -159,7 +161,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     }
   }
 
-  public registerPaginatorInstance(formInstance: any) {
+  public registerPaginatorInstance(formInstance: any, doRequest: boolean = true) {
     if (formInstance.options && formInstance.options.id && this.options.captureForms.indexOf(formInstance.options.id) >= 0) {
       this.capturedPaginators.push(formInstance);
       // eslint-disable-next-line
@@ -172,7 +174,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       };
 
       this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.id);
-      this.request();
+      if (doRequest) { this.request(); }
     }
   }
 
@@ -354,20 +356,23 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
   private handleError(response: { data: IDatagridErrorResponse, status: number, statusText: string }) {
     const { data, status, statusText } = this.processResponse(response);
-    this.state.setError(data.error, data.errors, this.options.resetOnError);
+    this.state.setError(data.error || 'Unknown Error', data.errors, this.options.resetOnError);
     Object.keys(this.capturedForms).forEach((fKey) => {
       const f = this.capturedForms[fKey].instance;
       if (f.processAnswer) {
         const id = f.options.url;
         const { error, ...rest } = data;
-        const filteredData = id === this.options.errorMessageTarget ? { ...data } : rest;
-        f.processAnswer({ data: filteredData, status, statusText }, false); // false stands for 'dont display errors unrelated to form inputs'
+        const passError = (id === this.options.errorMessageTarget || this.options.errorMessageTarget === '@all');
+        const filteredData = passError ? { ...data } : rest;
+        f.processAnswer(passError ? { data: filteredData, status, statusText } : {
+          data: { errors: {}, ...filteredData },
+          status,
+          statusText,
+        }, false); // false stands for 'dont display errors unrelated to form inputs'
       }
     });
     this.setAllPaginators({ error: true });
     this.render();
-    // TODO: remove data and display error
-    // TODO: send validation errors to other forms
   }
 
   async request() {
@@ -425,7 +430,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         columns: (renderOption.columns && renderOption.columns.length) ? renderOption.columns : this.options.columns,
         sortable: (renderOption.sortable && renderOption.sortable.length) ? renderOption.sortable : this.options.sortable,
         paginator: typeof renderOption.paginator === 'undefined' ? this.options.paginator : renderOption.paginator,
-        dontRenderError: !!this.options.errorMessageTarget,
+        dontRenderError: !!this.options.errorMessageTarget && this.options.errorMessageTarget !== '@self',
         selectable: renderOption.selectable || this.options.selectable,
         messages: { ...this.options.messages, ...renderOption.messages },
       }, this));
@@ -522,8 +527,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     this.state.updatePaginator(paginatorUpdate);
 
     const { sortBy, sortDir, ...rest2 } = rest;
-    if (sortBy) {
-      this.state.setSort(sortBy, sortDir as any || SortDirection.ASC); // TODO: skip
+    const sortField = sortBy || this.defaults.sortBy;
+    const sortFDir = sortDir || this.defaults.sortDir;
+    if (sortField && sortDir) {
+      this.state.setSort(sortField, sortFDir as any);
     }
 
     [...pageParams, ...sortParams].forEach((p) => delete rest2[p]);
