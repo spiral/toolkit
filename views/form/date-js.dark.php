@@ -1,4 +1,4 @@
-<extends:toolkit:form.field />
+<extends:toolkit:form.field/>
 
 <block:element>
   @if(injected('default-styles'))
@@ -13,6 +13,7 @@
        data-display-format="${display-format}"
   >
       <input
+        inputID:consume
         id="${id}"
         data-input="true"
         class="bg-white form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"

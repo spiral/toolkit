@@ -1,7 +1,7 @@
 <form
+  action="${action|#no-action}"
   @if(injected('id')) id="${id}" @endif
   @if(injected('data-id')) data-id="${data-id}" @endif
-  action="${action | '#noaction'}"
   method="${method|post}"
   enctype="multipart/form-data"
   accept-charset="UTF-8"
@@ -10,12 +10,8 @@
   data-before-submit="${before-submit}"
   data-after-submit="${after-submit}"
   data-callback="${callback}"
-  @if(inject('immediate')) data-immediate="${immediate}" @endif
+  @if(injected('immediate')) data-immediate="${immediate}" @endif
 >
-  <!--
-  NOTE: .form-content was added for blur effects
-  We can't set blur on form itself, because it will blur lockers(loaders) too.
-  -->
   <div class="form-content form-row">
     ${context}
   </div>
