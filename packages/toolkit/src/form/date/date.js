@@ -24,13 +24,18 @@ DateInput.prototype.name = 'date';
 
 DateInput.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options);
-  this.picker = flatpickr(this.node, {
+  this.input = node.querySelector('input');
+  this.picker = flatpickr(this.input, {
     enableTime: !!this.options.enableTime,
     noCalendar: !!this.options.noCalendar,
     altInput: true,
-    altFormat: this.options.displayFormat,
-    dateFormat: this.options.dateFormat,
+    altFormat: this.options.displayFormat || 'Y-m-d',
+    dateFormat: this.options.dateFormat || 'Y-m-d',
+    onChange: () => {
+
+    },
   });
+  console.log(this.options);
 };
 
 /**

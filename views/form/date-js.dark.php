@@ -9,17 +9,20 @@
   <stack:push name="scripts" unique-id="date-js">
      <script type="text/javascript" src="/toolkit/plugin_date.js"></script>
   </stack:push>
-  <input
-    id="${id}"
-    data-input="true"
-    class="form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif js-sf-date"
-    type="date"
-    name="${name}"
-    value="${value}${context}"
-    data-enable-time="${enable-time}"
-    data-no-calendar="${no-calendar}"
-    data-format="${format}"
-    data-display-format="${display-format}"
-    @if(injected('disabled'))disabled@endif
+  <div class="js-sf-date input-group"
+       data-enable-time="${enable-time}"
+       data-no-calendar="${no-calendar}"
+       data-format="${format}"
+       data-display-format="${display-format}"
   >
+      <input
+        id="${id}"
+        data-input="true"
+        class="bg-white form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+        type="date"
+        name="${name}"
+        value="${value}${context}"
+        @if(injected('disabled'))disabled@endif
+      >
+  </div>
 </block:element>
