@@ -7,6 +7,10 @@ import core from '@spiral-toolkit/core';
 // import moment from 'moment';
 import flatpickr from 'flatpickr';
 
+const dateWithTS = 'yyyy-MM-dd\'T\'HH:mm:ssZZZ';
+
+const { luxon } = core.helpers;
+
 export const DateInput = function (sf, node, options) {
   this._construct(sf, node, options);
 };
@@ -29,10 +33,15 @@ DateInput.prototype._construct = function (sf, node, options) {
     enableTime: !!this.options.enableTime,
     noCalendar: !!this.options.noCalendar,
     altInput: true,
-    altFormat: this.options.displayFormat || 'Y-m-d',
-    dateFormat: this.options.dateFormat || 'Z',
-    onChange: () => {
-
+    altFormat: this.options.displayFormat || 'yyyy LLL dd',
+    dateFormat: this.options.dateFormat || dateWithTS,
+    formatDate: (date, format) => {
+      console.log(date, format);
+      return luxon.DateTime.fromJSDate(date).toFormat(format);
+    },
+    parseDate: (str, format) => {
+      console.log(str, format);
+      return luxon.DateTime.fromFormat(str, format).toJSDate();
     },
   });
   console.log(this.options);
@@ -53,11 +62,11 @@ DateInput.prototype.optionsToGrab = {
     domAttr: 'data-no-calendar',
   },
   dateFormat: {
-    value: 'Z',
+    value: dateWithTS,
     domAttr: 'data-format',
   },
   displayFormat: {
-    value: 'Y-m-d',
+    value: 'yyyy LLL dd',
     domAttr: 'data-display-format',
   },
 };
