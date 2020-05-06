@@ -107,10 +107,28 @@ export class Ajax {
         })
         .catch((error: AxiosError) => {
           this.currentRequests -= 1;
-          if (error.response) {
-            reject(wrapError(error.response));
+          if (error.isAxiosError) {
+            if (typeof error.response?.data !== 'object') {
+              // eslint-disable-next-line prefer-promise-reject-errors
+              reject({
+                isSFAjaxError: true,
+                data: {
+                  error: `Malformed Server Error: ${error.response?.status || ''} ${error.response?.statusText || ''}`,
+                },
+                status: error.response?.status || 800,
+              });
+            } else {
+              reject(wrapError(error.response));
+            }
           } else {
-            reject(error);
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject({
+              isSFAjaxError: true,
+              data: {
+                error: error.toString(),
+              },
+              status: 800,
+            });
           }
         });
     }));
