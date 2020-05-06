@@ -6,9 +6,6 @@
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   </stack:push>
   @endif
-  <stack:push name="scripts" unique-id="date-js">
-     <script type="text/javascript" src="/toolkit/plugin_date.js"></script>
-  </stack:push>
   <div class="js-sf-date input-group"
        data-enable-time="${enable-time}"
        data-no-calendar="${no-calendar}"
