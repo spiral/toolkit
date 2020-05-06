@@ -179,11 +179,11 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   @autobind
   public toggleClick(e: Event) {
     const node = e.target as Element;
+    const isInBody: boolean = document.body.contains(node);
     const isInsidePanel: boolean = !!sf.helpers.domTools.closest(node, PANEL_CLASS);
     const isInsideButton: boolean = node === this.toggleButton || !!sf.helpers.domTools.closest(node, BUTTON_CLASS);
-
     if (this.state.isOpen) {
-      if (!isInsidePanel) {
+      if (isInBody && !isInsidePanel) {
         this.closePanel();
       }
     } else if (isInsideButton) {
