@@ -1,8 +1,11 @@
 <extends:toolkit:form.field />
 
 <block:element>
-  <stack:push name="styles" unique-id="date-js">
+  <stack:push name="styles" unique-id="date-js-css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css" />
+  </stack:push>
+  <stack:push name="scripts" unique-id="date-js">
+     <script type="text/javascript" src="/toolkit/plugin_date.js"></script>
   </stack:push>
   <input
     id="${id}"

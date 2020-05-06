@@ -7,6 +7,7 @@
  * @constructor
  */
 import type { InstancesController } from './InstancesController';
+import { SF_UNIVERSAL_CLASS } from './constants';
 
 export class DomMutations {
   observer: MutationObserver;
@@ -35,10 +36,11 @@ export class DomMutations {
    */
   onDomMutate(mutations: MutationRecord[]) {
     const classArray = this.instancesController.getClasses();// get all registered classes
-    const classSelector = `.${classArray.join(',.')}`;// convert for querySelectorAll()
+    const classSelector = `.${SF_UNIVERSAL_CLASS},.${classArray.join(',.')}`;// convert for querySelectorAll()
     if (classSelector.length === 1) { // if not registered any instanceTypes
       return false;
     }
+
     mutations.forEach((mutation) => { // loop over mutation array
       switch (mutation.type) {
         case 'attributes':
@@ -96,6 +98,14 @@ export class DomMutations {
           this.instancesController[action](this.instancesController.getInstanceNameByCssClass(className), node);
         }
       });
+      if (node.classList.contains(SF_UNIVERSAL_CLASS) && action === 'removeInstance') {
+        // console.log(action, href, node.className, document.body.contains(node));
+        this.instancesController.removeInstancesFromNode(node);
+      }
+      if (node.classList.contains(SF_UNIVERSAL_CLASS) && action === 'addInstance') {
+        // console.log(action, href, node.className, document.body.contains(node));
+        this.instancesController.cancelRemoveInstancesFromNode(node);
+      }
     };
 
     [].forEach.call(nodesList, (val: Element) => { // loop over mutation nodes

@@ -60,6 +60,13 @@ FormToObject.prototype.setFormElements = function () {
   return this.$formElements.length;
 };
 
+// Set the elements we need to parse.
+FormToObject.prototype.hasMultipleOfName = function (name) {
+  const $formElements =
+      this.$form.querySelectorAll(`input[name="${name}"], textarea[name="${name}"], select[name="${name}"], [${CUSTOM_INPUT_TARGET_ATTR}][name="${name}"]`);
+  return $formElements.length > 1;
+};
+
 // Check to see if the object is a HTML node.
 FormToObject.prototype.isDomNode = function (node) {
   return typeof node === 'object' && 'nodeType' in node && node.nodeType === 1;
@@ -83,7 +90,7 @@ FormToObject.prototype.forEach = function (arr, callback) {
 };
 
 // Recursive method that adds keys and values of the corresponding fields.
-FormToObject.prototype.addChild = function (result, domNode, keys, value) {
+FormToObject.prototype.addChild = function (result, domNode, keys, value, isArray) {
   // #1 - Single dimensional array.
   if (keys.length === 1) {
     if (isNodeInsideCustomSFInput(domNode)) {
@@ -107,7 +114,7 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
     // Checkboxes are a special case. We have to grab each checked values
     // and put them into an array.
     if (domNode.nodeName === 'INPUT' && domNode.type === 'checkbox') {
-      if (value) { // Looks like checkbox array
+      if (isArray) { // Looks like checkbox array
         if (!result[keys]) {
           result[keys] = [];
         }
@@ -115,7 +122,7 @@ FormToObject.prototype.addChild = function (result, domNode, keys, value) {
           result[keys].push(value);
         }
       } else {
-        result[keys] = domNode.checked ? 1 : 0; // Single checkbox
+        result[keys] = domNode.checked ? '1' : ''; // Single checkbox
       }
       return;
     }
@@ -163,7 +170,8 @@ FormToObject.prototype.setFormObj = function () {
     // Ignore the 'disabled' elements.
     if (this.$formElements[i].name && !this.$formElements[i].disabled) {
       test = this.$formElements[i].name.match(this.keyRegex);
-      this.addChild(this.formObj, this.$formElements[i], test, this.$formElements[i].value);
+      const isArray = this.hasMultipleOfName(this.$formElements[i].name);
+      this.addChild(this.formObj, this.$formElements[i], test, this.$formElements[i].value, isArray);
     }
   }
 
