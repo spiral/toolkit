@@ -32,6 +32,3 @@
 <use:element path="toolkit:form/pattern/char" as="form:pattern.char"/>
 <use:element path="toolkit:form/pattern/separator" as="form:pattern.separator"/>
 <use:element path="toolkit:form/pattern/group" as="form:pattern.group"/>
-
-{{--action buttons and links--}}
-<use:element path="toolkit:action-button" as="action:button"/>
