@@ -50,6 +50,10 @@ export default class Modal {
     document.addEventListener('click', this.handleOutsideClickListener);
   }
 
+  die() {
+    document.removeEventListener('click', this.handleOutsideClickListener);
+  }
+
   handleClickToggle() {
     this.isInnerClick = true;
     this.toggle();
@@ -75,6 +79,7 @@ export default class Modal {
 
   handleOutsideClick() {
     if (!this.isInnerClick) {
+      this.dispatch('sf:modal-cancel');
       this.close();
     }
     this.isInnerClick = false;

@@ -1,12 +1,11 @@
 @import "../vars";
 
 .sf-table {
-  margin: 1.25rem 0;
+  margin-bottom: 1.25rem;
   border: 1px solid rgba(0, 0, 0, 0.075);
   border-bottom-width: 2px;
   font-size: 0.875rem;
   background-color: $white;
-
   border-radius: 0.25rem;
 }
 

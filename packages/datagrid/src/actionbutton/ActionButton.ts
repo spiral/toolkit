@@ -4,15 +4,20 @@ const { handlebars } = sf.helpers;
 const { ajax } = sf;
 
 export interface IActionButtonOptions {
-  data: {[key: string]: string},
-  headers: {[key: string]: string},
+  data: { [key: string]: string },
+  headers: { [key: string]: string },
   method: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT',
   url: string,
-  template?: (data: any)=>string,
+  template?: (data: any) => string,
   lockType: string,
   templateName?: string;
-  beforeSubmitCallback?: (sendData: any)=>any;
-  afterSubmitCallback?: (sendData: any)=>any;
+  refresh?: boolean;
+  toastError?: string;
+  toastSuccess?: string;
+  beforeSubmitCallback?: (sendData: any) => any;
+  beforeSubmitCallbackName?: string;
+  afterSubmitCallback?: (sendData: any) => any;
+  afterSubmitCallbackName?: string;
 }
 
 export class ActionButton extends sf.core.BaseDOMConstructor {
@@ -52,30 +57,18 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       value: ActionButton.defaultOptions.method,
       domAttr: 'data-method',
     },
-    beforeSubmitCallback: {
-      value: ActionButton.defaultOptions.beforeSubmitCallback,
+    beforeSubmitCallbackName: {
+      value: ActionButton.defaultOptions.beforeSubmitCallbackName,
       domAttr: 'data-before-submit',
-      processor(node: Element, val: any, self: {value: any}) {
-        if (typeof val === 'string') {
-          return (window as any)[val] || (() => undefined);
-        }
-        return self.value;
-      },
     },
-    afterSubmitCallback: {
-      value: ActionButton.defaultOptions.afterSubmitCallback,
+    afterSubmitCallbackName: {
+      value: ActionButton.defaultOptions.afterSubmitCallbackName,
       domAttr: 'data-after-submit',
-      processor(node: Element, val: any, self: {value: any}) {
-        if (typeof val === 'string') {
-          return (window as any) || (() => undefined);
-        }
-        return self.value;
-      },
     },
     headers: { // attribute of form
       value: ActionButton.defaultOptions.headers, // Default value
       domAttr: 'data-headers',
-      processor(node: Element, val: any, self: {value: any}) {
+      processor(node: Element, val: any, self: { value: any }) {
         if (typeof val === 'string') {
           try {
             return JSON.parse(val);
@@ -90,7 +83,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     data: { // attribute of form
       value: ActionButton.defaultOptions.data, // Default value
       domAttr: 'data-data',
-      processor(node: Element, val: any, self: {value: any}) {
+      processor(node: Element, val: any, self: { value: any }) {
         if (typeof val === 'string') {
           try {
             return JSON.parse(val);
@@ -105,7 +98,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     template: {
       value: ActionButton.defaultOptions.template,
       domAttr: 'data-template',
-      processor(node: Element, val: any, self: {value: any}) {
+      processor(node: Element, val: any, self: { value: any }) {
         if (typeof val === 'string') {
           return handlebars.compile(val);
         }
@@ -115,6 +108,18 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     templateName: {
       value: ActionButton.defaultOptions.templateName,
       domAttr: 'data-template-name',
+    },
+    toastError: {
+      value: ActionButton.defaultOptions.toastError,
+      domAttr: 'data-toast-error',
+    },
+    toastSuccess: {
+      value: ActionButton.defaultOptions.toastSuccess,
+      domAttr: 'data-toast-success',
+    },
+    refresh: {
+      value: ActionButton.defaultOptions.refresh,
+      domAttr: 'data-refresh',
     },
   };
 
@@ -126,6 +131,10 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
   };
 
   node!: Element;
+
+  private toastErrorTemplate?: (data: any) => string;
+
+  private toastSuccessTemplate?: (data: any) => string;
 
   /**
    *
@@ -142,6 +151,54 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     setTimeout(() => {
       this.update();
     });
+  }
+
+  get afterSubmitCallback() {
+    if (typeof this.options.afterSubmitCallback === 'function') {
+      return this.options.afterSubmitCallback;
+    }
+    if (typeof this.options.afterSubmitCallbackName === 'string'
+      && typeof (window as any)[this.options.afterSubmitCallbackName] === 'function'
+    ) {
+      return (window as any)[this.options.afterSubmitCallbackName];
+    }
+    return undefined;
+  }
+
+  get beforeSubmitCallback() {
+    if (typeof this.options.beforeSubmitCallback === 'function') {
+      return this.options.beforeSubmitCallback;
+    }
+    if (typeof this.options.beforeSubmitCallbackName === 'string'
+      && typeof (window as any)[this.options.beforeSubmitCallbackName] === 'function'
+    ) {
+      return (window as any)[this.options.beforeSubmitCallbackName];
+    }
+    return undefined;
+  }
+
+  get shouldRefresh() {
+    return !!this.options.refresh;
+  }
+
+  get toastError() {
+    if (this.options.toastError) {
+      if (!this.toastErrorTemplate) {
+        this.toastErrorTemplate = handlebars.compile(this.options.toastError);
+      }
+      return this.toastErrorTemplate;
+    }
+    return undefined;
+  }
+
+  get toastSuccess() {
+    if (this.options.toastSuccess) {
+      if (!this.toastSuccessTemplate) {
+        this.toastSuccessTemplate = handlebars.compile(this.options.toastSuccess);
+      }
+      return this.toastSuccessTemplate;
+    }
+    return undefined;
   }
 
   update() {
@@ -174,7 +231,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     }
   }
 
-  processAnswer(answer: {data: any, status: number}) {
+  processAnswer(answer: { data: any, status: number }) {
     const hasError = typeof answer.status === 'undefined' || answer.status >= 400 || (answer.data && (answer.data.error || answer.data.errors));
     const errorMessage = hasError ? ((answer.data && answer.data.error) || 'Unknown Error') : undefined;
     this.state.error = errorMessage;
@@ -192,24 +249,53 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       headers: this.options.headers,
       method: this.options.method,
     };
-    if (typeof this.options.beforeSubmitCallback === 'function') {
+    if (this.beforeSubmitCallback) {
       try {
-        await this.options.beforeSubmitCallback(sendOptions);
+        await this.beforeSubmitCallback(sendOptions);
       } catch (e) {
         this.unlock();
         return;
       }
     }
     ajax.send(sendOptions).then(
-      (answer: {data: any, status: number}) => answer,
+      (answer: { data: any, status: number }) => answer,
       (error: any) => error,
     ).then((answer) => {
       this.unlock();
       this.processAnswer(answer);
-      if (typeof this.options.afterSubmitCallback === 'function') {
-        return this.options.afterSubmitCallback(answer);
-      }
-      return answer;
+
+      const afterSubmitCallback = async () => {
+        if (answer.status && answer.status < 400) {
+          if (this.toastSuccess) {
+            const message = answer?.data?.message || '';
+            const event = new CustomEvent('sf:notification-show', {
+              bubbles: true,
+              detail: {
+                message: this.toastSuccess({ ...answer.data, message }), type: 'success', position: 'tr', timeout: 2000,
+              },
+            });
+            document.dispatchEvent(event);
+          }
+          if (this.shouldRefresh) {
+            window.location.reload();
+          }
+        } else if (this.toastError) {
+          const error = answer?.data?.error || '';
+          const event = new CustomEvent('sf:notification-show', {
+            bubbles: true,
+            detail: {
+              message: this.toastError({ ...answer.data, error }), type: 'danger', position: 'tr', timeout: 2000,
+            },
+          });
+          document.dispatchEvent(event);
+        }
+
+        if (this.afterSubmitCallback) {
+          return this.afterSubmitCallback(answer, this.state.error);
+        }
+        return answer;
+      };
+      return afterSubmitCallback();
     });
   }
 

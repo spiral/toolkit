@@ -47,6 +47,7 @@ export const confirmModal = async (title, text, options) => {
   document.body.appendChild(div);
   const modal = Modal.init(div);
   const finish = () => {
+    modal.die();
     document.body.removeChild(div);
   };
   return new Promise((resolve, reject) => {
