@@ -12,6 +12,12 @@ export interface IActionButtonOptions {
   lockType: string,
   templateName?: string;
   refresh?: boolean;
+  confirm?: {
+    title: string,
+    body: string,
+    confirm?: string,
+    cancel?: string,
+  },
   toastError?: string;
   toastSuccess?: string;
   beforeSubmitCallback?: (sendData: any) => any;
@@ -37,8 +43,8 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     template: undefined,
     templateName: undefined,
     lockType: 'default',
-    beforeSubmitCallback: () => undefined,
-    afterSubmitCallback: () => undefined,
+    beforeSubmitCallback: undefined,
+    afterSubmitCallback: undefined,
   };
 
   optionsToGrab: { [option: string]: IOptionToGrab } = {
@@ -95,6 +101,21 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
         return self.value;
       },
     },
+    confirm: { // attribute of form
+      value: ActionButton.defaultOptions.confirm, // Default value
+      domAttr: 'data-confirm',
+      processor(node: Element, val: any, self: { value: any }) {
+        if (typeof val === 'string') {
+          try {
+            return JSON.parse(val);
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('Confirm modal config JSON.parse error: ', e, val);
+          }
+        }
+        return self.value;
+      },
+    },
     template: {
       value: ActionButton.defaultOptions.template,
       domAttr: 'data-template',
@@ -136,6 +157,13 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
 
   private toastSuccessTemplate?: (data: any) => string;
 
+  private confirmTemplate?: {
+    title: (data: any) => string,
+    body: (data: any) => string,
+    confirm: (data: any) => string,
+    cancel: (data: any) => string,
+  };
+
   /**
    *
    * @param ssf
@@ -145,7 +173,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
   constructor(ssf: ISpiralFramework, node: Element, options: Partial<IActionButtonOptions>) {
     super();
 
-    this.init(ssf, node, options);
+    this.init(ssf, node, options, ActionButton.defaultOptions);
     this.onClick = this.onClick.bind(this);
     (this.node as HTMLElement).addEventListener('click', this.onClick);
     setTimeout(() => {
@@ -201,6 +229,21 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     return undefined;
   }
 
+  get confirm() {
+    if (this.options.confirm) {
+      if (!this.confirmTemplate) {
+        this.confirmTemplate = {
+          title: handlebars.compile(this.options.confirm.title),
+          body: handlebars.compile(this.options.confirm.body),
+          confirm: handlebars.compile(this.options.confirm.confirm || 'Confirm'),
+          cancel: handlebars.compile(this.options.confirm.cancel || 'Cancel'),
+        };
+      }
+      return this.confirmTemplate;
+    }
+    return undefined;
+  }
+
   update() {
     const template = this.options.template
       || (this.options.templateName && (window as any).SFTemplates && (window as any).SFTemplates[this.options.templateName]);
@@ -249,13 +292,37 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       headers: this.options.headers,
       method: this.options.method,
     };
-    if (this.beforeSubmitCallback) {
-      try {
-        await this.beforeSubmitCallback(sendOptions);
-      } catch (e) {
-        this.unlock();
-        return;
+    const beforeSubmitCallback = async () => {
+      if (this.confirm) {
+        await new Promise((onConfirm, onCancel) => {
+          document.dispatchEvent(
+            new CustomEvent('sf:confirm',
+              {
+                detail: {
+                  title: this.confirm!.title(sendOptions),
+                  body: this.confirm!.body(sendOptions),
+                  options: {
+                    confirm: { label: this.confirm!.confirm(sendOptions) },
+                    cancel: { label: this.confirm!.cancel(sendOptions) },
+                  },
+                  onConfirm,
+                  onCancel,
+                },
+              }),
+          );
+        });
       }
+      if (this.beforeSubmitCallback) {
+        await this.beforeSubmitCallback(sendOptions);
+      }
+      return sendOptions;
+    };
+
+    try {
+      await beforeSubmitCallback();
+    } catch (e) {
+      this.unlock();
+      return;
     }
     ajax.send(sendOptions).then(
       (answer: { data: any, status: number }) => answer,
