@@ -2,6 +2,7 @@
   data-url="${url}"
   @if(injected('method')) data-method="${method}" @endif
   data-data='${data}'
+  @if(injected('confirm')) data-confirm='${confirm}' @endif
   @if(injected('toast-success')) data-toast-success="${toast-success}" @endif
   @if(injected('toast-error')) data-toast-error="${toast-error}" @endif
   @if(injected('reload')) data-reload="${reload}" @endif
