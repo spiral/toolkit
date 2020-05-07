@@ -47,11 +47,12 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     },
   };
 
-  options: IDatePickerOptions = {...DatePicker.defaultOptions};
+  options: IDatePickerOptions = { ...DatePicker.defaultOptions };
 
   sf!: ISpiralFramework;
 
   input: HTMLInputElement;
+
   picker: flatpickr.Instance;
 
   static registerInSf = () => {
@@ -68,12 +69,8 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       altInput: true,
       altFormat: this.options.displayFormat || 'yyyy LLL dd',
       dateFormat: this.options.dateFormat || dateWithTS,
-      formatDate: (date, format) => {
-        return luxon.DateTime.fromJSDate(date).toFormat(format);
-      },
-      parseDate: (str, format) => {
-        return luxon.DateTime.fromFormat(str, format).toJSDate();
-      },
+      formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
+      parseDate: (str, format) => luxon.DateTime.fromFormat(str, format).toJSDate(),
     });
   }
 }
