@@ -184,7 +184,6 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
     const isInsideAbsoluteElement: boolean = !!sf.helpers.domTools.closest(node, (n: Element) => {
       return window.getComputedStyle(n).position === 'absolute';
     });
-    console.log(isInsideAbsoluteElement, node);
     const isInsideButton: boolean = node === this.toggleButton || !!sf.helpers.domTools.closest(node, BUTTON_CLASS);
     if (this.state.isOpen) {
       if (isInBody && !isInsidePanel && !isInsideAbsoluteElement) {

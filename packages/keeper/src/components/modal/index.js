@@ -75,6 +75,7 @@ export default class Modal {
 
   handleOutsideClick() {
     if (!this.isInnerClick) {
+      this.dispatch('sf:modal-cancel');
       this.close();
     }
     this.isInnerClick = false;
