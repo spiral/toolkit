@@ -12,7 +12,9 @@ export interface IActionButtonOptions {
   lockType: string,
   templateName?: string;
   beforeSubmitCallback?: (sendData: any)=>any;
+  beforeSubmitCallbackName?: string;
   afterSubmitCallback?: (sendData: any)=>any;
+  afterSubmitCallbackName?: string;
 }
 
 export class ActionButton extends sf.core.BaseDOMConstructor {
@@ -52,25 +54,13 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       value: ActionButton.defaultOptions.method,
       domAttr: 'data-method',
     },
-    beforeSubmitCallback: {
-      value: ActionButton.defaultOptions.beforeSubmitCallback,
+    beforeSubmitCallbackName: {
+      value: ActionButton.defaultOptions.beforeSubmitCallbackName,
       domAttr: 'data-before-submit',
-      processor(node: Element, val: any, self: {value: any}) {
-        if (typeof val === 'string') {
-          return (window as any)[val] || (() => undefined);
-        }
-        return self.value;
-      },
     },
-    afterSubmitCallback: {
-      value: ActionButton.defaultOptions.afterSubmitCallback,
+    afterSubmitCallbackName: {
+      value: ActionButton.defaultOptions.afterSubmitCallbackName,
       domAttr: 'data-after-submit',
-      processor(node: Element, val: any, self: {value: any}) {
-        if (typeof val === 'string') {
-          return (window as any) || (() => undefined);
-        }
-        return self.value;
-      },
     },
     headers: { // attribute of form
       value: ActionButton.defaultOptions.headers, // Default value
@@ -144,6 +134,30 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     });
   }
 
+  get afterSubmitCallback() {
+    if (typeof this.options.afterSubmitCallback === 'function') {
+      return this.options.afterSubmitCallback;
+    }
+    if (typeof this.options.afterSubmitCallbackName === 'string'
+    && typeof (window as any)[this.options.afterSubmitCallbackName] === 'function'
+    ) {
+      return (window as any)[this.options.afterSubmitCallbackName];
+    }
+    return undefined;
+  }
+
+  get beforeSubmitCallback() {
+    if (typeof this.options.beforeSubmitCallback === 'function') {
+      return this.options.beforeSubmitCallback;
+    }
+    if (typeof this.options.beforeSubmitCallbackName === 'string'
+    && typeof (window as any)[this.options.beforeSubmitCallbackName] === 'function'
+    ) {
+      return (window as any)[this.options.beforeSubmitCallbackName];
+    }
+    return undefined;
+  }
+
   update() {
     const template = this.options.template
       || (this.options.templateName && (window as any).SFTemplates && (window as any).SFTemplates[this.options.templateName]);
@@ -192,9 +206,9 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       headers: this.options.headers,
       method: this.options.method,
     };
-    if (typeof this.options.beforeSubmitCallback === 'function') {
+    if (this.beforeSubmitCallback) {
       try {
-        await this.options.beforeSubmitCallback(sendOptions);
+        await this.beforeSubmitCallback(sendOptions);
       } catch (e) {
         this.unlock();
         return;
@@ -206,8 +220,8 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     ).then((answer) => {
       this.unlock();
       this.processAnswer(answer);
-      if (typeof this.options.afterSubmitCallback === 'function') {
-        return this.options.afterSubmitCallback(answer);
+      if (this.afterSubmitCallback) {
+        return this.afterSubmitCallback(answer, this.state.error);
       }
       return answer;
     });
