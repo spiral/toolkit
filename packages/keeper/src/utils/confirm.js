@@ -28,7 +28,7 @@ let idCounter = Date.now();
 
 // eslint-disable-next-line import/prefer-default-export
 export const confirmModal = async (title, text, options) => {
-  const fullOptions = { ...defaultOptions, options };
+  const fullOptions = { ...defaultOptions, ...options };
   // eslint-disable-next-line no-plusplus
   const id = `confirm-modal-${idCounter++}`;
   const div = document.createElement('div');
