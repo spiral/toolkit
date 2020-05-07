@@ -50,6 +50,10 @@ export default class Modal {
     document.addEventListener('click', this.handleOutsideClickListener);
   }
 
+  die() {
+    document.removeEventListener('click', this.handleOutsideClickListener);
+  }
+
   handleClickToggle() {
     this.isInnerClick = true;
     this.toggle();
