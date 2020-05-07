@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
   Sidebar.init();
 
   setTimeout(() => document.body.classList.add('loaded'), 1);
+
+  document.addEventListener('sf:confirm', (e) => {
+    // eslint-disable-next-line max-len
+    confirmModal(e.detail.title, e.detail.body, e.detail.options).then(e.detail.onConfirm).catch(e.detail.onCancel);
+  });
 });
 
 export {

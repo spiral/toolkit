@@ -148,9 +148,22 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
           const beforeSubmitCallback = async (data: any) => {
             dropdown.hide();
             if (action.confirm) {
-              await (window as any).SFKeeper.confirmModal(action.confirm.title(item), action.confirm.body(item), {
-                confirm: { label: action.confirm.confirm(item) },
-                cancel: { label: action.confirm.cancel(item) },
+              await new Promise((onConfirm, onCancel) => {
+                document.dispatchEvent(
+                  new CustomEvent('sf:confirm',
+                    {
+                      detail: {
+                        title: action.confirm!.title(item),
+                        body: action.confirm!.body(item),
+                        options: {
+                          confirm: { label: action.confirm!.confirm(item) },
+                          cancel: { label: action.confirm!.cancel(item) },
+                        },
+                        onConfirm,
+                        onCancel,
+                      },
+                    }),
+                );
               });
               return data;
             }
