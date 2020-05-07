@@ -1,15 +1,16 @@
-export const closest = (el: Element, selector: string | string[]) => {
-  const selectors = (typeof selector === 'string') ? [selector] : selector;
-  let key;
+export const closest = (el: Element, selector: string | string[] | ((e: Element)=>boolean)) => {
+  let predicate = selector;
+  if (typeof predicate !== 'function') {
+    const selectors: string[] = (typeof selector === 'string') ? [selector] : selector as string[];
+    // eslint-disable-next-line max-len
+    predicate = (elem: Element) => selectors.reduce((matchValid: boolean, sel: string) => matchValid && (elem.matches || (elem as any).msMatchesSelector).call(elem, sel), true);
+  }
+
   let elem = el;
-  const l = selectors.length;
-  const matchesSelector: (selectors: string) => boolean = elem.matches || (elem as any).msMatchesSelector;
 
   while (elem && elem.parentElement) {
-    for (key = 0; key < l; key += 1) {
-      if (matchesSelector.call(elem, selectors[key])) {
-        return elem;
-      }
+    if (predicate(elem)) {
+      return elem;
     }
     elem = elem.parentElement;
   }
