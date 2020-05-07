@@ -169,6 +169,9 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
                 });
                 document.dispatchEvent(event);
               }
+              if (action.refresh) {
+                state.parent.request();
+              }
             } else if (action.toastError) {
               const error = data?.data?.error || '';
               const event = new CustomEvent('sf:notification-show', {
@@ -178,9 +181,6 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
                 },
               });
               document.dispatchEvent(event);
-            }
-            if (action.refresh) {
-              state.parent.request();
             }
           };
           sf.instancesController.addInstance(ActionButton.spiralFrameworkName, link, {
