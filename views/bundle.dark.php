@@ -32,3 +32,6 @@
 <use:element path="toolkit:form/pattern/char" as="form:pattern.char"/>
 <use:element path="toolkit:form/pattern/separator" as="form:pattern.separator"/>
 <use:element path="toolkit:form/pattern/group" as="form:pattern.group"/>
+
+{{--error placeholder--}}
+<use:element path="toolkit:form/error-placeholder" as="form:error-placeholder"/>
