@@ -2,7 +2,7 @@
 
 <block:element>
     <?php
-    $_selected_ = inject('value') || inject('context');
+    $_selected_ = inject('value');
     $_values = inject('values', []);
     $_placeholder_ = inject('placeholder');
     $_options_ = [];
