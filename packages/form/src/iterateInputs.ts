@@ -5,7 +5,7 @@
 
 // TODO comment all of this
 // TODO ask @Systerr the reason of variable 'prefix'
-let notFound = [];
+let notFound: string[] = [];
 
 /**
  *
@@ -14,7 +14,7 @@ let notFound = [];
  * @param {Function} callback
  * @param {String} [prefix]
  */
-function findNodes(context, names, callback, prefix) {
+export function findNodes(context: Element, names: {[key: string]: any}, callback: (node: Element, something: any)=>void, prefix?: string) {
   // for (const name in names) {
   Object.keys(names).forEach((name) => {
     // eslint-disable-next-line no-prototype-builtins
@@ -31,8 +31,8 @@ function findNodes(context, names, callback, prefix) {
         findNodes(context, names[name], callback, partOfSelector);
         break;
       case '[object Array]':
-        names[name].forEach((el) => {
-          // TODO refactor this should call recursive
+        names[name].forEach((el: string) => {
+          // TODO refactor this should call recursive, el is not always string
           const sel = `[name='${partOfSelector}[]'][value='${el}']`;
           const nodes = context.querySelectorAll(sel);
           if (nodes.length === 0) {
@@ -48,9 +48,7 @@ function findNodes(context, names, callback, prefix) {
         // eslint-disable-next-line no-case-declarations
         const nodes = context.querySelectorAll(selector);
         if (nodes.length === 0) {
-          const obj = {};
-          obj[partOfSelector] = names[name];
-          notFound.push(obj);
+          notFound.push(selector);
         }
         for (let i = 0, max = nodes.length; i < max; i += 1) {
           callback(nodes[i], names[name]);
@@ -70,14 +68,8 @@ function findNodes(context, names, callback, prefix) {
  * @param {String} [prefix]
  * @return {String[]}
  */
-const iterateInputs = function (context, names, callback, prefix) {
+export const iterateInputs = function (context: Element, names: {[key: string]: any}, callback: (node: Element, something: any)=>void, prefix?: string) {
   notFound = [];
   findNodes(context, names, callback, prefix);
-  if (notFound.length !== 0) {
-    // eslint-disable-next-line no-console
-    // console.log('Some element not found in form', notFound);
-  }
   return notFound;
 };
-
-module.exports = iterateInputs;
