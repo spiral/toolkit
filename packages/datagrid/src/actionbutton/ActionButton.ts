@@ -294,9 +294,22 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     };
     const beforeSubmitCallback = async () => {
       if (this.confirm) {
-        await (window as any).SFKeeper.confirmModal(this.confirm.title(sendOptions), this.confirm.body(sendOptions), {
-          confirm: { label: this.confirm.confirm(sendOptions) },
-          cancel: { label: this.confirm.cancel(sendOptions) },
+        await new Promise((onConfirm, onCancel) => {
+          document.dispatchEvent(
+            new CustomEvent('sf:confirm',
+              {
+                detail: {
+                  title: this.confirm!.title(sendOptions),
+                  body: this.confirm!.body(sendOptions),
+                  options: {
+                    confirm: { label: this.confirm!.confirm(sendOptions) },
+                    cancel: { label: this.confirm!.cancel(sendOptions) },
+                  },
+                  onConfirm,
+                  onCancel,
+                },
+              }),
+          );
         });
       }
       if (this.beforeSubmitCallback) {

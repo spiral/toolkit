@@ -33,5 +33,6 @@
 <use:element path="toolkit:form/pattern/separator" as="form:pattern.separator"/>
 <use:element path="toolkit:form/pattern/group" as="form:pattern.group"/>
 
-{{--action buttons and links--}}
-<use:element path="toolkit:action-button" as="action:button"/>
+{{--other elements--}}
+<use:element path="toolkit:form/error-placeholder" as="form:error-placeholder"/>
+<use:element path="toolkit:form/label" as="form:label"/>
