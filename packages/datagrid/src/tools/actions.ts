@@ -56,7 +56,7 @@ export const compileAction = (declaration: IActionDeclaration) => {
   const template = declaration.template
     ? handlebars.compile(declaration.template)
     : handlebars.compile(`${declaration.icon
-      ? `<i class="fas fa-${declaration.icon}"></i>`
+      ? `<i class="fas fw fa-${declaration.icon}"></i>`
       : ''}${(declaration.label && declaration.icon) ? '&nbsp;&nbsp;&nbsp;' : ''}${declaration.label || ''}`);
   const url = handlebars.compile(declaration.url);
   const dataTemplate = (typeof declaration.data === 'string') ? handlebars.compile(declaration.data) : undefined;

@@ -22,7 +22,11 @@ export default class TabnavTab {
     this.elem.addEventListener('click', this.handleClickListener);
   }
 
-  handleClick() {
+  handleClick(e) {
+    if (e) {
+      e.preventDefault(); // Prevent scroll effect
+      window.history.replaceState({}, '', e.target.href);
+    }
     this.show();
   }
 
