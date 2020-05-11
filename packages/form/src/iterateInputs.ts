@@ -3,9 +3,7 @@
 
 // Plugin in formMessages to iterate form inputs
 
-// TODO comment all of this
-// TODO ask @Systerr the reason of variable 'prefix'
-let notFound: string[] = [];
+export type NotFound = Array<{[name: string]: any}>
 
 /**
  *
@@ -16,6 +14,7 @@ let notFound: string[] = [];
  */
 export function findNodes(context: Element, names: {[key: string]: any}, callback: (node: Element, something: any)=>void, prefix?: string) {
   // for (const name in names) {
+  let notFound: NotFound = [];
   Object.keys(names).forEach((name) => {
     // eslint-disable-next-line no-prototype-builtins
     if (!names.hasOwnProperty(name)) {
@@ -28,7 +27,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
 
     switch (type) {
       case '[object Object]':
-        findNodes(context, names[name], callback, partOfSelector);
+        notFound = [...notFound, findNodes(context, names[name], callback, partOfSelector)];
         break;
       case '[object Array]':
         names[name].forEach((el: string) => {
@@ -36,7 +35,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
           const sel = `[name='${partOfSelector}[]'][value='${el}']`;
           const nodes = context.querySelectorAll(sel);
           if (nodes.length === 0) {
-            notFound.push(sel);
+            notFound.push({[partOfSelector]: names[name]});
           }
           for (let i = 0, max = nodes.length; i < max; i += 1) {
             callback(nodes[i], true);
@@ -48,7 +47,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
         // eslint-disable-next-line no-case-declarations
         const nodes = context.querySelectorAll(selector);
         if (nodes.length === 0) {
-          notFound.push(selector);
+          notFound.push({[partOfSelector]: names[name]});
         }
         for (let i = 0, max = nodes.length; i < max; i += 1) {
           callback(nodes[i], names[name]);
@@ -59,6 +58,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
         console.error('unknown type -', type, ' and message', names[name]);
     }
   });
+  return notFound;
 }
 
 /**
@@ -69,7 +69,5 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
  * @return {String[]}
  */
 export const iterateInputs = function (context: Element, names: {[key: string]: any}, callback: (node: Element, something: any)=>void, prefix?: string) {
-  notFound = [];
-  findNodes(context, names, callback, prefix);
-  return notFound;
+  return findNodes(context, names, callback, prefix);
 };

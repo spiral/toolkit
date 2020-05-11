@@ -9,7 +9,7 @@ import core, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import type { Events } from '@spiral-toolkit/core/dist/core/Events';
 import type { DOMEvents } from '@spiral-toolkit/core/dist/helpers/DOMEvents';
 
-import FormToObject from './formToObject';
+import { formToObject } from './formToObject';
 import { formMessagesDefaults, FreeformMessage, prepareMessageObject } from './formMessages';
 import { iterateInputs } from './iterateInputs';
 
@@ -26,10 +26,12 @@ export type IMessagesOptions = any;
 export interface IFormOptions {
   id: string;
   url: string;
+  data?: any;
   immediate?: number;
   lockType: string;
   headers: { [header: string]: string };
   messagesType: string;
+  onProgress?: (total: number, progress: number) => any,
   messages?: IMessagesOptions;
   useAjax: boolean;
   method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
@@ -66,6 +68,7 @@ export class Form extends sf.core.BaseDOMConstructor {
   public options: IFormOptions = {...Form.defaultOptions};
   public DOMEvents: DOMEvents;
   public events: Events;
+  private submitTimeout?: NodeJS.Timeout;
 
   optionsToGrab: { [key: string]: IOptionToGrab } = {
     id: {
@@ -249,7 +252,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         error += answer.statusText ? answer.statusText : '';
         error += answer.data && !answer.statusText ? answer.data : '';
       }
-      if (error) this.showFormMessage(error, this.options.messages.levels.error);
+      if (error) this.showFormMessage(error as any, this.options.messages.levels.error);
     }
 
     this.messages.forEach((m) => {
@@ -265,7 +268,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       m.close.removeEventListener('click', m.closeHandler);
     }
     m.el.parentNode?.removeChild(m.el);
-    if (m.field) {
+    if (m.field && m.type) {
       const fieldEl = m.field.querySelector(this.options.messages.fieldElement);
       if (fieldEl) {
         fieldEl.classList.remove(this.options.messages.fieldClasses[m.type]);
@@ -280,10 +283,9 @@ export class Form extends sf.core.BaseDOMConstructor {
   };
 
   removeMessages() {
-    const that = this;
     if (this.messages) {
       this.messages.forEach((m) => {
-        that.removeMessage(m);
+        this.removeMessage(m);
       });
     }
     this.messages = [];
@@ -376,8 +378,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     });
   };
 
-  showFieldsMessages(messages, type, showUnknown = true) {
-    const that = this;
+  showFieldsMessages(messages: {[messageKey: string]: any}, type: string, showUnknown = true) {
     const notFound = iterateInputs(this.node, messages, (el, message) => {
       this.showFieldMessage(el as HTMLElement, message, type);
     });
@@ -385,32 +386,33 @@ export class Form extends sf.core.BaseDOMConstructor {
     if (showUnknown) {
       notFound.forEach((msgObj) => {
         Object.keys(msgObj).forEach((name) => {
-          const container = that.node.querySelector(`[data-message-placeholder="${name}"]`);
+          const container = this.node.querySelector(`[data-message-placeholder="${name}"]`);
           if (container) {
             // TODO check container.dataset.messageVariant? variants are "field" and "form"
-            that.showFieldMessage(container as HTMLElement, msgObj[name], type, true);
+            this.showFieldMessage(container as HTMLElement, msgObj[name], type, true);
           }
         });
       });
     }
   };
 
-  onDebouncedSubmit(e) {
+  onDebouncedSubmit(e: UIEvent) {
     if (this.options.immediate) {
       if (!this.options.jsonOnly) {
         console.error('Should not used immediate forms on non json forms');
         return false;
       }
-      if (isNodeInsideCustomSFInput(e.target)) {
+      const el = e.target as Element;
+      if (isNodeInsideCustomSFInput(el)) {
         // Don't parse inputs that are used as helpers
         return false;
       }
-      if (e.target.getAttribute('name')) {
-        const name = e.target.getAttribute('name');
+      if (el.getAttribute('name')) {
+        const name = el.getAttribute('name')!;
         const data = this.getFormData();
         // eslint-disable-next-line eqeqeq
-        if (this.prevValues[name] != data[name]) {
-          this.prevValues[name] = data[name];
+        if (this.prevValues[name] != (data as any)[name]) {
+          this.prevValues[name] = (data as any)[name];
         } else {
           return false;
         }
@@ -422,7 +424,9 @@ export class Form extends sf.core.BaseDOMConstructor {
         return false;
       }
 
-      clearTimeout(this.submitTimeout);
+      if(this.submitTimeout) {
+        clearTimeout(this.submitTimeout);
+      }
       this.submitTimeout = setTimeout(() => {
         this.onSubmit(e);
       }, this.options.immediate);
@@ -431,7 +435,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     return true;
   }
 
-  onSubmit(e) {
+  onSubmit(e: UIEvent) {
     if (this.sf.getInstance('lock', this.node)) {
       // On lock we should'n do any actions
       e.preventDefault();
@@ -445,12 +449,11 @@ export class Form extends sf.core.BaseDOMConstructor {
 
     // We can send files only with FormData
     // If form contain files and no FormData than disable ajax
-    if (!this.options.jsonOnly && this.options.context.querySelectorAll('input[type=\'file\']').length !== 0) {
+    if (!this.options.jsonOnly && this.node.querySelectorAll('input[type=\'file\']').length !== 0) {
       this.options.useAjax = false;
     }
+
     this.events.trigger('beforeSend', this.options);
-    // sf.events.performAction("beforeSubmit", this.options);
-    // this.events.performAction("beforeSubmit", this.options);
 
     if (this.options.useAjax) {
       this.send(this.options);
@@ -469,7 +472,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       console.warn('You try to add \'lock\' instance, but it is not available or already started');
       return;
     }
-    this.options.onProgress = lock.progress;
+    this.options.onProgress = (lock as any).progress;
   }
 
   unlock() {
@@ -481,14 +484,15 @@ export class Form extends sf.core.BaseDOMConstructor {
     }
   }
 
-  processAnswer(answer, showUnknown = true) {
+  processAnswer(answer: { data: any, status?: number, statusText?: string } | undefined, showUnknown = true) {
     if (this.options.messagesType) {
       this.showMessages(answer, showUnknown);
     }
   }
 
-  setFieldValues(values) {
-    this.sf.iterateInputs(this.node, values, (el, value) => {
+  setFieldValues(values: {[name: string]: any}) {
+    iterateInputs(this.node, values, (rawEl, value) => {
+      const el = (rawEl as HTMLInputElement & {sfSetValue?: Function});
       if (el.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && typeof el.sfSetValue === 'function') {
         el.sfSetValue(value);
       } else {
@@ -507,10 +511,10 @@ export class Form extends sf.core.BaseDOMConstructor {
 
   enumerateFieldNames() {
     // console.log(this.node.querySelectorAll('input,select,textarea'));
-    return [...this.node.querySelectorAll('input,select,textarea')].map((el) => el.getAttribute('name')); // TODO: support custom inputs too
+    return Array.prototype.slice.call(this.node.querySelectorAll('input,select,textarea')).map((el) => el.getAttribute('name')); // TODO: support custom inputs too
   }
 
-  optCallback(options, type) {
+  optCallback(options: any, type: string) {
     if (options[type]) {
       // eslint-disable-next-line no-eval
       const fn = eval(options[type]);
@@ -521,25 +525,32 @@ export class Form extends sf.core.BaseDOMConstructor {
     return undefined;
   }
 
-  send(sendOptions) {
+  send(sendOptions: {
+    data?: any,
+    method: 'GET' | 'POST' | 'PATCH' | 'get' | 'post' | 'patch' | 'PUT' | 'put' | 'DELETE' | 'delete',
+    headers?: { [key: string]: string },
+    url: string,
+    onProgress?: (total: number, progress: number) => any,
+    response?: any
+  }) {
     if (this.optCallback(sendOptions, 'beforeSubmitCallback') === false) {
       return;
     }
     this.lock();
     this.sf.ajax.send(sendOptions).then(
       (answer) => {
-        that.events.trigger('success', sendOptions);
+        this.events.trigger('success', sendOptions);
         return answer;
       },
       (error) => {
-        that.events.trigger('error', sendOptions);
+        this.events.trigger('error', sendOptions);
         return error;
       },
     ).then((answer) => {
-      that.unlock();
-      that.processAnswer(answer);
+      this.unlock();
+      this.processAnswer(answer);
       this.optCallback({...sendOptions, response: answer}, 'afterSubmitCallback');
-      that.events.trigger('always', sendOptions);
+      this.events.trigger('always', sendOptions);
     });
 
     // To cancel request:
@@ -549,18 +560,18 @@ export class Form extends sf.core.BaseDOMConstructor {
   getFormData() {
     if (!this.options.jsonOnly) {
       // IE11 will try sending unnamed inputs and will ruin everything, so disable them
-      this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
-        if (!input.name) {
+      this.node.querySelectorAll('input,textarea,select').forEach((input) => {
+        if (!(input as HTMLInputElement).name) {
           if (!input.hasAttribute('disabled')) {
             input.setAttribute('data-sf-temp-disabled-old', 'yes');
-            input.setAttribute('disabled', true);
+            input.setAttribute('disabled', "disabled");
           }
         }
       });
-      const result = new FormData(this.options.context);
+      const result = new FormData(this.node as HTMLFormElement);
       // Recover inputs that were not intended to be disabled
-      this.options.context.querySelectorAll('input,textarea,select').forEach((input) => {
-        if (!input.name) {
+      this.node.querySelectorAll('input,textarea,select').forEach((input) => {
+        if (!(input as HTMLInputElement).name) {
           const shouldRemoveDisabled = input.getAttribute('data-sf-temp-disabled-old');
           if (shouldRemoveDisabled) {
             input.removeAttribute('disabled');
@@ -570,25 +581,24 @@ export class Form extends sf.core.BaseDOMConstructor {
       });
       return result;
     }
-    // console.log(`Form \`${this.options.context}\` were processed without FormData.`);
-    return new FormToObject(this.options.context);
+    return formToObject(this.node);
   }
 
-  setOptions(opt) {
-    this.options = Object.assign(this.options, opt);
+  setOptions(opt: Partial<IFormOptions>) {
+    this.options = {...this.options, ...opt};
   }
 
   addEvents() {
     this.DOMEvents.add([
       {
-        DOMNode: this.options.context,
+        DOMNode: this.node,
         eventType: 'submit',
         eventFunction: (e) => {
           this.onSubmit(e);
         },
       },
       {
-        DOMNode: this.options.context,
+        DOMNode: this.node,
         eventType: 'reset',
         eventFunction: (e) => {
           setTimeout(() => {
@@ -597,14 +607,14 @@ export class Form extends sf.core.BaseDOMConstructor {
         },
       },
       {
-        DOMNode: this.options.context,
+        DOMNode: this.node,
         eventType: 'change',
         eventFunction: (e) => {
           this.onDebouncedSubmit(e);
         },
       },
       {
-        DOMNode: this.options.context,
+        DOMNode: this.node,
         eventType: 'input',
         eventFunction: (e) => {
           this.onDebouncedSubmit(e);

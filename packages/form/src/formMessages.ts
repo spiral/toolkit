@@ -1,5 +1,7 @@
 export const formMessagesDefaults = {
+  // eslint-disable-next-line no-template-curly-in-string
   template: '<div class="alert alert-${type} alert-dismissible fade show" role="alert">'
+    // eslint-disable-next-line no-template-curly-in-string
     + '${text}'
     + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
     + '<span aria-hidden="true">&times;</span>'
@@ -23,6 +25,7 @@ export const formMessagesDefaults = {
   selector: '[data-message]',
   field: '[data-field]',
   fieldElement: '[data-input]',
+  // eslint-disable-next-line no-template-curly-in-string
   fieldTemplate: '<div data-message class="invalid-feedback" data-form-message>${text}</div>',
   fieldPlace: 'bottom',
   fieldClasses: {
@@ -40,6 +43,7 @@ export function prepareMessageObject(message: FreeformMessage, type: string) {
     return { text: message, type };
   }
   return {
+    ...message,
     text: message.text || message.message,
     type: message.type || type,
   };

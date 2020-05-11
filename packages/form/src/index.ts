@@ -1,7 +1,5 @@
+import { Form } from './Form';
 
-const sf = require('@spiral-toolkit/core').default;
-const Form = require('./Form').default;
+Form.registerInSf();
 
-sf.registerInstanceType(Form, 'js-sf-form');
-
-module.exports = Form; // ES6 default export will not expose us as global
+export default Form;

@@ -4,7 +4,7 @@ const config = {
   ...baseConfig,
 
   entry: {
-    form: ['./src/index.js'],
+    form: ['./src/index.ts'],
   },
 
   output: {
