@@ -4,19 +4,25 @@ const config = {
   ...baseConfig,
 
   entry: {
-    form: ['./src/index.js'],
+    form: ['./src/index.ts'],
   },
 
   output: {
     ...baseConfig.output,
-    library: '@spiral-toolkit/form',
+    library: {
+      amd: '@spiral-toolkit/form',
+      commonjs: '@spiral-toolkit/form',
+      root: 'SFForm',
+    },
   },
+
 
   externals: {
     '@spiral-toolkit/core': {
       root: 'SFToolkit',
-      commonjs2: '@spiral-toolkit/core',
       commonjs: '@spiral-toolkit/core',
+      amd: '@spiral-toolkit/core',
+      commonjs2: '@spiral-toolkit/core',
     },
   },
 };

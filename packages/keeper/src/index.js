@@ -16,6 +16,7 @@ import './components/user.scss';
 import './components/filter.scss';
 import './components/input.scss';
 import './components/icons.scss';
+import './components/datepicker.scss';
 
 import { confirmModal } from './utils/confirm';
 import Nav from './components/nav';

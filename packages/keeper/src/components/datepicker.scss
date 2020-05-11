@@ -1,0 +1,45 @@
+@import "../vars";
+@import "~flatpickr/dist/flatpickr.css";
+@import "~flatpickr/dist/themes/airbnb.css";
+
+.flatpickr-current-month {
+  padding-top: 0px;
+}
+
+.flatpickr-months .flatpickr-prev-month, .flatpickr-months .flatpickr-next-month {
+  top: -6px;
+}
+
+.flatpickr-current-month .numInputWrapper {
+  margin-left: 17px;
+}
+
+.flatpickr-current-month input.cur-year,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  height: 34px;
+}
+
+.flatpickr-day {
+  // max-width: 37px;
+  height: 37px;
+  line-height: 37px;
+}
+
+.dayContainer,
+.flatpickr-days,
+.flatpickr-calendar {
+  width: 280px;
+}
+.dayContainer {
+  max-width: 280px;
+  min-width: 280px;
+}
+
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+  background: $primary;
+  border-color: $primary;
+}
+
+span.flatpickr-day.today:not(.selected), span.flatpickr-day.prevMonthDay.today:not(.selected), span.flatpickr-day.nextMonthDay.today:not(.selected) {
+  border-bottom-color: $danger;
+}

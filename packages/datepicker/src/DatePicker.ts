@@ -1,13 +1,15 @@
-import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { ICustomInput, IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import flatpickr from 'flatpickr';
 
 const dateWithTS = 'yyyy-MM-dd\'T\'HH:mm:ssZZZ';
 
 const { luxon } = sf.helpers;
+const { CUSTOM_INPUT_TARGET_ATTR, CUSTOM_INPUT_ATTR } = sf.constants;
 
 export interface IDatePickerOptions {
   enableTime?: boolean,
   noCalendar?: boolean,
+  time24?: boolean,
   dateFormat?: string;
   displayFormat?: string;
 }
@@ -32,6 +34,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     enableTime: {
       value: DatePicker.defaultOptions.enableTime,
       domAttr: 'data-enable-time',
+    },
+    time24: {
+      value: DatePicker.defaultOptions.enableTime,
+      domAttr: 'data-time-24',
     },
     noCalendar: {
       value: DatePicker.defaultOptions.noCalendar,
@@ -67,10 +73,23 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       enableTime: !!this.options.enableTime,
       noCalendar: !!this.options.noCalendar,
       altInput: true,
+      time_24hr: this.options.time24,
       altFormat: this.options.displayFormat || 'yyyy LLL dd',
       dateFormat: this.options.dateFormat || dateWithTS,
       formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
       parseDate: (str, format) => luxon.DateTime.fromFormat(str, format).toJSDate(),
     });
+    this.input = node.querySelector('input[name]')! as HTMLInputElement;
+    (this.input as unknown as ICustomInput).sfSetValue = (value) => {
+      this.picker.setDate(luxon.DateTime.fromFormat(value, this.options.dateFormat || dateWithTS).toJSDate());
+    };
+    this.input.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+    node.setAttribute(CUSTOM_INPUT_ATTR, 'true');
+    if (node.querySelector('[data-toggle]')) {
+      node.querySelector('[data-toggle]')!.addEventListener('click', () => this.picker.toggle());
+    }
+    if (node.querySelector('[data-clear]')) {
+      node.querySelector('[data-clear]')!.addEventListener('click', () => this.picker.clear());
+    }
   }
 }
