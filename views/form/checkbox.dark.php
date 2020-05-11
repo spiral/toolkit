@@ -8,7 +8,7 @@
     type="checkbox"
     name="${name}"
     value="${value}"
-    @if(injected('checked'))checked@endif
+    @if(injected('checked') && inject('checked'))checked@endif
     @if(injected('disabled'))disabled@endif
   >
 </block:element>
