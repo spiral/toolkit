@@ -24,6 +24,8 @@
 {{--dates--}}
 <use:element path="toolkit:form/date" as="form:date"/>
 <use:element path="toolkit:form/date-js" as="form:date-js"/>
+<use:element path="toolkit:form/date-range" as="form:date-range"/>
+<use:element path="toolkit:form/time" as="form:time"/>
 
 {{--pattern inputs--}}
 <use:element path="toolkit:form/pattern/field" as="form:pattern.field"/>

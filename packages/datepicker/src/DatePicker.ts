@@ -10,6 +10,7 @@ export interface IDatePickerOptions {
   enableTime?: boolean,
   noCalendar?: boolean,
   time24?: boolean,
+  mode?: string,
   dateFormat?: string;
   displayFormat?: string;
 }
@@ -24,6 +25,7 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
   static defaultOptions: IDatePickerOptions = {
     enableTime: false,
     noCalendar: false,
+    mode: undefined,
     dateFormat: dateWithTS,
     displayFormat: 'yyyy LLL dd',
   };
@@ -34,6 +36,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     enableTime: {
       value: DatePicker.defaultOptions.enableTime,
       domAttr: 'data-enable-time',
+    },
+    mode: {
+      value: DatePicker.defaultOptions.mode,
+      domAttr: 'data-mode',
     },
     time24: {
       value: DatePicker.defaultOptions.enableTime,
@@ -73,7 +79,8 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       enableTime: !!this.options.enableTime,
       noCalendar: !!this.options.noCalendar,
       altInput: true,
-      time_24hr: this.options.time24,
+      mode: this.options.mode as any,
+      time_24hr: !!this.options.time24,
       altFormat: this.options.displayFormat || 'yyyy LLL dd',
       dateFormat: this.options.dateFormat || dateWithTS,
       formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
