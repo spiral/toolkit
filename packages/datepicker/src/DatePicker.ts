@@ -1,5 +1,6 @@
 import sf, { ICustomInput, IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import flatpickr from 'flatpickr';
+import confirmDatePlugin from 'flatpickr/dist/plugins/confirmDate/confirmDate';
 
 const dateWithTS = 'yyyy-MM-dd\'T\'HH:mm:ssZZZ';
 
@@ -10,6 +11,7 @@ export interface IDatePickerOptions {
   enableTime?: boolean,
   noCalendar?: boolean,
   time24?: boolean,
+  forceConfirmButton?: boolean,
   mode?: string,
   dateFormat?: string;
   displayFormat?: string;
@@ -25,7 +27,8 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
   static defaultOptions: IDatePickerOptions = {
     enableTime: false,
     noCalendar: false,
-    mode: undefined,
+    forceConfirmButton: false,
+    mode: 'single',
     dateFormat: dateWithTS,
     displayFormat: 'yyyy LLL dd',
   };
@@ -36,6 +39,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     enableTime: {
       value: DatePicker.defaultOptions.enableTime,
       domAttr: 'data-enable-time',
+    },
+    forceConfirmButton: {
+      value: DatePicker.defaultOptions.forceConfirmButton,
+      domAttr: 'data-force-confirm-button',
     },
     mode: {
       value: DatePicker.defaultOptions.mode,
@@ -75,6 +82,12 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     super();
     this.init(ssf, node, options, DatePicker.defaultOptions);
     this.input = node.querySelector('input')!;
+    const confirmPlugin = new (confirmDatePlugin as any)({
+      confirmIcon: "<i class='fa fa-check ml-1'></i>", // your icon's html, if you wish to override
+      confirmText: 'Apply',
+      showAlways: !!this.options.forceConfirmButton,
+      theme: 'light', // or "dark
+    });
     this.picker = flatpickr(this.input, {
       enableTime: !!this.options.enableTime,
       noCalendar: !!this.options.noCalendar,
@@ -85,10 +98,18 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       dateFormat: this.options.dateFormat || dateWithTS,
       formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
       parseDate: (str, format) => luxon.DateTime.fromFormat(str, format).toJSDate(),
+      plugins: [confirmPlugin],
     });
     this.input = node.querySelector('input[name]')! as HTMLInputElement;
     (this.input as unknown as ICustomInput).sfSetValue = (value) => {
-      this.picker.setDate(luxon.DateTime.fromFormat(value, this.options.dateFormat || dateWithTS).toJSDate());
+      // console.log(value, this.picker.l10n.rangeSeparator);
+      if (this.options.mode === 'range') {
+        const values = value.split(this.picker.l10n.rangeSeparator);
+        const dates = values.map((v) => (luxon.DateTime.fromFormat(v, this.options.dateFormat || dateWithTS).toJSDate()));
+        console.log(this.options.mode, this.picker.l10n.rangeSeparator, values, dates);
+        this.picker.setDate(values);
+      }
+      this.picker.setDate(value);
     };
     this.input.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
     node.setAttribute(CUSTOM_INPUT_ATTR, 'true');

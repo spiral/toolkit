@@ -4,14 +4,14 @@
   <div class="js-sf-date input-group"
        data-enable-time="true"
        @if(injected('time-24')) data-time-24="${time-24}" @endif
+       @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="true"
        data-format="${format|HH:mm:ssZZZ}"
-       data-mode="range"
        data-display-format="${display-format|HH:mm}"
   >
       <div class="input-group-prepend" data-toggle>
             <span class="form-control text-muted bg-white border-right-0" style="cursor: pointer">
-                <i class="fas fa-calendar"></i>
+                <i class="fas fa-clock"></i>
             </span>
       </div>
       <input
