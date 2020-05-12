@@ -10,7 +10,8 @@
   >
       <div class="input-group-prepend" data-toggle>
             <span class="form-control text-muted bg-white border-right-0" style="cursor: pointer">
-                <i class="fas fa-calendar"></i>
+                @if(injected('no-calendar')) <i class="fas fa-clock"></i> @endif
+                @if(!injected('no-calendar')) <i class="fas fa-calendar"></i> @endif
             </span>
       </div>
       <input
