@@ -4,9 +4,9 @@
   <div class="js-sf-date input-group"
        data-enable-time="true"
        @if(injected('time-24')) data-time-24="${time-24}" @endif
+       @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="true"
        data-format="${format|HH:mm:ssZZZ}"
-       data-mode="range"
        data-display-format="${display-format|HH:mm}"
   >
       <div class="input-group-prepend" data-toggle>

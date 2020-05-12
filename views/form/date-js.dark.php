@@ -4,6 +4,7 @@
   <div class="js-sf-date input-group"
        data-enable-time="${enable-time}"
        @if(injected('time-24')) data-time-24="${time-24}" @endif
+       @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="${no-calendar}"
        data-format="${format}"
        data-display-format="${display-format}"
