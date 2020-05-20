@@ -1,27 +1,100 @@
-@import "./vars";
+@use "./vars";
 
-@use './bootstrap.scss' with (
-  $primary: $sf-primary,
-  $font-family-sans-serif: $sf-font-family-sans-serif,
-  $font-size-base: $sf-font-size-base,
-  $font-weight-bold: $sf-font-weight-bold,
-  $font-weight-bolder: $sf-font-weight-bolder,
-  $h1-font-size: $sf-h1-font-size,
-  $h2-font-size: $sf-h2-font-size,
-  $h3-font-size: $sf-h3-font-size,
-  $h4-font-size: $sf-h4-font-size,
-  $h5-font-size: $sf-h5-font-size,
-  $h6-font-size: $sf-h6-font-size,
-  $grid-gutter-width: $sf-grid-gutter-width,
-  $card-border-color: $sf-card-border-color,
-  $dropdown-border-color: $sf-dropdown-border-color,
-  $pagination-border-color: $sf-pagination-border-color,
-  $custom-select-border-radius: $sf-custom-select-border-radius,
-  $primary-darken: $sf-primary-darken,
-  $primary-lighten: $sf-primary-lighten,
-  $focus: $sf-focus,
-  $focus-semitransparent: $sf-focus-semitransparent,
+@use './bootstrap' with (
+  $primary: vars.$sf-primary,
+  $font-family-sans-serif: vars.$sf-font-family-sans-serif,
+  $font-size-base: vars.$sf-font-size-base,
+  $font-weight-bold: vars.$sf-font-weight-bold,
+  $font-weight-bolder: vars.$sf-font-weight-bolder,
+  $h1-font-size: vars.$sf-h1-font-size,
+  $h2-font-size: vars.$sf-h2-font-size,
+  $h3-font-size: vars.$sf-h3-font-size,
+  $h4-font-size: vars.$sf-h4-font-size,
+  $h5-font-size: vars.$sf-h5-font-size,
+  $h6-font-size: vars.$sf-h6-font-size,
+  $grid-gutter-width: vars.$sf-grid-gutter-width,
+  $card-border-color: vars.$sf-card-border-color,
+  $dropdown-border-color: vars.$sf-dropdown-border-color,
+  $pagination-border-color: vars.$sf-pagination-border-color,
+  $custom-select-border-radius: vars.$sf-custom-select-border-radius,
 );
+
+
+html {
+  width: 100%;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+}
+
+a:focus, button:focus {
+  outline: 5px auto #{vars.$sf-focus};
+}
+
+.btn {
+  border-radius: .125rem;
+}
+
+.btn > .fa:first-child {
+  margin-right: 0.5rem;
+}
+
+.btn > .fa:last-child {
+  margin-left: 0.5rem;
+}
+
+.card {
+  margin-bottom: 1.25rem;
+  border-bottom-width: 2px;
+}
+
+a.card,
+a.card:hover {
+  text-decoration: none;
+}
+
+.table th, .table td {
+  border-top: 0;
+  border-bottom: vars.$table-border-width solid vars.$table-border-color;
+}
+
+.table thead th {
+  border-bottom: vars.$table-border-width solid vars.$table-border-color;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  appearance: none;
+  border-radius: .125rem;
+}
+
+@-webkit-keyframes input-autofill {
+  to {
+    color: vars.$dark;
+    background: vars.$white;
+  }
+}
+
+.form-control:-webkit-autofill {
+  -webkit-animation-name: input-autofill;
+  -webkit-animation-fill-mode: both;
+}
+
+.col-form-label-sm { /* TODO: ? */
+  margin-bottom: 0;
+}
+
+select.form-control:not([multiple]) {
+  background: vars.$custom-select-background;
+}
 
 @import '~@fortawesome/fontawesome-free/css/all.css';
 

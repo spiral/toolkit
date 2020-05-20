@@ -1,9 +1,9 @@
-@import "../../vars";
+@use "../../vars";
 
 .sf-sidebar {
   width: 0;
   transition: width 0.25s ease-in-out;
-  background-color: $sf-sidebar;
+  background-color: vars.$sf-sidebar;
 }
 
 .sf-sidebar.active {
@@ -25,7 +25,7 @@
   /* justify-content: center; */
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05);
   align-items: center;
-  color: $white;
+  color: vars.$white;
 }
 
 .sf-sidebar__logo > img {
@@ -44,7 +44,7 @@
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background-color: $light;
+  background-color: vars.$light;
 }
 
 .sf-sidebar__toggle {
@@ -61,12 +61,12 @@
   box-shadow: none;
   border: none;
   background-color: transparent;
-  color: $black;
+  color: vars.$black;
   font-size: 1.5rem;
 }
 
 .sf-sidebar__toggle:hover {
-  background-color: $light;
+  background-color: vars.$light;
 }
 
 .sf-sidebar__toggle:focus {
@@ -87,7 +87,7 @@
   box-shadow: none;
   border: none;
   background-color: transparent;
-  color: $white;
+  color: vars.$white;
   opacity: 0.3;
   font-size: 1.5rem;
 }

@@ -1,4 +1,4 @@
-@import "../../vars";
+@use "../../vars";
 
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 
@@ -21,17 +21,17 @@
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: $white;
+  color: vars.$white;
   cursor: pointer;
 }
 
 a.sf-nav__item-heading:hover {
-  color: $white;
+  color: vars.$white;
   text-decoration: none;
 }
 
 a.sf-nav__item-heading.active {
-  background-color: $sf-primary;
+  background-color: vars.$sf-primary;
 }
 
 .sf-nav__item-heading[data-sf]::after {
@@ -70,7 +70,7 @@ a.sf-nav__item-heading.active {
 .sf-nav__item-content {
   max-height: 0;
   overflow: hidden;
-  background-color: $dark;
+  background-color: vars.$dark;
 }
 
 body.loaded .sf-nav__item-content {
@@ -88,7 +88,7 @@ body.loaded .sf-nav__item-content {
   font-size: 0.6875rem;
   font-weight: 500;
   text-transform: uppercase;
-  color: $white;
+  color: vars.$white;
   opacity: 0.5;
 }
 
@@ -96,7 +96,7 @@ body.loaded .sf-nav__item-content {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
-  color: $white;
+  color: vars.$white;
 }
 
 a.sf-subnav__item:hover {
@@ -104,11 +104,11 @@ a.sf-subnav__item:hover {
 }
 
 .sf-subnav__item.active {
-  background-color: $sf-primary;
+  background-color: vars.$sf-primary;
 }
 
 .sf-subnav__item:hover {
-  color: $white;
+  color: vars.$white;
 }
 
 .sf-subnav__item > .fa {

@@ -1,4 +1,4 @@
-@import "../vars";
+@use "../vars";
 
 .signin {
   display: flex;
@@ -6,7 +6,7 @@
   width: 100%;
   min-height: 100vh;
   flex: 1;
-  background-color: $light;
+  background-color: vars.$light;
 }
 
 .signin .card {

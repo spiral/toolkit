@@ -1,4 +1,4 @@
-@import "../vars";
+@use "../vars";
 
 .sf-autocomplete {
   position: relative;
@@ -12,8 +12,8 @@
 }
 
 .sf-autocomplete__input.focus {
-  border-color: $sf-focus;
-  box-shadow: 0 0 0 0.2rem $sf-focus-semitransparent;
+  border-color: vars.$sf-focus;
+  box-shadow: 0 0 0 0.2rem vars.$sf-focus-semitransparent;
 }
 
 .sf-autocomplete__input-field {
@@ -41,13 +41,13 @@
 
 /*
 .sf-autocomplete__dropdown .dropdown-item:focus {
-  background-color: $primary-lighten;
-  color: $gray-900;
+  background-color: vars.$primary-lighten;
+  color: vars.$gray-900;
   outline: 0;
 }
 .sf-autocomplete__dropdown .dropdown-item.active:focus {
-  background-color: $primary;
-  color: $white;
+  background-color: vars.$primary;
+  color: vars.$white;
 }
 */
 

@@ -1,4 +1,4 @@
-@import "../../vars";
+@use "../../vars";
 
 .sf-modal {
   display: block;
@@ -35,7 +35,7 @@
 .sf-modal .modal-header.bg-success,
 .sf-modal .modal-header.bg-danger,
 .sf-modal .modal-header.bg-warning {
-  color: $white;
+  color: vars.$white;
 }
 
 .sf-modal .close {
