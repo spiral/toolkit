@@ -60,17 +60,18 @@ export const formToObject = (form: Element) =>{
       // Multiple select is a special case.
       // We have to grab each selected option and put them into an array.
       if (domNode.nodeName === 'SELECT') {
-        if ((domNode as HTMLInputElement).type === 'select-multiple') {
+        const selectNode = domNode as HTMLSelectElement;
+        const realValue = selectNode.selectedIndex >=0 ? selectNode.options[selectNode.selectedIndex] : undefined;
+        if (selectNode.multiple) {
           result[key] = [];
-          const DOMchilds = domNode.querySelectorAll('option[selected]'); // TODO: that wont work
+          const DOMchilds = selectNode.selectedOptions;
           if (DOMchilds) {
-            DOMchilds.forEach( (child) => {
-              result[key].push((child as HTMLInputElement).value);
-            });
+            for(let i=0;i<DOMchilds.length;i++) {
+              result[key].push(DOMchilds.item(i)!.value);
+            }
           }
         } else {
-          // const selected = domNode.querySelector('option[selected]');
-          result[key] = value; // select.value isn't getting proper value for value-less options
+          result[key] = realValue;
         }
         return;
       }
