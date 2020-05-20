@@ -232,7 +232,7 @@ export class GridRenderer {
           const node = headerCellRenderer.createEl();
           if (node) {
             const rendered = headerCellRenderer.render(cI, this.options, state);
-            if (rendered) {
+            if (typeof rendered !== 'undefined' && rendered !== null) {
               if (typeof rendered === 'string') {
                 node.innerHTML = rendered;
               } else {
@@ -264,7 +264,7 @@ export class GridRenderer {
           const node = rowCellRenderer.createEl();
           if (node) { // If no node generated, skip it, that might be custom tr render or colspan
             const rendered = rowCellRenderer.render(value, item, cI, this.options, index, state);
-            if (rendered) { // If no content generated, skip it, that might be custom tr render or colspan
+            if (typeof rendered !== 'undefined' && rendered !== null) { // If no content generated, skip it, that might be custom tr render or colspan
               if (typeof rendered === 'string') {
                 node.innerHTML = rendered;
               } else {
