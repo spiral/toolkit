@@ -31,7 +31,7 @@ a.sf-nav__item-heading:hover {
 }
 
 a.sf-nav__item-heading.active {
-  background-color: $primary;
+  background-color: $sf-primary;
 }
 
 .sf-nav__item-heading[data-sf]::after {
@@ -104,7 +104,7 @@ a.sf-subnav__item:hover {
 }
 
 .sf-subnav__item.active {
-  background-color: $primary;
+  background-color: $sf-primary;
 }
 
 .sf-subnav__item:hover {

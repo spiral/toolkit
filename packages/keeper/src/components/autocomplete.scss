@@ -12,8 +12,8 @@
 }
 
 .sf-autocomplete__input.focus {
-  border-color: $focus;
-  box-shadow: 0 0 0 0.2rem $focus-semitransparent;
+  border-color: $sf-focus;
+  box-shadow: 0 0 0 0.2rem $sf-focus-semitransparent;
 }
 
 .sf-autocomplete__input-field {

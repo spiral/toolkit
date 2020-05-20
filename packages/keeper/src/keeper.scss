@@ -1,0 +1,42 @@
+@import "./vars";
+
+@use './bootstrap.scss' with (
+  $primary: $sf-primary,
+  $font-family-sans-serif: $sf-font-family-sans-serif,
+  $font-size-base: $sf-font-size-base,
+  $font-weight-bold: $sf-font-weight-bold,
+  $font-weight-bolder: $sf-font-weight-bolder,
+  $h1-font-size: $sf-h1-font-size,
+  $h2-font-size: $sf-h2-font-size,
+  $h3-font-size: $sf-h3-font-size,
+  $h4-font-size: $sf-h4-font-size,
+  $h5-font-size: $sf-h5-font-size,
+  $h6-font-size: $sf-h6-font-size,
+  $grid-gutter-width: $sf-grid-gutter-width,
+  $card-border-color: $sf-card-border-color,
+  $dropdown-border-color: $sf-dropdown-border-color,
+  $pagination-border-color: $sf-pagination-border-color,
+  $custom-select-border-radius: $sf-custom-select-border-radius,
+  $primary-darken: $sf-primary-darken,
+  $primary-lighten: $sf-primary-lighten,
+  $focus: $sf-focus,
+  $focus-semitransparent: $sf-focus-semitransparent,
+);
+
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+@import './components/autocomplete.scss';
+@import './components/breadcrumb.scss';
+@import './components/header.scss';
+@import './components/heading.scss';
+@import './components/main.scss';
+@import './components/pattern-input.scss';
+@import './components/signin.scss';
+@import './components/statpanel.scss';
+@import './components/table.scss';
+@import './components/tag.scss';
+@import './components/user.scss';
+@import './components/filter.scss';
+@import './components/input.scss';
+@import './components/icons.scss';
+@import './components/datepicker.scss';

@@ -3,7 +3,7 @@
 .sf-sidebar {
   width: 0;
   transition: width 0.25s ease-in-out;
-  background-color: $sidebar;
+  background-color: $sf-sidebar;
 }
 
 .sf-sidebar.active {
