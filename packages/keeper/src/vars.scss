@@ -3,30 +3,30 @@
 @import "~bootstrap/scss/mixins";
 
 $sf-primary: #497cb1 !default;
-$sf-sidebar: #49545f !default;;
+$sf-sidebar: #49545f !default;
 
-$sf-font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji' !default;;
+$sf-font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji' !default;
 
-$sf-font-size-base: 0.875rem !default;;
-$sf-font-weight-bold: 500 !default;;
-$sf-font-weight-bolder: 700 !default;;
+$sf-font-size-base: 0.875rem !default;
+$sf-font-weight-bold: 500 !default;
+$sf-font-weight-bolder: 700 !default;
 
-$sf-h1-font-size: $sf-font-size-base * 2 !default;;
-$sf-h2-font-size: $sf-font-size-base * 1.75 !default;;
-$sf-h3-font-size: $sf-font-size-base * 1.5 !default;;
-$sf-h4-font-size: $sf-font-size-base * 1.325 !default;;
-$sf-h5-font-size: $sf-font-size-base * 1.25 !default;;
+$sf-h1-font-size: $sf-font-size-base * 2 !default;
+$sf-h2-font-size: $sf-font-size-base * 1.75 !default;
+$sf-h3-font-size: $sf-font-size-base * 1.5 !default;
+$sf-h4-font-size: $sf-font-size-base * 1.325 !default;
+$sf-h5-font-size: $sf-font-size-base * 1.25 !default;
 $sf-h6-font-size: $sf-font-size-base;
 
-$sf-grid-gutter-width: 1.25rem !default;;
+$sf-grid-gutter-width: 1.25rem !default;
 
-$sf-card-border-color: rgba(0, 0, 0, 0.075) !default;;
-$sf-dropdown-border-color: rgba(0, 0, 0, 0.075) !default;;
-$sf-pagination-border-color: rgba(0, 0, 0, 0.075) !default;;
+$sf-card-border-color: rgba(0, 0, 0, 0.075) !default;
+$sf-dropdown-border-color: rgba(0, 0, 0, 0.075) !default;
+$sf-pagination-border-color: rgba(0, 0, 0, 0.075) !default;
 
-$sf-custom-select-border-radius: .125rem !default;;
+$sf-custom-select-border-radius: .125rem !default;
 
-$sf-primary-darken: darken($sf-primary, 15%) !default;;
-$sf-primary-lighten: lighten($sf-primary, 25%) !default;;
-$sf-focus: lighten($sf-primary, 25%) !default;;
-$sf-focus-semitransparent: rgba($sf-primary, .25) !default;;
+$sf-primary-darken: darken($sf-primary, 15%) !default;
+$sf-primary-lighten: lighten($sf-primary, 25%) !default;
+$sf-focus: lighten($sf-primary, 25%) !default;
+$sf-focus-semitransparent: rgba($sf-primary, .25) !default;
