@@ -1,10 +1,10 @@
-@import "../vars";
+@use "../vars";
 
 .sf-user-short-info {
   display: flex;
   align-items: center;
   width: 100%;
-  color: $dark;
+  color: vars.$dark;
 }
 
 td .sf-user-short-info {
@@ -26,9 +26,9 @@ td .sf-user-short-info {
   height: 2rem;
   overflow: hidden;
   border-radius: 50%;
-  background-color: $light;
+  background-color: vars.$light;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-  color: $gray-600;
+  color: vars.$gray-600;
   font-weight: 700;
 }
 

@@ -4,10 +4,10 @@
  */
 import sf from '@spiral-toolkit/core';
 
-const { CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
-const { isNodeInsideCustomSFInput } = sf.tools;
+const {CUSTOM_INPUT_TARGET_ATTR} = sf.constants;
+const {isNodeInsideCustomSFInput} = sf.tools;
 
-export const formToObject = (form: Element) =>{
+export const formToObject = (form: Element) => {
   const keyRegex = /[^\[\]]+/g;
   const elements = form.querySelectorAll(`input, textarea, select, [${CUSTOM_INPUT_TARGET_ATTR}]`);
   const obj = {};
@@ -17,7 +17,7 @@ export const formToObject = (form: Element) =>{
     return formElements.length > 1;
   }
 
-  const addChild = (result: any, domNode: HTMLElement, keys: string[], value: any, isArray: boolean = false)=>{
+  const addChild = (result: any, domNode: HTMLElement, keys: string[], value: any, isArray: boolean = false) => {
     // #1 - Single dimensional array.
     if (keys.length === 1) {
       const key = keys[0];
@@ -60,17 +60,20 @@ export const formToObject = (form: Element) =>{
       // Multiple select is a special case.
       // We have to grab each selected option and put them into an array.
       if (domNode.nodeName === 'SELECT') {
-        if ((domNode as HTMLInputElement).type === 'select-multiple') {
+        const selectNode = domNode as HTMLSelectElement;
+        const realValue = selectNode.selectedIndex >= 0 ? selectNode.options[selectNode.selectedIndex] : undefined;
+        if (selectNode.multiple) {
           result[key] = [];
-          const DOMchilds = domNode.querySelectorAll('option[selected]'); // TODO: that wont work
+          const DOMchilds = selectNode.selectedOptions;
           if (DOMchilds) {
-            DOMchilds.forEach( (child) => {
-              result[key].push((child as HTMLInputElement).value);
-            });
+            for (let i = 0; i < DOMchilds.length; i++) {
+              if (DOMchilds.item(i)!.value) {
+                result[key].push(DOMchilds.item(i)!.value);
+              }
+            }
           }
         } else {
-          // const selected = domNode.querySelector('option[selected]');
-          result[key] = value; // select.value isn't getting proper value for value-less options
+          result[key] = realValue;
         }
         return;
       }
@@ -95,7 +98,7 @@ export const formToObject = (form: Element) =>{
     if (el.name && !el.disabled) {
       const test = el.name.match(keyRegex);
       const isArray = hasMultipleOfName(el.name);
-      if(test && test.length) {
+      if (test && test.length) {
         addChild(obj, el, test, el.value, isArray);
       }
     }

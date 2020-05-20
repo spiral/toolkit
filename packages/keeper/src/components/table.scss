@@ -1,11 +1,11 @@
-@import "../vars";
+@use "../vars";
 
 .sf-table {
   margin-bottom: 1.25rem;
   border: 1px solid rgba(0, 0, 0, 0.075);
   border-bottom-width: 2px;
   font-size: 0.875rem;
-  background-color: $white;
+  background-color: vars.$white;
   border-radius: 0.25rem;
 }
 
@@ -33,14 +33,14 @@
 .sf-table__empty {
   padding: 30px;
   text-align: center;
-  color: $dark;
-  background-color: $white;
+  color: vars.$dark;
+  background-color: vars.$white;
 }
 
 .sf-table__error {
   padding: 30px;
   text-align: center;
-  color: $danger;
+  color: vars.$danger;
 }
 
 .sf-table__sort {
