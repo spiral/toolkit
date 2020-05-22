@@ -82,7 +82,7 @@ const main = async () => {
             draft: true,
             name: `Version ${version}`,
             body,
-            target_commitish: 'develop', // We intentionally create this on develop, so user can change it in release details
+            target_commitish: 'master', // We intentionally create this on develop, so user can change it in release details
             tag_name: tag,
         });
 
