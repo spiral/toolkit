@@ -1,4 +1,4 @@
-@import "../vars";
+@use "../vars";
 
 .sf-breadcrumb {
   width: 100%;
@@ -14,7 +14,7 @@
 }
 
 .sf-breadcrumb__item {
-  color: $gray-600;
+  color: vars.$gray-600;
 }
 
 .sf-breadcrumb__item:not(:first-child)::before {
@@ -28,5 +28,5 @@
 }
 
 .sf-breadcrumb__item > a:hover {
-  color: $primary-darken;
+  color: vars.$sf-primary-darken;
 }

@@ -1,20 +1,4 @@
-import './bootstrap.scss';
-
-import '@fortawesome/fontawesome-free/css/all.css';
-
-import './components/autocomplete.scss';
-import './components/breadcrumb.scss';
-import './components/header.scss';
-import './components/heading.scss';
-import './components/main.scss';
-import './components/pattern-input.scss';
-import './components/signin.scss';
-import './components/statpanel.scss';
-import './components/table.scss';
-import './components/tag.scss';
-import './components/user.scss';
-import './components/filter.scss';
-import './components/input.scss';
+import './keeper.scss';
 
 import { confirmModal } from './utils/confirm';
 import Nav from './components/nav';

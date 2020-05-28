@@ -7,12 +7,12 @@
        @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="${no-calendar}"
        data-format="${format}"
+       data-mode="range"
        data-display-format="${display-format}"
   >
       <div class="input-group-prepend" data-toggle>
             <span class="form-control text-muted bg-white border-right-0" style="cursor: pointer">
-                @if(injected('no-calendar')) <i class="fas fa-clock"></i> @endif
-                @if(!injected('no-calendar')) <i class="fas fa-calendar"></i> @endif
+                <i class="fas fa-calendar"></i>
             </span>
       </div>
       <input
