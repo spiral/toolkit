@@ -449,7 +449,7 @@ export class Form extends sf.core.BaseDOMConstructor {
 
     // We can send files only with FormData
     // If form contain files and no FormData than disable ajax
-    if (!this.options.jsonOnly && this.node.querySelectorAll('input[type=\'file\']').length !== 0) {
+    if (this.options.jsonOnly && this.node.querySelectorAll('input[type=\'file\']').length !== 0) {
       this.options.useAjax = false;
     }
 
