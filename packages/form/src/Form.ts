@@ -131,7 +131,7 @@ export class Form extends sf.core.BaseDOMConstructor {
             console.error('Form JSON.parse error: ', e);
           }
         }
-        return Object.assign(self.value, val);
+        return Object.assign(self.value || {}, val);
       },
     },
     /**
