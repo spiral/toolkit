@@ -601,9 +601,9 @@ export class Form extends sf.core.BaseDOMConstructor {
         DOMNode: this.node,
         eventType: 'reset',
         eventFunction: (e) => {
-          setTimeout(() => {
-            this.onSubmit(e);
-          });
+          // setTimeout(() => {
+          //   this.onSubmit(e);
+          // });
         },
       },
       {
