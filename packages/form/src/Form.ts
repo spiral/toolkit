@@ -36,6 +36,10 @@ export interface IFormOptions {
   useAjax: boolean;
   method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
   jsonOnly?: boolean;
+  /**
+   * If to submit form on reset event
+   */
+  submitOnReset?: boolean;
 }
 
 export interface IMessage {
@@ -59,6 +63,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     headers: {Accept: 'application/json'},
     method: 'POST',
     lockType: 'default',
+    submitOnReset: false,
     messagesType: 'spiral', // TODO: are there other ones?
   };
 
@@ -93,6 +98,18 @@ export class Form extends sf.core.BaseDOMConstructor {
       processor(node: Element, val: any) {
         if (!val) return undefined;
         return +val;
+      },
+    },
+    /**
+     * If any input changes should trigger form submit
+     * Value is debounce value
+     */
+    submitOnReset: {
+      domAttr: 'data-submit-on-reset',
+      value: Form.defaultOptions.submitOnReset,
+      processor(node: Element, val: any) {
+        if (!val) return undefined;
+        return !!val;
       },
     },
     /**
@@ -601,9 +618,11 @@ export class Form extends sf.core.BaseDOMConstructor {
         DOMNode: this.node,
         eventType: 'reset',
         eventFunction: (e) => {
-          setTimeout(() => {
-            this.onSubmit(e);
-          });
+          if(this.options.submitOnReset) {
+            setTimeout(() => {
+              this.onSubmit(e);
+            });
+          }
         },
       },
       {

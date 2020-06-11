@@ -2,6 +2,7 @@
   action="${action|#no-action}"
   @if(injected('id')) id="${id}" @endif
   @if(injected('data-id')) data-id="${data-id}" @endif
+  @if(injected('submit-on-reset')) data-submit-on-reset="${submit-on-reset}" @endif
   method="${method|post}"
   enctype="multipart/form-data"
   accept-charset="UTF-8"
