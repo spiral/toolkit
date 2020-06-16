@@ -61,7 +61,7 @@ export const formToObject = (form: Element) => {
       // We have to grab each selected option and put them into an array.
       if (domNode.nodeName === 'SELECT') {
         const selectNode = domNode as HTMLSelectElement;
-        const realValue = selectNode.selectedIndex >= 0 ? selectNode.options[selectNode.selectedIndex] : undefined;
+        const realValue = selectNode.selectedIndex >= 0 ? selectNode.options[selectNode.selectedIndex]?.value : undefined;
         if (selectNode.multiple) {
           result[key] = [];
           const DOMchilds = selectNode.selectedOptions;
