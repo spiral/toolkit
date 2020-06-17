@@ -14,6 +14,7 @@ export interface IAutocompleteOptions {
   data?: IAutocompleteStaticDataItem[] | string[];
   inputTemplate?: string;
   suggestTemplate?: string;
+  loadingTemplate?: string;
   valueKey?: string;
   searchKey?: string;
   separator?: string;

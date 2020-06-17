@@ -7,6 +7,7 @@ import assert from 'assert';
 import Handlebars from 'handlebars';
 import { autobind } from './autobind';
 import { getValue } from './getValue';
+import { debounce } from './debounce';
 import { AutocompleteDataSource } from './AutocompleteDataSource';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
 import { AutocompleteTags } from './AutocompleteTags';
@@ -74,6 +75,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   inputTemplate?: Function;
 
+  loadingTemplate?: string;
+
   /* Misc */
   observer: MutationObserver;
 
@@ -82,6 +85,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   isInnerClick?: boolean;
 
   isInnerFocus?: boolean;
+
+  debouncedKeyDownListener: any;
+
+  debouncedInputListener: any;
 
   constructor(ssf: ISpiralFramework, node: Element, options: IAutocompleteOptions) {
     super();
@@ -110,6 +117,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach(this.handleMutation);
     });
+
+    this.debouncedKeyDownListener = debounce(this.handleKeyDown, 1000);
+    this.debouncedInputListener = debounce(this.handleInput, 1000);
 
     this.bind();
   }
@@ -144,6 +154,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       searchKey,
       suggestTemplate,
       inputTemplate,
+      loadingTemplate,
     } = this.options;
 
     this.options.suggestTemplate = suggestTemplate || `{{${searchKey}}}`;
@@ -151,6 +162,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.suggestTemplate = Handlebars.compile(this.options.suggestTemplate);
     this.inputTemplate = Handlebars.compile(this.options.inputTemplate);
+
+    this.loadingTemplate = loadingTemplate;
   }
 
   initDropdown() {
@@ -231,8 +244,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     if (!this.dataSource) {
       return;
     }
+
+    this.dropdown!.setLoading(this.loadingTemplate);
     this.dataSource.getData(value);
-    // TODO: loading
   }
 
   resetHiddenInputValue() {
@@ -465,8 +479,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.textInput.addEventListener('focus', this.handleFocus);
     this.textInput.addEventListener('blur', this.handleBlur);
-    this.textInput.addEventListener('keydown', this.handleKeyDown);
-    this.textInput.addEventListener('input', this.handleInput);
+    this.textInput.addEventListener('keydown', this.debouncedKeyDownListener);
+    this.textInput.addEventListener('input', this.debouncedInputListener);
 
     this.node.addEventListener('click', this.handleInsideClick);
     document.addEventListener('click', this.handleOutsideClick);
@@ -479,8 +493,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   die() {
     this.textInput.removeEventListener('focus', this.handleFocus);
     this.textInput.removeEventListener('blur', this.handleBlur);
-    this.textInput.removeEventListener('keydown', this.handleKeyDown);
-    this.textInput.removeEventListener('input', this.handleInput);
+    this.textInput.removeEventListener('keydown', this.debouncedKeyDownListener);
+    this.textInput.removeEventListener('input', this.debouncedInputListener);
 
     this.node.removeEventListener('click', this.handleInsideClick);
     document.removeEventListener('click', this.handleOutsideClick);

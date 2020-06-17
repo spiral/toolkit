@@ -56,6 +56,16 @@ export class AutocompleteDropdown {
     this.isDisabled = true;
   }
 
+  public setLoading(template?: string) {
+    if (this.isDisabled) return;
+
+    this.node.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="dropdown-item">${template || '<span class="sf-autocomplete__loader">Loading...</span>'}</div>`,
+    );
+    this.show();
+  }
+
   public setData(data: IAutocompleteData) {
     this.data = data;
 
