@@ -70,10 +70,12 @@ export class AutocompleteDataSource {
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
-        const results: IAutocompleteDataItem[] = rawData.map((item: IAutocompleteCustomDataItem) => ({
-          ...item,
-          [valueKey]: item[valueKey].toString(),
-        }));
+        const results: IAutocompleteDataItem[] = rawData
+          .map((item: IAutocompleteCustomDataItem) => ({
+            ...item,
+            [valueKey]: item[valueKey].toString(),
+          }))
+          .slice(0, 1);
 
         this.handleRestoreSuccess(values, results);
       })
@@ -127,10 +129,12 @@ export class AutocompleteDataSource {
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
-        const results: IAutocompleteData = rawData.map((item: IAutocompleteCustomDataItem) => ({
-          ...item,
-          [valueKey]: item[valueKey].toString(),
-        }));
+        const results: IAutocompleteData = rawData
+          .map((item: IAutocompleteCustomDataItem) => ({
+            ...item,
+            [valueKey]: item[valueKey].toString(),
+          }))
+          .slice(0, 10);
 
         this.options.onSuccessResponse(search, results);
       })

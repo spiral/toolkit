@@ -20,6 +20,7 @@ export interface IAutocompleteOptions {
   separator?: string;
   url?: string;
   dataField?: string;
+  debounce?: number;
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
 }
