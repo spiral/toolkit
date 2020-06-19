@@ -373,15 +373,18 @@ export class Form extends sf.core.BaseDOMConstructor {
     const tplElem = document.createElement('div');
     tplElem.innerHTML = tpl;
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
+    const msgHTML: string = tpl;
 
     if (this.options.messages.fieldPlace === 'bottom') {
       if (fieldEl) {
-        field.insertBefore(msgEl, fieldEl.nextSibling);
+        // field.insertBefore(msgEl, fieldEl.nextSibling);
+        field.insertAdjacentHTML('beforeend', msgHTML);
       } else if (!currentMsgEl) {
         field.appendChild(msgEl);
       }
     } else if (this.options.messages.fieldPlace === 'top') {
-      field.insertBefore(msgEl, field.firstChild);
+      // field.insertBefore(msgEl, field.firstChild);
+      field.insertAdjacentHTML('afterbegin', msgHTML);
     } else {
       field = field.querySelector(this.options.messages.fieldPlace);
       field.appendChild(msgEl);
