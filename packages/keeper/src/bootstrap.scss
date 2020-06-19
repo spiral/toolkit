@@ -37,3 +37,8 @@
 @import "~bootstrap/scss/utilities";
 @import "~bootstrap/scss/print";
 
+.custom-select {
+  /** Patch for appearance */
+  -webkit-appearance: none;
+}
+
