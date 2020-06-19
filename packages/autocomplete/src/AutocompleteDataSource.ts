@@ -11,6 +11,8 @@ import {
   IDatagridRequest,
 } from './types';
 
+export const LIMIT = 10;
+
 export class AutocompleteDataSource {
   options: IAutocompleteDataSourceOptions;
 
@@ -70,10 +72,12 @@ export class AutocompleteDataSource {
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
-        const results: IAutocompleteDataItem[] = rawData.map((item: IAutocompleteCustomDataItem) => ({
-          ...item,
-          [valueKey]: item[valueKey].toString(),
-        }));
+        const results: IAutocompleteDataItem[] = rawData
+          .map((item: IAutocompleteCustomDataItem) => ({
+            ...item,
+            [valueKey]: item[valueKey].toString(),
+          }))
+          .slice(0, 1);
 
         this.handleRestoreSuccess(values, results);
       })
@@ -123,14 +127,16 @@ export class AutocompleteDataSource {
     const { valueKey } = this.options;
 
     sf.ajax
-      .send(this.getRequestParams({ paginate: { limit: 10 }, filter: { search } }))
+      .send(this.getRequestParams({ paginate: { limit: LIMIT }, filter: { search } }))
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
-        const results: IAutocompleteData = rawData.map((item: IAutocompleteCustomDataItem) => ({
-          ...item,
-          [valueKey]: item[valueKey].toString(),
-        }));
+        const results: IAutocompleteData = rawData
+          .map((item: IAutocompleteCustomDataItem) => ({
+            ...item,
+            [valueKey]: item[valueKey].toString(),
+          }))
+          .slice(0, LIMIT);
 
         this.options.onSuccessResponse(search, results);
       })

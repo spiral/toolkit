@@ -14,6 +14,8 @@ export class AutocompleteDropdown {
 
   isDisabled: boolean;
 
+  isLoading: boolean;
+
   isInnerFocus?: boolean;
 
   constructor(options: IAutocompleteDropdownOptions) {
@@ -25,6 +27,7 @@ export class AutocompleteDropdown {
     this.selectedIndex = -1;
 
     this.isDisabled = this.options.isDisabled;
+    this.isLoading = false;
   }
 
   public show() {
@@ -59,6 +62,13 @@ export class AutocompleteDropdown {
   public setLoading(template?: string) {
     if (this.isDisabled) return;
 
+    if (this.isLoading) {
+      this.show();
+      return;
+    }
+
+    this.isLoading = true;
+
     this.node.insertAdjacentHTML(
       'afterbegin',
       `<div class="dropdown-item">${template || '<span class="sf-autocomplete__loader">Loading...</span>'}</div>`,
@@ -68,6 +78,8 @@ export class AutocompleteDropdown {
 
   public setData(data: IAutocompleteData) {
     this.data = data;
+
+    this.isLoading = false;
 
     this.clear();
 

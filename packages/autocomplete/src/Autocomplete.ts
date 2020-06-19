@@ -118,8 +118,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       mutations.forEach(this.handleMutation);
     });
 
-    this.debouncedKeyDownListener = debounce(this.handleKeyDown, 1000);
-    this.debouncedInputListener = debounce(this.handleInput, 1000);
+    const debounceTimeout = this.options.debounce || 0;
+    this.debouncedKeyDownListener = debounce(this.handleKeyDown, debounceTimeout);
+    this.debouncedInputListener = debounce(this.handleInput, debounceTimeout);
 
     this.bind();
   }
