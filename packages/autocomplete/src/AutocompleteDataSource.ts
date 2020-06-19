@@ -11,6 +11,8 @@ import {
   IDatagridRequest,
 } from './types';
 
+export const LIMIT = 10;
+
 export class AutocompleteDataSource {
   options: IAutocompleteDataSourceOptions;
 
@@ -125,7 +127,7 @@ export class AutocompleteDataSource {
     const { valueKey } = this.options;
 
     sf.ajax
-      .send(this.getRequestParams({ paginate: { limit: 10 }, filter: { search } }))
+      .send(this.getRequestParams({ paginate: { limit: LIMIT }, filter: { search } }))
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
@@ -134,7 +136,7 @@ export class AutocompleteDataSource {
             ...item,
             [valueKey]: item[valueKey].toString(),
           }))
-          .slice(0, 10);
+          .slice(0, LIMIT);
 
         this.options.onSuccessResponse(search, results);
       })
