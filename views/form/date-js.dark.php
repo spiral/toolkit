@@ -7,6 +7,7 @@
        @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="${no-calendar}"
        data-format="${format}"
+       data-value="${value}"
        data-display-format="${display-format}"
   >
       <div class="input-group-prepend" data-toggle>
