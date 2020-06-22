@@ -11,6 +11,7 @@ export interface IDatePickerOptions {
   enableTime?: boolean,
   noCalendar?: boolean,
   time24?: boolean,
+  value?: string,
   forceConfirmButton?: boolean,
   mode?: string,
   dateFormat?: string;
@@ -64,6 +65,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       value: DatePicker.defaultOptions.displayFormat,
       domAttr: 'data-display-format',
     },
+    value: {
+      value: DatePicker.defaultOptions.value,
+      domAttr: 'data-value',
+    },
   };
 
   options: IDatePickerOptions = { ...DatePicker.defaultOptions };
@@ -73,6 +78,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
   input: HTMLInputElement;
 
   picker: flatpickr.Instance;
+
+  form?: HTMLFormElement;
+
+  private readonly resetListener?: (ev: Event)=>any;
 
   static registerInSf = () => {
     sf.registerInstanceType(DatePicker, DatePicker.spiralFrameworkCss);
@@ -105,8 +114,8 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       // console.log(value, this.picker.l10n.rangeSeparator);
       if (this.options.mode === 'range') {
         const values = value.split(this.picker.l10n.rangeSeparator);
-        const dates = values.map((v) => (luxon.DateTime.fromFormat(v, this.options.dateFormat || dateWithTS).toJSDate()));
-        console.log(this.options.mode, this.picker.l10n.rangeSeparator, values, dates);
+        /* const dates = */ values.map((v) => (luxon.DateTime.fromFormat(v, this.options.dateFormat || dateWithTS).toJSDate()));
+        // console.log(this.options.mode, this.picker.l10n.rangeSeparator, values, dates);
         this.picker.setDate(values);
       }
       this.picker.setDate(value);
@@ -118,6 +127,27 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     }
     if (node.querySelector('[data-clear]')) {
       node.querySelector('[data-clear]')!.addEventListener('click', () => this.picker.clear());
+    }
+    this.form = sf.closest(node, 'form') as HTMLFormElement;
+
+    if (this.form) {
+      this.resetListener = () => {
+        if (this.options.value) {
+          this.picker.setDate(this.options.value);
+        } else {
+          this.picker.clear();
+        }
+      };
+      this.form.addEventListener('reset', this.resetListener);
+    }
+  }
+
+  die() {
+    if (this.form && this.resetListener) {
+      this.form.removeEventListener('reset', this.resetListener);
+    }
+    if (this.picker) {
+      this.picker.destroy();
     }
   }
 }
