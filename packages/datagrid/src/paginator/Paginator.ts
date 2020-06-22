@@ -23,6 +23,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
     lockType: 'none',
     willFetchCount: true,
     serialize: true,
+    defaultLimit: DEFAULT_LIMIT,
     type: PaginatorType.pages,
     className: 'row no-gutters align-items-center m-3',
     limitOptions: [10, 25, 50, 100],
@@ -62,6 +63,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
   constructor(ssf: ISpiralFramework, node: Element, options: IPaginatorOptions) {
     super();
     this.init(ssf, node, options, Paginator.defaultOptions);
+    this.state.limit = options.defaultLimit || DEFAULT_LIMIT;
     this.messages = new Messages((this.options.messages || {}) as any, defaultPaginatorMessages as any);
     this.render();
   }

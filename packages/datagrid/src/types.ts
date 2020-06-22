@@ -323,6 +323,11 @@ export interface IPaginatorOptions {
   lockType: string,
   className?: string,
   messages?: Partial<IPaginatorMessages>,
+  /**
+   * Starting value for paginator limit
+   * @default 25
+   */
+  defaultLimit?: number;
   limitOptions: Array<number>,
 }
 
