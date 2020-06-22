@@ -355,6 +355,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     const message = prepareMessageObject(rawMessage, type);
 
     const fieldEl = field.querySelector(this.options.messages.fieldElement);
+    const messagePlaceholder = field.querySelector(this.options.messages.messagePlaceholder);
     const currentMsgEl = field.querySelector(this.options.messages.selector);
 
     if (fieldEl) {
@@ -373,18 +374,26 @@ export class Form extends sf.core.BaseDOMConstructor {
     const tplElem = document.createElement('div');
     tplElem.innerHTML = tpl;
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
-    const msgHTML: string = tpl;
+    // const msgHTML: string = tpl;
 
-    if (this.options.messages.fieldPlace === 'bottom') {
+    if(messagePlaceholder) {
+      messagePlaceholder.appendChild(msgEl);
+    } else if (this.options.messages.fieldPlace === 'bottom') {
       if (fieldEl) {
-        // field.insertBefore(msgEl, fieldEl.nextSibling);
-        field.insertAdjacentHTML('beforeend', msgHTML);
+        if(fieldEl.nextSibling) {
+          fieldEl.parentNode.insertBefore(msgEl, fieldEl.nextSibling);
+        } else {
+          field.appendChild(msgEl);
+        }
       } else if (!currentMsgEl) {
         field.appendChild(msgEl);
       }
     } else if (this.options.messages.fieldPlace === 'top') {
-      // field.insertBefore(msgEl, field.firstChild);
-      field.insertAdjacentHTML('afterbegin', msgHTML);
+      if(field.firstChild) {
+        field.insertBefore(msgEl, field.firstChild);
+      } else {
+        field.appendChild(msgEl);
+      }
     } else {
       field = field.querySelector(this.options.messages.fieldPlace);
       field.appendChild(msgEl);
