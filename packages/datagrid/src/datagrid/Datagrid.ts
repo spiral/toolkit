@@ -79,13 +79,17 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     assert.notEqual(this.options.id, '', 'id should be not empty');
     assert.notEqual(this.options.url, '', 'url should be not empty');
 
-
     // Process options
 
     // TODO: we can override columns and sort options inside renderers but it might produce situation of triggering unexisting sort
     // Think about that, or ignore
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
 
+    if (this.options.paginator && this.options.paginator !== true) {
+      // Pass default limit from integrated paginator everywhere
+      this.defaults.limit = this.options.paginator.defaultLimit || DEFAULT_LIMIT;
+      this.state.updatePaginator({ limit: this.defaults.limit });
+    }
     // Set default sort if present
     if (this.options.sort) {
       if (typeof this.options.sort === 'string') {
