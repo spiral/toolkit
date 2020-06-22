@@ -322,7 +322,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     const tplElem = document.createElement('div');
     tplElem.innerHTML = tpl;
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
-    if(!msgEl) {
+    if (!msgEl) {
       console.error('Form message template is invalid, should generate single HTMLElement', tpl);
       return;
     }
@@ -376,11 +376,11 @@ export class Form extends sf.core.BaseDOMConstructor {
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
     // const msgHTML: string = tpl;
 
-    if(messagePlaceholder) {
+    if (messagePlaceholder) {
       messagePlaceholder.appendChild(msgEl);
     } else if (this.options.messages.fieldPlace === 'bottom') {
       if (fieldEl) {
-        if(fieldEl.nextSibling) {
+        if (fieldEl.nextSibling) {
           fieldEl.parentNode.insertBefore(msgEl, fieldEl.nextSibling);
         } else {
           field.appendChild(msgEl);
@@ -389,7 +389,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         field.appendChild(msgEl);
       }
     } else if (this.options.messages.fieldPlace === 'top') {
-      if(field.firstChild) {
+      if (field.firstChild) {
         field.insertBefore(msgEl, field.firstChild);
       } else {
         field.appendChild(msgEl);
@@ -407,7 +407,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     });
   };
 
-  showFieldsMessages(messages: {[messageKey: string]: any}, type: string, showUnknown = true) {
+  showFieldsMessages(messages: { [messageKey: string]: any }, type: string, showUnknown = true) {
     const notFound = iterateInputs(this.node, messages, (el, message) => {
       this.showFieldMessage(el as HTMLElement, message, type);
     });
@@ -453,7 +453,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         return false;
       }
 
-      if(this.submitTimeout) {
+      if (this.submitTimeout) {
         clearTimeout(this.submitTimeout);
       }
       this.submitTimeout = setTimeout(() => {
@@ -519,9 +519,9 @@ export class Form extends sf.core.BaseDOMConstructor {
     }
   }
 
-  setFieldValues(values: {[name: string]: any}) {
+  setFieldValues(values: { [name: string]: any }) {
     iterateInputs(this.node, values, (rawEl, value) => {
-      const el = (rawEl as HTMLInputElement & {sfSetValue?: Function});
+      const el = (rawEl as HTMLInputElement & { sfSetValue?: Function });
       if (el.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && typeof el.sfSetValue === 'function') {
         el.sfSetValue(value);
       } else {
@@ -593,7 +593,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         if (!(input as HTMLInputElement).name) {
           if (!input.hasAttribute('disabled')) {
             input.setAttribute('data-sf-temp-disabled-old', 'yes');
-            input.setAttribute('disabled', "disabled");
+            input.setAttribute('disabled', 'disabled');
           }
         }
       });
@@ -630,7 +630,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         DOMNode: this.node,
         eventType: 'reset',
         eventFunction: (e) => {
-          if(this.options.submitOnReset) {
+          if (this.options.submitOnReset) {
             setTimeout(() => {
               this.onSubmit(e);
             });
