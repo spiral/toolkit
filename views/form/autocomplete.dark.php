@@ -5,8 +5,9 @@
     <script type="text/javascript" src="/toolkit/autocomplete/autocomplete.js"></script>
   </stack:push>
   <div class="sf-autocomplete js-sf-autocomplete" data-name="${name}" data-options='${options}'
-       data-sf-custom-form-element>
-    <input type="hidden" name="${name}" data-sf-custom-form-element-input value="${value}" data-input="true">
+       data-sf-custom-form-element
+       data-input="true">
+    <input type="hidden" name="${name}" data-sf-custom-form-element-input value="${value}">
     <div class="sf-autocomplete__input form-control" data-sf="autocomplete-input-wrapper">
       <input
         inputID:consume
