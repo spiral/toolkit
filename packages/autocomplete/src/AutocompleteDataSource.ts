@@ -152,26 +152,29 @@ export class AutocompleteDataSource {
       url,
     } = this.options;
 
-    const finalMethod = (method || 'GET').toUpperCase();
-
-    if (finalMethod === 'GET') {
-      return {
-        method: finalMethod,
-        headers: headers || {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        url: makeUrl(url!, data),
-      };
-    }
-    return {
+    const finalMethod: 'GET' | 'POST' = ((method || 'GET').toUpperCase() as any);
+    const query: {
+      data?: any,
+      method: 'GET' | 'POST' | 'PATCH' | 'get' | 'post' | 'patch' | 'PUT' | 'put' | 'DELETE' | 'delete',
+      headers?: { [key: string]: string },
+      url: string,
+      onProgress?: (total: number, progress: number) => any,
+      response?: any
+    } = {
       method: finalMethod,
       headers: headers || {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      data,
-      url,
+      url: url!,
+      data: undefined,
     };
+
+    if (finalMethod === 'GET') {
+      query.url = makeUrl(url!, data);
+    } else {
+      query.data = data;
+    }
+    return query;
   }
 }
