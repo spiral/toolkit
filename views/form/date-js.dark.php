@@ -8,6 +8,7 @@
        data-no-calendar="${no-calendar}"
        data-format="${format}"
        data-value="${value}"
+       data-input="true"
        data-display-format="${display-format}"
   >
       <div class="input-group-prepend" data-toggle>
@@ -19,7 +20,6 @@
       <input
         inputID:consume
         id="${id}"
-        data-input="true"
         class="bg-white form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
         type="date"
         name="${name}"

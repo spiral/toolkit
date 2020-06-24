@@ -25,6 +25,7 @@ export const formMessagesDefaults = {
   selector: '[data-message]',
   field: '[data-field]',
   fieldElement: '[data-input]',
+  messagePlaceholder: '[data-message-placeholder]',
   // eslint-disable-next-line no-template-curly-in-string
   fieldTemplate: '<div data-message class="invalid-feedback" data-form-message>${text}</div>',
   fieldPlace: 'bottom',

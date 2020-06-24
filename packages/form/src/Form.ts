@@ -322,7 +322,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     const tplElem = document.createElement('div');
     tplElem.innerHTML = tpl;
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
-    if(!msgEl) {
+    if (!msgEl) {
       console.error('Form message template is invalid, should generate single HTMLElement', tpl);
       return;
     }
@@ -355,6 +355,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     const message = prepareMessageObject(rawMessage, type);
 
     const fieldEl = field.querySelector(this.options.messages.fieldElement);
+    const messagePlaceholder = field.querySelector(this.options.messages.messagePlaceholder);
     const currentMsgEl = field.querySelector(this.options.messages.selector);
 
     if (fieldEl) {
@@ -373,18 +374,26 @@ export class Form extends sf.core.BaseDOMConstructor {
     const tplElem = document.createElement('div');
     tplElem.innerHTML = tpl;
     const msgEl: HTMLElement = tplElem.firstChild! as HTMLElement;
-    const msgHTML: string = tpl;
+    // const msgHTML: string = tpl;
 
-    if (this.options.messages.fieldPlace === 'bottom') {
+    if (messagePlaceholder) {
+      messagePlaceholder.appendChild(msgEl);
+    } else if (this.options.messages.fieldPlace === 'bottom') {
       if (fieldEl) {
-        // field.insertBefore(msgEl, fieldEl.nextSibling);
-        field.insertAdjacentHTML('beforeend', msgHTML);
+        if (fieldEl.nextSibling) {
+          fieldEl.parentNode.insertBefore(msgEl, fieldEl.nextSibling);
+        } else {
+          field.appendChild(msgEl);
+        }
       } else if (!currentMsgEl) {
         field.appendChild(msgEl);
       }
     } else if (this.options.messages.fieldPlace === 'top') {
-      // field.insertBefore(msgEl, field.firstChild);
-      field.insertAdjacentHTML('afterbegin', msgHTML);
+      if (field.firstChild) {
+        field.insertBefore(msgEl, field.firstChild);
+      } else {
+        field.appendChild(msgEl);
+      }
     } else {
       field = field.querySelector(this.options.messages.fieldPlace);
       field.appendChild(msgEl);
@@ -398,7 +407,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     });
   };
 
-  showFieldsMessages(messages: {[messageKey: string]: any}, type: string, showUnknown = true) {
+  showFieldsMessages(messages: { [messageKey: string]: any }, type: string, showUnknown = true) {
     const notFound = iterateInputs(this.node, messages, (el, message) => {
       this.showFieldMessage(el as HTMLElement, message, type);
     });
@@ -444,7 +453,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         return false;
       }
 
-      if(this.submitTimeout) {
+      if (this.submitTimeout) {
         clearTimeout(this.submitTimeout);
       }
       this.submitTimeout = setTimeout(() => {
@@ -510,9 +519,9 @@ export class Form extends sf.core.BaseDOMConstructor {
     }
   }
 
-  setFieldValues(values: {[name: string]: any}) {
+  setFieldValues(values: { [name: string]: any }) {
     iterateInputs(this.node, values, (rawEl, value) => {
-      const el = (rawEl as HTMLInputElement & {sfSetValue?: Function});
+      const el = (rawEl as HTMLInputElement & { sfSetValue?: Function });
       if (el.hasAttribute(CUSTOM_INPUT_TARGET_ATTR) && typeof el.sfSetValue === 'function') {
         el.sfSetValue(value);
       } else {
@@ -584,7 +593,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         if (!(input as HTMLInputElement).name) {
           if (!input.hasAttribute('disabled')) {
             input.setAttribute('data-sf-temp-disabled-old', 'yes');
-            input.setAttribute('disabled', "disabled");
+            input.setAttribute('disabled', 'disabled');
           }
         }
       });
@@ -621,7 +630,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         DOMNode: this.node,
         eventType: 'reset',
         eventFunction: (e) => {
-          if(this.options.submitOnReset) {
+          if (this.options.submitOnReset) {
             setTimeout(() => {
               this.onSubmit(e);
             });

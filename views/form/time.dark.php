@@ -7,6 +7,7 @@
        @if(injected('force-confirm-button')) data-force-confirm-button="${force-confirm-button}" @endif
        data-no-calendar="true"
        data-format="${format|HH:mm:ssZZZ}"
+       data-input="true"
        data-display-format="${display-format|HH:mm}"
   >
       <div class="input-group-prepend" data-toggle>
@@ -17,7 +18,6 @@
       <input
         inputID:consume
         id="${id}"
-        data-input="true"
         class="bg-white form-control@if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
         type="date"
         name="${name}"
