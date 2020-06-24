@@ -152,13 +152,26 @@ export class AutocompleteDataSource {
       url,
     } = this.options;
 
+    const finalMethod = (method || 'GET').toUpperCase();
+
+    if (finalMethod === 'GET') {
+      return {
+        method: finalMethod,
+        headers: headers || {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        url: makeUrl(url!, data),
+      };
+    }
     return {
-      method: method || 'GET',
+      method: finalMethod,
       headers: headers || {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      url: makeUrl(url!, data),
+      data,
+      url,
     };
   }
 }
