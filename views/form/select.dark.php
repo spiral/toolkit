@@ -12,10 +12,19 @@
 
     if (is_array($_values)) {
         foreach ($_values as $_value => $_label_) {
-            if ($_value == $_selected_) {
-                $_options_[] = "<option value=\"{$_value}\" selected>{$_label_}</option>";
+            if (is_array($_selected_)) {
+                $_key_ = array_search($_value, $_selected_);
+                if ($_key_ !== FALSE) {
+                    $_options_[] = "<option value=\"{$_value}\" selected>{$_label_}</option>";
+                } else {
+                    $_options_[] = "<option value=\"{$_value}\">{$_label_}</option>";
+                }
             } else {
-                $_options_[] = "<option value=\"{$_value}\">{$_label_}</option>";
+                if ($_value == $_selected_) {
+                    $_options_[] = "<option value=\"{$_value}\" selected>{$_label_}</option>";
+                } else {
+                    $_options_[] = "<option value=\"{$_value}\">{$_label_}</option>";
+                }
             }
         }
     }
