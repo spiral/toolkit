@@ -26,9 +26,10 @@
     inputID:consume
     id="${id}"
     data-input="true"
-    class="form-control@if(injected('error')) is-invalid@endif @if(injected('success')) is-valid@endif"
+    class="form-control@if(injected('error')) is-invalid@endif @if(injected('success')) is-valid@endif@if(injected('class')) ${class}@endif"
     name="${name}"
     @if(injected('disabled'))disabled@endif
+    attr:aggregate
   >
     {!! $_options_str !!}
   </select>

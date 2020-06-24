@@ -15,7 +15,7 @@
         inputID:consume
         id="${id}"
         data-input="true"
-        class="form-control @if(injected('add-icon')) @endif @if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif"
+        class="form-control @if(injected('add-icon')) @endif @if(inject('error')) is-invalid@endif@if(inject('success')) is-valid@endif@if(injected('class')) ${class}@endif"
         type="${type|text}"
         name="${name}"
         placeholder="${placeholder}"
