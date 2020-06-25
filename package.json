@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/root",
-  "version": "1.1.30",
+  "version": "1.1.31",
   "private": true,
   "workspaces": [
     "packages/*"

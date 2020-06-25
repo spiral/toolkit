@@ -6,6 +6,9 @@
   </stack:push>
   <div class="sf-autocomplete js-sf-autocomplete" data-name="${name}" data-options='${options}'
        data-sf-custom-form-element
+       @if(injected('url'))
+        data-url="${url}"
+       @endif
        data-input="true">
     <input type="hidden" name="${name}" data-sf-custom-form-element-input value="${value}">
     <div class="sf-autocomplete__input form-control" data-sf="autocomplete-input-wrapper">

@@ -21,6 +21,7 @@ export interface IAutocompleteOptions {
   url?: string;
   dataField?: string;
   debounce?: number;
+  exposeLabelAs?: string;
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
 }

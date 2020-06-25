@@ -43,6 +43,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       value: Autocomplete.defaultOptions.name,
       domAttr: 'data-name',
     },
+    url: {
+      value: Autocomplete.defaultOptions.url,
+      domAttr: 'data-name',
+    },
   };
 
   options: IAutocompleteOptions = { ...Autocomplete.defaultOptions };
@@ -104,6 +108,11 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.hiddenInput = (node.querySelector(`input[${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
     this.init(ssf, node, options, Autocomplete.defaultOptions);
+
+    if (this.options.exposeLabelAs) {
+      this.textInput.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+      this.textInput.name = this.options.exposeLabelAs;
+    }
 
     this.isDisabled = this.textInput.disabled;
 
