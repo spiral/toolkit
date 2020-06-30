@@ -17,6 +17,8 @@ export interface IActionButtonOptions {
     body: string,
     confirm?: string,
     cancel?: string,
+    confirmKind?: string,
+    cancelKind?: string,
   },
   toastError?: string;
   toastSuccess?: string;
@@ -162,6 +164,8 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     body: (data: any) => string,
     confirm: (data: any) => string,
     cancel: (data: any) => string,
+    confirmKind: string,
+    cancelKind: string,
   };
 
   /**
@@ -237,6 +241,8 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
           body: handlebars.compile(this.options.confirm.body),
           confirm: handlebars.compile(this.options.confirm.confirm || 'Confirm'),
           cancel: handlebars.compile(this.options.confirm.cancel || 'Cancel'),
+          confirmKind: this.options.confirm.confirmKind || 'primary',
+          cancelKind: this.options.confirm.cancelKind || 'secondary',
         };
       }
       return this.confirmTemplate;
@@ -302,8 +308,8 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
                   title: this.confirm!.title(sendOptions),
                   body: this.confirm!.body(sendOptions),
                   options: {
-                    confirm: { label: this.confirm!.confirm(sendOptions) },
-                    cancel: { label: this.confirm!.cancel(sendOptions) },
+                    confirm: { label: this.confirm!.confirm(sendOptions), kind: this.confirm!.confirmKind },
+                    cancel: { label: this.confirm!.cancel(sendOptions), kind: this.confirm!.cancelKind },
                   },
                   onConfirm,
                   onCancel,
