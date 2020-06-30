@@ -9,6 +9,9 @@
        @if(injected('url'))
         data-url="${url}"
        @endif
+       @if(injected('preserve-id'))
+        data-preserve-id="true"
+       @endif
        data-input="true">
     <input type="hidden" name="${name}" data-sf-custom-form-element-input value="${value}">
     <div class="sf-autocomplete__input form-control" data-sf="autocomplete-input-wrapper">

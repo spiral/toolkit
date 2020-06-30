@@ -25,6 +25,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   public readonly name = Autocomplete.spiralFrameworkName;
 
   static defaultOptions: IAutocompleteOptions = {
+    preserveId: false,
     id: '',
     name: '',
     valueKey: 'id',
@@ -46,6 +47,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     url: {
       value: Autocomplete.defaultOptions.url,
       domAttr: 'data-name',
+    },
+    preserveId: {
+      value: Autocomplete.defaultOptions.preserveId,
+      domAttr: 'data-preserve-id',
     },
   };
 
@@ -390,6 +395,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     // const value = (event.target as HTMLInputElement).value;
     const value = this.textInput.value ?? '';
 
+    if (this.currentTextValue !== value && !this.options.isMultiple && !this.options.preserveId) {
+      this.changeHiddenInput(''); // if that's not a multi-select, changing value after selection is done should reset it
+    }
     this.currentTextValue = value;
 
     // this.clearSuggestions();

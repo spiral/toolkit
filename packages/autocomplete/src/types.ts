@@ -10,6 +10,7 @@ export type IAutocompleteData = IAutocompleteDataItem[];
 export interface IAutocompleteOptions {
   id: string;
   name: string;
+  preserveId: boolean; // Don't erase selected id when user types after autocomplete select happens
   isMultiple?: boolean;
   data?: IAutocompleteStaticDataItem[] | string[];
   inputTemplate?: string;
@@ -21,7 +22,7 @@ export interface IAutocompleteOptions {
   url?: string;
   dataField?: string;
   debounce?: number;
-  exposeLabelAs?: string;
+  exposeLabelAs?: string; // Expose text input too as this name
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
 }
