@@ -84,6 +84,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
 
   input: HTMLInputElement;
 
+  startInput?: HTMLInputElement; // Inputs for double mode
+
+  endInput?: HTMLInputElement; // Inputs for double mode
+
   picker: flatpickr.Instance;
 
   form?: HTMLFormElement;
@@ -110,10 +114,27 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     if (this.options.doubleInput) {
       const secondInputId = `${mainId}-end`;
       const secondInput = document.getElementById(secondInputId) as HTMLInputElement;
+
+      this.startInput = document.createElement('input');
+      this.startInput.type = 'hidden';
+      this.startInput.name = this.input.name;
+      this.startInput.value = this.input.value;
+      this.input.removeAttribute('name');
+
+      this.endInput = document.createElement('input');
+      this.endInput.type = 'hidden';
+      this.endInput.name = secondInput.name;
+      this.endInput.value = secondInput.value;
+      secondInput.removeAttribute('name');
+
+      node.appendChild(this.startInput);
+      node.appendChild(this.endInput);
+
       if (secondInput) {
         plugins.push(new (rangePlugin as any)({ input: secondInput }));
       }
     }
+    const dateFormat = this.options.dateFormat || dateWithTS;
     this.picker = flatpickr(this.input, {
       enableTime: !!this.options.enableTime,
       noCalendar: !!this.options.noCalendar,
@@ -121,23 +142,44 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       mode: this.options.mode as any,
       time_24hr: !!this.options.time24,
       altFormat: this.options.displayFormat || 'yyyy LLL dd',
-      dateFormat: this.options.dateFormat || dateWithTS,
+      dateFormat,
+      onChange: (selectedDates) => {
+        if (this.options.doubleInput && this.startInput && this.endInput) {
+          if (selectedDates.length >= 0) {
+            this.startInput.value = luxon.DateTime.fromJSDate(selectedDates[0]).toFormat(dateFormat);
+          }
+          if (selectedDates.length >= 1) {
+            this.endInput.value = luxon.DateTime.fromJSDate(selectedDates[1]).toFormat(dateFormat);
+          }
+        }
+      },
       formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
       parseDate: (str, format) => luxon.DateTime.fromFormat(str, format).toJSDate(),
       plugins,
     });
     this.input = node.querySelector('input[name]')! as HTMLInputElement;
-    (this.input as unknown as ICustomInput).sfSetValue = (value) => {
+    const sfSetValue = (value: string) => {
       // console.log(value, this.picker.l10n.rangeSeparator);
       if (this.options.mode === 'range') {
-        const values = value.split(this.picker.l10n.rangeSeparator);
+        const values = (typeof value === 'string') ? value.split(this.picker.l10n.rangeSeparator) : value;
         /* const dates = */ values.map((v) => (luxon.DateTime.fromFormat(v, this.options.dateFormat || dateWithTS).toJSDate()));
         // console.log(this.options.mode, this.picker.l10n.rangeSeparator, values, dates);
         this.picker.setDate(values);
       }
       this.picker.setDate(value);
     };
-    this.input.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+    (this.input as unknown as ICustomInput).sfSetValue = sfSetValue;
+    if (!this.options.doubleInput) {
+      this.input.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+    }
+    if (this.startInput) {
+      (this.startInput as unknown as ICustomInput).sfSetValue = sfSetValue;
+      this.startInput.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+    }
+    if (this.endInput) {
+      (this.endInput as unknown as ICustomInput).sfSetValue = sfSetValue;
+      this.endInput.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
+    }
     node.setAttribute(CUSTOM_INPUT_ATTR, 'true');
     if (node.querySelector('[data-toggle]')) {
       node.querySelector('[data-toggle]')!.addEventListener('click', () => this.picker.toggle());
