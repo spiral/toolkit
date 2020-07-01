@@ -1,6 +1,7 @@
 import sf, { ICustomInput, IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import flatpickr from 'flatpickr';
 import confirmDatePlugin from 'flatpickr/dist/plugins/confirmDate/confirmDate';
+import rangePlugin from 'flatpickr/dist/plugins/rangePlugin';
 
 const dateWithTS = 'yyyy-MM-dd\'T\'HH:mm:ssZZZ';
 
@@ -10,6 +11,7 @@ const { CUSTOM_INPUT_TARGET_ATTR, CUSTOM_INPUT_ATTR } = sf.constants;
 export interface IDatePickerOptions {
   enableTime?: boolean,
   noCalendar?: boolean,
+  doubleInput?: boolean,
   time24?: boolean,
   value?: string,
   forceConfirmButton?: boolean,
@@ -28,6 +30,7 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
   static defaultOptions: IDatePickerOptions = {
     enableTime: false,
     noCalendar: false,
+    doubleInput: false,
     forceConfirmButton: false,
     mode: 'single',
     dateFormat: dateWithTS,
@@ -40,6 +43,10 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     enableTime: {
       value: DatePicker.defaultOptions.enableTime,
       domAttr: 'data-enable-time',
+    },
+    doubleInput: {
+      value: DatePicker.defaultOptions.doubleInput,
+      domAttr: 'data-double-input',
     },
     forceConfirmButton: {
       value: DatePicker.defaultOptions.forceConfirmButton,
@@ -91,12 +98,22 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
     super();
     this.init(ssf, node, options, DatePicker.defaultOptions);
     this.input = node.querySelector('input')!;
+    const mainId = this.input.getAttribute('id');
+    const plugins = [];
     const confirmPlugin = new (confirmDatePlugin as any)({
       confirmIcon: "<i class='fa fa-check ml-1'></i>", // your icon's html, if you wish to override
       confirmText: 'Apply',
       showAlways: !!this.options.forceConfirmButton,
       theme: 'light', // or "dark
     });
+    plugins.push(confirmPlugin);
+    if (this.options.doubleInput) {
+      const secondInputId = `${mainId}-end`;
+      const secondInput = document.getElementById(secondInputId) as HTMLInputElement;
+      if (secondInput) {
+        plugins.push(new (rangePlugin as any)({ input: secondInput }));
+      }
+    }
     this.picker = flatpickr(this.input, {
       enableTime: !!this.options.enableTime,
       noCalendar: !!this.options.noCalendar,
@@ -107,7 +124,7 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
       dateFormat: this.options.dateFormat || dateWithTS,
       formatDate: (date, format) => luxon.DateTime.fromJSDate(date).toFormat(format),
       parseDate: (str, format) => luxon.DateTime.fromFormat(str, format).toJSDate(),
-      plugins: [confirmPlugin],
+      plugins,
     });
     this.input = node.querySelector('input[name]')! as HTMLInputElement;
     (this.input as unknown as ICustomInput).sfSetValue = (value) => {
