@@ -84,6 +84,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   inputTemplate?: Function;
 
+  private form?: HTMLFormElement;
+
+  private resetListener?: (ev: Event)=>any;
+
   loadingTemplate?: string;
 
   /* Misc */
@@ -117,6 +121,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     if (this.options.exposeLabelAs) {
       this.textInput.setAttribute(CUSTOM_INPUT_TARGET_ATTR, 'true');
       this.textInput.name = this.options.exposeLabelAs;
+    }
+
+    if (this.options.exposeLabelRequired) {
+      this.textInput.setAttribute('required', 'true');
     }
 
     this.isDisabled = this.textInput.disabled;
@@ -503,6 +511,16 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.node.addEventListener('click', this.handleInsideClick);
     document.addEventListener('click', this.handleOutsideClick);
 
+    this.form = sf.closest(this.node, 'form') as HTMLFormElement;
+
+    if (this.form) {
+      this.resetListener = () => {
+        this.currentTextValue = '';
+        this.clearDataItem();
+      };
+      this.form.addEventListener('reset', this.resetListener);
+    }
+
     this.observer.observe(this.textInput, {
       attributes: true,
     });
@@ -518,6 +536,10 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     document.removeEventListener('click', this.handleOutsideClick);
 
     this.observer.disconnect();
+
+    if(this.form && this.resetListener) {
+      this.form.removeEventListener('reset', this.resetListener);
+    }
   }
 }
 

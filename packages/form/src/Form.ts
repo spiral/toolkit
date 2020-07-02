@@ -544,6 +544,7 @@ export class Form extends sf.core.BaseDOMConstructor {
   }
 
   optCallback(options: any, type: string) {
+    this.node.dispatchEvent(new CustomEvent(`ui:${type}`, { detail: options }));
     if (options[type]) {
       // eslint-disable-next-line no-eval
       const fn = eval(options[type]);
@@ -569,10 +570,12 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.sf.ajax.send(sendOptions).then(
       (answer) => {
         this.events.trigger('success', sendOptions);
+        this.optCallback({...sendOptions, response: answer}, 'onSuccess');
         return answer;
       },
       (error) => {
         this.events.trigger('error', sendOptions);
+        this.optCallback({...sendOptions, error: error}, 'onError');
         return error;
       },
     ).then((answer) => {

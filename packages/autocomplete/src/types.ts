@@ -23,6 +23,7 @@ export interface IAutocompleteOptions {
   dataField?: string;
   debounce?: number;
   exposeLabelAs?: string; // Expose text input too as this name
+  exposeLabelRequired?: boolean; // Mark input as required, no real validation
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
 }
