@@ -18,7 +18,9 @@ export interface IActionDeclaration {
     title: string,
     body: string,
     confirm?: string,
+    confirmKind?: string,
     cancel?: string,
+    cancelKind?: string,
   },
   toastSuccess?: string,
   toastError?: string,
@@ -35,7 +37,9 @@ export interface IActionDeclarationCompiled {
     title: (item: any) => string,
     body: (item: any) => string,
     confirm: (item: any) => string,
+    confirmKind: (item: any) => string,
     cancel: (item: any) => string,
+    cancelKind: (item: any) => string,
   },
   toastSuccess?: (item: any) => string,
   toastError?: (item: any) => string,
@@ -73,7 +77,9 @@ export const compileAction = (declaration: IActionDeclaration) => {
       title: handlebars.compile(declaration.confirm.title),
       body: handlebars.compile(declaration.confirm.body),
       confirm: handlebars.compile(declaration.confirm.confirm || 'Confirm'),
+      confirmKind: handlebars.compile(declaration.confirm.confirmKind || 'primary'),
       cancel: handlebars.compile(declaration.confirm.cancel || 'Cancel'),
+      cancelKind: handlebars.compile(declaration.confirm.cancelKind || 'secondary'),
     };
   }
 
@@ -156,8 +162,8 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
                         title: action.confirm!.title(item),
                         body: action.confirm!.body(item),
                         options: {
-                          confirm: { label: action.confirm!.confirm(item) },
-                          cancel: { label: action.confirm!.cancel(item) },
+                          confirm: { label: action.confirm!.confirm(item), kind: action.confirm!.confirmKind(item) },
+                          cancel: { label: action.confirm!.cancel(item), kind: action.confirm!.cancelKind(item) },
                         },
                         onConfirm,
                         onCancel,
