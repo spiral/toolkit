@@ -258,6 +258,12 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   serialize: boolean;
 
   /**
+   * Dont send empty values in filters
+   * @default true
+   */
+  omitEmptyFilters: boolean;
+
+  /**
    * If to fetch count of items on this table
    * @default true
    */

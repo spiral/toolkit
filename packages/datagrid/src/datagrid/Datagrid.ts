@@ -395,7 +395,15 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     // console.log(this.state.isCustomSearch, this.getDefaults(), this.formRequest());
     const isGet = this.options.method.toUpperCase() === RequestMethod.GET;
     const data = this.formRequest();
-
+    const rawFilter = data.filter;
+    if (this.options.omitEmptyFilters && rawFilter) {
+      Object.keys(rawFilter).forEach((k) => {
+        if (rawFilter[k] === '' || rawFilter[k] === null || rawFilter[k] === undefined) {
+          delete rawFilter[k];
+        }
+      });
+      data.filter = rawFilter;
+    }
     const request = this.sf.ajax.send<IDatagridResponse>({
       url: isGet ? makeUrl(this.options.url, data) : this.options.url, // TODO: need to verify GET api is same
       method: this.options.method,
