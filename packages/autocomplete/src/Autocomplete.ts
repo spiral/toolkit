@@ -46,7 +46,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     },
     url: {
       value: Autocomplete.defaultOptions.url,
-      domAttr: 'data-name',
+      domAttr: 'data-url',
     },
     preserveId: {
       value: Autocomplete.defaultOptions.preserveId,
