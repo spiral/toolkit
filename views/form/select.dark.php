@@ -7,7 +7,7 @@
     $_placeholder_ = inject('placeholder');
     $_options_ = [];
     if ($_placeholder_) {
-        $_options_[] = "<option disabled value=''>{$_placeholder_}</option>";
+        $_options_[] = "<option value=''>{$_placeholder_}</option>";
     }
 
     if (is_array($_values)) {
