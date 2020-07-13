@@ -6,7 +6,7 @@ export class AutocompleteDropdown {
 
   options: IAutocompleteDropdownOptions;
 
-  items?: HTMLDivElement[];
+  items: HTMLDivElement[] = [];
 
   data?: IAutocompleteData;
 
@@ -115,7 +115,7 @@ export class AutocompleteDropdown {
   }
 
   redrawItems() {
-    this.items!.forEach((item: HTMLDivElement, i: number) => item.classList.toggle('active', i === this.selectedIndex));
+    this.items.forEach((item: HTMLDivElement, i: number) => item.classList.toggle('active', i === this.selectedIndex));
   }
 
   renderItem(index: number, dataItem: IAutocompleteDataItem): HTMLDivElement {
@@ -133,7 +133,7 @@ export class AutocompleteDropdown {
   focusSelectedItem() {
     if (this.selectedIndex === -1) return;
     this.isInnerFocus = true;
-    this.items![this.selectedIndex].focus();
+    this.items[this.selectedIndex]?.focus();
   }
 
   public selectIndex(index: number) {
@@ -200,7 +200,7 @@ export class AutocompleteDropdown {
 
   @autobind
   handleKeyDownItem(event: KeyboardEvent) {
-    const len = this.items?.length;
+    const len = this.items.length;
     if (!len) return;
 
     if (event.key === 'ArrowUp') {
