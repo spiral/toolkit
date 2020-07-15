@@ -9,6 +9,7 @@ export interface IActionDeclaration {
   template?: string;
   label?: string;
   icon?: string;
+  target?: string;
   url: string;
   data?: {} | string;
   method?: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT';
@@ -32,6 +33,7 @@ export interface IActionDeclarationCompiled {
   data: (item: any) => any;
   method?: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT';
   type: 'href' | 'action';
+  target?: string;
   condition: (item: any) => boolean;
   confirm?: {
     title: (item: any) => string,
@@ -94,6 +96,7 @@ export const compileAction = (declaration: IActionDeclaration) => {
     method,
     confirm,
     refresh: !!declaration.refresh,
+    target: declaration.target,
     condition,
     toastSuccess,
     toastError,
@@ -136,16 +139,18 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
     dropdownDiv.appendChild(dropdownButton);
     dropdownDiv.appendChild(dropdownMenu);
 
+    let hasItems = false;
     const dropdown = (window as any).SFKeeper.Dropdown.init(dropdownDiv);
 
     actions.forEach((action) => {
       if (action.condition(item)) {
+        hasItems = true;
         const link = document.createElement('a');
         link.setAttribute('href', action.url(item));
         link.className = 'dropdown-item';
 
         if (action.type === 'href') {
-          link.setAttribute('target', '_blank');
+          link.setAttribute('target', action.target || '_blank');
           link.innerHTML = action.template(item);
         } else {
           link.setAttribute('href', '');
@@ -215,6 +220,9 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
         dropdownMenu.appendChild(link);
       }
     });
+    if (!hasItems) {
+      dropdownButton.setAttribute('disabled', 'disabled');
+    }
     return dropdownDiv;
   });
 };

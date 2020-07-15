@@ -46,7 +46,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     },
     url: {
       value: Autocomplete.defaultOptions.url,
-      domAttr: 'data-name',
+      domAttr: 'data-url',
     },
     preserveId: {
       value: Autocomplete.defaultOptions.preserveId,
@@ -181,7 +181,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     } = this.options;
 
     this.options.suggestTemplate = suggestTemplate || `{{${searchKey}}}`;
-    this.options.inputTemplate = inputTemplate || `{{${searchKey}}}`;
+    this.options.inputTemplate = inputTemplate || `{{{${searchKey}}}}`;
 
     this.suggestTemplate = Handlebars.compile(this.options.suggestTemplate);
     this.inputTemplate = Handlebars.compile(this.options.inputTemplate);
@@ -537,7 +537,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
     this.observer.disconnect();
 
-    if(this.form && this.resetListener) {
+    if (this.form && this.resetListener) {
       this.form.removeEventListener('reset', this.resetListener);
     }
   }
