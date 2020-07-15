@@ -9,6 +9,7 @@ export interface IActionDeclaration {
   template?: string;
   label?: string;
   icon?: string;
+  target?: string;
   url: string;
   data?: {} | string;
   method?: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT';
@@ -32,6 +33,7 @@ export interface IActionDeclarationCompiled {
   data: (item: any) => any;
   method?: 'POST' | 'GET' | 'PATCH' | 'DELETE' | 'PUT';
   type: 'href' | 'action';
+  target?: string;
   condition: (item: any) => boolean;
   confirm?: {
     title: (item: any) => string,
@@ -94,6 +96,7 @@ export const compileAction = (declaration: IActionDeclaration) => {
     method,
     confirm,
     refresh: !!declaration.refresh,
+    target: declaration.target,
     condition,
     toastSuccess,
     toastError,
@@ -147,7 +150,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
         link.className = 'dropdown-item';
 
         if (action.type === 'href') {
-          link.setAttribute('target', '_blank');
+          link.setAttribute('target', action.target || '_blank');
           link.innerHTML = action.template(item);
         } else {
           link.setAttribute('href', '');
