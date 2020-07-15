@@ -136,10 +136,12 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
     dropdownDiv.appendChild(dropdownButton);
     dropdownDiv.appendChild(dropdownMenu);
 
+    let hasItems = false;
     const dropdown = (window as any).SFKeeper.Dropdown.init(dropdownDiv);
 
     actions.forEach((action) => {
       if (action.condition(item)) {
+        hasItems = true;
         const link = document.createElement('a');
         link.setAttribute('href', action.url(item));
         link.className = 'dropdown-item';
@@ -215,6 +217,9 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
         dropdownMenu.appendChild(link);
       }
     });
+    if (!hasItems) {
+      dropdownButton.setAttribute('disabled', 'disabled');
+    }
     return dropdownDiv;
   });
 };
