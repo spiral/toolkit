@@ -60,6 +60,7 @@ export default class Modal {
   }
 
   handleClickClose() {
+    this.dispatch('sf:modal-cancel');
     this.close();
   }
 
