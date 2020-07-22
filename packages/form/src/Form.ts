@@ -74,6 +74,7 @@ export class Form extends sf.core.BaseDOMConstructor {
   public DOMEvents: DOMEvents;
   public events: Events;
   private submitTimeout?: NodeJS.Timeout;
+  private mutationObserver!: MutationObserver;
 
   optionsToGrab: { [key: string]: IOptionToGrab } = {
     id: {
@@ -226,23 +227,26 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.DOMEvents = new this.sf.helpers.DOMEvents();
     this.addEvents();
     this.events = new this.sf.core.Events(['beforeSend', 'success', 'error', 'always']);
-
-    // handle action change
-    const mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'action') {
-          this.options.url = node.getAttribute('action') || this.options.url;
-        }
-      });
-    });
-    mutationObserver.observe(node, {
-      attributes: true,
-      attributeFilter: ['action'],
-    });
+    this.monitorChanges();
   }
 
 
   public messages: Array<IMessage> = [];
+
+  monitorChanges() {
+    // Handle action change
+    this.mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'action') {
+          this.options.url = this.node.getAttribute('action') || this.options.url;
+        }
+      });
+    });
+    this.mutationObserver.observe(this.node, {
+      attributes: true,
+      attributeFilter: ['action'],
+    });
+  }
 
   showMessages(answer: { data: any, status?: number, statusText?: string } | undefined, showUnknown: boolean = true) {
     if (!answer) return;
@@ -672,6 +676,7 @@ export class Form extends sf.core.BaseDOMConstructor {
 
   die() {
     this.DOMEvents.removeAll();
+    this.mutationObserver.disconnect();
     // TODO don't we need to remove it's addons and plugins?
   }
 }
