@@ -226,6 +226,19 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.DOMEvents = new this.sf.helpers.DOMEvents();
     this.addEvents();
     this.events = new this.sf.core.Events(['beforeSend', 'success', 'error', 'always']);
+
+    // handle action change
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'action') {
+          this.options.url = node.getAttribute('action') || this.options.url;
+        }
+      });
+    });
+    mutationObserver.observe(node, {
+      attributes: true,
+      attributeFilter: ['action'],
+    });
   }
 
 
