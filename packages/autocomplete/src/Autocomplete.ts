@@ -329,6 +329,22 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   setExternalValue(value?: string) {
+    let isJSON = true;
+    let valueDataItem: IAutocompleteDataItem = { id: '', name: '' };
+
+    if (value) {
+      try {
+        valueDataItem = JSON.parse(value);
+      } catch (e) {
+        isJSON = false;
+      }
+    }
+
+    if (isJSON) {
+      this.handleRestoreDataItem([valueDataItem]);
+      return;
+    }
+
     if (!this.dataSource) {
       this.hiddenInput.value = ''; // ?
       return;
