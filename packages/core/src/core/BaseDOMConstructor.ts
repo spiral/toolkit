@@ -25,6 +25,8 @@ export class BaseDOMConstructor implements ISFInstanceClass {
 
   public options: any;
 
+  private mutationObserver!: MutationObserver;
+
   /**
      * This is a options to generate.
      * You should provide processor or value.
@@ -127,7 +129,36 @@ export class BaseDOMConstructor implements ISFInstanceClass {
       ...extractOptions(node),
     };
     this.node.classList.add(SF_UNIVERSAL_CLASS);
+    this.monitorChanges();
     return this.options;
+  }
+
+  monitorChanges() {
+    // eslint-disable-next-line no-proto
+    const optionsToGrab = this.optionsToGrab || (this as any).__proto__.optionsToGrab || {}; // TODO: get rid of __proto__, replace with static(?)
+    // Handle action change
+    this.mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes') {
+          Object.keys(optionsToGrab).forEach((option) => {
+            const currentOption = optionsToGrab[option];
+            if (currentOption.domAttr && mutation.attributeName === currentOption.domAttr) {
+              let currentOptionValue = this.node.getAttribute(currentOption.domAttr) || null;
+              if (currentOption.processor) { // we have processor. Let's execute it
+                currentOptionValue = currentOption.processor.call(this, this.node, currentOptionValue, currentOption);
+              }
+              if (currentOptionValue !== this.options[option]) {
+                this.handleOptionChanges(option, mutation.attributeName, currentOptionValue);
+              }
+            }
+          });
+        }
+      });
+    });
+    this.mutationObserver.observe(this.node, {
+      attributes: true,
+      attributeFilter: Object.keys(optionsToGrab),
+    });
   }
 
   /**
@@ -168,6 +199,14 @@ export class BaseDOMConstructor implements ISFInstanceClass {
       }
     });
     return options;
+  }
+
+  handleOptionChanges(optionName: string, attributeName: string, newValue: any) {
+    this.options[optionName] = newValue;
+  }
+
+  die() {
+    this.mutationObserver.disconnect();
   }
 }
 

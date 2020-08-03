@@ -380,6 +380,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
   }
 
   die() {
+    super.die();
     (this.node as HTMLElement).removeEventListener('click', this.onClick);
   }
 }

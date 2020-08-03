@@ -121,6 +121,7 @@ export class PatternInput extends sf.core.BaseDOMConstructor {
     }
 
     die() {
+      super.die();
       this.chars.forEach((el) => {
         el.removeEventListener('input', this.onInput);
       });

@@ -527,6 +527,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   die() {
+    super.die();
     this.textInput.removeEventListener('focus', this.handleFocus);
     this.textInput.removeEventListener('blur', this.handleBlur);
     this.textInput.removeEventListener('keydown', this.debouncedKeyDownListener);
