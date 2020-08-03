@@ -4,10 +4,11 @@
  */
 import sf from '@spiral-toolkit/core';
 
-const {CUSTOM_INPUT_TARGET_ATTR} = sf.constants;
-const {isNodeInsideCustomSFInput} = sf.tools;
+const { CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
+const { isNodeInsideCustomSFInput } = sf.tools;
 
 export const formToObject = (form: Element) => {
+  // eslint-disable-next-line no-useless-escape
   const keyRegex = /[^\[\]]+/g;
   const elements = form.querySelectorAll(`input, textarea, select, [${CUSTOM_INPUT_TARGET_ATTR}]`);
   const obj = {};
@@ -15,7 +16,7 @@ export const formToObject = (form: Element) => {
     // eslint-disable-next-line max-len
     const formElements = form.querySelectorAll(`input[name="${name}"], textarea[name="${name}"], select[name="${name}"], [${CUSTOM_INPUT_TARGET_ATTR}][name="${name}"]`);
     return formElements.length > 1;
-  }
+  };
 
   const addChild = (result: any, domNode: HTMLElement, keys: string[], value: any, isArray: boolean = false) => {
     // #1 - Single dimensional array.
@@ -28,12 +29,14 @@ export const formToObject = (form: Element) => {
       }
       if (domNode.hasAttribute(CUSTOM_INPUT_TARGET_ATTR)) {
         // That is sf custom component specific input
+        // eslint-disable-next-line no-param-reassign
         result[key] = value;
         return;
       }
       // We're only interested in the radio that is checked.
       if (domNode.nodeName === 'INPUT' && (domNode as HTMLInputElement).type === 'radio') {
         if ((domNode as HTMLInputElement).checked) {
+          // eslint-disable-next-line no-param-reassign
           result[key] = value;
           return;
         }
@@ -45,12 +48,14 @@ export const formToObject = (form: Element) => {
       if (domNode.nodeName === 'INPUT' && (domNode as HTMLInputElement).type === 'checkbox') {
         if (isArray) { // Looks like checkbox array
           if (!result[key]) {
+            // eslint-disable-next-line no-param-reassign
             result[key] = [];
           }
           if ((domNode as HTMLInputElement).checked) {
             result[key].push(value);
           }
         } else {
+          // eslint-disable-next-line no-param-reassign
           result[key] = (domNode as HTMLInputElement).checked ? value : ''; // Single checkbox
         }
         return;
@@ -63,9 +68,11 @@ export const formToObject = (form: Element) => {
         const selectNode = domNode as HTMLSelectElement;
         const realValue = selectNode.selectedIndex >= 0 ? selectNode.options[selectNode.selectedIndex]?.value : undefined;
         if (selectNode.multiple) {
+          // eslint-disable-next-line no-param-reassign
           result[key] = [];
           const DOMchilds = selectNode.selectedOptions;
           if (DOMchilds) {
+            // eslint-disable-next-line no-plusplus
             for (let i = 0; i < DOMchilds.length; i++) {
               if (DOMchilds.item(i)!.value) {
                 result[key].push(DOMchilds.item(i)!.value);
@@ -73,23 +80,26 @@ export const formToObject = (form: Element) => {
             }
           }
         } else {
+          // eslint-disable-next-line no-param-reassign
           result[key] = realValue;
         }
         return;
       }
 
       // Fallback. The default one to one assign.
+      // eslint-disable-next-line no-param-reassign
       result[key] = value;
     }
 
     // #2 - Multi dimensional array.
     if (keys.length > 1) {
       if (!result[keys[0]]) {
+        // eslint-disable-next-line no-param-reassign
         result[keys[0]] = {};
       }
       addChild(result[keys[0]], domNode, keys.splice(1, keys.length), value);
     }
-  }
+  };
 
   for (let i = 0; i < elements.length; i += 1) {
     const el = elements[i] as HTMLInputElement;
@@ -104,4 +114,4 @@ export const formToObject = (form: Element) => {
     }
   }
   return obj;
-}
+};
