@@ -29,6 +29,7 @@ export interface ISFHelpers {
   axios: Readonly<typeof axios>,
   assert: typeof assert,
   queryString: typeof queryString,
+  template: { compile: ((str: string, noFail?: boolean) => ((item: any) => any)), register: (name: string, fn: (item: any) => any)=>void}
 }
 
 export interface IInstancesController {

@@ -1,7 +1,5 @@
 import sf from '@spiral-toolkit/core';
 
-const { handlebars } = sf.helpers;
-
 export class Messages {
   public templates: { [key: string]: (data: any) => string } = {};
 
@@ -11,7 +9,7 @@ export class Messages {
       ...definitions,
     };
     Object.keys(defs).forEach((k) => {
-      this.templates[k] = handlebars.compile(defs[k]);
+      this.templates[k] = sf.helpers.template.compile(defs[k]);
     });
   }
 

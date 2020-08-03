@@ -3,7 +3,7 @@ import { autobind } from '../autobind';
 import { FILTER_TOGGLE_CLASS_NAME } from '../constants';
 import type Datagrid from '../datagrid/Datagrid';
 
-const { handlebars, assert } = sf.helpers;
+const { assert } = sf.helpers;
 
 const BUTTON_CLASS = '.sf-filter-toggle-button';
 const PANEL_CLASS = '.sf-filter-toggle-panel';
@@ -41,7 +41,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   } = {
     emptyClass: '',
     fullClass: '',
-    template: handlebars.compile('<i class="fas fa-filter"></i>'),
+    template: sf.helpers.template.compile('<i class="fas fa-filter"></i>'),
   };
 
   panelOptions: {
@@ -99,7 +99,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
       this.toggleOptions.fullClass = this.toggleButton.getAttribute('data-class-hasfilter') || '';
     }
     if (this.toggleButton.hasAttribute('data-template')) {
-      this.toggleOptions.template = handlebars.compile(this.toggleButton.getAttribute('data-template') || '');
+      this.toggleOptions.template = sf.helpers.template.compile(this.toggleButton.getAttribute('data-template') || '');
     }
 
     if (this.togglePanel.hasAttribute('data-class-open')) {

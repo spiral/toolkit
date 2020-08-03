@@ -34,3 +34,5 @@ export function makeUrl(url: string, data: IDatagridRequest) {
 
 export { isNodeInsideCustomSFInput } from './formInput';
 export { extractOptions } from '../core/extractOptions';
+
+export { compile, register } from './compile';
