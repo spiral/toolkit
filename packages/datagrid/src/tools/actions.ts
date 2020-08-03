@@ -76,7 +76,7 @@ export const compileAction = (declaration: IActionDeclaration) => {
       conditionTemplate = handlebars.compile(`{{#if ${declaration.condition}}}TRUE{{/if}}`);
     }
   }
-  const condition = conditionTemplate ? ((item: any) => !!conditionTemplate(item)) : () => true;
+  const condition = conditionTemplate ? ((item: any) => !!conditionTemplate!(item)) : () => true;
   let confirm;
 
   if (declaration.confirm) {
