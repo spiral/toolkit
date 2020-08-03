@@ -1,11 +1,12 @@
 import * as handlebars from 'handlebars';
 
+export const RUNTIME_VAR = 'SFTemplates';
 export const RUNTIME_TEMPLATE_PREFIX = '#';
 export const RUNTIME_TEMPLATE_PREFIX_ESCAPED = `\\${RUNTIME_TEMPLATE_PREFIX}`;
 
 const fallback = () => '';
 
-export const templates: {[id: string]: (item: any)=>string} = {};
+export const templates: {[id: string]: (item: any)=>string} = ((window as any)[RUNTIME_VAR]) || {};
 /**
  * Returns either handlebars template or reference of runtime-specified function
  * @param templateStr string to complite to template
@@ -34,6 +35,7 @@ export const compile = (templateStr: string, noFail: boolean = true) => {
           return compiled(item);
         } catch (e) {
           if (noFail) {
+            console.warn('Handlebars template error', templateStr, e);
             return fallback();
           }
           throw e;
@@ -41,6 +43,7 @@ export const compile = (templateStr: string, noFail: boolean = true) => {
       };
     } catch (e) {
       if (noFail) {
+        console.warn('Handlebars template compilation error', templateStr, e);
         return fallback;
       }
       throw e;
@@ -49,10 +52,14 @@ export const compile = (templateStr: string, noFail: boolean = true) => {
     return (item: any) => {
       if (templates[str] || noFail) {
         const fn = templates[str] || fallback;
+        if (!templates[str]) {
+          console.warn(`Template function [${item}] is not registered, returning empty string`);
+        }
         try {
           return fn(item);
         } catch (e) {
           if (noFail) {
+            console.warn(`Template function [${item}] produced error`, e);
             return fallback();
           }
           throw e;
