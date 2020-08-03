@@ -1,6 +1,4 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
-
-const { handlebars } = sf.helpers;
 const { ajax } = sf;
 
 export interface IActionButtonOptions {
@@ -123,7 +121,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
       domAttr: 'data-template',
       processor(node: Element, val: any, self: { value: any }) {
         if (typeof val === 'string') {
-          return handlebars.compile(val);
+          return sf.helpers.template.compile(val);
         }
         return self.value;
       },
@@ -216,7 +214,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
   get toastError() {
     if (this.options.toastError) {
       if (!this.toastErrorTemplate) {
-        this.toastErrorTemplate = handlebars.compile(this.options.toastError);
+        this.toastErrorTemplate = sf.helpers.template.compile(this.options.toastError);
       }
       return this.toastErrorTemplate;
     }
@@ -226,7 +224,7 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
   get toastSuccess() {
     if (this.options.toastSuccess) {
       if (!this.toastSuccessTemplate) {
-        this.toastSuccessTemplate = handlebars.compile(this.options.toastSuccess);
+        this.toastSuccessTemplate = sf.helpers.template.compile(this.options.toastSuccess);
       }
       return this.toastSuccessTemplate;
     }
@@ -237,10 +235,10 @@ export class ActionButton extends sf.core.BaseDOMConstructor {
     if (this.options.confirm) {
       if (!this.confirmTemplate) {
         this.confirmTemplate = {
-          title: handlebars.compile(this.options.confirm.title),
-          body: handlebars.compile(this.options.confirm.body),
-          confirm: handlebars.compile(this.options.confirm.confirm || 'Confirm'),
-          cancel: handlebars.compile(this.options.confirm.cancel || 'Cancel'),
+          title: sf.helpers.template.compile(this.options.confirm.title),
+          body: sf.helpers.template.compile(this.options.confirm.body),
+          confirm: sf.helpers.template.compile(this.options.confirm.confirm || 'Confirm'),
+          cancel: sf.helpers.template.compile(this.options.confirm.cancel || 'Cancel'),
           confirmKind: this.options.confirm.confirmKind || 'primary',
           cancelKind: this.options.confirm.cancelKind || 'secondary',
         };

@@ -19,7 +19,7 @@ import { Events } from './core/Events';
 import InstancesController from './core/InstancesController';
 
 import {
-  extractOptions, isNodeInsideCustomSFInput, makeUrl, resolveKeyPath,
+  extractOptions, isNodeInsideCustomSFInput, makeUrl, resolveKeyPath, compile, register,
 } from './helpers/tools';
 import type { ISFCore, ISFHelpers, ISFTools } from './types';
 
@@ -39,6 +39,7 @@ export const helpers: ISFHelpers = {
   handlebars,
   queryString,
   axios,
+  template: { compile, register },
 };
 
 export const tools: ISFTools = {

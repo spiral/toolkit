@@ -3,7 +3,7 @@ import type { CellRenderFunction } from '../types';
 import { INormalizedColumnDescriptor } from '../types';
 import { actionsHelper } from './actions';
 
-const { assert, handlebars } = sf.helpers;
+const { assert } = sf.helpers;
 
 export const REGISTER_CMD_NAME = 'register';
 
@@ -39,16 +39,16 @@ export const tools: {
   map: (map: { [key: string]: string }, defaultValue: string = '') => (value: string) => map[value] || defaultValue,
   concat: (fields: string[], separator = ' ') => ((value: string, item: any) => fields.map((f) => item[f]).join(separator)),
   template: (template: string) => {
-    const compiled = handlebars.compile(template);
+    const compiled = sf.helpers.template.compile(template);
     return ((value: string, item: any) => compiled(item));
   },
   link: ({
     href, title, body, className,
   }: { href: string, body?: string, title?: string, className?: string }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
-      href: handlebars.compile(href || ''),
-      title: handlebars.compile(title || colDef.title),
-      body: handlebars.compile(body || colDef.title),
+      href: sf.helpers.template.compile(href || ''),
+      title: sf.helpers.template.compile(title || colDef.title),
+      body: sf.helpers.template.compile(body || colDef.title),
     };
     const values = {
       href: templates.href(item),
@@ -61,8 +61,8 @@ export const tools: {
     href, title, className,
   }: { href: string, title?: string, className?: string }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
-      href: handlebars.compile(href || ''),
-      title: handlebars.compile(title || colDef.title),
+      href: sf.helpers.template.compile(href || ''),
+      title: sf.helpers.template.compile(title || colDef.title),
     };
     const values = {
       href: templates.href(item),

@@ -2,8 +2,6 @@ import sf from '@spiral-toolkit/core';
 import { ActionButton } from '../actionbutton/ActionButton';
 import { DatagridState } from '../datagrid/DatagridState';
 
-const { handlebars } = sf.helpers;
-
 export interface IActionDeclaration {
   type: 'href' | 'action';
   template?: string;
@@ -60,20 +58,20 @@ export interface IActionDropdownDeclatations {
 
 export const compileAction = (declaration: IActionDeclaration) => {
   const template = declaration.template
-    ? handlebars.compile(declaration.template)
-    : handlebars.compile(`${declaration.icon
+    ? sf.helpers.template.compile(declaration.template)
+    : sf.helpers.template.compile(`${declaration.icon
       ? `<i class="fas fw fa-${declaration.icon}"></i>`
       : ''}${(declaration.label && declaration.icon) ? '&nbsp;&nbsp;&nbsp;' : ''}${declaration.label || ''}`);
-  const url = handlebars.compile(declaration.url);
-  const dataTemplate = (typeof declaration.data === 'string') ? handlebars.compile(declaration.data) : undefined;
+  const url = sf.helpers.template.compile(declaration.url);
+  const dataTemplate = (typeof declaration.data === 'string') ? sf.helpers.template.compile(declaration.data) : undefined;
   const data = (typeof declaration.data === 'string') ? (
     (item: any) => JSON.parse(dataTemplate!(item))
   ) : (() => (declaration.data || {}));
   const { type, method } = declaration;
-  let conditionTemplate = (typeof declaration.condition === 'string') ? handlebars.compile(declaration.condition) : undefined;
-  if (declaration.condition === 'string') {
-    if (declaration.condition.indexOf('{{') === -1) { // Template is not really a template
-      conditionTemplate = handlebars.compile(`{{#if ${declaration.condition}}}TRUE{{/if}}`);
+  let conditionTemplate = (typeof declaration.condition === 'string') ? sf.helpers.template.compile(declaration.condition) : undefined;
+  if (typeof declaration.condition === 'string') {
+    if (declaration.condition.indexOf('{{') === -1 && !declaration.condition.startsWith('#')) { // Template is not really a template
+      conditionTemplate = sf.helpers.template.compile(`{{#if ${declaration.condition}}}TRUE{{/if}}`);
     }
   }
   const condition = conditionTemplate ? ((item: any) => !!conditionTemplate!(item)) : () => true;
@@ -81,17 +79,17 @@ export const compileAction = (declaration: IActionDeclaration) => {
 
   if (declaration.confirm) {
     confirm = {
-      title: handlebars.compile(declaration.confirm.title),
-      body: handlebars.compile(declaration.confirm.body),
-      confirm: handlebars.compile(declaration.confirm.confirm || 'Confirm'),
-      confirmKind: handlebars.compile(declaration.confirm.confirmKind || 'primary'),
-      cancel: handlebars.compile(declaration.confirm.cancel || 'Cancel'),
-      cancelKind: handlebars.compile(declaration.confirm.cancelKind || 'secondary'),
+      title: sf.helpers.template.compile(declaration.confirm.title),
+      body: sf.helpers.template.compile(declaration.confirm.body),
+      confirm: sf.helpers.template.compile(declaration.confirm.confirm || 'Confirm'),
+      confirmKind: sf.helpers.template.compile(declaration.confirm.confirmKind || 'primary'),
+      cancel: sf.helpers.template.compile(declaration.confirm.cancel || 'Cancel'),
+      cancelKind: sf.helpers.template.compile(declaration.confirm.cancelKind || 'secondary'),
     };
   }
 
-  const toastSuccess = declaration.toastSuccess ? handlebars.compile(declaration.toastSuccess) : undefined;
-  const toastError = declaration.toastError ? handlebars.compile(declaration.toastError) : undefined;
+  const toastSuccess = declaration.toastSuccess ? sf.helpers.template.compile(declaration.toastSuccess) : undefined;
+  const toastError = declaration.toastError ? sf.helpers.template.compile(declaration.toastError) : undefined;
 
   return {
     template,
@@ -110,8 +108,8 @@ export const compileAction = (declaration: IActionDeclaration) => {
 
 export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) => {
   const template = actionsDeclaration.template
-    ? handlebars.compile(actionsDeclaration.template)
-    : handlebars.compile(`${actionsDeclaration.icon
+    ? sf.helpers.template.compile(actionsDeclaration.template)
+    : sf.helpers.template.compile(`${actionsDeclaration.icon
       ? `<i class="fas fa-${actionsDeclaration.icon}"></i>`
       : ''}${(actionsDeclaration.label && actionsDeclaration.icon) ? '&nbsp;&nbsp;&nbsp;' : ''}${actionsDeclaration.label || ''}`);
 
@@ -217,7 +215,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
             url: action.url(item),
             method: action.method || 'POST',
             lockType: 'none',
-            template: handlebars.compile(action.template(item)),
+            template: sf.helpers.template.compile(action.template(item)),
             beforeSubmitCallback,
             afterSubmitCallback,
           });

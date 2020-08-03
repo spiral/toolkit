@@ -4,7 +4,6 @@ import sf, {
   ISpiralFramework,
 } from '@spiral-toolkit/core';
 import assert from 'assert';
-import Handlebars from 'handlebars';
 import { autobind } from './autobind';
 import { getValue } from './getValue';
 import { debounce } from './debounce';
@@ -183,8 +182,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.options.suggestTemplate = suggestTemplate || `{{${searchKey}}}`;
     this.options.inputTemplate = inputTemplate || `{{{${searchKey}}}}`;
 
-    this.suggestTemplate = Handlebars.compile(this.options.suggestTemplate);
-    this.inputTemplate = Handlebars.compile(this.options.inputTemplate);
+    this.suggestTemplate = sf.helpers.template.compile(this.options.suggestTemplate);
+    this.inputTemplate = sf.helpers.template.compile(this.options.inputTemplate);
 
     this.loadingTemplate = loadingTemplate;
   }
