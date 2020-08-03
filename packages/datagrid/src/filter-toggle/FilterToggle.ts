@@ -166,6 +166,7 @@ export class FilterToggle<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   public die() {
+    super.die();
     document.removeEventListener('click', this.toggleClick);
     this.node.addEventListener('submit', this.onForm);
     this.node.addEventListener('reset', this.onForm);

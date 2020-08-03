@@ -3,8 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 
-import sf from '@spiral-toolkit/core';
-import core, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 
 import type { Events } from '@spiral-toolkit/core/dist/core/Events';
 import type { DOMEvents } from '@spiral-toolkit/core/dist/helpers/DOMEvents';
@@ -18,8 +17,8 @@ import './styles.css';
 
 let idCounter = 1;
 
-const {CUSTOM_INPUT_TARGET_ATTR} = core.constants;
-const {isNodeInsideCustomSFInput} = core.tools;
+const { CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
+const { isNodeInsideCustomSFInput } = sf.tools;
 
 export type IMessagesOptions = any;
 
@@ -52,15 +51,18 @@ export interface IMessage {
 
 export class Form extends sf.core.BaseDOMConstructor {
   static readonly spiralFrameworkName: string = 'form';
+
   static readonly spiralFrameworkCss: string = 'js-sf-form';
+
   static registerInSf = () => {
     sf.registerInstanceType(Form, Form.spiralFrameworkCss);
   };
+
   static readonly defaultOptions: IFormOptions = {
     id: '',
     url: '/',
     useAjax: true,
-    headers: {Accept: 'application/json'},
+    headers: { Accept: 'application/json' },
     method: 'POST',
     lockType: 'default',
     submitOnReset: false,
@@ -68,13 +70,18 @@ export class Form extends sf.core.BaseDOMConstructor {
   };
 
   public readonly name = Form.spiralFrameworkName;
+
   public defaultValues: any;
+
   public prevValues: any;
-  public options: IFormOptions = {...Form.defaultOptions};
+
+  public options: IFormOptions = { ...Form.defaultOptions };
+
   public DOMEvents: DOMEvents;
+
   public events: Events;
+
   private submitTimeout?: NodeJS.Timeout;
-  private mutationObserver!: MutationObserver;
 
   optionsToGrab: { [key: string]: IOptionToGrab } = {
     id: {
@@ -206,7 +213,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         return Object.assign(self.value, val);
       },
     },
-  }
+  };
 
   constructor(ssf: ISpiralFramework, node: Element, options: Partial<IFormOptions>) {
     super();
@@ -219,7 +226,7 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.options.messages = {
       ...formMessagesDefaults,
       ...this.options.messages,
-    }
+    };
 
     this.defaultValues = this.getFormData();
     this.prevValues = {};
@@ -227,32 +234,15 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.DOMEvents = new this.sf.helpers.DOMEvents();
     this.addEvents();
     this.events = new this.sf.core.Events(['beforeSend', 'success', 'error', 'always']);
-    this.monitorChanges();
   }
 
 
   public messages: Array<IMessage> = [];
 
-  monitorChanges() {
-    // Handle action change
-    this.mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'action') {
-          this.options.url = this.node.getAttribute('action') || this.options.url;
-        }
-      });
-    });
-    this.mutationObserver.observe(this.node, {
-      attributes: true,
-      attributeFilter: ['action'],
-    });
-  }
-
   showMessages(answer: { data: any, status?: number, statusText?: string } | undefined, showUnknown: boolean = true) {
     if (!answer) return;
 
     let isMsg = false;
-    const that = this;
 
     if (answer.data) {
       // for (const type in this.options.messages.levels) {
@@ -295,7 +285,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         m.close.addEventListener('click', m.closeHandler);
       }
     });
-  };
+  }
 
   removeMessage(m: IMessage, e?: MouseEvent) {
     if (m.close && m.closeHandler) {
@@ -314,7 +304,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       if (e.preventDefault) e.preventDefault();
       this.messages.splice(this.messages.indexOf(m), 1);
     }
-  };
+  }
 
   removeMessages() {
     if (this.messages) {
@@ -323,7 +313,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       });
     }
     this.messages = [];
-  };
+  }
 
   showFormMessage(rawMessage: FreeformMessage, type: string) {
     let parent;
@@ -352,7 +342,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       parent = document.querySelector(this.options.messages.place);
       parent.appendChild(msgEl);
     }
-    this.messages.push({el: msgEl, close: msgEl.querySelector(this.options.messages.close), type});
+    this.messages.push({ el: msgEl, close: msgEl.querySelector(this.options.messages.close), type });
   }
 
   /**
@@ -422,7 +412,7 @@ export class Form extends sf.core.BaseDOMConstructor {
       field,
       type,
     });
-  };
+  }
 
   showFieldsMessages(messages: { [messageKey: string]: any }, type: string, showUnknown = true) {
     const notFound = iterateInputs(this.node, messages, (el, message) => {
@@ -440,7 +430,7 @@ export class Form extends sf.core.BaseDOMConstructor {
         });
       });
     }
-  };
+  }
 
   onDebouncedSubmit(e: UIEvent) {
     if (this.options.immediate) {
@@ -507,13 +497,13 @@ export class Form extends sf.core.BaseDOMConstructor {
       e.preventDefault();
       e.stopPropagation();
     }
-  };
+  }
 
   lock() {
     if (!this.options.lockType || this.options.lockType === 'none') {
       return;
     }
-    const lock = this.sf.addInstance('lock', this.node, {type: this.options.lockType});
+    const lock = this.sf.addInstance('lock', this.node, { type: this.options.lockType });
     if (!lock) {
       console.warn('You try to add \'lock\' instance, but it is not available or already started');
       return;
@@ -556,8 +546,8 @@ export class Form extends sf.core.BaseDOMConstructor {
   }
 
   enumerateFieldNames() {
-    // console.log(this.node.querySelectorAll('input,select,textarea'));
-    return Array.prototype.slice.call(this.node.querySelectorAll('input,select,textarea')).map((el) => el.getAttribute('name')); // TODO: support custom inputs too
+    // TODO: support custom inputs too
+    return Array.prototype.slice.call(this.node.querySelectorAll('input,select,textarea')).map((el) => el.getAttribute('name'));
   }
 
   optCallback(options: any, type: string) {
@@ -587,18 +577,18 @@ export class Form extends sf.core.BaseDOMConstructor {
     this.sf.ajax.send(sendOptions).then(
       (answer) => {
         this.events.trigger('success', sendOptions);
-        this.optCallback({...sendOptions, response: answer}, 'onSuccess');
+        this.optCallback({ ...sendOptions, response: answer }, 'onSuccess');
         return answer;
       },
       (error) => {
         this.events.trigger('error', sendOptions);
-        this.optCallback({...sendOptions, error: error}, 'onError');
+        this.optCallback({ ...sendOptions, error }, 'onError');
         return error;
       },
     ).then((answer) => {
       this.unlock();
       this.processAnswer(answer);
-      this.optCallback({...sendOptions, response: answer}, 'afterSubmitCallback');
+      this.optCallback({ ...sendOptions, response: answer }, 'afterSubmitCallback');
       this.events.trigger('always', sendOptions);
     });
 
@@ -634,7 +624,7 @@ export class Form extends sf.core.BaseDOMConstructor {
   }
 
   setOptions(opt: Partial<IFormOptions>) {
-    this.options = {...this.options, ...opt};
+    this.options = { ...this.options, ...opt };
   }
 
   addEvents() {
@@ -675,8 +665,8 @@ export class Form extends sf.core.BaseDOMConstructor {
   }
 
   die() {
+    super.die();
     this.DOMEvents.removeAll();
-    this.mutationObserver.disconnect();
     // TODO don't we need to remove it's addons and plugins?
   }
 }

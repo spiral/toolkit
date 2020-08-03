@@ -3,7 +3,7 @@
 
 // Plugin in formMessages to iterate form inputs
 
-export type NotFound = Array<{[name: string]: any}>
+export type NotFound = Array<{[name: string]: any}>;
 
 /**
  *
@@ -35,7 +35,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
           const sel = `[name='${partOfSelector}[]'][value='${el}']`;
           const nodes = context.querySelectorAll(sel);
           if (nodes.length === 0) {
-            notFound.push({[partOfSelector]: names[name]});
+            notFound.push({ [partOfSelector]: names[name] });
           }
           for (let i = 0, max = nodes.length; i < max; i += 1) {
             callback(nodes[i], true);
@@ -47,7 +47,7 @@ export function findNodes(context: Element, names: {[key: string]: any}, callbac
         // eslint-disable-next-line no-case-declarations
         const nodes = context.querySelectorAll(selector);
         if (nodes.length === 0) {
-          notFound.push({[partOfSelector]: names[name]});
+          notFound.push({ [partOfSelector]: names[name] });
         }
         for (let i = 0, max = nodes.length; i < max; i += 1) {
           callback(nodes[i], names[name]);

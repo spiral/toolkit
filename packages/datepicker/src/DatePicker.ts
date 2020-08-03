@@ -202,6 +202,7 @@ export class DatePicker extends sf.core.BaseDOMConstructor {
   }
 
   die() {
+    super.die();
     if (this.form && this.resetListener) {
       this.form.removeEventListener('reset', this.resetListener);
     }
