@@ -9,7 +9,5 @@
     name="${name}"
     placeholder="${placeholder}"
     @if(injected('disabled'))disabled@endif
-  >
-    ${value}${context}
-  </textarea>
+  >${value}${context}</textarea>
 </block:element>
