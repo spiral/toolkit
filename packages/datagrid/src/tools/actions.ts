@@ -70,7 +70,12 @@ export const compileAction = (declaration: IActionDeclaration) => {
     (item: any) => JSON.parse(dataTemplate!(item))
   ) : (() => (declaration.data || {}));
   const { type, method } = declaration;
-  const conditionTemplate = (typeof declaration.condition === 'string') ? handlebars.compile(declaration.condition) : undefined;
+  let conditionTemplate = (typeof declaration.condition === 'string') ? handlebars.compile(declaration.condition) : undefined;
+  if (declaration.condition === 'string') {
+    if (declaration.condition.indexOf('{{') === -1) { // Template is not really a template
+      conditionTemplate = handlebars.compile(`{{#if ${declaration.condition}}}TRUE{{/if}}`);
+    }
+  }
   const condition = conditionTemplate ? ((item: any) => !!conditionTemplate(item)) : () => true;
   let confirm;
 
