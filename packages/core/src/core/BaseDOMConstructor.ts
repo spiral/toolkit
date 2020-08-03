@@ -157,7 +157,7 @@ export class BaseDOMConstructor implements ISFInstanceClass {
     });
     this.mutationObserver.observe(this.node, {
       attributes: true,
-      attributeFilter: Object.keys(optionsToGrab),
+      attributeFilter: Object.keys(optionsToGrab).map((opt) => optionsToGrab[opt].domAttr).filter((attr) => !!attr) as any,
     });
   }
 
