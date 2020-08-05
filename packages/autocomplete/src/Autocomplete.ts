@@ -1,5 +1,4 @@
 import sf, {
-  ICustomInput,
   IOptionToGrab,
   ISpiralFramework,
 } from '@spiral-toolkit/core';
@@ -11,6 +10,7 @@ import { AutocompleteDataSource } from './AutocompleteDataSource';
 import { AutocompleteDropdown } from './AutocompleteDropdown';
 import { AutocompleteTags } from './AutocompleteTags';
 import {
+  IAutocompleteInput,
   IAutocompleteOptions,
   IAutocompleteData,
   IAutocompleteDataItem,
@@ -367,6 +367,13 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
+  setExternalDataItem(dataItem?: IAutocompleteDataItem) {
+    if (dataItem) {
+      this.handleRestoreDataItem([dataItem]);
+    }
+  }
+
+  @autobind
   handleFocus() {
     this.textInputWrapper.classList.add('focus');
     if (this.isInnerFocus) {
@@ -513,7 +520,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   bind() {
-    (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setExternalValue;
+    (this.hiddenInput as unknown as IAutocompleteInput).sfSetValue = this.setExternalValue;
+    (this.hiddenInput as unknown as IAutocompleteInput).sfSetDataItem = this.setExternalDataItem;
 
     this.textInput.addEventListener('focus', this.handleFocus);
     this.textInput.addEventListener('blur', this.handleBlur);

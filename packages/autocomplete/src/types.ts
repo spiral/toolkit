@@ -1,3 +1,7 @@
+import { ICustomInput } from '@spiral-toolkit/core';
+
+export type IAutocompleteInput = ICustomInput & { sfSetDataItem: () => void; };
+
 export interface IAutocompleteStaticDataItem {
   id?: string;
   name: string;
