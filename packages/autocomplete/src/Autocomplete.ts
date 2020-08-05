@@ -133,7 +133,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     this.initDropdown();
     this.initTags();
 
-    this.setExternalValue(this.hiddenInput.value);
+    this.restoreValue();
 
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach(this.handleMutation);
@@ -323,6 +323,19 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       // for multiple
       this.tags!.setTags(dataItems);
       this.currentDataItems = dataItems.slice();
+    }
+  }
+
+  restoreValue() {
+    const { value } = this.hiddenInput;
+    const labelValue = this.textInput.value;
+    if (!this.options.isMultiple && value && labelValue) {
+      // If we have label and value and that's not multiple selection item, we can restore it's value without server request
+      const dataItem = { [this.options.valueKey!]: value, [this.options.searchKey!]: labelValue };
+      this.handleRestoreDataItem([dataItem]);
+    } else {
+      // Fetch data from server if needed
+      this.setExternalValue(value);
     }
   }
 
