@@ -1,3 +1,5 @@
+import { ICustomInput } from '@spiral-toolkit/core';
+
 export interface IAutocompleteStaticDataItem {
   id?: string;
   name: string;
@@ -26,6 +28,7 @@ export interface IAutocompleteOptions {
   exposeLabelRequired?: boolean; // Mark input as required, no real validation
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
+  initialDataItems?: IAutocompleteDataItem[]; // Allow to pre-set all data items
 }
 
 export interface IAutocompleteDataSourceOptions {
@@ -62,3 +65,5 @@ export interface IDatagridRequest {
   filter?: { [filterField: string]: string | string[] };
   sort?: { [sortField: string]: 'asc' | 'desc' };
 }
+
+export type IAutocompleteInput = ICustomInput & { sfSetDataItems: (items?: IAutocompleteDataItem[]) => void; };
