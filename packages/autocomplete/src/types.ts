@@ -26,6 +26,7 @@ export interface IAutocompleteOptions {
   exposeLabelRequired?: boolean; // Mark input as required, no real validation
   method?: 'GET' | 'POST';
   headers?: { [key: string]: string };
+  initialDataItems?: IAutocompleteDataItem[]; // Allow to pre-set all data items
 }
 
 export interface IAutocompleteDataSourceOptions {

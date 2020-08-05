@@ -326,9 +326,18 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     }
   }
 
+  @autobind
+  setDataItems(items: IAutocompleteDataItem[]) {
+    this.handleRestoreDataItem(items);
+    this.resetHiddenInputValue(); // set hidden input value based on items, that's not automatically done on 'handleRestore' method
+  }
+
   restoreValue() {
     const { value } = this.hiddenInput;
     const labelValue = this.textInput.value;
+    if (this.options.initialDataItems) {
+      this.handleRestoreDataItem(this.options.initialDataItems);
+    }
     if (!this.options.isMultiple && value && labelValue) {
       // If we have label and value and that's not multiple selection item, we can restore it's value without server request
       const dataItem = { [this.options.valueKey!]: value, [this.options.searchKey!]: labelValue };
@@ -514,6 +523,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   bind() {
     (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setExternalValue;
+    (this.hiddenInput as any).sfSetDataItems = this.setDataItems; // Autocomplete specific method to set data items
 
     this.textInput.addEventListener('focus', this.handleFocus);
     this.textInput.addEventListener('blur', this.handleBlur);
