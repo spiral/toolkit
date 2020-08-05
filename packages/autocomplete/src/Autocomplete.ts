@@ -13,7 +13,7 @@ import { AutocompleteTags } from './AutocompleteTags';
 import {
   IAutocompleteOptions,
   IAutocompleteData,
-  IAutocompleteDataItem,
+  IAutocompleteDataItem, IAutocompleteInput,
 } from './types';
 
 const { CUSTOM_INPUT_ATTR, CUSTOM_INPUT_TARGET_ATTR } = sf.constants;
@@ -327,8 +327,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
   }
 
   @autobind
-  setDataItems(items: IAutocompleteDataItem[]) {
-    this.handleRestoreDataItem(items);
+  setDataItems(items?: IAutocompleteDataItem[]) {
+    this.handleRestoreDataItem(items || []);
     this.resetHiddenInputValue(); // set hidden input value based on items, that's not automatically done on 'handleRestore' method
   }
 
@@ -523,7 +523,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   bind() {
     (this.hiddenInput as unknown as ICustomInput).sfSetValue = this.setExternalValue;
-    (this.hiddenInput as any).sfSetDataItems = this.setDataItems; // Autocomplete specific method to set data items
+    (this.hiddenInput as unknown as IAutocompleteInput).sfSetDataItems = this.setDataItems; // Autocomplete specific method to set data items
 
     this.textInput.addEventListener('focus', this.handleFocus);
     this.textInput.addEventListener('blur', this.handleBlur);
