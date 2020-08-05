@@ -18,6 +18,7 @@
       <input
         inputID:consume
         id="${id}"
+        value="${labelValue}"
         class="sf-autocomplete__input-field"
         type="text"
         placeholder="${placeholder}"
