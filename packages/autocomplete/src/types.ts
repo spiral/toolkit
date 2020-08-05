@@ -66,4 +66,4 @@ export interface IDatagridRequest {
   sort?: { [sortField: string]: 'asc' | 'desc' };
 }
 
-export type IAutocompleteInput = ICustomInput & { sfSetDataItems: (items?: IAutocompleteDataItem[]) => void; }
+export type IAutocompleteInput = ICustomInput & { sfSetDataItems: (items?: IAutocompleteDataItem[]) => void; };
