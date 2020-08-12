@@ -3578,6 +3578,11 @@ dns-txt@^2.0.2:
   dependencies:
     buffer-indexof "^1.0.0"
 
+do-nothing-loader@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/do-nothing-loader/-/do-nothing-loader-1.0.0.tgz#71973d2e1088528a9622d1e8d32be93ff792902b"
+  integrity sha1-cZc9LhCIUoqWItHo0yvpP/eSkCs=
+
 doctrine@1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-1.5.0.tgz#379dce730f6166f76cefa4e6707a159b02c5a6fa"

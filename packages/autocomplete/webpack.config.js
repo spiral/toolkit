@@ -14,6 +14,8 @@ const config = {
       commonjs: '@spiral-toolkit/autocomplete',
       root: 'SFAutocomplete',
     },
+    devtoolNamespace: 'SFAutocomplete',
+    // devtoolModuleFilenameTemplate: '@sf-autocomplete://[namespace]/[resource-path]?[loaders]',
   },
 
 

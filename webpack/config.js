@@ -6,7 +6,7 @@ const plugins = require('./plugins');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 
-  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'cheap-source-map',
+  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'inline-source-map',
 
   entry: {},
 
@@ -36,7 +36,8 @@ module.exports = {
   module: {
     rules: [
       loaders.jsmap,
-      loaders.js,
+      // loaders.asIs,
+      // loaders.js,
       loaders.ts,
       loaders.css,
     ],

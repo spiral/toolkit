@@ -4,12 +4,14 @@ const config = {
   ...baseConfig,
 
   entry: {
-    locker: ['./src/index.js'],
+    locker: ['./src/index.ts'],
   },
 
   output: {
     ...baseConfig.output,
     library: '@spiral-toolkit/locker',
+    devtoolNamespace: 'SFLocker',
+    // devtoolModuleFilenameTemplate: '@sf-locker://[namespace]/[resource-path]?[loaders]',
   },
 
   externals: {

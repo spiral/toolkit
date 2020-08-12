@@ -1,15 +1,13 @@
-const core = require('@spiral-toolkit/core').default;
+import core from '@spiral-toolkit/core';
 
 require('./template');
-require('./form/input');
+// require('./form/input');
 require('./ui/localdate/LocalDate');
-require('./form/pattern/PatternInput');
+// require('./form/pattern/PatternInput');
 
-// require('@spiral-toolkit/autocomplete');
 require('@spiral-toolkit/locker');
 require('@spiral-toolkit/datepicker');
 require('@spiral-toolkit/form');
 require('@spiral-toolkit/datagrid');
 
-
-module.exports = core;
+export default core;

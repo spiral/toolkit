@@ -17,6 +17,8 @@ const config = {
       commonjs: '@spiral-toolkit/datagrid',
       root: 'SFDataGrid',
     },
+    devtoolNamespace: 'SFDataGrid',
+    // devtoolModuleFilenameTemplate: '@sf-datagrid://[namespace]/[resource-path]?[loaders]',
   },
 
   externals: {

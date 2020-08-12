@@ -14,6 +14,8 @@ const config = {
       commonjs: '@spiral-toolkit/form',
       root: 'SFForm',
     },
+    devtoolNamespace: 'SFForm',
+    // devtoolModuleFilenameTemplate: '@sf-form://[namespace]/[resource-path]?[loaders]',
   },
 
 

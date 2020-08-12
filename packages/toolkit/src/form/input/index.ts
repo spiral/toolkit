@@ -1,4 +1,4 @@
-
+// @ts-ignore
 const sf = require('@spiral-toolkit/core').default;
 const Input = require('./input').default;
 

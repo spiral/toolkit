@@ -15,6 +15,8 @@ const config = {
       commonjs: '@spiral-toolkit/datepicker',
       root: 'SFDatepicker',
     },
+    devtoolNamespace: 'SFDatepicker',
+    // devtoolModuleFilenameTemplate: '@sf-datepicker://[namespace]/[resource-path]?[loaders]',
   },
 
 

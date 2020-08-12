@@ -3,9 +3,10 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable func-names */
 
-import core from '@spiral-toolkit/core';
+import core, { ISpiralFramework } from '@spiral-toolkit/core';
 
-const Input = function (sf, node, options) {
+const Input = function (ssf: ISpiralFramework, node: Element, options: any) {
+  // @ts-ignore
   this._construct(sf, node, options);
 };
 
@@ -19,7 +20,7 @@ Input.prototype = Object.create(core.core.BaseDOMConstructor.prototype);
  * @type {string}
  */
 Input.prototype.name = 'input';
-
+// @ts-ignore
 Input.prototype._construct = function (sf, node, options) {
   this.init(sf, node, options); // call parent
 
@@ -74,6 +75,7 @@ Input.prototype.isValidPattern = function () {
 Input.prototype.addPatternEventListeners = function () {
   const that = this;
 
+  // @ts-ignore
   this._inputKeyPress = function (event) {
     const char = String.fromCharCode(event.keyCode);
     const { value } = that.els.node;
@@ -104,6 +106,7 @@ Input.prototype.addPatternEventListeners = function () {
 
   this.els.node.addEventListener('keypress', this._inputKeyPress);
 
+  // @ts-ignore
   this._inputFocus = function (event) {
     event.preventDefault();
 
@@ -116,7 +119,7 @@ Input.prototype.addPatternEventListeners = function () {
     }, 0);
   };
   this.els.node.addEventListener('focus', this._inputFocus);
-
+  // @ts-ignore
   this._inputKeyDown = function (event) {
     const char = String.fromCharCode(event.keyCode);
     const { value } = that.els.node;
@@ -162,9 +165,10 @@ Input.prototype.addPatternEventListeners = function () {
 Input.prototype.getCursorPosition = function () {
   let position = 0;
 
+  // @ts-ignore
   if (document.selection) {
     this.els.node.focus();
-
+    // @ts-ignore
     const selectRange = document.selection.createRange();
 
     selectRange.moveStart('character', -this.els.node.value.length);
@@ -176,7 +180,7 @@ Input.prototype.getCursorPosition = function () {
 
   return position;
 };
-
+// @ts-ignore
 Input.prototype.setCursorPosition = function (position) {
   if (this.els.node.createTextRange) {
     const range = this.els.node.createTextRange();
@@ -200,9 +204,12 @@ Input.prototype.setupPattern = function () {
     let formattedPatternStr = '';
     let formattedPatternWithEmptyStr = '';
 
+    // @ts-ignore
     for (let i = 0; i < this.patternString.length; i += 1) {
+      // @ts-ignore
       const char = this.patternString[i];
 
+      // @ts-ignore
       if (this.formatCharacters.indexOf(char) >= 0) {
         formattedPatternStr += char;
         formattedPatternWithEmptyStr += char;
@@ -218,7 +225,9 @@ Input.prototype.setupPattern = function () {
       }
     }
 
+    // @ts-ignore
     this.pattern = new RegExp(`^${formattedPatternStr}$`, 'g');
+    // @ts-ignore
     this.patternWithEmpty = new RegExp(`^${formattedPatternWithEmptyStr}$`, 'g');
   }.bind(this);
 
@@ -266,6 +275,7 @@ Input.prototype.die = function () {
   } else if (this.options.prefix) {
     this.removePrefixEventListeners();
   }
+  // @ts-ignore
   delete this;
 };
 

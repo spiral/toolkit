@@ -24,6 +24,8 @@ module.exports = {
       commonjs: '@spiral-toolkit/keeper',
       root: 'SFKeeper',
     },
+    devtoolNamespace: 'SFKeeper',
+    // devtoolModuleFilenameTemplate: '@sf-keeper://[namespace]/[resource-path]?[loaders]',
   },
   node: {
     fs: 'empty',
@@ -42,6 +44,9 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           transpileOnly: true,
+          compilerOptions: {
+            allowJs: true,
+          },
         },
       },
       {

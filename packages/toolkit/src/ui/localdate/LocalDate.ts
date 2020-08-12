@@ -1,12 +1,13 @@
-import sf from '@spiral-toolkit/core';
-// import type { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
+import sf, { ISpiralFramework } from '@spiral-toolkit/core';
+import type { IOptionToGrab } from '@spiral-toolkit/core';
 
-/* export interface IOptions {
+export interface IOptions {
   value: string;
   format: string;
   titleFormat?: string;
+  errorValue?: string;
   sourceFormat?: string;
-} */
+}
 
 
 export class LocalDate extends sf.core.BaseDOMConstructor {
@@ -16,12 +17,12 @@ export class LocalDate extends sf.core.BaseDOMConstructor {
 
   name = LocalDate.spiralFrameworkName;
 
-  static defaultOptions = {
+  static defaultOptions: IOptions = {
     value: '',
     format: '',
-  }
+  };
 
-  optionsToGrab = {
+  public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     value: {
       value: LocalDate.defaultOptions.value,
       domAttr: 'data-value',
@@ -44,9 +45,9 @@ export class LocalDate extends sf.core.BaseDOMConstructor {
     },
   };
 
-  options = { ...LocalDate.defaultOptions };
+  options: IOptions = { ...LocalDate.defaultOptions };
 
-  constructor(ssf, node, options) {
+  constructor(ssf: ISpiralFramework, node: Element, options: any) {
     super();
     this.init(ssf, node, options);
     const date = this.options.sourceFormat
@@ -59,6 +60,7 @@ export class LocalDate extends sf.core.BaseDOMConstructor {
         node.setAttribute('title', date.toFormat(this.options.titleFormat));
       }
     } else {
+      // eslint-disable-next-line no-console
       console.error(date.invalidExplanation, this.options);
       // eslint-disable-next-line no-param-reassign
       node.innerHTML = this.options.errorValue || '';

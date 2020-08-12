@@ -3,7 +3,7 @@
  * The getter will return a .bind version of the function
  * and memoize the result against a symbol on the instance
  */
-export function autobind(target, key, descriptor) {
+export function autobind(target: any, key: any, descriptor: any) {
   let fn = descriptor.value;
 
   if (typeof fn !== 'function') {
@@ -39,7 +39,7 @@ export function autobind(target, key, descriptor) {
       definingProperty = false;
       return boundFn;
     },
-    set(value) {
+    set(value: any) {
       fn = value;
     },
   };
