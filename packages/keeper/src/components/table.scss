@@ -15,6 +15,7 @@
 
 .sf-table thead th {
   border-top: 0;
+  line-height: 1rem;
 }
 
 .sf-table tr.row-align-middle > td {
@@ -51,10 +52,11 @@
 .sf-table__sort::before,
 .sf-table__sort::after {
   position: absolute;
+  bottom: 0;
   opacity: 0.3;
   font-family: monospace;
   font-size: 1.5rem;
-  line-height: 1;
+  line-height: 1rem;
 }
 .sf-table__sort::before {
   content: '\2191';
