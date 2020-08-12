@@ -19,7 +19,7 @@ try {
   }
 } catch (e) {
   // eslint-disable-next-line func-names
-  const CustomEvent = function (event, params) {
+  const CustomEvent = function (event: any, params: any) {
     // eslint-disable-next-line no-param-reassign
     params = params || {};
     // eslint-disable-next-line no-param-reassign
@@ -45,13 +45,13 @@ try {
           },
         });
       } catch (ex) {
-        this.defaultPrevented = true;
+        (this as any).defaultPrevented = true;
       }
     };
     return evt;
   };
 
   CustomEvent.prototype = window.Event.prototype;
-  window.CustomEvent = CustomEvent; // expose definition to window
-  window.Event = CustomEvent; // expose definition to window
+  (window as any).CustomEvent = CustomEvent; // expose definition to window
+  (window as any).Event = CustomEvent; // expose definition to window
 }

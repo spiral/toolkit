@@ -14,6 +14,8 @@ const config = {
       commonjs: '@spiral-toolkit/qrcode',
       root: 'SFQRCode',
     },
+    devtoolNamespace: 'SFQRCode',
+    // devtoolModuleFilenameTemplate: '@sf-qrcode://[namespace]/[resource-path]?[loaders]',
   },
 
   externals: {

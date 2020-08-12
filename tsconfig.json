@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
+    "inlineSources": true,
     "target": "es5",
     "incremental": true,
     "downlevelIteration": true,
     "declaration": true,
     "declarationMap": false,
-    "allowJs": true,
     "composite": true,
     "experimentalDecorators": true,
     "pretty": true,

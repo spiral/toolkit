@@ -14,6 +14,8 @@ const config = {
       commonjs: '@spiral-toolkit/core',
       root: 'sf',
     },
+    devtoolNamespace: 'SFCore',
+    // devtoolModuleFilenameTemplate: '@sf-core://[namespace]/[resource-path]?[loaders]',
   },
 };
 
