@@ -12,6 +12,7 @@ const config = {
 
   output: {
     ...baseConfig.output,
+    libraryExport: 'default',
     library: {
       amd: '@spiral-toolkit/toolkit',
       commonjs: '@spiral-toolkit/toolkit',

@@ -12,4 +12,4 @@ require('@spiral-toolkit/autocomplete');
 require('@spiral-toolkit/datagrid');
 require('@spiral-toolkit/qrcode');
 
-export = core;
+export default core;
