@@ -10,4 +10,4 @@ require('@spiral-toolkit/datepicker');
 require('@spiral-toolkit/form');
 require('@spiral-toolkit/datagrid');
 
-export default core;
+export = core;
