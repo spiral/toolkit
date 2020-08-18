@@ -44,5 +44,5 @@
 <use:element path="toolkit:form/tinymce" as="form:richtext"/>
 <use:element path="toolkit:form/tinymce" as="form:html"/>
 <use:element path="toolkit:form/tinymce" as="form:tinymce"/>
-<use:element path="toolkit:form/tinymce.cdn" as="form:use-tinymce"/>
-<use:element path="toolkit:form/tinymce.cdn" as="form:script-tinymce"/>
+<use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.use"/>
+<use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.script"/>

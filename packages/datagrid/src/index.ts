@@ -2,6 +2,7 @@ import sf from '@spiral-toolkit/core';
 import { ActionButton } from './actionbutton/ActionButton';
 import ActionPanel from './actionpanel/ActionPanel';
 import DataGrid from './datagrid/Datagrid';
+import { RefreshButton } from './refreshbutton/RefreshButton';
 import FilterToggle from './filter-toggle/FilterToggle';
 import Paginator from './paginator/Paginator';
 import { tools } from './tools';
@@ -21,6 +22,7 @@ Paginator.registerInSf();
 ActionButton.registerInSf();
 ActionPanel.registerInSf();
 FilterToggle.registerInSf();
+RefreshButton.registerInSf();
 
 export default {
   DataGrid,
