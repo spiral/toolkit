@@ -14,6 +14,11 @@
     "label": "Autocomplete",
     "path": "packages/autocomplete/dist"
   },
+  "tinymce": {
+    "descr": "Module for TinyMCE wrapper",
+    "label": "TinyMCE Wrapper",
+    "path": "packages/tinymce/dist"
+  },
   "qrcode": {
     "descr": "Module to generate QR codes, included in toolkit_full",
     "label": "QR code",
