@@ -39,3 +39,10 @@
 {{--other elements--}}
 <use:element path="toolkit:form/error-placeholder" as="form:error-placeholder"/>
 <use:element path="toolkit:form/label" as="form:label"/>
+
+{{--tinymce--}}
+<use:element path="toolkit:form/tinymce" as="form:richtext"/>
+<use:element path="toolkit:form/tinymce" as="form:html"/>
+<use:element path="toolkit:form/tinymce" as="form:tinymce"/>
+<use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.use"/>
+<use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.script"/>

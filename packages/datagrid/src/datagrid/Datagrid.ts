@@ -112,6 +112,25 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     if (this.allFormsAttached() && !this.state.isLoading) {
       this.request();
     }
+    this.bindReload();
+  }
+
+  private bindReload() {
+    this.reload = this.reload.bind(this);
+    document.addEventListener('datagrid:refresh', this.reload);
+  }
+
+  private unbindReload() {
+    document.removeEventListener('datagrid:refresh', this.reload);
+  }
+
+  private reload(e: Event) {
+    const event = e as CustomEvent;
+    if (event && event.detail && event.detail.gridId === this.options.id) {
+      if (this.allFormsAttached() && !this.state.isLoading) {
+        this.request();
+      }
+    }
   }
 
   private registerFormInstance(formInstance: any) {
@@ -662,6 +681,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
       }
     }
     return axiosResponse;
+  }
+
+  die() {
+    super.die();
+    this.unbindReload();
   }
 }
 
