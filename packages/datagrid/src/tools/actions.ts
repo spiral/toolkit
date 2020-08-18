@@ -153,7 +153,7 @@ export const actionsHelper = (actionsDeclaration: IActionDropdownDeclatations) =
         link.className = 'dropdown-item';
 
         if (action.type === 'href') {
-          link.setAttribute('target', action.target || '_blank');
+          link.setAttribute('target', action.target || '_self');
           link.innerHTML = action.template(item);
         } else {
           link.setAttribute('href', '');
