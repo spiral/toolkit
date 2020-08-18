@@ -5,3 +5,14 @@ export interface INCenterOptions {
   headerSelector: string,
   ws: false | ISFSocketConfig,
 }
+
+export interface INotification {
+  id: string;
+  title: string;
+  body: string;
+}
+
+export interface INotificationEvent {
+  type: string;
+  data: INotification;
+}
