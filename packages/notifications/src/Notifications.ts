@@ -1,6 +1,5 @@
 import sf, { IOptionToGrab, ISpiralFramework } from '@spiral-toolkit/core';
 import { SFSocket } from '@spiralscout/websockets';
-import { NamesDict } from '@spiralscout/websockets/lib/eventdispatcher/events';
 import { EVENT_NAME } from './constants';
 import { INCenterOptions, INotification, INotificationEvent } from './types';
 
@@ -42,7 +41,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
     };
     if (this.options.ws) {
       this.ws = new SFSocket(this.options.ws);
-      this.ws.subscribe(NamesDict.MESSAGE, (event) => {
+      this.ws.subscribe('message' as any, (event) => {
         try {
           const e = JSON.parse(event.data || '');
           if (isNotificationEvent(e)) {
