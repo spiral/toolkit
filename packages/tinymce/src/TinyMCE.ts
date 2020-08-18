@@ -35,17 +35,31 @@ export class TinyMCE extends sf.core.BaseDOMConstructor {
       ...this.options,
     };
     this.textarea = node.querySelector('textarea') as HTMLTextAreaElement;
-    this.tinyMCE = (window as any).tinymce;
-    if (!this.tinyMCE) {
+    let id = this.textarea.getAttribute('id');
+    if (!id) {
+      id = `sf-${Date.now()}${Math.floor(Math.random() * 1000)}`;
+      this.textarea.setAttribute('id', id);
+    }
+    const { tinymce } = (window as any);
+    if (!tinymce) {
       throw new Error('Please include tiny mce to head scripts');
     }
-    const tinyMCEOptions = { selector: this.textarea, ...this.options.options };
+    const tinyMCEOptions = { selector: `#${id}`, ...this.options.options };
     this.setExternalValue = this.setExternalValue.bind(this);
     (this.textarea as unknown as ICustomInput).sfSetValue = this.setExternalValue;
-    this.tinyMCE.init(tinyMCEOptions);
+    tinymce.init(tinyMCEOptions).then((editors: any[]) => {
+      // eslint-disable-next-line prefer-destructuring
+      this.tinyMCE = editors[0];
+    });
   }
 
   setExternalValue(value: string) {
     this.tinyMCE.setContent(value);
+  }
+
+  die() {
+    super.die();
+    const { tinymce } = (window as any);
+    tinymce.remove(this.tinyMCE);
   }
 }
