@@ -1,0 +1,46 @@
+{
+  "name": "@spiral-toolkit/notifications",
+  "version": "0.1.1",
+  "description": "Spiral Framework Notifications Center",
+  "main": "dist/notifications.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "npm run build:prod",
+    "build:prod": "cross-env NODE_ENV=production webpack",
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "watch": "cross-env NODE_ENV=development webpack --watch",
+    "clean": "rimraf /dist",
+    "prepublish": "npm run build",
+    "clean-after-deploy": "rimraf node_modules/",
+    "lint": "yarn lint:js",
+    "lint:fix": "yarn lint:js --fix",
+    "lint:js": "eslint \"src/**/*.ts\""
+  },
+  "repository": "https://github.com/spiral/toolkit/tree/master/packages/notifications",
+  "keywords": [
+    "qrcode",
+    "spiral",
+    "sf.js",
+    "sf"
+  ],
+  "author": {
+    "name": "Spiral Scout",
+    "email": "info@spiralscout.com",
+    "url": "http://spiralscout.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spiral/toolkit/issues"
+  },
+  "homepage": "https://github.com/spiral/toolkit#readme",
+  "peerDependencies": {
+    "@spiral-toolkit/core": "^0.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.1"
+  },
+  "dependencies": {
+    "@spiralscout/websockets": "^0.0.3"
+  }
+}

@@ -23,5 +23,10 @@
     "descr": "Module to generate QR codes, included in toolkit_full",
     "label": "QR code",
     "path": "packages/qrcode/dist"
+  },
+  "notifications": {
+    "descr": "Notifications Center for Keeper",
+    "label": "Notifications",
+    "path": "packages/notifications/dist"
   }
 }
