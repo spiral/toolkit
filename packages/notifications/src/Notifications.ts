@@ -27,6 +27,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       body: '.js-sf-notifications-body',
       counter: '.js-sf-notifications-count',
       mask: '.js-sf-notifications-mask',
+      btn: '.js-sf-notifications-button',
     },
     header: {
       toggle: '.js-sf-notifications-toggle',
@@ -53,7 +54,10 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
   private unreadCount: number = 0;
 
+  private selected: Set<string> = new Set<string>();
+
   private toastTemplate: (item: INotification) => string;
+
 
   constructor(ssf: ISpiralFramework, node: Element, options: INCenterOptions) {
     super();
@@ -69,6 +73,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
         container: document.querySelector(this.options.drawer.container) as HTMLElement,
         counter: document.querySelector(this.options.drawer.counter) as HTMLElement,
         mask: document.querySelector(this.options.drawer.mask) as HTMLElement,
+        btn: document.querySelector(this.options.drawer.btn) as HTMLElement,
       },
       header: {
         counter: document.querySelector(this.options.header.counter) as HTMLElement,
@@ -86,12 +91,30 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
   bindEvents() {
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.markSelection = this.markSelection.bind(this);
     this.ui.header.toggle.addEventListener('click', this.toggleDrawer);
     this.ui.drawer.mask.addEventListener('click', this.toggleDrawer);
+    this.ui.drawer.btn.addEventListener('click', this.markSelection);
   }
 
   unbindEvents() {
     this.ui.header.toggle.removeEventListener('click', this.toggleDrawer);
+  }
+
+  calcSelected() {
+    [...this.selected.values()].forEach((v) => {
+      if (!this.data.find((n) => n.id === v)) {
+        this.selected.delete(v);
+      }
+    });
+  }
+
+  updateButton() {
+    let text = 'Mark All As Read';
+    if (this.selected.size && this.selected.size < this.data.length) {
+      text = `Mark ${this.selected.size} As Read`;
+    }
+    this.ui.drawer.btn.innerHTML = text;
   }
 
   initWs() {
@@ -113,12 +136,17 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
   onNotification(n: INotification) {
     const existing = this.data.findIndex((val) => val.id === n.id);
+    if (n.icon) {
+      // eslint-disable-next-line no-param-reassign
+      n.title = `<i class="fas fa-${n.icon}"></i>&nbsp;${n.title}`;
+    }
     if (existing >= 0) {
       this.data[existing] = n;
     } else {
       this.data = [n, ...this.data].sort((val) => (val.date || 0));
     }
     this.unreadCount = this.data.filter((v) => !v.read).length;
+    this.calcSelected();
 
     const event = new CustomEvent('sf:notification-show', {
       bubbles: true,
@@ -143,6 +171,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       const { data } = axResp;
       this.unreadCount = data.unreadCount;
       this.data = data.data;
+      this.calcSelected();
       this.render();
     });
   }
@@ -151,7 +180,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
     return n ? sf.helpers.luxon.DateTime.fromJSDate(new Date(n)).toFormat('HH:mm yyyy-MM-dd') : '';
   }
 
-  renderNotitifation(not: INotification) {
+  renderNotitifation(not: INotification & { selected: boolean }) {
     const date = this.date(not.date);
     const item = this.toastTemplate({ ...not, date: date as any });
     const fr = document.createElement('div');
@@ -172,15 +201,25 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
     this.ui.drawer.body.innerHTML = '';
     this.data.forEach((not) => {
-      const el = this.renderNotitifation(not);
+      const el = this.renderNotitifation({ ...not, selected: this.selected.has(not.id) });
       this.ui.drawer.body.appendChild(el);
     });
+    this.updateButton();
   }
 
   bindToast(el: HTMLElement, not: INotification) {
     const closeBtn = el.querySelector('[data-dismiss]')!;
     closeBtn.addEventListener('click', () => {
       this.markAsRead(not, el);
+    });
+    const input: HTMLInputElement = el.querySelector('input') as HTMLInputElement;
+    input.addEventListener('change', () => {
+      if (input.checked) {
+        this.selected.add(not.id);
+      } else {
+        this.selected.delete(not.id);
+      }
+      this.updateButton();
     });
   }
 
@@ -197,6 +236,22 @@ export class Notifications extends sf.core.BaseDOMConstructor {
     sf.ajax.send({
       method: 'POST',
       data: { id: not.id },
+      url: this.options.api.setAsRead,
+    }).then(() => {
+      this.render();
+    }).catch(() => {
+      this.reload();
+    });
+  }
+
+  markSelection() {
+    let ids = this.data.map((v) => v.id);
+    if (this.selected.size && this.selected.size < ids.length) {
+      ids = [...this.selected.values()];
+    }
+    sf.ajax.send({
+      method: 'POST',
+      data: { id: ids },
       url: this.options.api.setAsRead,
     }).then(() => {
       this.render();
