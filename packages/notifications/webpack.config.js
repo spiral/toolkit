@@ -4,17 +4,17 @@ const config = {
   ...baseConfig,
 
   entry: {
-    qrcode: ['./src/index.ts'],
+    notifications: ['./src/index.ts'],
   },
 
   output: {
     ...baseConfig.output,
     library: {
-      amd: '@spiral-toolkit/qrcode',
-      commonjs: '@spiral-toolkit/qrcode',
-      root: 'SFQRCode',
+      amd: '@spiral-toolkit/notifications',
+      commonjs: '@spiral-toolkit/notifications',
+      root: 'SFNotifications',
     },
-    devtoolNamespace: 'SFQRCode',
+    devtoolNamespace: 'SFNotifications',
     // devtoolModuleFilenameTemplate: '@sf-qrcode://[namespace]/[resource-path]?[loaders]',
   },
 
