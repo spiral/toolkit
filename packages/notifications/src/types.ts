@@ -33,6 +33,7 @@ export interface INCenterUiElements {
 
 export interface INotification {
   id: string;
+  icon?: string;
   date: number;
   read: boolean;
   title: string;

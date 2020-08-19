@@ -113,6 +113,10 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
   onNotification(n: INotification) {
     const existing = this.data.findIndex((val) => val.id === n.id);
+    if (n.icon) {
+      // eslint-disable-next-line no-param-reassign
+      n.title = `<i class="fas fa-icon"></i>&nbsp;${n.title}`;
+    }
     if (existing >= 0) {
       this.data[existing] = n;
     } else {

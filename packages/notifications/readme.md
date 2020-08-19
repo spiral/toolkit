@@ -37,6 +37,8 @@ Getting notifications list. Default URL is `/api/notifications`.
 
 Return object like so. Date should be JavaScript timestamp
 
+Notes: 'read' should be `false` for item to be displayed, 'icon' is optional, if specified, a FontAwesome icon snippet will be prepended to title automatically.
+
 ```php
 return [
             'status' => HttpStatus::OK,
@@ -46,6 +48,7 @@ return [
                     'title' => 'Report ready',
                     'body' => 'Click <a href="/keeper/me">here</a> to download',
                     'read' => false,
+                    'icon' => 'download',
                     'date' => 1597828433980,
                     'id' => '1'
                 ],
