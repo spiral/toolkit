@@ -6,6 +6,7 @@ export interface INCenterOptions {
     body: string,
     counter: string,
     mask: string,
+    btn: string,
   },
   header: {
     toggle: string,
@@ -24,6 +25,7 @@ export interface INCenterUiElements {
     body: HTMLElement,
     counter: HTMLElement,
     mask: HTMLElement,
+    btn: HTMLElement,
   },
   header: {
     toggle: HTMLElement,

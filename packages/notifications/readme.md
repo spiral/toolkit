@@ -77,7 +77,7 @@ return [
         ];
 ```
 
-Removing notification. Default URL is `/api/notifications/read` that will be used with POST request with 'id' as id of notification.
+Removing notification. Default URL is `/api/notifications/read` that will be used with POST request with 'id' as single or array of ids of notifications.
 
 
 
