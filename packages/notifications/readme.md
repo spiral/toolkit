@@ -79,6 +79,8 @@ return [
 
 Removing notification. Default URL is `/api/notifications/read` that will be used with POST request with 'id' as single or array of ids of notifications.
 
+Response from removing notification is expected to match list response, i.e. to have actual notification list and unread counter
+
 
 
 (Optional) Implement WS interface. WebSocket client accepts message with custom body. Configure in tag like so (see docs here     https://github.com/spiral/websocket-client#sfsocket-constructor-options )
