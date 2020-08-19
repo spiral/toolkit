@@ -56,7 +56,7 @@ export default class NotificationCenter {
 
   handleShowNotification(event) {
     const {
-      message, type, position, timeout,
+      message, type, position, timeout, onClick,
     } = event.detail;
 
     const elem = createNotificationElem(message, type);
@@ -68,6 +68,15 @@ export default class NotificationCenter {
       setTimeout(() => {
         notification.close();
       }, +timeout);
+    }
+
+    if (onClick) {
+      elem.addEventListener('click', (e) => {
+        if (e.target.tagName.toLowerCase() !== 'a') {
+          onClick();
+          notification.close();
+        }
+      });
     }
   }
 
