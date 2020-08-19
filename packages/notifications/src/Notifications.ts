@@ -169,11 +169,15 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       url: this.options.api.getList,
     }).then((axResp) => {
       const { data } = axResp;
-      this.unreadCount = data.unreadCount;
-      this.data = data.data;
-      this.calcSelected();
-      this.render();
+      this.handleResponse(data);
     });
+  }
+
+  handleResponse(data: any) {
+    this.unreadCount = data.unreadCount || this.unreadCount;
+    this.data = data.data || this.data;
+    this.calcSelected();
+    this.render();
   }
 
   date(n: number) {
@@ -237,8 +241,9 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       method: 'POST',
       data: { id: not.id },
       url: this.options.api.setAsRead,
-    }).then(() => {
-      this.render();
+    }).then((axResp) => {
+      const { data } = axResp;
+      this.handleResponse(data);
     }).catch(() => {
       this.reload();
     });
@@ -253,8 +258,9 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       method: 'POST',
       data: { id: ids },
       url: this.options.api.setAsRead,
-    }).then(() => {
-      this.render();
+    }).then((axResp) => {
+      const { data } = axResp;
+      this.handleResponse(data);
     }).catch(() => {
       this.reload();
     });
