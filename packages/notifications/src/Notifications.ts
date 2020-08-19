@@ -254,7 +254,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
       data: { id: ids },
       url: this.options.api.setAsRead,
     }).then(() => {
-      this.render();
+      this.reload();
     }).catch(() => {
       this.reload();
     });
