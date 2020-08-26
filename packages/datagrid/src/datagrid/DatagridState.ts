@@ -134,7 +134,7 @@ export class DatagridState<Item = any> {
     this.state.urlData = data;
   }
 
-  updatePaginator(params: IPaginatorParams & {error?: any, count?: any}) {
+  updatePaginator(params: IPaginatorParams & IPaginatorRest) {
     this.state.paginator = {
       ...this.state.paginator,
       ...params,
