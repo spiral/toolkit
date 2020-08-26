@@ -195,7 +195,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           page: this.state.page,
           limit: this.state.limit,
           from: (this.state.page! - 1) * this.state.limit! + 1,
-          to: this.state.page! * this.state.limit!,
+          to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
         });
       } else {
         counterDiv.innerHTML = this.messages.getMessage('currentPageNoTotal', {
@@ -203,7 +203,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           page: this.state.page,
           limit: this.state.limit,
           from: (this.state.page! - 1) * this.state.limit! + 1,
-          to: this.state.page! * this.state.limit!,
+          to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
         });
       }
     }
@@ -213,7 +213,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         page: this.state.page,
         limit: this.state.limit,
         from: (this.state.page! - 1) * this.state.limit! + 1,
-        to: this.state.page! * this.state.limit!,
+        to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
       });
     }
 
