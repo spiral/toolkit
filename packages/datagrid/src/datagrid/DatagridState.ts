@@ -1,11 +1,11 @@
 import { DEFAULT_LIMIT, SortDirection } from '../constants';
 import type { Datagrid } from './Datagrid';
-import { IPaginatorParams } from '../types';
+import { IPaginatorParams, IPaginatorRest } from '../types';
 
 export class DatagridState<Item = any> {
   private state: {
     loading: boolean,
-    paginator: IPaginatorParams,
+    paginator: IPaginatorParams & IPaginatorRest,
     sortBy?: string,
     sortDir: SortDirection,
     data: Array<Item>,
@@ -135,10 +135,9 @@ export class DatagridState<Item = any> {
   }
 
   updatePaginator(params: IPaginatorParams & {error?: any, count?: any}) {
-    const { error, count, ...rest } = params; // Clean up internal paginator variables, TODO: better way
     this.state.paginator = {
       ...this.state.paginator,
-      ...rest,
+      ...params,
     };
   }
 

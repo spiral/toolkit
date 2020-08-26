@@ -301,10 +301,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   private formRequest() {
+    const { error, count, ...rest } = this.state.paginate;
     const request: IDatagridRequest = {
       fetchCount: this.state.needFetchCount,
       filter: this.state.getFilter(),
-      paginate: this.state.paginate,
+      paginate: rest,
       sort: this.state.sortBy ? { [this.state.sortBy]: this.state.sortDir } : {},
     };
 
