@@ -171,6 +171,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
 
   setLimit(limit: number) {
     this.state.limit = limit;
+    this.state.page = 1;
     if (this.options.onPageChange) {
       this.options.onPageChange(this.state);
     }
@@ -195,7 +196,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           page: this.state.page,
           limit: this.state.limit,
           from: (this.state.page! - 1) * this.state.limit! + 1,
-          to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
+          to: Math.min(this.state.page! * this.state.limit!, this.state.count || (this.state.page! * this.state.limit!)),
         });
       } else {
         counterDiv.innerHTML = this.messages.getMessage('currentPageNoTotal', {
@@ -203,7 +204,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
           page: this.state.page,
           limit: this.state.limit,
           from: (this.state.page! - 1) * this.state.limit! + 1,
-          to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
+          to: this.state.page! * this.state.limit!,
         });
       }
     }
@@ -213,7 +214,7 @@ export class Paginator extends sf.core.BaseDOMConstructor {
         page: this.state.page,
         limit: this.state.limit,
         from: (this.state.page! - 1) * this.state.limit! + 1,
-        to: Math.max(this.state.page! * this.state.limit!, this.state.count || 0),
+        to: Math.min(this.state.page! * this.state.limit!, this.state.count || (this.state.page! * this.state.limit!)),
       });
     }
 
