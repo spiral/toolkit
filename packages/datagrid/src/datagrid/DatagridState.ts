@@ -11,7 +11,7 @@ export class DatagridState<Item = any> {
     data: Array<Item>,
     error?: string;
     errors?: { [field: string]: string };
-    formData: {[formId: string]: { [field: string]: any }};
+    formData: { [formId: string]: { [field: string]: any } };
     urlData?: { [field: string]: any };
     defaultData: { [field: string]: any };
     selection: Set<string>;
@@ -134,10 +134,11 @@ export class DatagridState<Item = any> {
     this.state.urlData = data;
   }
 
-  updatePaginator(params: IPaginatorParams) {
+  updatePaginator(params: IPaginatorParams & {error?: any, count?: any}) {
+    const { error, count, ...rest } = params; // Clean up internal paginator variables, TODO: better way
     this.state.paginator = {
       ...this.state.paginator,
-      ...params,
+      ...rest,
     };
   }
 
