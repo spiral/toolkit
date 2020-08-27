@@ -50,7 +50,7 @@ export class Lock extends sf.core.BaseDOMConstructor {
     ...types,
   };
 
-  public options: IOptions = {...Lock.defaultOptions};
+  public options: IOptions = { ...Lock.defaultOptions };
 
   public readonly name = Lock.spiralFrameworkName;
 

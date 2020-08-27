@@ -350,6 +350,11 @@ export interface IPaginatorParams {
   cid?: string;
 }
 
+export interface IPaginatorRest {
+  count?: number,
+  error?: boolean
+}
+
 export interface IDatagridRequest {
   fetchCount: boolean;
   paginate: IPaginatorParams,

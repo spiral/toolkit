@@ -148,9 +148,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
 
       // eslint-disable-next-line
       formInstance.options.jsonOnly = true;
-
+      let data = {};
       if (formInstance.getFormData) {
-        const data = formInstance.getFormData();
+        // Capture default form data
+        data = formInstance.getFormData();
         this.state.mergeDefaultData(data);
         this.state.setFormData(id, data);
       }
@@ -176,7 +177,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
           .filter((k) => fields.indexOf(k) >= 0)
           .reduce((map, key) => ({ ...map, [key]: urlDataForForm[key] }), {});
         formInstance.setFieldValues(formSpecificData);
-        this.state.setFormData(id, formSpecificData);
+        this.state.setFormData(id, { ...data, ...formSpecificData });
       }
 
       this.options.captureForms = this.options.captureForms.filter((f) => f !== formInstance.options.url);
@@ -300,10 +301,11 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   private formRequest() {
+    const { error, count, ...rest } = this.state.paginate;
     const request: IDatagridRequest = {
       fetchCount: this.state.needFetchCount,
       filter: this.state.getFilter(),
-      paginate: this.state.paginate,
+      paginate: rest,
       sort: this.state.sortBy ? { [this.state.sortBy]: this.state.sortDir } : {},
     };
 

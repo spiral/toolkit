@@ -1,17 +1,17 @@
 import { DEFAULT_LIMIT, SortDirection } from '../constants';
 import type { Datagrid } from './Datagrid';
-import { IPaginatorParams } from '../types';
+import { IPaginatorParams, IPaginatorRest } from '../types';
 
 export class DatagridState<Item = any> {
   private state: {
     loading: boolean,
-    paginator: IPaginatorParams,
+    paginator: IPaginatorParams & IPaginatorRest,
     sortBy?: string,
     sortDir: SortDirection,
     data: Array<Item>,
     error?: string;
     errors?: { [field: string]: string };
-    formData: {[formId: string]: { [field: string]: any }};
+    formData: { [formId: string]: { [field: string]: any } };
     urlData?: { [field: string]: any };
     defaultData: { [field: string]: any };
     selection: Set<string>;
@@ -134,7 +134,7 @@ export class DatagridState<Item = any> {
     this.state.urlData = data;
   }
 
-  updatePaginator(params: IPaginatorParams) {
+  updatePaginator(params: IPaginatorParams & IPaginatorRest) {
     this.state.paginator = {
       ...this.state.paginator,
       ...params,

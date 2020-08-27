@@ -180,6 +180,7 @@ export class Notifications extends sf.core.BaseDOMConstructor {
     this.render();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   date(n: number) {
     return n ? sf.helpers.luxon.DateTime.fromJSDate(new Date(n)).toFormat('HH:mm yyyy-MM-dd') : '';
   }
