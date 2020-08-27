@@ -15,7 +15,7 @@
 
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js --fix",
-    "lint:js": "eslint \"src/**/*.js\""
+    "lint:js": "eslint \"src/**/*.ts\""
   },
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/locker",
   "keywords": [
