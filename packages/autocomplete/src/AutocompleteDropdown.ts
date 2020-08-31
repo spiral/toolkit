@@ -8,6 +8,8 @@ export class AutocompleteDropdown {
 
   items: HTMLDivElement[] = [];
 
+  loadingElem?: HTMLDivElement;
+
   data?: IAutocompleteData;
 
   selectedIndex: number;
@@ -27,7 +29,27 @@ export class AutocompleteDropdown {
     this.selectedIndex = -1;
 
     this.isDisabled = this.options.isDisabled;
+
+    this.prependLoadingElem();
     this.isLoading = false;
+  }
+
+  prependLoadingElem() {
+    const elem = document.createElement('div');
+    elem.classList.add('dropdown-item');
+    elem.innerHTML = this.options.loadingTemplate || '<span class="sf-autocomplete__loader">Loading...</span>';
+    elem.style.display = 'none';
+
+    this.node.insertBefore(elem, this.node.firstChild);
+    this.loadingElem = elem;
+  }
+
+  appendNoResults() {
+    const elem = document.createElement('div');
+    elem.classList.add('dropdown-item');
+    elem.innerHTML = '<span class="sf-autocomplete__noresults">No results</span>';
+
+    this.node.appendChild(elem);
   }
 
   public show() {
@@ -49,6 +71,8 @@ export class AutocompleteDropdown {
     this.node.parentNode!.replaceChild(clone, this.node);
     this.node = clone as HTMLDivElement;
     // this.node.innerHTML = '';
+
+    this.prependLoadingElem();
   }
 
   public enable() {
@@ -59,31 +83,28 @@ export class AutocompleteDropdown {
     this.isDisabled = true;
   }
 
-  public setLoading(template?: string) {
+  toggleLoading(isLoading: boolean) {
     if (this.isDisabled) return;
+    if (this.isLoading === isLoading) return;
 
-    if (this.isLoading) {
-      this.show();
-      return;
-    }
+    this.isLoading = isLoading;
 
-    this.isLoading = true;
-
-    this.node.insertAdjacentHTML(
-      'afterbegin',
-      `<div class="dropdown-item">${template || '<span class="sf-autocomplete__loader">Loading...</span>'}</div>`,
-    );
-    this.show();
+    if (this.loadingElem) this.loadingElem.style.display = isLoading ? 'block' : 'none';
   }
 
   public setData(data: IAutocompleteData) {
     this.data = data;
 
-    this.isLoading = false;
+    // this.toggleLoading(false);
 
     this.clear();
 
     this.render();
+  }
+
+  public setNoResults() {
+    this.clear();
+    this.appendNoResults();
   }
 
   public suggest(query: string) {
