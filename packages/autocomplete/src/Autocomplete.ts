@@ -112,6 +112,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     assert.ok(node.querySelector(`input[${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
 
     this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!;
+    this.textInput.setAttribute('autocomplete', `please-no-${Date.now()}`);
+    this.textInput.removeAttribute('readonly');
     this.textInputWrapper = (node.querySelector('div[data-sf="autocomplete-input-wrapper"]') as HTMLDivElement)!;
     this.hiddenInput = (node.querySelector(`input[${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
@@ -179,12 +181,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       loadingTemplate,
     } = this.options;
 
-    this.options.suggestTemplate = suggestTemplate || `{{${searchKey}}}`;
-    this.options.inputTemplate = inputTemplate || `{{{${searchKey}}}}`;
-
-    this.suggestTemplate = sf.helpers.template.compile(this.options.suggestTemplate);
-    this.inputTemplate = sf.helpers.template.compile(this.options.inputTemplate);
-
+    this.suggestTemplate = sf.helpers.template.compile(suggestTemplate || `{{${searchKey}}}`);
+    this.inputTemplate = sf.helpers.template.compile(inputTemplate || `{{{${searchKey}}}}`);
     this.loadingTemplate = loadingTemplate;
   }
 
@@ -195,6 +193,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       isDisabled: this.isDisabled,
       suggestTemplate: this.suggestTemplate!,
       inputTemplate: this.inputTemplate!,
+      loadingTemplate: this.loadingTemplate,
       onSelectItem: this.handleSelectDropdownItem,
       onBlur: this.handleBlurDropdown,
     });
@@ -267,7 +266,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       return;
     }
 
-    this.dropdown!.setLoading(this.loadingTemplate);
+    this.dropdown!.show();
+    this.dropdown!.toggleLoading(true);
     this.dataSource.getData(value);
   }
 
@@ -285,9 +285,16 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleSuccessDataSourceResponse(search: string, suggestions: IAutocompleteData) {
+    this.dropdown!.toggleLoading(false);
+
     if (!suggestions.length) {
-      // TODO: show 'no entries found' ?
-      this.dropdown!.hide();
+      if (!this.options.preserveId) {
+        this.clearSuggestions();
+        this.clearDataItem();
+        this.dropdown!.setNoResults();
+      } else {
+        this.dropdown!.hide();
+      }
       return;
     }
 
@@ -298,12 +305,14 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   @autobind
   handleErrorDataSourceResponse(/* search: string */) {
-    // TODO
+    // TODO: show error
+    this.dropdown!.toggleLoading(false);
     this.dropdown!.hide();
   }
 
   @autobind
   handleRestoreDataItem(dataItems: IAutocompleteDataItem[]) {
+    this.dropdown!.toggleLoading(false);
     // this.clearSuggestions();
 
     if (!dataItems || !dataItems.length) {
@@ -432,6 +441,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     // this.clearSuggestions();
 
     if (!value) {
+      this.clearSuggestions();
       this.dropdown!.hide();
       this.clearDataItem();
       return;
@@ -500,7 +510,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       if (this.dropdown!.hide()) {
         if (!this.options.isMultiple) {
           // only for single value
-          this.resetDataItem();
+          if (this.options.preserveId) {
+            this.resetDataItem();
+          }
         }
       }
     }

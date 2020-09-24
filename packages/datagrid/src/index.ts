@@ -31,3 +31,6 @@ export default {
   ActionButton,
   FilterToggle,
 };
+
+// Includes version and time in bundle
+export const version = `Version ${process.env.VERSION}, built at ${process.env.BUILD_TIME}`

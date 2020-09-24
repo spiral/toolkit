@@ -23,7 +23,8 @@
         type="text"
         placeholder="${placeholder}"
         @if(injected('disabled'))disabled@endif
-        autocomplete="no"
+        autocomplete="off"
+        readonly
         data-sf="autocomplete-input"
       >
     </div>

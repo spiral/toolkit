@@ -18,6 +18,8 @@ export class AutocompleteDataSource {
 
   isDynamic: boolean;
 
+  lastSearchKeyword?: string;
+
   constructor(options: IAutocompleteDataSourceOptions) {
     this.options = options;
 
@@ -99,8 +101,22 @@ export class AutocompleteDataSource {
     this.options.onRestoreDataItem(sortedResults);
   }
 
+  handleSuccessResponse(search: string, results: IAutocompleteData) {
+    if (this.lastSearchKeyword !== search) return; // old request
+
+    this.options.onSuccessResponse(search, results);
+  }
+
+  handleErrorResponse(search: string) {
+    if (this.lastSearchKeyword !== search) return; // old request
+
+    this.options.onErrorResponse(search);
+  }
+
   getResultsFromData(search: string) {
     const searchLC = search.toLocaleLowerCase();
+
+    this.lastSearchKeyword = search;
 
     const results: IAutocompleteData = [];
 
@@ -120,11 +136,13 @@ export class AutocompleteDataSource {
       }
     });
 
-    this.options.onSuccessResponse(search, results);
+    this.handleSuccessResponse(search, results);
   }
 
   getResultsByURL(search: string) {
     const { valueKey } = this.options;
+
+    this.lastSearchKeyword = search;
 
     sf.ajax
       .send(this.getRequestParams({ paginate: { limit: LIMIT }, filter: { search } }))
@@ -138,10 +156,10 @@ export class AutocompleteDataSource {
           }))
           .slice(0, LIMIT);
 
-        this.options.onSuccessResponse(search, results);
+        this.handleSuccessResponse(search, results);
       })
       .catch(() => {
-        this.options.onErrorResponse(search);
+        this.handleErrorResponse(search);
       });
   }
 

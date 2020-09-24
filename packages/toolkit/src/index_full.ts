@@ -12,4 +12,7 @@ require('@spiral-toolkit/autocomplete');
 require('@spiral-toolkit/datagrid');
 require('@spiral-toolkit/qrcode');
 
+// Includes version and time in bundle
+export const version = `Version ${process.env.VERSION}, built at ${process.env.BUILD_TIME}`
+
 export default core;

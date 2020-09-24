@@ -47,6 +47,7 @@ export interface IAutocompleteDropdownOptions {
   isDisabled: boolean;
   inputTemplate: Function;
   suggestTemplate: Function;
+  loadingTemplate?: string;
   onSelectItem: (dataItem: IAutocompleteDataItem, isSave?: boolean) => void;
   onBlur: () => void;
 }
