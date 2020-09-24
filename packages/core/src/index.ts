@@ -8,6 +8,9 @@ import * as constants from './constants';
 
 const options = { instances: {} };
 
+// Includes version and time in bundle
+export const version = `Version ${process.env.VERSION}, built at ${process.env.BUILD_TIME}`;
+
 const sfWrapper: Partial<ISpiralFramework> = {
   core,
   helpers,
@@ -15,6 +18,7 @@ const sfWrapper: Partial<ISpiralFramework> = {
   constants,
   tools,
   options,
+  version,
 };
 
 

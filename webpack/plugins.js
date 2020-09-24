@@ -14,6 +14,8 @@ const webpack = require('webpack');
 
 const basePlugins = [
   new webpack.DefinePlugin({
+    'process.env.VERSION': JSON.stringify(require('../package.json').version),
+    'process.env.BUILD_TIME': JSON.stringify((new Date()).toString()),
     __DEV__: process.env.NODE_ENV !== 'production',
     __TEST__: JSON.stringify(process.env.TEST || false),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

@@ -70,7 +70,8 @@ export interface ISpiralFramework extends IInstancesController {
   closest: typeof domTools.closest;
   resolveKeyPath: typeof tools.resolveKeyPath;
   domMutation: any;
-  options: { instances: { [id: string]: any } }
+  options: { instances: { [id: string]: any } },
+  version: string,
 }
 
 export interface IOptionToGrab {
