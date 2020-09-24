@@ -112,6 +112,8 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
     assert.ok(node.querySelector(`input[${CUSTOM_INPUT_TARGET_ATTR}]`), 'Node has input to serialize values');
 
     this.textInput = (node.querySelector('input[data-sf="autocomplete-input"]') as HTMLInputElement)!;
+    this.textInput.setAttribute('autocomplete', `please-no-${Date.now()}`);
+    this.textInput.removeAttribute('readonly');
     this.textInputWrapper = (node.querySelector('div[data-sf="autocomplete-input-wrapper"]') as HTMLDivElement)!;
     this.hiddenInput = (node.querySelector(`input[${CUSTOM_INPUT_TARGET_ATTR}]`) as HTMLInputElement)!;
 
