@@ -18,6 +18,7 @@ export class Ajax {
 
   send<ResponseData = any>(options: {
     data?: any,
+    params?: any,
     method: 'GET' | 'POST' | 'PATCH' | 'get' | 'post' | 'patch' | 'PUT' | 'put' | 'DELETE' | 'delete',
     headers?: { [key: string]: string },
     url: string,
@@ -51,14 +52,6 @@ export class Ajax {
       // `headers` are custom headers to be sent
       headers: options.headers,
 
-      // `data` is the data to be sent as the request body
-      // Only applicable for request methods 'PUT', 'POST', and 'PATCH'
-      // When no `transformRequest` is set, must be of one of the following types:
-      // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
-      // - Browser only: FormData, File, Blob
-      // - Node only: Stream, Buffer
-      data: options.data,
-
       // `onUploadProgress` allows handling of progress events for uploads
       onUploadProgress: (progressEvent: ProgressEvent) => {
         if (options.onProgress) {
@@ -69,7 +62,15 @@ export class Ajax {
       // `cancelToken` specifies a cancel token that can be used to cancel the request
       // (see Cancellation section below for details)
       cancelToken: cancelSource.token,
+      data: options.data,
+      params: options.params,
     };
+
+    if (config.method.toLowerCase() === 'get') {
+      config.params = { ...options.data, ...options.params };
+    } else {
+      config.data = options.data;
+    }
 
     this.cancel = cancelSource.cancel;
 
