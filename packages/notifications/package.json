@@ -1,6 +1,7 @@
 {
   "name": "@spiral-toolkit/notifications",
-  "version": "0.1.1",
+  "version": "1.1.55",
+  "files": ["dist", "src"],
   "description": "Spiral Framework Notifications Center",
   "main": "dist/notifications.js",
   "types": "dist/index.d.ts",
@@ -35,7 +36,7 @@
   },
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
-    "@spiral-toolkit/core": "^0.3.6"
+    "@spiral-toolkit/core": "1.1.55"
   },
   "devDependencies": {
     "@types/node": "^13.11.1"

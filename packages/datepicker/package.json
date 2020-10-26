@@ -1,9 +1,10 @@
 {
   "name": "@spiral-toolkit/datepicker",
-  "version": "0.3.7",
+  "version": "1.1.55",
   "description": "Spiral Scout Frontend Framework",
   "main": "dist/datepicker.js",
   "types": "dist/index.d.ts",
+  "files": ["src", "dist"],
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
   "scripts": {
     "prebuild": "npm run clean",
@@ -29,7 +30,7 @@
   },
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
-    "@spiral-toolkit/core": "^0.3.6"
+    "@spiral-toolkit/core": "1.1.55"
   },
   "devDependencies": {},
   "dependencies": {

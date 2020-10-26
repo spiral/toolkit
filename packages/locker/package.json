@@ -1,8 +1,9 @@
 {
   "name": "@spiral-toolkit/locker",
-  "version": "0.1.1",
+  "version": "1.1.55",
   "description": "Spiral Framework Locker",
   "main": "dist/locker.js",
+  "files": ["dist", "src"],
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm run build:prod",
@@ -35,7 +36,7 @@
   },
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
-    "@spiral-toolkit/core": "^0.3.6"
+    "@spiral-toolkit/core": "1.1.55"
   },
   "devDependencies": {}
 }

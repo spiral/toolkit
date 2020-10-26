@@ -1,9 +1,12 @@
 {
   "name": "@spiral-toolkit/keeper",
-  "version": "0.1.1",
-  "private": true,
+  "version": "1.1.55",
   "description": "",
   "main": "dist/keeper.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "clean": "rimraf \"./dist\"",
     "prebuild": "yarn clean",
