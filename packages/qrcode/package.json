@@ -1,7 +1,10 @@
 {
   "name": "@spiral-toolkit/qrcode",
-  "version": "1.1.55",
-  "files": ["dist", "src"],
+  "version": "1.1.56",
+  "files": [
+    "dist",
+    "src"
+  ],
   "description": "Spiral Framework QRCode",
   "main": "dist/qrcode.js",
   "types": "dist/index.d.ts",

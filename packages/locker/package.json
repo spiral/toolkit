@@ -1,9 +1,12 @@
 {
   "name": "@spiral-toolkit/locker",
-  "version": "1.1.55",
+  "version": "1.1.56",
   "description": "Spiral Framework Locker",
   "main": "dist/locker.js",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm run build:prod",
@@ -13,7 +16,6 @@
     "clean": "rimraf /dist",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",
-
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js --fix",
     "lint:js": "eslint \"src/**/*.ts\""
@@ -37,6 +39,5 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
     "@spiral-toolkit/core": "1.1.55"
-  },
-  "devDependencies": {}
+  }
 }
