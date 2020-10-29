@@ -70,7 +70,7 @@ export class AutocompleteDataSource {
     const { valueKey } = this.options;
 
     sf.ajax
-      .send(this.getRequestParams({ paginate: { limit: 1 }, filter: { [valueKey]: values } }))
+      .send(this.getRequestParams({ paginate: { limit: values.length }, filter: { [valueKey]: values } }))
       .then((response: AxiosResponse<any>) => {
         const rawData = response.data[this.options.dataField || 'data'];
 
@@ -79,7 +79,7 @@ export class AutocompleteDataSource {
             ...item,
             [valueKey]: item[valueKey].toString(),
           }))
-          .slice(0, 1);
+          .slice(0, values.length);
 
         this.handleRestoreSuccess(values, results);
       })
@@ -96,7 +96,16 @@ export class AutocompleteDataSource {
       hash[getValue(dataItem, valueKey)] = dataItem;
     });
 
-    const sortedResults: IAutocompleteDataItem[] = values.map((value: string) => hash[value]);
+    const sortedResults: IAutocompleteDataItem[] = values.map(
+      (value: string) => {
+        if (!hash[value]) {
+          console.warn('Could not recover autocomplete element with id ', value);
+        }
+        return hash[value];
+      },
+    ).filter(
+      (v) => !!v,
+    );
 
     this.options.onRestoreDataItem(sortedResults);
   }
