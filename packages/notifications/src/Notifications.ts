@@ -119,18 +119,24 @@ export class Notifications extends sf.core.BaseDOMConstructor {
 
   initWs() {
     if (this.options.ws) {
-      this.ws = new SFSocket(this.options.ws);
-      this.ws.subscribe('message' as any, (event) => {
-        try {
-          const e = JSON.parse(event.data || '');
-          if (isNotificationEvent(e)) {
-            const { data } = e;
-            this.onNotification(data);
+      if (typeof (this.options.ws) === 'string') {
+        this.ws = (window as any)[this.options.ws] as SFSocket;
+      } else {
+        this.ws = new SFSocket(this.options.ws);
+      }
+      if (this.ws) {
+        this.ws.subscribe('message' as any, (event) => {
+          try {
+            const e = JSON.parse(event.data || '');
+            if (isNotificationEvent(e)) {
+              const { data } = e;
+              this.onNotification(data);
+            }
+            // eslint-disable-next-line no-empty
+          } catch (ex) {
           }
-          // eslint-disable-next-line no-empty
-        } catch (ex) {
-        }
-      });
+        });
+      }
     }
   }
 
