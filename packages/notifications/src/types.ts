@@ -16,7 +16,7 @@ export interface INCenterOptions {
     getList: string,
     setAsRead: string,
   },
-  ws: false | ISFSocketConfig,
+  ws: false | ISFSocketConfig | string,
 }
 
 export interface INCenterUiElements {
