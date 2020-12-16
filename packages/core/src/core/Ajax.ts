@@ -21,9 +21,10 @@ export class Ajax {
     params?: any,
     method: 'GET' | 'POST' | 'PATCH' | 'get' | 'post' | 'patch' | 'PUT' | 'put' | 'DELETE' | 'delete',
     headers?: { [key: string]: string },
+    rawHeaders?: { [key: string]: string },
     url: string,
     onProgress?: (total: number, progress: number) => any,
-    response?: any
+    response?: AxiosResponse<ResponseData>
   }) {
     // TODO why we check here if data === null then reassign to null again?
     if (options.data === null || options.data === undefined || options.data === 'undefined') {
@@ -50,7 +51,7 @@ export class Ajax {
       method: options.method,
 
       // `headers` are custom headers to be sent
-      headers: options.headers,
+      headers: options.rawHeaders || options.headers,
 
       // `onUploadProgress` allows handling of progress events for uploads
       onUploadProgress: (progressEvent: ProgressEvent) => {
