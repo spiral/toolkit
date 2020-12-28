@@ -6,6 +6,7 @@ import { actionsHelper } from './actions';
 const { assert } = sf.helpers;
 
 export const REGISTER_CMD_NAME = 'register';
+export const GLOBAL_NAME_TO_IMPORT = 'SFToolkit_tools_datagrid';
 
 export type RenderFuncGenerator = (...data: any[]) => CellRenderFunction;
 export type RegisterFunction = (toolName: string, func: RenderFuncGenerator) => void;
@@ -72,6 +73,20 @@ export const tools: {
   }),
   serialize: () => (value: string, item: any) => JSON.stringify(item),
 };
+
+if ((window as any)[GLOBAL_NAME_TO_IMPORT]) {
+  const toolsToImport = (window as any)[GLOBAL_NAME_TO_IMPORT] as {[key: string]: RenderFuncGenerator};
+  Object.keys(toolsToImport).forEach((fnKey:string) => {
+    const fn = toolsToImport[fnKey];
+    if (typeof fn === 'function') {
+      try {
+        tools.register(fnKey, fn);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  });
+}
 
 export function isRenderFuncGenerator(func: RenderFuncGenerator | RegisterFunction): func is RenderFuncGenerator {
   return func !== tools.register;

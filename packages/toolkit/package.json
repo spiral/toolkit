@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/toolkit",
-  "version": "1.1.58",
+  "version": "1.1.59",
   "description": "Compilation of SF-JS scripts for forms and inputs",
   "main": "dist/toolkit.js",
   "files": [
