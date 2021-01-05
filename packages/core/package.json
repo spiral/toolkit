@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "assert": "^2.0.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "handlebars": "^4.7.6",
     "luxon": "^1.23.0",
     "query-string": "^6.12.0"
