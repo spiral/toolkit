@@ -44,19 +44,35 @@ export const tools: {
     return ((value: string, item: any) => compiled(item));
   },
   link: ({
-    href, title, body, className,
-  }: { href: string, body?: string, title?: string, className?: string }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
+    href,
+    title,
+    body,
+    className,
+    target,
+    omitEmptyHref,
+  }: {
+    href: string,
+    body?: string,
+    title?: string,
+    className?: string,
+    target?: string,
+    omitEmptyHref?: boolean
+  }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
       href: sf.helpers.template.compile(href || ''),
       title: sf.helpers.template.compile(title || colDef.title),
       body: sf.helpers.template.compile(body || colDef.title),
     };
     const values = {
+      target: target || '_self',
       href: templates.href(item),
       title: templates.title(item),
       body: templates.body(item),
     };
-    return `<a href="${values.href}" title="${values.title}" class="${className || ''}">${values.body}</a>`;
+    if (omitEmptyHref && !href) {
+      return values.body;
+    }
+    return `<a target="${values.target}" href="${values.href}" title="${values.title}" class="${className || ''}">${values.body}</a>`;
   }),
   image: ({
     href, title, className,
