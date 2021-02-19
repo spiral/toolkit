@@ -59,12 +59,13 @@ export const tools: {
     omitEmptyHref?: boolean
   }) => ((value: string, item: any, colDef: INormalizedColumnDescriptor) => {
     const templates = {
+      target: sf.helpers.template.compile(target || '_self'),
       href: sf.helpers.template.compile(href || ''),
       title: sf.helpers.template.compile(title || colDef.title),
       body: sf.helpers.template.compile(body || colDef.title),
     };
     const values = {
-      target: target || '_self',
+      target: templates.target(item),
       href: templates.href(item),
       title: templates.title(item),
       body: templates.body(item),
