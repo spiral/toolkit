@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/form",
-  "version": "1.1.57",
+  "version": "1.1.61",
   "files": [
     "dist",
     "src"
@@ -39,5 +39,6 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
     "@spiral-toolkit/core": "1.1.55"
-  }
+  },
+  "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
 }

@@ -18,6 +18,7 @@ export interface IAutocompleteOptions {
   inputTemplate?: string;
   suggestTemplate?: string;
   loadingTemplate?: string;
+  noResultsTemplate?: string;
   valueKey?: string;
   searchKey?: string;
   separator?: string;
@@ -47,7 +48,8 @@ export interface IAutocompleteDropdownOptions {
   isDisabled: boolean;
   inputTemplate: Function;
   suggestTemplate: Function;
-  loadingTemplate?: string;
+  loadingTemplate?: Function;
+  noResultsTemplate?: Function;
   onSelectItem: (dataItem: IAutocompleteDataItem, isSave?: boolean) => void;
   onBlur: () => void;
 }
