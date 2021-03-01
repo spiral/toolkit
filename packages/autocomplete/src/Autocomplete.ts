@@ -87,7 +87,9 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
 
   private resetListener?: (ev: Event)=>any;
 
-  loadingTemplate?: string;
+  loadingTemplate?: Function;
+
+  noResultsTemplate?: Function;
 
   /* Misc */
   observer: MutationObserver;
@@ -179,11 +181,13 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       suggestTemplate,
       inputTemplate,
       loadingTemplate,
+      noResultsTemplate,
     } = this.options;
 
     this.suggestTemplate = sf.helpers.template.compile(suggestTemplate || `{{${searchKey}}}`);
     this.inputTemplate = sf.helpers.template.compile(inputTemplate || `{{{${searchKey}}}}`);
-    this.loadingTemplate = loadingTemplate;
+    this.loadingTemplate = loadingTemplate ? sf.helpers.template.compile(loadingTemplate) : undefined;
+    this.noResultsTemplate = noResultsTemplate ? sf.helpers.template.compile(noResultsTemplate) : undefined;
   }
 
   initDropdown() {
@@ -194,6 +198,7 @@ export class Autocomplete extends sf.core.BaseDOMConstructor {
       suggestTemplate: this.suggestTemplate!,
       inputTemplate: this.inputTemplate!,
       loadingTemplate: this.loadingTemplate,
+      noResultsTemplate: this.noResultsTemplate,
       onSelectItem: this.handleSelectDropdownItem,
       onBlur: this.handleBlurDropdown,
     });

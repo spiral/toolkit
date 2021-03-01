@@ -20,6 +20,8 @@ export class AutocompleteDropdown {
 
   isInnerFocus?: boolean;
 
+  query: string = '';
+
   constructor(options: IAutocompleteDropdownOptions) {
     this.node = document.createElement('div');
     this.node.classList.add('sf-autocomplete__dropdown', 'dropdown-menu');
@@ -37,7 +39,9 @@ export class AutocompleteDropdown {
   prependLoadingElem() {
     const elem = document.createElement('div');
     elem.classList.add('dropdown-item');
-    elem.innerHTML = this.options.loadingTemplate || '<span class="sf-autocomplete__loader">Loading...</span>';
+    elem.innerHTML = this.options.loadingTemplate
+      ? this.options.loadingTemplate({ query: this.query })
+      : '<span class="sf-autocomplete__loader">Loading...</span>';
     elem.style.display = 'none';
 
     this.node.insertBefore(elem, this.node.firstChild);
@@ -47,7 +51,9 @@ export class AutocompleteDropdown {
   appendNoResults() {
     const elem = document.createElement('div');
     elem.classList.add('dropdown-item');
-    elem.innerHTML = '<span class="sf-autocomplete__noresults">No results</span>';
+    elem.innerHTML = this.options.noResultsTemplate
+      ? this.options.noResultsTemplate({ query: this.query })
+      : '<span class="sf-autocomplete__noresults">No results</span>';
 
     this.node.appendChild(elem);
   }
@@ -108,6 +114,7 @@ export class AutocompleteDropdown {
   }
 
   public suggest(query: string) {
+    this.query = query;
     if (this.data && query) {
       const index = this.data.findIndex((item: IAutocompleteDataItem) => (
         query === this.options.inputTemplate(item)
