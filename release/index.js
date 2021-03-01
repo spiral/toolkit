@@ -28,7 +28,7 @@ const main = async () => {
     // console.log(`=======================================`);
 
     const octokit = new Octokit({
-        auth: readFileSync(privateKeyPath, {encoding: 'utf-8'}),
+        auth: readFileSync(privateKeyPath, { encoding: 'utf-8' }).trim(),
     });
     try {
         const release = await octokit.repos.getReleaseByTag({
