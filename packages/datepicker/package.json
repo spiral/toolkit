@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/datepicker",
-  "version": "1.1.58",
+  "version": "1.1.61",
   "description": "Spiral Scout Frontend Framework",
   "main": "dist/datepicker.js",
   "types": "dist/index.d.ts",
@@ -37,5 +37,6 @@
   },
   "dependencies": {
     "flatpickr": "^4.6.3"
-  }
+  },
+  "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
 }
