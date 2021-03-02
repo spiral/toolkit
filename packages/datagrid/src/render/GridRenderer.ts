@@ -13,12 +13,12 @@ import {
   ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
 import { addClasses, applyAttrributes, normalizeColumns } from '../utils';
-import { defaultBodyWrapper } from './defaultBodyWrapper';
-import { defaultFooterWrapper } from './defaultFooterWrapper';
-import { defaultHeaderWrapper } from './defaultHeaderWrapper';
-import { defaultGridUiOptions, defaultRenderer } from './defaultRenderer';
-import { defaultRowWrapper } from './defaultRowWrapper';
-import { defaultTableWrapper } from './defaultTableWrapper';
+import { bodyWrapper } from './table/bodyWrapper';
+import { footerWrapper } from './table/footerWrapper';
+import { headerWrapper } from './table/headerWrapper';
+import { defaultGridUiOptions, renderer } from './table/renderer';
+import { rowWrapper } from './table/rowWrapper';
+import { tableWrapper } from './table/tableWrapper';
 import { normalizedCellRenderer, normalizedHeaderCellRenderer } from './normalizers';
 
 let instanceCounter = 1;
@@ -48,7 +48,7 @@ export class GridRenderer {
   private messages: Messages;
 
   constructor(partialOptions: Partial<IGridRenderOptions>, private root: Datagrid) {
-    this.options = { ...defaultRenderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
+    this.options = { ...renderer, ...partialOptions, ui: { ...defaultGridUiOptions, ...partialOptions.ui } };
     this.messages = new Messages((this.options.messages || {}) as any, defaultGridMessages as any);
     this.columnInfo = normalizeColumns(this.options.columns, this.options.sortable);
     this.create();
@@ -69,7 +69,7 @@ export class GridRenderer {
       this.createDefaultPaginator();
     }
 
-    const tableRenderer = this.options.tableWrapper || defaultTableWrapper;
+    const tableRenderer = this.options.tableWrapper || tableWrapper;
     this.tableEl = tableRenderer(this.wrapper, this.options);
   }
 
@@ -219,7 +219,7 @@ export class GridRenderer {
 
   render(state: DatagridState) {
     // Render header
-    const headerRenderer = this.options.headerWrapper || defaultHeaderWrapper;
+    const headerRenderer = this.options.headerWrapper || headerWrapper;
     if (this.headerEl) {
       this.tableEl.removeChild(this.headerEl.outer);
     }
@@ -250,11 +250,11 @@ export class GridRenderer {
     if (this.bodyEl) {
       this.tableEl.removeChild(this.bodyEl);
     }
-    const bodyRenderer = this.options.bodyWrapper || defaultBodyWrapper;
+    const bodyRenderer = this.options.bodyWrapper || bodyWrapper;
     this.bodyEl = bodyRenderer(this.tableEl, this.options, state, this.messages);
     if (this.bodyEl) {
       this.tableEl.appendChild(this.bodyEl);
-      const row = this.options.rowWrapper || defaultRowWrapper;
+      const row = this.options.rowWrapper || rowWrapper;
       state.data.forEach((item: any, index) => {
         const rowEl = row(this.bodyEl!, this.options, state, index);
         this.applyAdditionalRowAttributes(rowEl, this.options, state, index);
@@ -282,7 +282,7 @@ export class GridRenderer {
     if (this.footerEl) {
       this.tableEl.removeChild(this.footerEl);
     }
-    const footerRenderer = this.options.footerWrapper || defaultFooterWrapper;
+    const footerRenderer = this.options.footerWrapper || footerWrapper;
     this.footerEl = footerRenderer(this.tableEl, this.options, state, this.messages);
     if (this.footerEl) {
       this.tableEl.appendChild(this.footerEl);

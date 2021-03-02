@@ -1,10 +1,10 @@
-import { SortDirection } from '../constants';
-import type { DatagridState } from '../datagrid/DatagridState';
+import { SortDirection } from '../../constants';
+import type { DatagridState } from '../../datagrid/DatagridState';
 import {
   HeaderCellRenderAdvanced,
   IGridRenderOptions,
   INormalizedColumnDescriptor,
-} from '../types';
+} from '../../types';
 
 export const defaultHeaderCellElCreator = () => document.createElement('th');
 
@@ -29,7 +29,7 @@ export const defaultHeaderCellRendererInner = (column: INormalizedColumnDescript
   return el;
 };
 
-export const defaultHeaderCellRenderer: HeaderCellRenderAdvanced = {
+export const headerCellRenderer: HeaderCellRenderAdvanced = {
   createEl: defaultHeaderCellElCreator,
   render: defaultHeaderCellRendererInner,
 };

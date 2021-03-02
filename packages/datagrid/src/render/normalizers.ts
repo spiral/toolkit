@@ -2,8 +2,8 @@ import { isRenderFuncGenerator, tools } from '../tools';
 import {
   CellRenderAdvanced, CellRenderFunction, CellRenderWithTool, HeaderCellRenderAdvanced, HeaderCellRenderFunction,
 } from '../types';
-import { defaultCellElCreator, defaultCellRenderer } from './defaultCellRenderer';
-import { defaultHeaderCellElCreator, defaultHeaderCellRenderer } from './defaultHeaderCellRenderer';
+import { defaultCellElCreator, cellRenderer } from 'render/table/defaultCellRenderer';
+import { defaultHeaderCellElCreator, headerCellRenderer } from 'render/table/defaultHeaderCellRenderer';
 
 export function isCellAdvanced(render: CellRenderFunction | CellRenderAdvanced | CellRenderWithTool): render is CellRenderAdvanced {
   return (typeof render !== 'function') && (render as CellRenderAdvanced).render !== undefined;
@@ -19,7 +19,7 @@ export function isHeaderCellAdvanced(render: HeaderCellRenderFunction | HeaderCe
 
 export const normalizedCellRenderer = (render: CellRenderFunction | CellRenderAdvanced | CellRenderWithTool | undefined) => {
   if (!render) {
-    return defaultCellRenderer;
+    return cellRenderer;
   }
   if (!isCellAdvanced(render)) {
     if (isCellByTool(render)) {
@@ -42,7 +42,7 @@ export const normalizedCellRenderer = (render: CellRenderFunction | CellRenderAd
 
 export const normalizedHeaderCellRenderer = (render: HeaderCellRenderFunction | HeaderCellRenderAdvanced | undefined) => {
   if (!render) {
-    return defaultHeaderCellRenderer;
+    return headerCellRenderer;
   }
   if (!isHeaderCellAdvanced(render)) {
     return {

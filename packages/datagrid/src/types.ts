@@ -303,6 +303,17 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   responseProcessor?: (response: any) => {
     data: IDatagridResponse | IDatagridErrorResponse, status: number, statusText: string
   }
+
+  /**
+   * Enable default experimental responsive tech
+   * Specify 2 classes what wont be visible at same time
+   * listHeaderColumn should specify what column will be used as list collapsible item header and be excluded from table view
+   */
+  experimentalResponsive?: {
+    tableClass: string;
+    listClass: string;
+    listHeaderColumn: string;
+  };
 }
 
 export interface IDatagridResponse<Item = any> {

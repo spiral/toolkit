@@ -1,7 +1,7 @@
-import { IBodyWrapperRenderer } from '../types';
+import { IBodyWrapperRenderer } from '../../types';
 
-export const defaultBodyWrapper: IBodyWrapperRenderer = (node, options, state, messages) => {
-  const el = document.createElement('tbody');
+export const bodyWrapper: IBodyWrapperRenderer = (node, options, state, messages) => {
+  const el = document.createElement('ul');
   node.appendChild(el);
   if (state.hasError && !options.dontRenderError) {
     const errorTr = document.createElement('tr');
