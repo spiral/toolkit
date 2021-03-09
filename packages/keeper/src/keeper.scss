@@ -1,7 +1,7 @@
 @use "./vars";
 
 @use './bootstrap' with (
-  $primary: vars.$sf-primary,
+  $theme-colors: vars.$sf-theme-colors,
   $font-family-sans-serif: vars.$sf-font-family-sans-serif,
   $font-size-base: vars.$sf-font-size-base,
   $font-weight-bold: vars.$sf-font-weight-bold,
