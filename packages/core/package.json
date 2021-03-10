@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/core",
-  "version": "1.1.61",
+  "version": "1.1.62",
   "files": [
     "src",
     "dist"
@@ -11,7 +11,7 @@
   "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "npm run test && npm run build:prod",
+    "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:dev": "cross-env NODE_ENV=development webpack",
     "watch": "cross-env NODE_ENV=development webpack --watch",
