@@ -6,7 +6,10 @@ import {
   INormalizedColumnDescriptor,
 } from '../../types';
 
-export const defaultHeaderCellElCreator = () => document.createElement('th');
+export const defaultHeaderCellElCreator = () => {
+  const el = document.createElement('th');
+  return { container: el, el };
+};
 
 export const defaultHeaderCellRendererInner = (column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => {
   const el = document.createElement('div');

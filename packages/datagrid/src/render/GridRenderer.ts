@@ -223,23 +223,24 @@ export class GridRenderer {
     if (this.headerEl) {
       this.tableEl.removeChild(this.headerEl.outer);
     }
-    this.headerEl = headerRenderer(this.tableEl, this.options, state, this.messages);
+    this.headerEl = headerRenderer(this.tableEl, this.options, state, this.messages, this.columnInfo);
     if (this.headerEl) {
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
           const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id]);
-          const node = headerCellRenderer.createEl();
+          const node = headerCellRenderer.createEl(cI, this.options);
           if (node) {
+            const { container, el } = node;
             const rendered = headerCellRenderer.render(cI, this.options, state);
             if (typeof rendered !== 'undefined' && rendered !== null) {
               if (typeof rendered === 'string') {
-                node.innerHTML = rendered;
+                el.innerHTML = rendered;
               } else {
-                node.appendChild(rendered);
+                el.appendChild(rendered);
               }
-              this.applyAdditionalHeaderCellAttributes(node, cI, this.options, state);
-              this.headerEl!.inner.appendChild(node);
+              this.applyAdditionalHeaderCellAttributes(container, cI, this.options, state);
+              this.headerEl!.inner.appendChild(container);
             }
           }
         });
@@ -261,17 +262,18 @@ export class GridRenderer {
         this.columnInfo.forEach((cI) => {
           const value = item[cI.id];
           const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
-          const node = rowCellRenderer.createEl();
+          const node = rowCellRenderer.createEl(cI, this.options);
           if (node) { // If no node generated, skip it, that might be custom tr render or colspan
+            const { container, el } = node;
             const rendered = rowCellRenderer.render(value, item, cI, this.options, index, state);
             if (typeof rendered !== 'undefined' && rendered !== null) { // If no content generated, skip it, that might be custom tr render or colspan
               if (typeof rendered === 'string') {
-                node.innerHTML = rendered;
+                el.innerHTML = rendered;
               } else {
-                node.appendChild(rendered);
+                el.appendChild(rendered);
               }
-              this.applyAdditionalCellAttributes(node, cI, this.options, state, index);
-              rowEl.appendChild(node);
+              this.applyAdditionalCellAttributes(container, cI, this.options, state, index);
+              rowEl.appendChild(container);
             }
           }
         });

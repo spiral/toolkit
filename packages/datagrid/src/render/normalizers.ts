@@ -2,8 +2,8 @@ import { isRenderFuncGenerator, tools } from '../tools';
 import {
   CellRenderAdvanced, CellRenderFunction, CellRenderWithTool, HeaderCellRenderAdvanced, HeaderCellRenderFunction,
 } from '../types';
-import { defaultCellElCreator, cellRenderer } from 'render/table/defaultCellRenderer';
-import { defaultHeaderCellElCreator, headerCellRenderer } from 'render/table/defaultHeaderCellRenderer';
+import { defaultCellElCreator, cellRenderer } from './table/cellRenderer';
+import { defaultHeaderCellElCreator, headerCellRenderer } from './table/headerCellRenderer';
 
 export function isCellAdvanced(render: CellRenderFunction | CellRenderAdvanced | CellRenderWithTool): render is CellRenderAdvanced {
   return (typeof render !== 'function') && (render as CellRenderAdvanced).render !== undefined;

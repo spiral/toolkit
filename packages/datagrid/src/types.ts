@@ -92,7 +92,8 @@ export type CellRenderFunction =
  */
 export type CellRenderAdvanced = {
   render: CellRenderFunction,
-  createEl: () => Element | undefined,
+  createEl: (column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions) => {container: Element, el: Element} | undefined,
 };
 
 export type CellRenderWithTool = { name: string, arguments: any[] };
@@ -107,7 +108,8 @@ export type HeaderCellRenderFunction =
 
 export type HeaderCellRenderAdvanced = {
   render: HeaderCellRenderFunction,
-  createEl: () => Element | undefined,
+  createEl: (column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions) => {container: Element, el: Element} | undefined,
 };
 
 export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
@@ -119,6 +121,7 @@ export type IHeaderWrapperRenderer = ((
   options: IGridRenderOptions,
   state: DatagridState,
   messages: Messages,
+  columns: INormalizedColumnDescriptor[],
 ) => { outer: Element, inner: Element } | undefined);
 export type ITableWrapperRenderer = ((
   parent: Element,

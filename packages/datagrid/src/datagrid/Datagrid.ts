@@ -1,5 +1,5 @@
 import sf, { IOptionToGrab, ISFInstance, ISpiralFramework } from '@spiral-toolkit/core';
-import { listRenderers } from 'render/list';
+import { listRenderers } from '../render/list';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CLASS_NAME,
@@ -8,7 +8,7 @@ import {
 import FilterToggle from '../filter-toggle/FilterToggle';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
-import { defaultGridOptions } from 'render/table/defaultRenderer';
+import { defaultGridOptions } from '../render/table/renderer';
 import { GridRenderer } from '../render/GridRenderer';
 import {
   IColumnDescriptor,
@@ -457,25 +457,27 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   applyExperimentalResponsive() {
-    if(this.options.experimentalResponsive) {
+    if (this.options.experimentalResponsive) {
       const { tableClass, listClass, listHeaderColumn } = this.options.experimentalResponsive;
       const renderList: IGridRenderOptions[] = Array.isArray(this.options.renderers) ? this.options.renderers : [this.options.renderers];
-      if(renderList.length === 1) {
-        const tableOptions = {...renderList[0]};
-        const listOptions = {...renderList[0]};
+      if (renderList.length === 1) {
+        const tableOptions = { ...renderList[0] };
+        const listOptions = { ...renderList[0] };
 
-        tableOptions.ui.tableClassName = tableOptions.ui.tableClassName?(tableOptions.ui.tableClassName + ' ' + tableClass):tableClass;
-        listOptions.ui.tableClassName = tableOptions.ui.tableClassName?(tableOptions.ui.tableClassName + ' ' + listClass):listClass;
+        tableOptions.ui = tableOptions.ui || {};
+        tableOptions.ui.tableClassName = tableOptions.ui.tableClassName ? (`${tableOptions.ui.tableClassName} ${tableClass}`) : tableClass;
+
+        listOptions.ui = listOptions.ui || {};
+        listOptions.ui.tableClassName = tableOptions.ui.tableClassName ? (`${tableOptions.ui.tableClassName} ${listClass}`) : listClass;
 
         tableOptions.columns = (tableOptions.columns || this.options.columns).filter(
-          (c: IColumnDescriptor)=> {
-            if(typeof c === 'string') {
-              return c!==listHeaderColumn;
-            } else {
-              return c.id !== listHeaderColumn;
+          (c: IColumnDescriptor) => {
+            if (typeof c === 'string') {
+              return c !== listHeaderColumn;
             }
-          }
-        )
+            return c.id !== listHeaderColumn;
+          },
+        );
 
         listOptions.tableWrapper = listRenderers.tableWrapper;
         listOptions.bodyWrapper = listRenderers.bodyWrapper;

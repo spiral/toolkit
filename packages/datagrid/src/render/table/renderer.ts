@@ -40,4 +40,9 @@ export const defaultGridOptions: IDataGridOptions = {
   ui: defaultGridUiOptions,
   errorMessageTarget: '@self',
   renderers: renderer,
+  experimentalResponsive: {
+    listClass: 's',
+    tableClass: 's',
+    listHeaderColumn: 'name',
+  },
 };

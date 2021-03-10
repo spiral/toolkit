@@ -3,7 +3,7 @@ import { DATAGRID_CHECK_SELECT_ATTR, SelectionType } from '../../constants';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const rowWrapper: IRowWrapperRenderer = (node, options, state, index) => {
-  const el = document.createElement('li');
+  const el = document.createElement('ul');
   node.appendChild(el);
   if (options.selectable) {
     const td = document.createElement('div');
