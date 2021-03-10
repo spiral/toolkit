@@ -1,12 +1,22 @@
 import type { IRowWrapperRenderer } from '../../types';
 import { DATAGRID_CHECK_SELECT_ATTR, SelectionType } from '../../constants';
+import { normalizedCellRenderer } from '../normalizers';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const rowWrapper: IRowWrapperRenderer = (node, options, state, index) => {
+export const rowWrapper: IRowWrapperRenderer = (node, options, state, index, columns) => {
   const el = document.createElement('ul');
+  el.className = 'list-group list-group-flush sf-table__collapsed sf-table__collapsable border-bottom';
+  const elHeader = document.createElement('li');
+  elHeader.className = 'list-group-item bg-light sf-table__group';
+
   node.appendChild(el);
+
+  let col = 12;
+
   if (options.selectable) {
+    col = 11;
     const td = document.createElement('div');
+    td.className = 'col-1';
     const checkbox = document.createElement('input');
     checkbox.setAttribute(DATAGRID_CHECK_SELECT_ATTR, '');
     checkbox.type = options.selectable.type === SelectionType.MULTIPLE ? 'checkbox' : 'radio';
@@ -19,5 +29,27 @@ export const rowWrapper: IRowWrapperRenderer = (node, options, state, index) => 
     td.appendChild(checkbox);
     el.appendChild(td);
   }
+
+  const data = state.data[index];
+  if (options.listHeaderRow) {
+    const d = document.createElement('div');
+    d.className = `col-${col}`;
+    const cI = columns.find((c) => c.id === options.listHeaderRow)!;
+    const cell = data[options.listHeaderRow];
+    const renderer = normalizedCellRenderer((options.cells || {})[options.listHeaderRow], true);
+    const r = renderer.render(cell, data, cI, options, index, state);
+    if (r) {
+      if (typeof r === 'string') {
+        d.innerHTML = r;
+      } else {
+        d.appendChild(r);
+      }
+    }
+    elHeader.appendChild(d);
+  }
+  elHeader.addEventListener('click', () => {
+    el.classList.toggle('sf-table__collapsed');
+  });
+  el.appendChild(elHeader);
   return el;
 };

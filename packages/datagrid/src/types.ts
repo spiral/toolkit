@@ -143,7 +143,9 @@ export type IRowWrapperRenderer = ((
   parent: Element,
   options: IGridRenderOptions,
   state: DatagridState,
-  index: number) => Element);
+  index: number,
+  columns: INormalizedColumnDescriptor[],
+) => Element);
 
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
@@ -183,6 +185,9 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   }
 
   messages?: Partial<IDataGridMessages>,
+
+  useListDefaults?: boolean,
+  listHeaderRow?: string,
 }
 
 export interface IDataGridMessages extends Object {

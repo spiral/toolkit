@@ -468,7 +468,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         tableOptions.ui.tableClassName = tableOptions.ui.tableClassName ? (`${tableOptions.ui.tableClassName} ${tableClass}`) : tableClass;
 
         listOptions.ui = listOptions.ui || {};
-        listOptions.ui.tableClassName = tableOptions.ui.tableClassName ? (`${tableOptions.ui.tableClassName} ${listClass}`) : listClass;
+        listOptions.ui.tableClassName = listOptions.ui.tableClassName ? (`${listOptions.ui.tableClassName} ${listClass}`) : listClass;
 
         tableOptions.columns = (tableOptions.columns || this.options.columns).filter(
           (c: IColumnDescriptor) => {
@@ -484,6 +484,8 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         listOptions.footerWrapper = listRenderers.footerWrapper;
         listOptions.rowWrapper = listRenderers.rowWrapper;
         listOptions.headerWrapper = listRenderers.headerWrapper;
+        listOptions.useListDefaults = true;
+        listOptions.listHeaderRow = this.options.experimentalResponsive.listHeaderColumn;
         this.options.renderers = [tableOptions, listOptions];
       }
     }

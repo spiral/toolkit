@@ -41,8 +41,8 @@ export const defaultGridOptions: IDataGridOptions = {
   errorMessageTarget: '@self',
   renderers: renderer,
   experimentalResponsive: {
-    listClass: 's',
-    tableClass: 's',
+    listClass: 'd-md-none',
+    tableClass: 'table d-none d-md-table',
     listHeaderColumn: 'name',
   },
 };

@@ -84,3 +84,29 @@
 .sf-table__actions > a:not(:first-of-type) {
   margin-left: 0.75rem;
 }
+
+.sf-table__listrow {
+  display: flex;
+}
+
+.sf-table__definition {
+  font-weight: bold;
+  text-align: right;
+}
+
+.sf-table__declaration {
+  text-align: left;
+  flex-grow: 0;
+}
+
+.sf-table__collapsed > .list-group-item {
+  display: none;
+}
+
+.sf-table__collapsed > .list-group-item.sf-table__group {
+  display: block;
+}
+
+.sf-table__collapsable > .sf-table__group {
+  cursor: pointer;
+}

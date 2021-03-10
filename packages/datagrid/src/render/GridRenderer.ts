@@ -10,6 +10,7 @@ import { DatagridState } from '../datagrid/DatagridState';
 import { Messages } from '../messages';
 import Paginator from '../paginator/Paginator';
 import {
+  IActionPanelOptions,
   ICellMeta, IGridRenderOptions, INormalizedColumnDescriptor, IRowMeta,
 } from '../types';
 import { addClasses, applyAttrributes, normalizeColumns } from '../utils';
@@ -79,11 +80,19 @@ export class GridRenderer {
     this.paginatorEl = document.createElement('div');
     this.root.node.appendChild(this.paginatorEl);
     const extension = (typeof this.options.paginator === 'boolean') ? {} : this.options.paginator;
-    const paginator = new Paginator(sf, this.paginatorEl, {
+    const options = {
       ...Paginator.defaultOptions,
       id,
       ...extension,
-    });
+    };
+    if (this.root.options.experimentalResponsive) {
+      if (this.options.useListDefaults) {
+        options.className += ` ${this.root.options.experimentalResponsive.listClass}`;
+      } else {
+        options.className += ` ${this.root.options.experimentalResponsive.tableClass}`;
+      }
+    }
+    const paginator = new Paginator(sf, this.paginatorEl, options);
     this.root.registerPaginatorInstance(paginator, false);
   }
 
@@ -95,7 +104,7 @@ export class GridRenderer {
       this.root.options.captureActionPanels = [];
     }
     this.root.options.captureActionPanels.push(id);
-    const panel = new ActionPanel(sf, this.actionPanelEl, {
+    const options: IActionPanelOptions = {
       id,
       className: (state) => (state.hasSelection ? 'row no-gutters align-items-center px-3 py-2 border-bottom' : 'd-none'),
       lockType: 'none',
@@ -103,7 +112,17 @@ export class GridRenderer {
       actionClassName: 'btn btn-sm',
       selectionType: this.options.selectable?.type || SelectionType.SINGLE,
       actions: this.options.actions!,
-    });
+    };
+    if (this.root.options.experimentalResponsive) {
+      if (this.options.useListDefaults) {
+        options.className = (state) => (state.hasSelection
+          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.experimentalResponsive?.listClass}` : 'd-none');
+      } else {
+        options.className = (state) => (state.hasSelection
+          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.experimentalResponsive?.tableClass}` : 'd-none');
+      }
+    }
+    const panel = new ActionPanel(sf, this.actionPanelEl, options);
     this.root.registerActionPanelInstance(panel);
   }
 
@@ -228,7 +247,7 @@ export class GridRenderer {
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
-          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id]);
+          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id], !!this.options.useListDefaults);
           const node = headerCellRenderer.createEl(cI, this.options);
           if (node) {
             const { container, el } = node;
@@ -257,11 +276,11 @@ export class GridRenderer {
       this.tableEl.appendChild(this.bodyEl);
       const row = this.options.rowWrapper || rowWrapper;
       state.data.forEach((item: any, index) => {
-        const rowEl = row(this.bodyEl!, this.options, state, index);
+        const rowEl = row(this.bodyEl!, this.options, state, index, this.columnInfo);
         this.applyAdditionalRowAttributes(rowEl, this.options, state, index);
         this.columnInfo.forEach((cI) => {
           const value = item[cI.id];
-          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id]);
+          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id], !!this.options.useListDefaults);
           const node = rowCellRenderer.createEl(cI, this.options);
           if (node) { // If no node generated, skip it, that might be custom tr render or colspan
             const { container, el } = node;
