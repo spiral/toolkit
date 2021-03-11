@@ -2,8 +2,8 @@ import sf from '@spiral-toolkit/core';
 import { CellRenderAdvanced, IGridRenderOptions, INormalizedColumnDescriptor } from '../../types';
 
 export const defaultCellElCreator = (cI: INormalizedColumnDescriptor, options: IGridRenderOptions) => {
-  if (options.renderAsList?.exclude?.length) {
-    if (options.renderAsList?.exclude.includes(cI.id)) {
+  if (options.exclude?.length) {
+    if (options.exclude.includes(cI.id)) {
       return undefined;
     }
   }

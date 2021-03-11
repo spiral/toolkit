@@ -43,7 +43,7 @@ export const defaultGridOptions: IDataGridOptions = {
   responsive: {
     listClass: 'd-md-none',
     tableClass: 'table d-none d-md-table',
-    listSummaryColumn: 'name',
-    listExcludeColumns: ['name'],
+    listSummaryColumn: 'summary',
+    listExcludeColumns: ['summary', 'name', 'roles'],
   },
 };

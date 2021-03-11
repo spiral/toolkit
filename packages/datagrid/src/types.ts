@@ -194,11 +194,11 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
      * Summary row as a collapsable item header
      */
     summaryColumn: string;
-    /**
-     * Lets exclude some columns, i.e. ones used in summary and summary itself from render
-     */
-    exclude?: string[];
   }
+  /**
+   * Lets exclude some columns, i.e. ones used in summary and summary itself from render
+   */
+  exclude?: string[];
 }
 
 export interface IDataGridMessages extends Object {
@@ -333,6 +333,7 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
     listClass: string;
     listSummaryColumn: string;
     listExcludeColumns?: string[];
+    tableExcludeColumns?: string[];
   };
 }
 

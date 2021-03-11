@@ -6,7 +6,12 @@ import {
   INormalizedColumnDescriptor,
 } from '../../types';
 
-export const defaultHeaderCellElCreator = () => {
+export const defaultHeaderCellElCreator = (cI: INormalizedColumnDescriptor, options: IGridRenderOptions) => {
+  if (options.exclude?.length) {
+    if (options.exclude.includes(cI.id)) {
+      return undefined;
+    }
+  }
   const el = document.createElement('th');
   return { container: el, el };
 };

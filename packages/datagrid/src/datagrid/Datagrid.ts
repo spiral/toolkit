@@ -457,9 +457,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   applyExperimentalResponsive() {
-    if (this.options.responsive) {
+    if (this.options.responsive && this.options.responsive.listSummaryColumn) {
       const {
-        tableClass, listClass, listSummaryColumn, listExcludeColumns,
+        tableClass, listClass, listSummaryColumn, listExcludeColumns, tableExcludeColumns
       } = this.options.responsive;
       const renderList: IGridRenderOptions[] = Array.isArray(this.options.renderers) ? this.options.renderers : [this.options.renderers];
       if (renderList.length === 1) {
@@ -487,9 +487,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         listOptions.rowWrapper = listRenderers.rowWrapper;
         listOptions.headerWrapper = listRenderers.headerWrapper;
         listOptions.renderAsList = {
-          exclude: listExcludeColumns,
           summaryColumn: listSummaryColumn,
         };
+        listOptions.exclude = listExcludeColumns;
+        tableOptions.exclude = tableExcludeColumns;
         this.options.renderers = [tableOptions, listOptions];
       }
     }

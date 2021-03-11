@@ -85,6 +85,8 @@
   margin-left: 0.75rem;
 }
 
+/** Responsive list */
+
 .sf-table__listrow {
   display: flex;
 }
@@ -103,10 +105,18 @@
   display: none;
 }
 
+.sf-table__collapsed.border-top {
+  border-bottom: none !important;
+}
+
 .sf-table__collapsed > .list-group-item.sf-table__group {
   display: block;
 }
 
 .sf-table__collapsable > .sf-table__group {
   cursor: pointer;
+}
+
+.sf-table__sortselect, .sf-table__selectall {
+  align-items: center;
 }

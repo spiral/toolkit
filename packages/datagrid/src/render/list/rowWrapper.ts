@@ -7,6 +7,8 @@ export const rowWrapper: IRowWrapperRenderer = (node, options, state, index, col
   const el = document.createElement('ul');
   el.className = 'list-group list-group-flush sf-table__collapsed sf-table__collapsable border-bottom';
   const elHeader = document.createElement('li');
+  const elHeaderRow = document.createElement('div');
+  elHeaderRow.className = 'row';
   elHeader.className = 'list-group-item bg-light sf-table__group';
 
   node.appendChild(el);
@@ -27,7 +29,7 @@ export const rowWrapper: IRowWrapperRenderer = (node, options, state, index, col
     });
     td.classList.add('sf-table__select');
     td.appendChild(checkbox);
-    el.appendChild(td);
+    elHeaderRow.appendChild(td);
   }
 
   const data = state.data[index];
@@ -46,11 +48,12 @@ export const rowWrapper: IRowWrapperRenderer = (node, options, state, index, col
         d.appendChild(r);
       }
     }
-    elHeader.appendChild(d);
+    elHeaderRow.appendChild(d);
   }
   elHeader.addEventListener('click', () => {
     el.classList.toggle('sf-table__collapsed');
   });
+  elHeader.appendChild(elHeaderRow);
   el.appendChild(elHeader);
   return el;
 };
