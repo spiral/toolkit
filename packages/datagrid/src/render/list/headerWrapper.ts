@@ -10,7 +10,7 @@ export const headerWrapper: IHeaderWrapperRenderer = (node, options, state, mess
   if (options.selectable) {
     col = 6;
     const td = document.createElement('div');
-    td.classList.add('sf-table__selectall col-6 px-4 py-2 d-flex');
+    td.classList.add('sf-table__selectall col-6 px-3 py-2 d-flex');
     const label = document.createElement('label');
     td.appendChild(label);
     label.innerHTML = 'Select/Deselect All';
@@ -31,7 +31,7 @@ export const headerWrapper: IHeaderWrapperRenderer = (node, options, state, mess
   // eslint-disable-next-line no-empty
   if (sortByColumns.length) {
     const td = document.createElement('div');
-    td.className = `sf-table__sortselect col-${col} px-4 py-2 d-flex`;
+    td.className = `sf-table__sortselect col-${col} px-3 py-2 d-flex`;
     const text = document.createElement('div');
     text.innerHTML = 'Sort&nbsp;by:&nbsp;';
     td.appendChild(text);
