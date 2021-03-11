@@ -40,10 +40,4 @@ export const defaultGridOptions: IDataGridOptions = {
   ui: defaultGridUiOptions,
   errorMessageTarget: '@self',
   renderers: renderer,
-  responsive: {
-    listClass: 'd-md-none',
-    tableClass: 'table d-none d-md-table',
-    listSummaryColumn: 'summary',
-    listExcludeColumns: ['summary', 'name', 'roles'],
-  },
 };
