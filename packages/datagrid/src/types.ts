@@ -92,7 +92,8 @@ export type CellRenderFunction =
  */
 export type CellRenderAdvanced = {
   render: CellRenderFunction,
-  createEl: () => Element | undefined,
+  createEl: (column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions) => {container: Element, el: Element} | undefined,
 };
 
 export type CellRenderWithTool = { name: string, arguments: any[] };
@@ -107,7 +108,8 @@ export type HeaderCellRenderFunction =
 
 export type HeaderCellRenderAdvanced = {
   render: HeaderCellRenderFunction,
-  createEl: () => Element | undefined,
+  createEl: (column: INormalizedColumnDescriptor, // Column meta
+    options: IGridRenderOptions) => {container: Element, el: Element} | undefined,
 };
 
 export type IHeaderCellRenderer = HeaderCellRenderFunction | HeaderCellRenderAdvanced;
@@ -119,6 +121,7 @@ export type IHeaderWrapperRenderer = ((
   options: IGridRenderOptions,
   state: DatagridState,
   messages: Messages,
+  columns: INormalizedColumnDescriptor[],
 ) => { outer: Element, inner: Element } | undefined);
 export type ITableWrapperRenderer = ((
   parent: Element,
@@ -140,7 +143,9 @@ export type IRowWrapperRenderer = ((
   parent: Element,
   options: IGridRenderOptions,
   state: DatagridState,
-  index: number) => Element);
+  index: number,
+  columns: INormalizedColumnDescriptor[],
+) => Element);
 
 export interface ITableMeta<Item = any> {
   columns: IColumnDescriptor[];
@@ -180,6 +185,20 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
   }
 
   messages?: Partial<IDataGridMessages>,
+
+  /**
+   * Renders in experimental ul/li mode
+   */
+  renderAsList?: {
+    /**
+     * Summary row as a collapsable item header
+     */
+    summaryColumn: string;
+  }
+  /**
+   * Lets exclude some columns, i.e. ones used in summary and summary itself from render
+   */
+  exclude?: string[];
 }
 
 export interface IDataGridMessages extends Object {
@@ -303,6 +322,19 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
   responseProcessor?: (response: any) => {
     data: IDatagridResponse | IDatagridErrorResponse, status: number, statusText: string
   }
+
+  /**
+   * Enable default experimental responsive tech
+   * Specify 2 classes what wont be visible at same time
+   * listHeaderColumn should specify what column will be used as list collapsible item header and be excluded from table view
+   */
+  responsive?: {
+    tableClass: string;
+    listClass: string;
+    listSummaryColumn: string;
+    listExcludeColumns?: string[];
+    tableExcludeColumns?: string[];
+  };
 }
 
 export interface IDatagridResponse<Item = any> {

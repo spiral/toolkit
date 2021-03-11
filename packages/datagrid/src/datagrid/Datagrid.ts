@@ -1,4 +1,5 @@
 import sf, { IOptionToGrab, ISFInstance, ISpiralFramework } from '@spiral-toolkit/core';
+import { listRenderers } from '../render/list';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CLASS_NAME,
@@ -7,9 +8,10 @@ import {
 import FilterToggle from '../filter-toggle/FilterToggle';
 import { DatagridState } from './DatagridState';
 import Paginator from '../paginator/Paginator';
-import { defaultGridOptions } from '../render/defaultRenderer';
+import { defaultGridOptions } from '../render/table/renderer';
 import { GridRenderer } from '../render/GridRenderer';
 import {
+  IColumnDescriptor,
   IDatagridErrorResponse,
   IDataGridOptions,
   IDatagridRequest,
@@ -80,6 +82,7 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     assert.notEqual(this.options.url, '', 'url should be not empty');
 
     // Process options
+    this.applyExperimentalResponsive();
 
     // TODO: we can override columns and sort options inside renderers but it might produce situation of triggering unexisting sort
     // Think about that, or ignore
@@ -450,6 +453,46 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
     } finally {
       this.unlock();
       this.state.stopLoading();
+    }
+  }
+
+  applyExperimentalResponsive() {
+    if (this.options.responsive && this.options.responsive.listSummaryColumn) {
+      const {
+        tableClass, listClass, listSummaryColumn, listExcludeColumns, tableExcludeColumns
+      } = this.options.responsive;
+      const renderList: IGridRenderOptions[] = Array.isArray(this.options.renderers) ? this.options.renderers : [this.options.renderers];
+      if (renderList.length === 1) {
+        const tableOptions = { ...renderList[0] };
+        const listOptions = { ...renderList[0] };
+
+        tableOptions.ui = tableOptions.ui || {};
+        tableOptions.ui.tableClassName = tableOptions.ui.tableClassName ? (`${tableOptions.ui.tableClassName} ${tableClass}`) : tableClass;
+
+        listOptions.ui = listOptions.ui || {};
+        listOptions.ui.tableClassName = listOptions.ui.tableClassName ? (`${listOptions.ui.tableClassName} ${listClass}`) : listClass;
+
+        tableOptions.columns = (tableOptions.columns || this.options.columns).filter(
+          (c: IColumnDescriptor) => {
+            if (typeof c === 'string') {
+              return c !== listSummaryColumn;
+            }
+            return c.id !== listSummaryColumn;
+          },
+        );
+
+        listOptions.tableWrapper = listRenderers.tableWrapper;
+        listOptions.bodyWrapper = listRenderers.bodyWrapper;
+        listOptions.footerWrapper = listRenderers.footerWrapper;
+        listOptions.rowWrapper = listRenderers.rowWrapper;
+        listOptions.headerWrapper = listRenderers.headerWrapper;
+        listOptions.renderAsList = {
+          summaryColumn: listSummaryColumn,
+        };
+        listOptions.exclude = listExcludeColumns;
+        tableOptions.exclude = tableExcludeColumns;
+        this.options.renderers = [tableOptions, listOptions];
+      }
     }
   }
 

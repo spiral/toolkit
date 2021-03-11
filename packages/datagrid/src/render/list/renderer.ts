@@ -1,7 +1,7 @@
-import { RequestMethod } from '../constants';
+import { RequestMethod } from '../../constants';
 import {
   ICellMeta, IDataGridOptions, IGridRenderOptions, IRowMeta,
-} from '../types';
+} from '../../types';
 
 export const defaultGridUiOptions = {
   wrapperClassName: 'table-responsive',
@@ -14,7 +14,7 @@ export const defaultGridUiOptions = {
   rowAttributes: (rowMeta: IRowMeta) => ({}),
 };
 
-export const defaultRenderer: IGridRenderOptions = {
+export const renderer: IGridRenderOptions = {
   columns: [],
   sortable: [],
   /**
@@ -39,5 +39,5 @@ export const defaultGridOptions: IDataGridOptions = {
   paginator: true,
   ui: defaultGridUiOptions,
   errorMessageTarget: '@self',
-  renderers: defaultRenderer,
+  renderers: renderer,
 };

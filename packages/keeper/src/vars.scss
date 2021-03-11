@@ -1,9 +1,11 @@
 @import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/variables"; // TODO: This might be not needed here
 @import "~bootstrap/scss/mixins";
 
 $sf-primary: #497cb1 !default;
 $sf-sidebar: #49545f !default;
+
+$sf-theme-colors: ("primary": $sf-primary) !default;
 
 $sf-font-family-sans-serif: Ubuntu,'Helvetica Neue',Helvetica,Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji' !default;
 

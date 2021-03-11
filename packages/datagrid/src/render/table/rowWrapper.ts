@@ -1,8 +1,8 @@
-import type { IRowWrapperRenderer } from '../types';
-import { DATAGRID_CHECK_SELECT_ATTR, SelectionType } from '../constants';
+import type { IRowWrapperRenderer } from '../../types';
+import { DATAGRID_CHECK_SELECT_ATTR, SelectionType } from '../../constants';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const defaultRowWrapper: IRowWrapperRenderer = (node, options, state, index) => {
+export const rowWrapper: IRowWrapperRenderer = (node, options, state, index) => {
   const el = document.createElement('tr');
   node.appendChild(el);
   if (options.selectable) {

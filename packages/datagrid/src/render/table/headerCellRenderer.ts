@@ -1,12 +1,20 @@
-import { SortDirection } from '../constants';
-import type { DatagridState } from '../datagrid/DatagridState';
+import { SortDirection } from '../../constants';
+import type { DatagridState } from '../../datagrid/DatagridState';
 import {
   HeaderCellRenderAdvanced,
   IGridRenderOptions,
   INormalizedColumnDescriptor,
-} from '../types';
+} from '../../types';
 
-export const defaultHeaderCellElCreator = () => document.createElement('th');
+export const defaultHeaderCellElCreator = (cI: INormalizedColumnDescriptor, options: IGridRenderOptions) => {
+  if (options.exclude?.length) {
+    if (options.exclude.includes(cI.id)) {
+      return undefined;
+    }
+  }
+  const el = document.createElement('th');
+  return { container: el, el };
+};
 
 export const defaultHeaderCellRendererInner = (column: INormalizedColumnDescriptor, options: IGridRenderOptions, state: DatagridState) => {
   const el = document.createElement('div');
@@ -29,7 +37,7 @@ export const defaultHeaderCellRendererInner = (column: INormalizedColumnDescript
   return el;
 };
 
-export const defaultHeaderCellRenderer: HeaderCellRenderAdvanced = {
+export const headerCellRenderer: HeaderCellRenderAdvanced = {
   createEl: defaultHeaderCellElCreator,
   render: defaultHeaderCellRendererInner,
 };
