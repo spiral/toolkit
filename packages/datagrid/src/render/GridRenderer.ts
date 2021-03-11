@@ -85,11 +85,11 @@ export class GridRenderer {
       id,
       ...extension,
     };
-    if (this.root.options.experimentalResponsive) {
-      if (this.options.useListDefaults) {
-        options.className += ` ${this.root.options.experimentalResponsive.listClass}`;
+    if (this.root.options.responsive) {
+      if (this.options.renderAsList) {
+        options.className += ` ${this.root.options.responsive.listClass}`;
       } else {
-        options.className += ` ${this.root.options.experimentalResponsive.tableClass}`;
+        options.className += ` ${this.root.options.responsive.tableClass}`;
       }
     }
     const paginator = new Paginator(sf, this.paginatorEl, options);
@@ -113,13 +113,13 @@ export class GridRenderer {
       selectionType: this.options.selectable?.type || SelectionType.SINGLE,
       actions: this.options.actions!,
     };
-    if (this.root.options.experimentalResponsive) {
-      if (this.options.useListDefaults) {
+    if (this.root.options.responsive) {
+      if (this.options.renderAsList) {
         options.className = (state) => (state.hasSelection
-          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.experimentalResponsive?.listClass}` : 'd-none');
+          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.responsive?.listClass}` : 'd-none');
       } else {
         options.className = (state) => (state.hasSelection
-          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.experimentalResponsive?.tableClass}` : 'd-none');
+          ? `row no-gutters align-items-center px-3 py-2 border-bottom ${this.root.options.responsive?.tableClass}` : 'd-none');
       }
     }
     const panel = new ActionPanel(sf, this.actionPanelEl, options);
@@ -247,7 +247,7 @@ export class GridRenderer {
       if (this.columnInfo.length) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         this.columnInfo.forEach((cI, index) => {
-          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id], !!this.options.useListDefaults);
+          const headerCellRenderer = normalizedHeaderCellRenderer((this.options.headerList || {})[cI.id], !!this.options.renderAsList);
           const node = headerCellRenderer.createEl(cI, this.options);
           if (node) {
             const { container, el } = node;
@@ -280,7 +280,7 @@ export class GridRenderer {
         this.applyAdditionalRowAttributes(rowEl, this.options, state, index);
         this.columnInfo.forEach((cI) => {
           const value = item[cI.id];
-          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id], !!this.options.useListDefaults);
+          const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id], !!this.options.renderAsList);
           const node = rowCellRenderer.createEl(cI, this.options);
           if (node) { // If no node generated, skip it, that might be custom tr render or colspan
             const { container, el } = node;

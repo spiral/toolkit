@@ -31,12 +31,13 @@ export const rowWrapper: IRowWrapperRenderer = (node, options, state, index, col
   }
 
   const data = state.data[index];
-  if (options.listHeaderRow) {
+  if (options.renderAsList) {
+    const { summaryColumn } = options.renderAsList;
     const d = document.createElement('div');
     d.className = `col-${col}`;
-    const cI = columns.find((c) => c.id === options.listHeaderRow)!;
-    const cell = data[options.listHeaderRow];
-    const renderer = normalizedCellRenderer((options.cells || {})[options.listHeaderRow], true);
+    const cI = columns.find((c) => c.id === summaryColumn)!;
+    const cell = data[summaryColumn];
+    const renderer = normalizedCellRenderer((options.cells || {})[summaryColumn], true);
     const r = renderer.render(cell, data, cI, options, index, state);
     if (r) {
       if (typeof r === 'string') {

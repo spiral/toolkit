@@ -186,8 +186,19 @@ export interface IGridRenderOptions<Item = any> extends ITableMeta<Item> {
 
   messages?: Partial<IDataGridMessages>,
 
-  useListDefaults?: boolean,
-  listHeaderRow?: string,
+  /**
+   * Renders in experimental ul/li mode
+   */
+  renderAsList?: {
+    /**
+     * Summary row as a collapsable item header
+     */
+    summaryColumn: string;
+    /**
+     * Lets exclude some columns, i.e. ones used in summary and summary itself from render
+     */
+    exclude?: string[];
+  }
 }
 
 export interface IDataGridMessages extends Object {
@@ -317,10 +328,11 @@ export interface IDataGridOptions<Item = any> extends ITableMeta<Item> {
    * Specify 2 classes what wont be visible at same time
    * listHeaderColumn should specify what column will be used as list collapsible item header and be excluded from table view
    */
-  experimentalResponsive?: {
+  responsive?: {
     tableClass: string;
     listClass: string;
-    listHeaderColumn: string;
+    listSummaryColumn: string;
+    listExcludeColumns?: string[];
   };
 }
 

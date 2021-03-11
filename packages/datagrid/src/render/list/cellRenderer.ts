@@ -1,7 +1,12 @@
 import sf from '@spiral-toolkit/core';
-import { CellRenderAdvanced, INormalizedColumnDescriptor } from '../../types';
+import { CellRenderAdvanced, IGridRenderOptions, INormalizedColumnDescriptor } from '../../types';
 
-export const defaultCellElCreator = (cI: INormalizedColumnDescriptor) => {
+export const defaultCellElCreator = (cI: INormalizedColumnDescriptor, options: IGridRenderOptions) => {
+  if (options.renderAsList?.exclude?.length) {
+    if (options.renderAsList?.exclude.includes(cI.id)) {
+      return undefined;
+    }
+  }
   const el = document.createElement('li');
   el.className = 'sf-table__listrow list-group-item';
   const definition = document.createElement('div');

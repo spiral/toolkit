@@ -457,8 +457,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
   }
 
   applyExperimentalResponsive() {
-    if (this.options.experimentalResponsive) {
-      const { tableClass, listClass, listHeaderColumn } = this.options.experimentalResponsive;
+    if (this.options.responsive) {
+      const {
+        tableClass, listClass, listSummaryColumn, listExcludeColumns,
+      } = this.options.responsive;
       const renderList: IGridRenderOptions[] = Array.isArray(this.options.renderers) ? this.options.renderers : [this.options.renderers];
       if (renderList.length === 1) {
         const tableOptions = { ...renderList[0] };
@@ -473,9 +475,9 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         tableOptions.columns = (tableOptions.columns || this.options.columns).filter(
           (c: IColumnDescriptor) => {
             if (typeof c === 'string') {
-              return c !== listHeaderColumn;
+              return c !== listSummaryColumn;
             }
-            return c.id !== listHeaderColumn;
+            return c.id !== listSummaryColumn;
           },
         );
 
@@ -484,8 +486,10 @@ export class Datagrid<Item = any> extends sf.core.BaseDOMConstructor {
         listOptions.footerWrapper = listRenderers.footerWrapper;
         listOptions.rowWrapper = listRenderers.rowWrapper;
         listOptions.headerWrapper = listRenderers.headerWrapper;
-        listOptions.useListDefaults = true;
-        listOptions.listHeaderRow = this.options.experimentalResponsive.listHeaderColumn;
+        listOptions.renderAsList = {
+          exclude: listExcludeColumns,
+          summaryColumn: listSummaryColumn,
+        };
         this.options.renderers = [tableOptions, listOptions];
       }
     }
