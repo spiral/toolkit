@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/toolkit",
-  "version": "1.1.63",
+  "version": "1.1.64",
   "description": "Compilation of SF-JS scripts for forms and inputs",
   "main": "dist/toolkit.js",
   "files": [
@@ -57,7 +57,7 @@
   "dependencies": {
     "@spiral-toolkit/autocomplete": "^1.1.63",
     "@spiral-toolkit/core": "^1.1.63",
-    "@spiral-toolkit/datagrid": "^1.1.63",
+    "@spiral-toolkit/datagrid": "^1.1.64",
     "@spiral-toolkit/datepicker": "^1.1.63",
     "@spiral-toolkit/form": "^1.1.63",
     "@spiral-toolkit/locker": "^1.1.63",
