@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/notifications",
-  "version": "1.1.63",
+  "version": "1.1.65",
   "files": [
     "dist",
     "src"
