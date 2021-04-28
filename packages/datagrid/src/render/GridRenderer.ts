@@ -1,4 +1,5 @@
 import sf from '@spiral-toolkit/core';
+import get from 'lodash.get';
 import ActionPanel from '../actionpanel/ActionPanel';
 import {
   DATAGRID_CHECK_SELECT_ALL_ATTR,
@@ -279,7 +280,7 @@ export class GridRenderer {
         const rowEl = row(this.bodyEl!, this.options, state, index, this.columnInfo);
         this.applyAdditionalRowAttributes(rowEl, this.options, state, index);
         this.columnInfo.forEach((cI) => {
-          const value = item[cI.id];
+          const value = get(item, cI.id);
           const rowCellRenderer = normalizedCellRenderer((this.options.cells || {})[cI.id], !!this.options.renderAsList);
           const node = rowCellRenderer.createEl(cI, this.options);
           if (node) { // If no node generated, skip it, that might be custom tr render or colspan
