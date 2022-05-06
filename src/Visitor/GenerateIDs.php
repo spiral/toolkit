@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Spiral Framework.
- *
- * @license   MIT
- * @author    Anton Titov (Wolfy-J)
- */
-
 declare(strict_types=1);
 
 namespace Spiral\Toolkit\Visitor;
@@ -29,13 +22,9 @@ final class GenerateIDs implements VisitorInterface
     private const ID_GROUP   = 'inputID:define';
     private const ID_CONSUME = 'inputID:consume';
 
-    /** @var int */
-    private static $nextID = 1000;
+    private static int $nextID = 1000;
 
-    /**
-     * @inheritDoc
-     */
-    public function enterNode($node, VisitorContext $ctx)
+    public function enterNode(mixed $node, VisitorContext $ctx): mixed
     {
         if (!$node instanceof Attr) {
             return;
@@ -58,19 +47,16 @@ final class GenerateIDs implements VisitorInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function leaveNode($node, VisitorContext $ctx)
+    public function leaveNode(mixed $node, VisitorContext $ctx): mixed
     {
-        if ($node instanceof Attr && in_array($node->name, [self::ID_GROUP, self::ID_CONSUME], true)) {
+        if ($node instanceof Attr && \in_array($node->name, [self::ID_GROUP, self::ID_CONSUME], true)) {
             return self::REMOVE_NODE;
         }
 
         if ($node instanceof Tag && $node->getAttribute(self::class) == self::ID_CONSUME) {
             $idAttr = null;
             foreach ($node->attrs as $attr) {
-                if (in_array($attr->name, ['id', 'for'])) {
+                if (\in_array($attr->name, ['id', 'for'])) {
                     $idAttr = $attr;
                     break;
                 }
@@ -83,7 +69,7 @@ final class GenerateIDs implements VisitorInterface
             }
 
             // looking for the group
-            foreach (array_reverse($ctx->getScope()) as $parent) {
+            foreach (\array_reverse($ctx->getScope()) as $parent) {
                 if ($parent === $ctx->getCurrentNode()) {
                     continue;
                 }
@@ -100,19 +86,14 @@ final class GenerateIDs implements VisitorInterface
 
     /**
      * Issue next, template unique, input it.
-     *
-     * @return string
      */
     private function nextID(): string
     {
-        return 'i-' . dechex(self::$nextID++);
+        return 'i-' . \dechex(self::$nextID++);
     }
 
     /**
      * Returns blocks from within the attribute.
-     *
-     * @param Attr|null $attr
-     * @return Block|null
      */
     private function idBlock(Attr $attr = null): ?Block
     {
