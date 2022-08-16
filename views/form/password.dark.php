@@ -18,6 +18,18 @@
                 name="${name}"
                 placeholder="${placeholder}"
                 value="${value}${context}"
+                @if(injected('maxlength'))
+                  maxlength="${maxlength}"
+                @endif
+                @if(injected('minlength'))
+                  minlength="${minlength}"
+                @endif
+                @if(injected('pattern'))
+                  pattern="${pattern}"
+                @endif
+                @if(injected('autocomplete'))
+                  autocomplete="${autocomplete}"
+                @endif
                 @if(injected('disabled'))disabled @endif
         />
         <div style="cursor: pointer" class="input-group-append" title="${icon-label}" onclick="var p = this.parentNode.querySelector('input'); var s = this.querySelector('i'); if(p.type==='password') { p.type = 'text';s.classList.remove('fa-eye');s.classList.add('fa-eye-slash'); } else { p.type = 'password'; s.classList.remove('fa-eye-slash');s.classList.add('fa-eye');} ">

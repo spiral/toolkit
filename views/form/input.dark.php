@@ -20,6 +20,24 @@
         name="${name}"
         placeholder="${placeholder}"
         value="${value}${context}"
+        @if(injected('maxlength'))
+          maxlength="${maxlength}"
+        @endif
+        @if(injected('minlength'))
+          minlength="${minlength}"
+        @endif
+        @if(injected('pattern'))
+          pattern="${pattern}"
+        @endif
+        @if(injected('readonly'))
+          readonly
+        @endif
+        @if(injected('autocomplete'))
+          autocomplete="${autocomplete}"
+        @endif
+        @if(injected('spellcheck'))
+          spellcheck="${spellcheck}"
+        @endif
         @if(injected('disabled'))disabled @endif
       />
       @if(injected('add-reset'))
