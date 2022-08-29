@@ -1,5 +1,23 @@
 <extends:toolkit:form.field/>
 
 <block:element>
-  <a href="${href}" attr:aggregate>${title}</a>
+  <a
+      href="${href}"
+      attr:aggregate
+      @if(injected('target'))
+        target="${target}"
+      @endif
+      @if(injected('download'))
+        download="${download}"
+      @endif
+      @if(injected('referrerpolicy'))
+        referrerpolicy="${referrerpolicy}"
+      @endif
+      @if(injected('rel'))
+        rel="${rel}"
+      @endif
+      @if(injected('type'))
+        type="${type}"
+      @endif
+  >${title}</a>
 </block:element>
