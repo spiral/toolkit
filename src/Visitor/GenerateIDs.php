@@ -27,7 +27,7 @@ final class GenerateIDs implements VisitorInterface
     public function enterNode(mixed $node, VisitorContext $ctx): mixed
     {
         if (!$node instanceof Attr) {
-            return;
+            return null;
         }
 
         if ($node->name === self::ID_GROUP) {
@@ -45,6 +45,8 @@ final class GenerateIDs implements VisitorInterface
                 $tag->setAttribute(self::class, self::ID_CONSUME);
             }
         }
+
+        return null;
     }
 
     public function leaveNode(mixed $node, VisitorContext $ctx): mixed
