@@ -42,6 +42,9 @@
     @if(injected('autofocus'))
       autofocus
     @endif
+    @if(injected('size'))
+        size="${size}"
+    @endif
     @if(injected('disabled'))disabled@endif
     attr:aggregate
   >
