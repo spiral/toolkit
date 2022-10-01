@@ -4,7 +4,7 @@ const config = {
   ...baseConfig,
 
   entry: {
-    tinymce: ['./src/index.ts'],
+    codeeditor: ['./src/index.ts'],
   },
 
   output: {

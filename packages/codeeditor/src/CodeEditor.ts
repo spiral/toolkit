@@ -10,7 +10,12 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
     value: '',
     name: '',
     formatJson: true,
-    options: {},
+    options: {
+      mode: "application/json",
+      lineNumbers: true,
+      gutters: ["CodeMirror-lint-markers"],
+      lint: true,
+    },
   };
 
   public options: ICodeEditorOptions = { ...CodeEditor.defaultOptions };
