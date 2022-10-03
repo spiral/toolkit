@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/locker",
-  "version": "1.1.66",
+  "version": "1.2.0",
   "description": "Spiral Framework Locker",
   "main": "dist/locker.js",
   "files": [
