@@ -38,6 +38,11 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 - `packages/lock` - lock module for the toolkit
 - `packages/core` - main toolkit package
 
+
+## Making a release
+
+- `lerna publish`
+
 Windows
 ------
 
