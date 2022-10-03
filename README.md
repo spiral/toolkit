@@ -44,6 +44,7 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 In separate branch do following:
 
 - `lerna publish`
+- bump version in lerna *and* in root package.json manually
 - `yarn gitrelease`
 
 Windows
