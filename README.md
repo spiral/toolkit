@@ -41,7 +41,10 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 
 ## Making a release
 
+In separate branch do following:
+
 - `lerna publish`
+- `yarn gitrelease`
 
 Windows
 ------
