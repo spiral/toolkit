@@ -19,6 +19,11 @@
     "label": "TinyMCE Wrapper",
     "path": "packages/tinymce/dist"
   },
+  "codeeditor": {
+    "descr": "Module for CodeMirror wrapper, working as code editor",
+    "label": "CodeMirror Wrapper",
+    "path": "packages/codeeditor/dist"
+  },
   "qrcode": {
     "descr": "Module to generate QR codes, included in toolkit_full",
     "label": "QR code",

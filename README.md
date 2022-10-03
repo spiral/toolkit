@@ -38,6 +38,15 @@ Project is a [mono-repository](https://github.com/lerna/lerna#getting-started) w
 - `packages/lock` - lock module for the toolkit
 - `packages/core` - main toolkit package
 
+
+## Making a release
+
+In separate branch do following:
+
+- `lerna publish`
+- bump version in lerna *and* in root package.json manually
+- `yarn gitrelease`
+
 Windows
 ------
 

@@ -1,27 +1,33 @@
 {
-  "name": "@spiral-toolkit/datepicker",
+  "name": "@spiral-toolkit/codeeditor",
   "version": "1.2.0",
-  "description": "Spiral Scout Frontend Framework",
-  "main": "dist/datepicker.js",
-  "types": "dist/index.d.ts",
+  "description": "Codemirror (CDN) editor",
+  "main": "dist/codeeditor.js",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
-  "repository": "https://github.com/spiral/toolkit/tree/master/packages/core",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm run build:prod",
     "build:prod": "cross-env NODE_ENV=production webpack",
     "build:dev": "cross-env NODE_ENV=development webpack",
     "watch": "cross-env NODE_ENV=development webpack --watch",
-    "clean": "rimraf /resources/index.js",
+    "clean": "rimraf /dist",
     "prepublish": "npm run build",
     "clean-after-deploy": "rimraf node_modules/",
     "lint": "yarn lint:js",
-    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "lint:fix": "yarn lint:js --fix",
     "lint:js": "eslint \"src/**/*.ts\""
   },
+  "repository": "https://github.com/spiral/toolkit/tree/master/packages/codeeditor",
+  "keywords": [
+    "qrcode",
+    "spiral",
+    "sf.js",
+    "sf"
+  ],
   "author": {
     "name": "Spiral Scout",
     "email": "info@spiralscout.com",
@@ -35,8 +41,8 @@
   "peerDependencies": {
     "@spiral-toolkit/core": "1.1.55"
   },
-  "dependencies": {
-    "flatpickr": "^4.6.3"
+  "devDependencies": {
+    "@types/node": "^13.11.1"
   },
   "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
 }
