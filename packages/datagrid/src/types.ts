@@ -405,7 +405,7 @@ export interface IActionPanelState<Item = any> {
 export interface IActionDescriptor {
   renderAs: FlexibleRenderDefinition,
   className?: string | ((state: IActionPanelState) => string),
-  onClick: (state: IActionPanelState, grid: Datagrid | undefined, root: ActionPanel, e: MouseEvent) => any,
+  onClick: string | ((state: IActionPanelState, grid: Datagrid | undefined, root: ActionPanel, e: MouseEvent) => any),
 }
 
 export interface IActionPanelOptions {

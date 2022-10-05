@@ -144,7 +144,14 @@ export class ActionPanel<Item = any> extends sf.core.BaseDOMConstructor {
         el.classList.add(...action.className(this.state).split(' '));
       }
     }
-    el.addEventListener('click', (e) => action.onClick(this.state, this.datagrid, this, e));
+    el.addEventListener('click', (e) => {
+      const fn = (typeof action.onClick === 'string') ? ((window as any)[action.onClick]) : action.onClick;
+      if (fn) {
+        fn(this.state, this.datagrid, this, e)
+      } else {
+        console.error('Cant execute action, onClick is not defined: ', action);
+      }
+    });
     this.renderAs(el, action.renderAs);
     return el;
   }
