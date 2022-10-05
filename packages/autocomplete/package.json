@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/autocomplete",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Spiral Scout Frontend Framework",
   "main": "dist/autocomplete.js",
   "files": [

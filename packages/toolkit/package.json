@@ -1,6 +1,6 @@
 {
   "name": "@spiral-toolkit/toolkit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Compilation of SF-JS scripts for forms and inputs",
   "main": "dist/toolkit.js",
   "files": [
@@ -55,13 +55,13 @@
   },
   "homepage": "https://github.com/spiral/toolkit#readme",
   "dependencies": {
-    "@spiral-toolkit/autocomplete": "^1.2.0",
-    "@spiral-toolkit/core": "^1.2.0",
-    "@spiral-toolkit/datagrid": "^1.2.0",
-    "@spiral-toolkit/datepicker": "^1.2.0",
-    "@spiral-toolkit/form": "^1.2.0",
-    "@spiral-toolkit/locker": "^1.2.0",
-    "@spiral-toolkit/qrcode": "^1.2.0",
+    "@spiral-toolkit/autocomplete": "^1.2.1",
+    "@spiral-toolkit/core": "^1.2.1",
+    "@spiral-toolkit/datagrid": "^1.2.1",
+    "@spiral-toolkit/datepicker": "^1.2.1",
+    "@spiral-toolkit/form": "^1.2.1",
+    "@spiral-toolkit/locker": "^1.2.1",
+    "@spiral-toolkit/qrcode": "^1.2.1",
     "core-js": "^3.6.5"
   },
   "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
