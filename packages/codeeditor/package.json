@@ -1,12 +1,13 @@
 {
-  "name": "@spiral-toolkit/locker",
+  "name": "@spiral-toolkit/codeeditor",
   "version": "1.2.1",
-  "description": "Spiral Framework Locker",
-  "main": "dist/locker.js",
+  "description": "Codemirror (CDN) editor",
+  "main": "dist/codeeditor.js",
   "files": [
     "dist",
     "src"
   ],
+  "types": "dist/index.d.ts",
   "scripts": {
     "prebuild": "npm run clean",
     "build": "npm run build:prod",
@@ -20,9 +21,9 @@
     "lint:fix": "yarn lint:js --fix",
     "lint:js": "eslint \"src/**/*.ts\""
   },
-  "repository": "https://github.com/spiral/toolkit/tree/master/packages/locker",
+  "repository": "https://github.com/spiral/toolkit/tree/master/packages/codeeditor",
   "keywords": [
-    "locker",
+    "qrcode",
     "spiral",
     "sf.js",
     "sf"
@@ -39,6 +40,9 @@
   "homepage": "https://github.com/spiral/toolkit#readme",
   "peerDependencies": {
     "@spiral-toolkit/core": "1.1.55"
+  },
+  "devDependencies": {
+    "@types/node": "^13.11.1"
   },
   "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
 }

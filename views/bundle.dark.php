@@ -46,3 +46,7 @@
 <use:element path="toolkit:form/tinymce" as="form:tinymce"/>
 <use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.use"/>
 <use:element path="toolkit:form/tinymce-cdn" as="form:tinymce.script"/>
+
+{{--codeeditor--}}
+<use:element path="toolkit:form/codeeditor" as="form:codeeditor"/>
+<use:element path="toolkit:form/codeeditor-cdn" as="form:codeeditor.script"/>
