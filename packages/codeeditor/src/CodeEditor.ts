@@ -11,9 +11,9 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
     name: '',
     formatJson: true,
     options: {
-      mode: "application/json",
+      mode: 'application/json',
       lineNumbers: true,
-      gutters: ["CodeMirror-lint-markers"],
+      gutters: ['CodeMirror-lint-markers'],
       lint: true,
     },
   };
@@ -23,6 +23,8 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
   public readonly name = CodeEditor.spiralFrameworkName;
 
   public textarea!: HTMLTextAreaElement;
+
+  public observer?: ResizeObserver;
 
   public readonly optionsToGrab: { [option: string]: IOptionToGrab } = {
     name: {
@@ -59,11 +61,17 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
     this.CodeEditor.on('change', () => {
       this.textarea.value = this.denormalizeValue(this.CodeEditor.getValue());
     });
+    if (window.ResizeObserver) {
+      this.observer = new ResizeObserver(() => {
+        this.CodeEditor.refresh();
+      });
+      this.observer.observe(node);
+    }
   }
 
   normalizeValue(value: string) {
     let newVal = value;
-    if(this.options.formatJson) {
+    if (this.options.formatJson) {
       try {
         const obj = JSON.parse(value);
         newVal = JSON.stringify(obj, undefined, 2);
@@ -76,9 +84,9 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
 
   denormalizeValue(value: string) {
     let newVal = value;
-    if(this.options.formatJson) {
+    if (this.options.formatJson) {
       try {
-        const obj =  JSON.parse(value);
+        const obj = JSON.parse(value);
         newVal = JSON.stringify(obj);
       } catch (e) {
 
@@ -93,6 +101,9 @@ export class CodeEditor extends sf.core.BaseDOMConstructor {
 
   die() {
     super.die();
+    if (this.observer) {
+      this.observer.disconnect();
+    }
     this.CodeEditor.toTextArea();
   }
 }
