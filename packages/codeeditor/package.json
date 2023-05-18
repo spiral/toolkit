@@ -42,7 +42,8 @@
     "@spiral-toolkit/core": "1.1.55"
   },
   "devDependencies": {
-    "@types/node": "^13.11.1"
+    "@types/node": "^13.11.1",
+    "@types/resize-observer-browser": "^0.1.7"
   },
   "gitHead": "5aaf573d4f7c15ae0783def0d8db55b5aa03fbc4"
 }
